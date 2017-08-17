@@ -84,6 +84,7 @@ export default class Orpd extends Component {
             title="Devolução de mercadoria"
             baseApiUrl='/api/docs/doc/orpd'
             footerSearchType="oitm"
+            footerLimitSearchCondition={`OITM."CardCode"='<CARDCODE>'`}
             headerFields={headerFields}
             onHeaderChange={this.onHeaderChange}
             onRowChange={this.onBeforeRowChange}

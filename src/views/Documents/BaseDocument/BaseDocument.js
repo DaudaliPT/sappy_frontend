@@ -35,7 +35,7 @@ class BaseDocument extends Component {
     return {
       currentModal: null,
       hasSelectedRows: false,
-      footerLimitSearch: false,
+      footerLimitSearch: props.footerLimitSearchCondition || false,
       loading: true,
       docData: {
         LINES: []

@@ -84,6 +84,7 @@ export default class Opor extends Component {
             title="Encomenda a fornecedor"
             baseApiUrl='/api/docs/doc/opor'
             footerSearchType="oitm"
+            footerLimitSearchCondition={`OITM."CardCode"='<CARDCODE>'`}
             headerFields={headerFields}
             onHeaderChange={this.onHeaderChange}
             onRowChange={this.onBeforeRowChange}

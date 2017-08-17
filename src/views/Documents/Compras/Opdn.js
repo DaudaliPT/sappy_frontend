@@ -84,6 +84,7 @@ export default class Opdn extends Component {
             title="Recepção de mercadoria"
             baseApiUrl='/api/docs/doc/opdn'
             footerSearchType="oitm"
+            footerLimitSearchCondition={`OITM."CardCode"='<CARDCODE>'`}
             headerFields={headerFields}
             onHeaderChange={this.onHeaderChange}
             onRowChange={this.onBeforeRowChange}

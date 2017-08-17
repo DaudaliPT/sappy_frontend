@@ -84,6 +84,7 @@ export default class Orpc extends Component {
             title="Nota de crédito de fornecedor"
             baseApiUrl='/api/docs/doc/orpc'
             footerSearchType="oitm"
+            footerLimitSearchCondition={`OITM."CardCode"='<CARDCODE>'`}
             headerFields={headerFields}
             onHeaderChange={this.onHeaderChange}
             onRowChange={this.onBeforeRowChange}
