@@ -36,7 +36,7 @@ let detailFields = [
     { name: 'USER_DISC', label: '', type: "text", width: 110, editable: true },
     { name: 'LINETOTAL', label: 'Total', width: 90, type: "amount", editable: true },
     { name: 'TAXRATE', label: 'IVA', type: "vat", width: 70, editable: false },
-    { name: 'WHSCODE', label: 'Arm', type: "text", width: 50, editable: true },
+    // { name: 'WHSCODE', label: 'Arm', type: "text", width: 50, editable: true },
     { name: 'HASINCONF', label: 'Inc.', type: "flag|danger", width: 35, editable: true }
 ]
 

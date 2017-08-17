@@ -35,7 +35,7 @@ let headerFields = {
         // { name: 'SHIPADDR', label: 'Morada Envio', type: "combo", api: "/api/cbo/crd1/<CARDCODE>/s", gridSize: 4 },
         { name: 'BILLADDR', label: 'Morada Facturação', type: "combo", api: "/api/cbo/crd1/<CARDCODE>/b", gridSize: 2 },
         { name: 'CONTACT', label: 'Contacto/Sub.For', type: "combo", api: "/api/cbo/ocpr/<CARDCODE>", gridSize: 2 },
-        { name: 'NUMATCARD', label: 'Ref.fornecedor', type: "text", gridSize: 2, required: true },
+        { name: 'NUMATCARD', label: 'Ref.fornecedor', type: "text", gridSize: 2 },
         { name: 'COMMENTS', label: 'Observações', type: "text", gridSize: 5 },
         { name: 'HASINCONF', label: 'Inconf.', type: "flag|danger", gridSize: 1 }
     ]
@@ -57,7 +57,7 @@ let detailFields = [
     { name: 'USER_DISC', label: '', type: "discount", width: 110, editable: true },
     { name: 'LINETOTAL', label: 'Total', width: 90, type: "amount", editable: true },
     { name: 'TAXRATE', label: 'IVA', type: "vat", width: 70, editable: false },
-    { name: 'WHSCODE', label: 'Arm', type: "text", width: 50, editable: true },
+    // { name: 'WHSCODE', label: 'Arm', type: "text", width: 50, editable: true },
     { name: 'HASINCONF', label: 'Inc.', type: "flag|danger", width: 35, editable: true }
 ]
 
