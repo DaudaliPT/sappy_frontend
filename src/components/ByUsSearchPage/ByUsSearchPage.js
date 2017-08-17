@@ -18,12 +18,15 @@ class ByUsSearchPage extends Component {
     this.handeOnSideBarSelect = this.handeOnSideBarSelect.bind(this);
     this.handleOnChange_txtSearch = this.handleOnChange_txtSearch.bind(this);
     this.calcPageHeight = this.calcPageHeight.bind(this);
+    this.handleToogleLimitSearch = this.handleToogleLimitSearch.bind(this)
 
     this.byusModalInfiniteListID = 'byusModalInfiniteList' + uuid();
     this.state = {
 
       /** holds the text typed by the user */
       searchTags: (props.searchText && [{ value: props.searchText, label: props.searchText }]) || [],
+
+      limitSearch: props.limitSearch || false,
 
       /*********/
       /** contains the items to put on sidebar, organized by groups */
@@ -127,6 +130,11 @@ class ByUsSearchPage extends Component {
     this.setState({ activeTab: item }, that.findAndGetFirstRows);
   }
 
+  handleToogleLimitSearch() {
+    let that = this;
+    this.setState({ limitSearch: !that.state.limitSearch }, that.findAndGetFirstRows);
+  }
+
   handeOnSideBarSelect(item) {
     let that = this;
     let { activeSidebarItems } = this.state;
@@ -173,10 +181,14 @@ class ByUsSearchPage extends Component {
       if (this.cancelPreviousAxiosRequest) this.cancelPreviousAxiosRequest();
       var CancelToken = axios.CancelToken;
 
+      let limitSearchCondition = "";
+      if (this.state.limitSearch && this.props.limitSearchCondition) limitSearchCondition = this.props.limitSearchCondition;
+
       this.serverRequest = axios
         .get(that.props.searchApiUrl, {
           params: {
             searchTags,
+            limitSearchCondition,
             activeTab,
             activeSidebarItems: JSON.stringify(activeSidebarItems)
           },
@@ -216,8 +228,12 @@ class ByUsSearchPage extends Component {
       let { searchTags, activeTab, activeSidebarItems, listItems } = this.state;
       that.setState({ rvIsLoading: true });
 
+      let limitSearchCondition = "";
+      if (this.state.limitSearch && this.props.limitSearchCondition) limitSearchCondition = this.props.limitSearchCondition;
+
       let params = {
         searchTags,
+        limitSearchCondition,
         activeTab,
         activeSidebarItems: JSON.stringify(activeSidebarItems),
         startIndex: listItems.length,
@@ -269,6 +285,9 @@ class ByUsSearchPage extends Component {
                   totalInfo={totalInfo}
                   onChange={this.handleOnChange_txtSearch}
                   searchTags={this.state.searchTags}
+                  limitSearch={this.state.limitSearch}
+                  limitSearchCondition={this.props.limitSearchCondition}
+                  onToogleLimitSearch={this.handleToogleLimitSearch}
                   inputProps={{
                     placeholder: this.props.searchPlaceholder,
                   }}
@@ -316,6 +335,8 @@ ByUsSearchPage.defaultProps = {
   currentModal: null,
   renderRow: ({ row, index }) => { },
   renderRowHeight: 20,
+  limitSearch: false,
+  limitSearchCondition: "",
 };
 
 export default ByUsSearchPage;

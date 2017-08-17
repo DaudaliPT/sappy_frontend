@@ -24,6 +24,7 @@ class BaseDocument extends Component {
     this.handleDetailRowSelect = this.handleDetailRowSelect.bind(this)
     this.handleFooterSearchResult = this.handleFooterSearchResult.bind(this)
     this.handleToggleShowTotals = this.handleToggleShowTotals.bind(this)
+    this.handleToogleLimitSearch = this.handleToogleLimitSearch.bind(this)
     this.forceReload = this.forceReload.bind(this)
     this.setNewDataAndDisplayAlerts = this.setNewDataAndDisplayAlerts.bind(this)
 
@@ -34,6 +35,7 @@ class BaseDocument extends Component {
     return {
       currentModal: null,
       hasSelectedRows: false,
+      footerLimitSearch: false,
       loading: true,
       docData: {
         LINES: []
@@ -64,7 +66,8 @@ class BaseDocument extends Component {
 
     this.recalcComponentsHeight();
 
-    if (locationState.DocEntry !== nextlocationState.DocEntry
+    if (Object.keys(nextlocationState).length === 0
+      || locationState.DocEntry !== nextlocationState.DocEntry
       || locationState.id !== nextlocationState.id
     ) {
       return this.setState(this.getinitialState(nextProps), this.loadDoc);
@@ -258,6 +261,10 @@ class BaseDocument extends Component {
     this.setState({ footer })
   }
 
+  handleToogleLimitSearch() {
+    this.setState({ footerLimitSearch: !this.state.footerLimitSearch })
+  }
+
   handleFooterSearchResult(selectedItems) {
     let that = this;
 
@@ -282,8 +289,6 @@ class BaseDocument extends Component {
     let that = this;
     let docData = this.state.docData;
     let { LINES } = docData;
-    // console.log("BaseDocument", this.state);
-
 
     let calcularTotais = () => {
       var grandTotalGross = 0;
@@ -299,7 +304,7 @@ class BaseDocument extends Component {
         // if (row.FRETE1VAL) { grandTotalExpenses += parseFloat(row.FRETE1VAL); }
         // if (row.FRETE2VAL) { grandTotalExpenses += parseFloat(row.FRETE2VAL); }
 
-        if ( byUs.getNum(row.DISCOUNT)) {
+        if (byUs.getNum(row.DISCOUNT)) {
           grandTotalGross += grossAmmount;
           grandTotalDiscount += grossAmmount - byUs.getNum(row.LINETOTAL);
         }
@@ -351,37 +356,26 @@ class BaseDocument extends Component {
       }
 
       var grandTotalVat = 0;
-      // for (var k in vatTotals) {
-      //   lr = vatTotals[k];
-      //   lr.VALORIVA = Number(Math.round((lr.TAXBASEAMOUNT * parseFloat(lr.TAXRATE) / 100) + 'e2') + 'e-2');//workaround: http://www.jacklmoore.com/notes/rounding-in-javascript/
-      //   grandTotalVat += lr.VALORIVA;
-      // }
-      for (var k in vatTotals) {
-        let v = vatTotals[k];
-        v.TAXAMOUNT = byUs.round(byUs.getNum(v.TAXBASEAMOUNT) * byUs.getNum(v.TAXRATE) / 100, 2)
-        grandTotalVat += v.TAXAMOUNT;
+      var grandTotalAmount = 0;
+      let ROUNDVAL = byUs.getNum(docData.ROUNDVAL)
+      let SAPVATTOTAL = byUs.getNum(docData.SAPVATTOTAL)
+      let SAPDOCTOTAL = byUs.getNum(docData.SAPDOCTOTAL)
+      if (SAPVATTOTAL && SAPDOCTOTAL) {
+        grandTotalVat = SAPVATTOTAL;
+        grandTotalAmount = SAPDOCTOTAL;
+      }
+      else {
+        for (var k in vatTotals) {
+          let v = vatTotals[k];
+          v.TAXAMOUNT = byUs.round(byUs.getNum(v.TAXBASEAMOUNT) * byUs.getNum(v.TAXRATE) / 100, 2)
+          grandTotalVat += v.TAXAMOUNT;
+        }
+        grandTotalAmount = grandTotalLiq + grandTotalVat + ROUNDVAL;
       }
 
-      // valor de arredondameto
-      var grandRound = byUs.getNum(docData.ROUNDVAL);
 
-      var grandTotalAmount = grandTotalLiq + grandTotalVat + grandRound;
-      // var theTotalIVA = grandTotalVat;
-      // grandTotalLiq += grandTotalExpenses;
 
-      // grandTotalGross = helper.calculate.numberFormat(grandTotalGross, grid.decimalCase.montantes, grid.decimalCase.sapDec, grid.decimalCase.sapThou);
-      // grandTotalDiscount = helper.calculate.numberFormat(grandTotalDiscount, grid.decimalCase.montantes, grid.decimalCase.sapDec, grid.decimalCase.sapThou);
-      // var totalLiquidoTxt = helper.calculate.numberFormat(grandTotalLiq, grid.decimalCase.montantes, grid.decimalCase.sapDec, grid.decimalCase.sapThou);
-      // theTotalIVA = helper.calculate.numberFormat(theTotalIVA, grid.decimalCase.montantes, grid.decimalCase.sapDec, grid.decimalCase.sapThou);
-      // grandTotalAmount = helper.calculate.numberFormat(grandTotalAmount, grid.decimalCase.montantes, grid.decimalCase.sapDec, grid.decimalCase.sapThou);
-      // var theTotalNet = helper.calculate.numberFormat(totalNet, grid.decimalCase.montantes, grid.decimalCase.sapDec, grid.decimalCase.sapThou);
 
-      // getCtrl("totalBruto").setValue(grandTotalGross);
-      // getCtrl("totalDescontos").setValue(grandTotalDiscount);
-      // getCtrl("totalLiq").setValue(totalLiquidoTxt);
-      // getCtrl("IVA").setValue(theTotalIVA);
-      // getCtrl("totalCIVA").setValue(grandTotalAmount);
-      // getCtrl("totalNET").setValue(theTotalNet);
       return {
         grossAmmount: grandTotalGross,
         discountAmmount: grandTotalDiscount,
@@ -406,11 +400,19 @@ class BaseDocument extends Component {
       onRowSelect: this.handleDetailRowSelect
     }
 
+    let footerLimitSearchCondition = this.props.footerLimitSearchCondition || '';
+    Object.keys(docData).forEach(
+      field => footerLimitSearchCondition = footerLimitSearchCondition.replace("<" + field + ">", docData[field])
+    )
+
     let footerProps = {
       ...this.state.footer,
       docData,
       loading: this.state.loading,
+      footerLimitSearch: this.state.footerLimitSearch,
+      footerLimitSearchCondition,
       footerSearchType: this.props.footerSearchType,
+      onToogleLimitSearch: this.handleToogleLimitSearch,
       onFooterSearchResult: this.handleFooterSearchResult,
       onToggleShowTotals: this.handleToggleShowTotals,
       totals,
@@ -428,9 +430,6 @@ class BaseDocument extends Component {
     let totalProps = {
       totals,
       docData,
-      EXTRADISC: docData.EXTRADISC,
-      ROUNDVAL: docData.ROUNDVAL,
-      DOCTOTAL: docData.DOCTOTAL,
       onFieldChange: this.handleHeaderFieldChange
     }
 
@@ -456,6 +455,7 @@ BaseDocument.defaultProps = {
   baseApiUrl: '',//  /api/docs/ordr/doc
   headerFields: {},
   detailFields: [],
+  footerLimitSearchCondition: '',
   onRowChange: null,//   handleRowChange(currentRow, updated) => allows for specific doc behaviour
   onHeaderChange: null, //  onHeaderChange(docData, updated) => allows to react to user change on header
   currentModal: null

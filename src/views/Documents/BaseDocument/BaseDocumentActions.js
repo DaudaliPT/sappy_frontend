@@ -121,7 +121,9 @@ export default {
                         msg: "Documento criado",
                         moreInfo: `Criou com sucesso o documento ${result.data.DocEntry}!`,
                         cancelText: "Adicionar outro",
-                        onCancel: () => hashHistory.push(hashHistory.getCurrentLocation().pathname),
+                        onCancel: () => {
+                            hashHistory.replace(hashHistory.getCurrentLocation().pathname + "?new=" + new Date().getTime())
+                        },
                         confirmText: "Concluido",
                         onConfirm: () => hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", ''))
                     }))

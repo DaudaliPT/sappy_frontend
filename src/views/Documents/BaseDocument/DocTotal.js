@@ -41,20 +41,16 @@ class DocFooter extends Component {
           <div className="col">Descontos</div>
           <div className="col"><span className="float-right">{byUs.format.valor(totals.discountAmmount)}</span></div>
         </div>
-        {/* <div className="row">
-          <div className="col-6">Desc.Adicional</div>
-          <div className="col-6">
-            <ByUsTextBoxNumeric
-              name="EXTRADISC"
-              value={byUs.getNum(this.props.EXTRADISC)}
-              onChange={this.props.onFieldChange}
-              valueType="valor" />
-          </div>
-        </div> */}
         <div className="row">
           <div className="col">Valor Líquido</div>
           <div className="col"><span className="float-right">{byUs.format.valor(totals.liquidAmount)}</span></div>
         </div>
+        {byUs.getNum(docData.EXTRADISC) !== 0 &&
+          <div className="row">
+            <div className="col-6">Desc.Adicional</div>
+            <div className="col"><span className="float-right">{byUs.format.valor(byUs.getNum(docData.EXTRADISC))}</span></div>
+          </div>
+        }
         <div className="row">
           <div className="col">IVA</div>
           <div className="col"><span className="float-right">{byUs.format.valor(totals.vatAmount)}</span></div>
@@ -65,7 +61,7 @@ class DocFooter extends Component {
             <ByUsTextBoxNumeric
               name="ROUNDVAL"
               disabled={!editable}
-              value={byUs.getNum(this.props.ROUNDVAL)}
+              value={byUs.getNum(docData.ROUNDVAL)}
               onChange={this.props.onFieldChange}
               valueType="valor" />
           </div>

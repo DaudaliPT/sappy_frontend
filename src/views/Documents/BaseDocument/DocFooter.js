@@ -53,6 +53,9 @@ class DocFooter extends Component {
           <div className="byus-search-bar float-left">
             <ByUsSearchAndChoose
               searchType={this.props.footerSearchType}
+              limitSearch={this.props.footerLimitSearch}
+              limitSearchCondition={this.props.footerLimitSearchCondition}
+              onToogleLimitSearch={this.props.onToogleLimitSearch}
               onReturnSelectItems={this.props.onFooterSearchResult} />
           </div>
         }
@@ -64,7 +67,9 @@ class DocFooter extends Component {
 
 DocFooter.defaultProps = {
   footerSearchType: "",
+  footerLimitSearchCondition: "",
   onFooterSearchResult: selectedItems => { },
+  onToogleLimitSearch: () => { },
   totals: {}
 }
 

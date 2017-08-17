@@ -922,3 +922,25 @@ div>.has-danger  .Select-control {  border-color: rgb(217,  83,  79) !important;
 .text-muted.lead{
     max-height: 200px;
     overflow-y: scroll;  }
+
+.input-search-btn{
+  padding:0px 0px!important;
+}
+.input-search-btn>.icon{
+  padding:0px 8px!important;
+}
+    
+.input-search-btn.left{
+  right:30px!important;
+}
+
+.input-search-btn>.icon.inactive{
+  color:#ddd;
+}
+.input-search-btn>.icon.active{
+  color:rgb(98, 168, 234);
+}
+.aicon[class*="ion-"] {
+  font-size:1.5rem!important;
+  line-height: 1.5;
+}  

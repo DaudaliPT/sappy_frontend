@@ -142,6 +142,9 @@ class ModalOitm extends Component {
               searchApiUrl={ModalOitm.searchApiUrl}
               renderRow={renderRow}
               searchText={this.props.searchText}
+              limitSearch={this.props.limitSearch}
+              limitSearchCondition={this.props.limitSearchCondition}
+              onToogleLimitSearch={this.props.onToogleLimitSearch}
               renderRowHeight={50}
               currentModal={this.state.currentModal}
             />
@@ -186,4 +189,9 @@ class ModalOitm extends Component {
 
 ModalOitm.searchApiUrl = "/api/search/oitm/";
 
+ModalOitm.defaultProps = {
+  limitSearch: false,
+  limitSearchCondition: "",
+  onToogleLimitSearch: () => { }
+};
 export default ModalOitm;

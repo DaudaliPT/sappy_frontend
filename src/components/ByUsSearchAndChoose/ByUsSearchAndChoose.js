@@ -39,7 +39,14 @@ class ByUsSearchAndChoose extends Component {
 
   openSearchModal() {
     let currentModal = null;
-    if (this.props.searchType === "oitm") currentModal = <ModalOitm toggleModal={this.handleModalSearchClose} searchText={this.state.searchText} />
+    if (this.props.searchType === "oitm")
+      currentModal = <ModalOitm
+        toggleModal={this.handleModalSearchClose}
+        limitSearch={this.props.limitSearch}
+        limitSearchCondition={this.props.limitSearchCondition}
+        onToogleLimitSearch={this.props.onToogleLimitSearch}
+        searchText={this.state.searchText} />
+
     else byUs.showError(this.props.searchType, "Tipo de pesquisa desconhecido")
 
     this.setState({ currentModal, searchText: "" });
@@ -53,12 +60,18 @@ class ByUsSearchAndChoose extends Component {
 
     if (searchApiUrl) {
 
+      let limitSearchCondition = "";
+      if (this.props.limitSearch && this.props.limitSearchCondition) limitSearchCondition = this.props.limitSearchCondition;
+
       if (this.cancelPreviousAxiosRequest) this.cancelPreviousAxiosRequest();
       var CancelToken = axios.CancelToken;
       let { searchText } = this.state;
       this.serverRequest = axios
         .get(searchApiUrl, {
-          params: { searchTags: [{ value: searchText }] },
+          params: {
+            searchTags: [{ value: searchText }],
+            limitSearchCondition
+          },
           cancelToken: new CancelToken(function executor(c) {
             that.cancelPreviousAxiosRequest = c;
           })
@@ -84,7 +97,9 @@ class ByUsSearchAndChoose extends Component {
         });
     }
   }
+
   render() {
+    let that = this
     return (
       <form action="#" role="search" onSubmit={e => e.preventDefault()} >
         {this.state.currentModal}
@@ -97,20 +112,26 @@ class ByUsSearchAndChoose extends Component {
             onKeyDown={this.handleOnKeyDown_txtSearch} >
           </input>
 
-          <button
-            className="input-search-btn vertical-align-middle"
-            onMouseDown={e => this.openSearchModal()} >
-            <i className="icon wb-menu" aria-hidden="true" />
+
+          <button className="input-search-btn vertical-align-middle" >
+            {this.props.limitSearchCondition &&
+              <i className={"icon " + (this.props.limitSearch ? "ion-ios-funnel active" : "ion-ios-funnel-outline inactive")} aria-hidden="true"
+                onMouseDown={that.props.onToogleLimitSearch} />
+            }
+            <i className="icon wb-menu" aria-hidden="true" onMouseDown={that.openSearchModal} />
           </button>
 
         </div>
-      </form>
+      </form >
     );
   }
 }
 
 ByUsSearchAndChoose.defaultProps = {
   searchType: "",
-  onReturnSelectItems: selectedItems => { }
+  onReturnSelectItems: selectedItems => { },
+  limitSearch: false,
+  limitSearchCondition: "",
+  onToogleLimitSearch: () => { }
 };
 export default ByUsSearchAndChoose;

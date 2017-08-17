@@ -84,6 +84,7 @@ export default class Ordr extends Component {
             title="Factura de compra"
             baseApiUrl='/api/docs/doc/opch'
             footerSearchType="oitm"
+            footerLimitSearchCondition={`OITM."CardCode"='<CARDCODE>'`}
             headerFields={headerFields}
             onHeaderChange={this.onHeaderChange}
             onRowChange={this.onBeforeRowChange}
