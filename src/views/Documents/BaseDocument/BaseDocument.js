@@ -299,7 +299,7 @@ class BaseDocument extends Component {
         // if (row.FRETE1VAL) { grandTotalExpenses += parseFloat(row.FRETE1VAL); }
         // if (row.FRETE2VAL) { grandTotalExpenses += parseFloat(row.FRETE2VAL); }
 
-        if (row.DISCOUNT) {
+        if ( byUs.getNum(row.DISCOUNT)) {
           grandTotalGross += grossAmmount;
           grandTotalDiscount += grossAmmount - byUs.getNum(row.LINETOTAL);
         }
