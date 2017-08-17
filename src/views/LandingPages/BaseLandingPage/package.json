@@ -1,0 +1,6 @@
+{
+  "name": "BaseLandingPage",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./BaseLandingPage.js"
+}

@@ -1,0 +1,147 @@
+#doc {
+    display: block;
+    
+    padding-top: 10px;
+    padding-bottom: 0px;
+    padding-left:   10px;
+    padding-right:  10px;
+      /* border: 1px dotted red;   */
+    position: fixed;
+    width: calc(100% - 30px);
+    height: calc(100% - 115px);
+    margin: auto;}
+ 
+#docHeader{    
+    margin-bottom: 1rem;   
+     /* background: rgb(222, 222, 222) !important; */
+     background: white !important;
+     /* max-height: 50%;  */
+     /* overflow: hidden; */
+    border-top-left-radius: 1.214rem;
+    border-top-right-radius: 1.214rem; 
+     padding: 20px;}
+
+.header-title {
+    position: relative;
+    padding: 0px;
+    border-bottom: 1px solid transparent;
+    border-top-left-radius: .214rem;
+    border-top-right-radius: .214rem; }
+
+.header-title-text {
+     display: initial;
+    margin-top: 0;
+    margin-bottom: 0;
+     /* padding: 20px 0px;  */
+    font-size: 18px;
+    color: #37474f;}
+
+.header-actions {
+    position: absolute;
+     right: 0px; 
+    top: 50%;
+    -webkit-transform: translate(0%, -50%);
+    -ms-transform: translate(0%, -50%);
+    transform: translate(0%, -50%);
+    margin: auto;
+    z-index: 1;}
+
+.header-actions .header-action {
+    display: inline-block;
+    padding: 8px 10px;
+    color: #a3afb7;
+    text-decoration: none;
+    cursor: pointer;
+    background-color: transparent;}
+
+#docFooter{   
+    background:rgba(32, 46, 55,0.9);
+    /* transparent;    */
+    padding: 0px 19px;
+}
+
+#docFooter-actions{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:         flex;
+
+    padding-top: 10px;
+    padding-bottom: 8px;
+
+    /* border-top: 1px solid #e4eaec;  */
+
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: end;
+    -webkit-justify-content: flex-end;
+    -ms-flex-pack: end;
+            justify-content: flex-end;
+}
+#docFooter-actions > :not(:first-child){    margin-left: .25rem;}
+ #docFooter-actions > :not(:last-child){    margin-right: .25rem;} 
+/* #docFooter-actions  {    padding-right: 15px;} */
+
+
+#docTotal {  
+    font-weight: bold;
+    letter-spacing: 0.05rem!important;
+    position: absolute;
+    padding: 25px 25px 10px 30px;
+    color: rgba(255,255,255,0.5);
+    background: rgba(32, 46, 55,0.7);
+    right: -15px;
+    bottom: 0px;
+    z-index: 3;
+    max-width: 300px; 
+    border-top-left-radius: 3rem;} 
+ 
+#docTotal > hr{  
+    margin-top: 5px;
+    margin-bottom: 5px;}
+
+#docTotal > .total{  
+    font-size: 1.2rem;
+    color: rgba(255,255,255,0.9);}
+
+#total-btn-text{
+    padding-left: 5px;
+    padding-right: 10px;
+}
+
+#docTotal .form-group{  
+     margin-top: 0px!important ; 
+}
+
+#docTotal .form-group input{  
+    font-weight: bold!important;
+    letter-spacing: 0.05rem!important;
+    max-height: 1.5rem;
+    padding-right: 0px;
+    color: rgba(255,255,255,0.5)!important; 
+    border:none;
+    background:  rgba(255,255,255,0.1);
+}
+
+
+#docTotal .form-group input:hover,
+#docTotal .form-group input:focus{  
+    color: rgb(0,0,0)!important;
+    background:  rgba(255,255,255,0.7);
+}
+
+#docTotal .total  input{  
+    font-size: 1.2rem;
+    max-height: 1.8rem;
+    color: rgba(255,255,255,0.9)!important;}
+ 
+
+
+
+div.flag>.ion-ios-flag,
+div.flag>.ion-ios-flag-outline
+{
+    font-size: 2rem!important;
+}

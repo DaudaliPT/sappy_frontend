@@ -1,0 +1,6 @@
+{
+  "name": "BaseDocument",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./BaseDocument.js"
+}

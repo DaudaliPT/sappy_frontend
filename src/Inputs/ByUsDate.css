@@ -1,0 +1,25 @@
+.input-date {
+    position: relative;
+} 
+.input-date-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    padding: 0 10px;
+    border: none; 
+    background: transparent;
+    z-index:3;
+}
+
+.input-date-btn .icon { 
+    margin: 0 3px;
+}
+
+.input-date-btn:focus {
+    outline: none !important;
+}
+
+.input-date-btn>i:hover {
+  color:red !important;
+} 
