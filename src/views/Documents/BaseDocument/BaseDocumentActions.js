@@ -61,12 +61,7 @@ export default {
                                     Lines: LINENUMS
                                 })
                                 .then(result => {
-                                    let rows = that.state.docData.LINES;
-                                    LINENUMS.forEach(LINENUM => {
-                                        let ix = rows.findIndex(r => r.LINENUM === LINENUM);
-                                        if (ix >= 0) rows.splice(ix, 1)
-                                    })
-                                    let docData = { ...that.state.docData, LINES: [...rows] };
+                                    let docData = { ...that.state.docData, ...result.data };
                                     that.setState({ hasSelectedRows: false, docData })
                                 })
                                 .catch(error => byUs.showError(error, "Não foi possível apagar linhas"));

@@ -272,7 +272,7 @@ class BaseDocument extends Component {
       this.serverRequest = axios
         .post(`${this.props.baseApiUrl}/${this.state.docData.ID}/lines`, { itemCodes })
         .then(function (result) {
-          let newDocData = { ...that.state.docData, LINES: result.data }
+          let newDocData = { ...that.state.docData, ...result.data }
           that.setState({ docData: newDocData });
         })
         .catch(error => byUs.showError(error, "Erro ao adicionar linhas"));
@@ -290,101 +290,7 @@ class BaseDocument extends Component {
     let docData = this.state.docData;
     let { LINES } = docData;
 
-    let calcularTotais = () => {
-      var grandTotalGross = 0;
-      var grandTotalDiscount = 0;
-      var grandTotalLiq = 0;
-      // var grandTotalExpenses = 0;
-      // var totalNet = 0;
-      var vatTotals = [];
-      for (var i = 0, m = LINES.length; i < m; i++) {
-        let row = LINES[i];
-        let grossAmmount = byUs.round(byUs.getNum(row.QTSTK) * byUs.getNum(row.PRICE), 2);
-
-        // if (row.FRETE1VAL) { grandTotalExpenses += parseFloat(row.FRETE1VAL); }
-        // if (row.FRETE2VAL) { grandTotalExpenses += parseFloat(row.FRETE2VAL); }
-
-        if (byUs.getNum(row.DISCOUNT)) {
-          grandTotalGross += grossAmmount;
-          grandTotalDiscount += grossAmmount - byUs.getNum(row.LINETOTAL);
-        }
-        else {
-          grandTotalGross += byUs.getNum(row.LINETOTAL);
-        }
-
-        grandTotalLiq += byUs.getNum(row.LINETOTAL);
-
-        //Calulo do IVA: Tem que ser feito por taxa e sinal, porque aparentemente é assim que o SAP faz.
-        // Um doc com 2 linhas de vLiq = 83,77 e -41,90 com 6% de IVA dá 2,52 de IVA em vez de 2,51 como seria de esperar agrupando apenas por taxa de IVA
-        let taxBaseValue = byUs.getNum(row.LINETOTAL);
-
-        //BONUS QUE NÃO AFETA PREÇO
-        // if (row.BONUSCHGPRC === "N" && row.QTYBONUS !== 0) {
-        //   // como o valor liquido é negatido neste caso, precisamos separar o iva.
-
-        // let bonusValue = null; 
-        //   if (row.QTYSAP !== 0) {
-        //     bonusValue = row.QTYBONUS * row.LINETOTAL / row.QTYSAP;
-        //   }
-        //   else {
-        //     bonusValue = row.QTYBONUS * row.UPRICE * (100 - row.DISCOUNT) / 100;
-        //   }
-
-        //   bonusValue = Number(Math.round(bonusValue + 'e2') + 'e-2');; //workaround: http://www.jacklmoore.com/notes/rounding-in-javascript/
-        //   taxBaseValue = row.LINETOTAL + bonusValue;
-
-        //   if ((-1 * bonusValue) < 0) { sign = -1; } else { sign = 1; }
-        //   vatID = parseFloat(row.TAXRATE) * sign;
-        //   vatTotal = vatTotals[vatID] || {};
-        //   vatTotal.TAXRATE = row.TAXRATE;
-        //   vatTotal.TAXBASEAMOUNT = (vatTotal.TAXBASEAMOUNT || 0) - bonusValue;
-        //   vatTotals[vatID] = vatTotal;
-        // } 
-
-        let sign = 1;
-        if (taxBaseValue < 0) { sign = -1; }
-
-        let vatID = 'VAT' + (byUs.getNum(row.TAXRATE) * sign);
-
-        let vatTotal = vatTotals[vatID] || {};
-        vatTotal.TAXRATE = byUs.getNum(row.TAXRATE);
-        vatTotal.TAXBASEAMOUNT = byUs.getNum(vatTotal.TAXBASEAMOUNT) + taxBaseValue;
-        vatTotals[vatID] = vatTotal;
-
-        // totalNet += Number(row.TOTANET);
-
-      }
-
-      var grandTotalVat = 0;
-      var grandTotalAmount = 0;
-      let ROUNDVAL = byUs.getNum(docData.ROUNDVAL)
-      let SAPVATTOTAL = byUs.getNum(docData.SAPVATTOTAL)
-      let SAPDOCTOTAL = byUs.getNum(docData.SAPDOCTOTAL)
-      if (SAPVATTOTAL && SAPDOCTOTAL) {
-        grandTotalVat = SAPVATTOTAL;
-        grandTotalAmount = SAPDOCTOTAL;
-      }
-      else {
-        for (var k in vatTotals) {
-          let v = vatTotals[k];
-          v.TAXAMOUNT = byUs.round(byUs.getNum(v.TAXBASEAMOUNT) * byUs.getNum(v.TAXRATE) / 100, 2)
-          grandTotalVat += v.TAXAMOUNT;
-        }
-        grandTotalAmount = grandTotalLiq + grandTotalVat + ROUNDVAL;
-      }
-
-
-
-
-      return {
-        grossAmmount: grandTotalGross,
-        discountAmmount: grandTotalDiscount,
-        liquidAmount: grandTotalLiq,
-        vatAmount: grandTotalVat,
-        totalAmount: grandTotalAmount
-      }
-    }
-    let totals = calcularTotais();
+    let totals = docData.totals || {};
     let headerProps = {
       ...this.state.header,
       docData,
