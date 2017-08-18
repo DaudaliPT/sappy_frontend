@@ -107,23 +107,42 @@ export default {
     },
 
     handleOnConfirmar: (that) => {
-        let invokeAddDocAPI = () => {
+
+
+        let onInvokeApiSuccess = (result) => {
+            let data = result.data || {};
+
+            if (data.message && data.message.indexOf("TOTALDIF") > -1) {
+                byUs.showWarning({
+                    msg: "A criação do documento foi cancelada.",
+                    moreInfo: `O total ${data.DocTotal} € é diferente do esperado!`,
+                    cancelText: "Cancelar",
+                    onCancel: () => { },
+                    confirmText: "Adicionar mesmo assim",
+                    onConfirm: () => invokeAddDocAPI(data.DocTotal)
+                })
+            } else {
+                byUs.showSuccess({
+                    msg: "Documento criado",
+                    moreInfo: `Criou com sucesso o documento ${result.data.DocNum}!`,
+                    cancelText: "Adicionar outro",
+                    onCancel: () => {
+                        hashHistory.replace(hashHistory.getCurrentLocation().pathname + "?new=" + new Date().getTime())
+                    },
+                    confirmText: "Concluido",
+                    onConfirm: () => hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", ''))
+                })
+            }
+        }
+
+        let invokeAddDocAPI = (forceTotal) => {
+            let url = `${that.props.baseApiUrl}/${that.state.docData.ID}/confirm`
+            let data = { forceTotal }
 
             that.serverRequest = axios
-                .post(`${that.props.baseApiUrl}/${that.state.docData.ID}/confirm`)
-                .then(result =>
-                    byUs.showSuccess({
-                        msg: "Documento criado",
-                        moreInfo: `Criou com sucesso o documento ${result.data.DocEntry}!`,
-                        cancelText: "Adicionar outro",
-                        onCancel: () => {
-                            hashHistory.replace(hashHistory.getCurrentLocation().pathname + "?new=" + new Date().getTime())
-                        },
-                        confirmText: "Concluido",
-                        onConfirm: () => hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", ''))
-                    }))
+                .post(url, { data })
+                .then(result => onInvokeApiSuccess(result))
                 .catch(error => byUs.showError(error, "Erro ao criar documento"));
-
         }
 
         let performBeforeAddChecks = () => {
