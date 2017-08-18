@@ -487,9 +487,9 @@ class CmpGeral extends Component {
                   placeholder="Fabricante..."
                   createable
                   disabled={this.state.ReadOnly}
-                  value={Item.Manufacturer}
+                  value={Item.Manufacturer.toString()}
                   state={this.state.validationMessages.Manufacturer}
-                  getOptionsApiRoute="/api/cbo/omrc"
+                  getOptionsApiRoute={"/api/cbo/omrc/<CARDCODE>".replace("<CARDCODE>", Item.Mainsupplier)}
                   onChange={this.onFieldChange}
                 />
               </div>

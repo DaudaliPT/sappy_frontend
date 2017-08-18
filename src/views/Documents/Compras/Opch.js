@@ -45,7 +45,7 @@ let detailFields = [
     { name: 'LINENUM', label: '#', type: "text", width: 40, editable: false },
     // { name: 'ITEMCODE', label: 'Artigo', type: "text", width: 220, editable: false, dragable: false, onLinkClick: this.handleItemcodeLinkClick },
     {
-        name: 'ITEMCODE1', label: 'Catálogo', type: "text", width: 100, editable: false, dragable: false,
+        name: 'CATNUM_OR_ITEMCODE', label: 'Catálogo', type: "text", width: 100, editable: false, dragable: false,
         onLinkClick: props => byUs.showModal(<EditModal modal={true} toggleModal={byUs.hideModal} itemcode={props.dependentValues.ITEMCODE} />)
     },
     { name: 'ITEMNAME', label: 'Descrição', type: "tags", width: 400, editable: true },
@@ -84,7 +84,12 @@ export default class Ordr extends Component {
             title="Factura de compra"
             baseApiUrl='/api/docs/doc/opch'
             footerSearchType="oitm"
-            footerLimitSearchCondition={`OITM."CardCode"='<CARDCODE>'`}
+            footerLimitSearchCondition={`OITM."CardCode"='<CARDCODE>' 
+                AND CASE WHEN OITM."FirmCode"=-1 
+                         THEN 'null'
+                         ELSE  OMRC."FirmName"
+                         END = '<CONTACT>'` //<CONTACT> vazio retorna null
+            }
             headerFields={headerFields}
             onHeaderChange={this.onHeaderChange}
             onRowChange={this.onBeforeRowChange}

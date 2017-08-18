@@ -45,7 +45,7 @@ let detailFields = [
     { name: 'LINENUM', label: '#', type: "text", width: 40, editable: false },
     // { name: 'ITEMCODE', label: 'Artigo', type: "text", width: 220, editable: false, dragable: false, onLinkClick: this.handleItemcodeLinkClick },
     {
-        name: 'ITEMCODE1', label: 'Catálogo', type: "text", width: 100, editable: false, dragable: false,
+        name: 'CATNUM_OR_ITEMCODE', label: 'Catálogo', type: "text", width: 100, editable: false, dragable: false,
         onLinkClick: props => byUs.showModal(<EditModal modal={true} toggleModal={byUs.hideModal} itemcode={props.dependentValues.ITEMCODE} />)
     },
     { name: 'ITEMNAME', label: 'Descrição', type: "tags", width: 400, editable: true },

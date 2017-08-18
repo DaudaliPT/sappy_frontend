@@ -538,9 +538,10 @@ class ModalCreateArtigo extends Component {
                   label={"Fabricante:"}
                   placeholder="Fabricante..."
                   createable
-                  value={this.state.newItem.Manufacturer}
+                  value={(this.state.newItem.Manufacturer || "").toString()}
                   state={this.state.validationMessages.Manufacturer}
-                  getOptionsApiRoute="/api/cbo/omrc"
+                  getOptionsApiRoute={"/api/cbo/omrc/<CARDCODE>".replace("<CARDCODE>", this.state.newItem.Mainsupplier)}
+
                   onChange={this.onFieldChange}
                 />
               </div>

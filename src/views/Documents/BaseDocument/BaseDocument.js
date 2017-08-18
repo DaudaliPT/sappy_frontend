@@ -402,7 +402,7 @@ class BaseDocument extends Component {
 
     let footerLimitSearchCondition = this.props.footerLimitSearchCondition || '';
     Object.keys(docData).forEach(
-      field => footerLimitSearchCondition = footerLimitSearchCondition.replace("<" + field + ">", docData[field])
+      field => footerLimitSearchCondition = byUs.replaceAll(footerLimitSearchCondition, "<" + field + ">", docData[field])
     )
 
     let footerProps = {
