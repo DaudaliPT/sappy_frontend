@@ -566,7 +566,7 @@ class DocAtualizacaoPrecos extends Component {
 
     this.serverRequest = axios
       .get(`/api/inv/precos/searchOitm/`, {
-        params: { searchText },
+        params: { searchTags: [{ value: searchText }] },
         cancelToken: new CancelToken(function executor(c) {
           that.cancelPreviousAxiosRequest = c;
         })
