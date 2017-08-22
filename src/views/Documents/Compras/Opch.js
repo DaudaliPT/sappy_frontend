@@ -23,6 +23,13 @@ let priceHover = {
     }
 }
 
+let DESCDEBOP_options = [
+    { value: 'P', label: 'Pagamento' },
+    { value: 'M', label: 'Mensal' },
+    { value: 'T', label: 'Trimestral' },
+    { value: 'S', label: 'Semestral' },
+    { value: 'A', label: 'Anual' },
+]
 
 let headerFields = {
     line1: [
@@ -39,6 +46,16 @@ let headerFields = {
         { name: 'COMMENTS', label: 'Observações', type: "text", gridSize: 5 },
         { name: 'HASINCONF', label: 'Inconf.', type: "flag|danger", gridSize: 1 }
     ]
+    // ,
+    // sidebar: [
+    //     { name: 'DESCCOM', label: 'Desc. Comercial', type: "text", gridSize: 2 },
+    //     { name: 'DESCFIN', label: 'Desc. Financeiro', type: "text", gridSize: 1 },
+    //     { name: 'DESCFINAC', label: '', type: "bool", gridSize: 1 },
+    //     { name: 'DESCDEB', label: 'Desc. em Débito', type: "text", gridSize: 1 },
+    //     { name: 'DESCDEBAC', label: '', type: "bool", gridSize: 1 },
+    //     { name: 'DESCDEBPER', label: 'Periodicidade:', type: "combo", gridSize: 2, options: DESCDEBOP_options },
+    //     { name: 'DESCNET', label: 'Total Desc. NET', type: "text", gridSize: 1, disabled: false }
+    // ]
 }
 
 let detailFields = [
@@ -53,12 +70,13 @@ let detailFields = [
     { name: 'QTPK', label: 'Pk', type: "quantity", width: 70, editable: true },
     { name: 'QTSTK', label: 'Qtd', type: "quantity", width: 70, editable: true },
     { name: 'PRICE', label: 'Preço', type: "price", width: 70, editable: true, hover: priceHover },
-    { name: 'BONUS', label: 'Bónus/Descontos', type: "check", width: 35, editable: true },
-    { name: 'USER_DISC', label: '', type: "discount", width: 110, editable: true },
+    { name: 'BONUS', label: 'Bónus/Descontos', type: "check", width: 40, editable: true },
+    { name: 'USER_DISC', label: '', type: "discount", width: 120, editable: true },
     { name: 'LINETOTAL', label: 'Total', width: 90, type: "amount", editable: true },
     { name: 'TAXRATE', label: 'IVA', type: "vat", width: 70, editable: false },
     // { name: 'WHSCODE', label: 'Arm', type: "text", width: 50, editable: true },
-    { name: 'HASINCONF', label: 'Inc.', type: "flag|danger", width: 35, editable: true }
+    { name: 'HASINCONF', label: 'Inc.', type: "flag|danger", width: 35, editable: true },
+    { name: 'NETPRICE', label: 'Pr.NET', width: 90, type: "price", editable: true }
 ]
 
 export default class Ordr extends Component {
@@ -84,11 +102,13 @@ export default class Ordr extends Component {
             title="Factura de compra"
             baseApiUrl='/api/docs/doc/opch'
             footerSearchType="oitm"
+            footerSearchShowCatNum={true}
             footerLimitSearchCondition={`OITM."CardCode"='<CARDCODE>' 
-                AND CASE WHEN OITM."FirmCode"=-1 
-                         THEN 'null'
-                         ELSE  OMRC."FirmName"
-                         END = '<CONTACT>'` //<CONTACT> vazio retorna null
+                AND 1= CASE WHEN OCRD."U_apyITMCNT"='Y'  
+                            THEN CASE WHEN 
+                                    CASE WHEN OITM."FirmCode"=-1 THEN 'null' ELSE  OMRC."FirmName" END = '<CONTACT>'
+                                 THEN 1 ELSE 0 END
+                            ELSE 1 END` //<CONTACT> vazio retorna null
             }
             headerFields={headerFields}
             onHeaderChange={this.onHeaderChange}

@@ -138,6 +138,7 @@ class EditModal extends Component {
 
 
   onOpenEditPage(nextORprevious) {
+    this.props.toggleModal();
     hashHistory.push("/inv/oitm/" + this.props.itemcode)
   }
 

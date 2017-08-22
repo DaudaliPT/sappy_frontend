@@ -55,6 +55,7 @@ class DocFooter extends Component {
               searchType={this.props.footerSearchType}
               limitSearch={this.props.footerLimitSearch}
               limitSearchCondition={this.props.footerLimitSearchCondition}
+              showCatNum={this.props.footerSearchShowCatNum}
               onToogleLimitSearch={this.props.onToogleLimitSearch}
               onReturnSelectItems={this.props.onFooterSearchResult} />
           </div>
@@ -68,6 +69,7 @@ class DocFooter extends Component {
 DocFooter.defaultProps = {
   footerSearchType: "",
   footerLimitSearchCondition: "",
+  footerSearchShowCatNum: false,
   onFooterSearchResult: selectedItems => { },
   onToogleLimitSearch: () => { },
   totals: {}

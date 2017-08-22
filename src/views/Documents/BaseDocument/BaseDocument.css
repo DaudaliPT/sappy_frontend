@@ -60,6 +60,16 @@
     padding: 0px 19px;
 }
 
+#docDetail>.row {
+    display: flex; 
+    margin-right:0px;
+} 
+
+#docDetailSidebar { 
+    background: white !important;  
+    padding: 20px;
+}
+
 #docFooter-actions{
     display: -webkit-box;
     display: -webkit-flex;

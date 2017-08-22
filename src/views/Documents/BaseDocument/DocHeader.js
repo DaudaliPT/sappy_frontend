@@ -29,7 +29,8 @@ class DocHeader extends Component {
         value: this.props.docData[headerField.name],
         state: this.props.docData[headerField.name + "_VALIDATEMSG"] || this.props.docData[headerField.name + "_LOGICMSG"],
         onChange: this.props.onFieldChange,
-        getOptionsApiRoute: route
+        getOptionsApiRoute: route,
+        options: headerField.options
       };
 
       let input = null;

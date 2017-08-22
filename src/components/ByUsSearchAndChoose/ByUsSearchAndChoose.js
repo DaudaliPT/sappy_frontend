@@ -43,6 +43,7 @@ class ByUsSearchAndChoose extends Component {
       currentModal = <ModalOitm
         toggleModal={this.handleModalSearchClose}
         limitSearch={this.props.limitSearch}
+        showCatNum={this.props.showCatNum}
         limitSearchCondition={this.props.limitSearchCondition}
         onToogleLimitSearch={this.props.onToogleLimitSearch}
         searchText={this.state.searchText} />
@@ -132,6 +133,7 @@ ByUsSearchAndChoose.defaultProps = {
   onReturnSelectItems: selectedItems => { },
   limitSearch: false,
   limitSearchCondition: "",
+  showCatNum: false,
   onToogleLimitSearch: () => { }
 };
 export default ByUsSearchAndChoose;

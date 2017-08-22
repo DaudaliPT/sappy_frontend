@@ -100,16 +100,19 @@ class ModalOitm extends Component {
 
             {/*large displays*/}
             <div className="row hidden-lg-down">
-              <div className="col-1">
+              <div className="col-4">
                 <span className="checkbox-custom checkbox-primary checkbox-lg">
                   <input type="checkbox" className="contacts-checkbox selectable-item" checked={selected} id={rowId} />
                   <label htmlFor={rowId} />
                 </span>
+
+                {!this.props.showCatNum && <span style={{ display: "inline-block", width: "100px", paddingLeft: "5px" }}>{row.ItemCode}</span>}
+                {this.props.showCatNum && <span style={{ display: "inline-block", width: "100px", paddingLeft: "5px" }}> {(row.SuppCatNum || row.ItemCode)}</span>}
+                <span>{row.CodeBars} </span>
               </div>
-              <div className="col-2"> {row.ItemCode} </div>
-              <div className="col-5 "> {row.ItemName} <span> {renderBadges()} </span> </div>
-              <div className="col-2"> <span className="float-right">{row.FORMATED_PRICE}</span> </div>
-              <div className="col-2 lastcol">
+              <div className="col-6"> {row.ItemName} <span> {renderBadges()} </span> </div>
+              <div className="col-1"> <span className="float-right">{row.FORMATED_PRICE}</span> </div>
+              <div className="col-1 lastcol">
                 <span className="float-right">{byUs.format.quantity(row.OnHand, 0) + " " + row.InvntryUom}</span>
               </div>
             </div>
@@ -119,7 +122,8 @@ class ModalOitm extends Component {
                 <div className="col text-nowrap"> {row.ItemName} </div>
               </div>
               <div className="row secondrow">
-                <div className="col-6 text-nowrap firstcol"> {row.ItemCode} <span> {renderBadges()} </span> </div>
+                {!this.props.showCatNum && <div className="col-6 text-nowrap firstcol"> {row.ItemCode} <span> {renderBadges()} </span> </div>}
+                {this.props.showCatNum && <div className="col-6 text-nowrap firstcol"> {(row.SuppCatNum || row.ItemCode)} <span> {renderBadges()} </span> </div>}
                 <div className="col-3 text-nowrap"> <span className="float-right">{row.FORMATED_PRICE}</span> </div>
                 <div className="col-3 text-nowrap lastcol">
                   {" "}<span className="float-right">{byUs.format.quantity(row.OnHand, 0)} Un</span>{" "}
@@ -127,7 +131,7 @@ class ModalOitm extends Component {
               </div>
             </div>
           </div>
-        </div>
+        </div >
       );
     };
 
@@ -192,6 +196,7 @@ ModalOitm.searchApiUrl = "/api/search/oitm/";
 ModalOitm.defaultProps = {
   limitSearch: false,
   limitSearchCondition: "",
+  showCatNum: false,
   onToogleLimitSearch: () => { }
 };
 export default ModalOitm;

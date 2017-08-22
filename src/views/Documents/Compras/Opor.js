@@ -53,8 +53,8 @@ let detailFields = [
     { name: 'QTPK', label: 'Pk', type: "quantity", width: 70, editable: true },
     { name: 'QTSTK', label: 'Qtd', type: "quantity", width: 70, editable: true },
     { name: 'PRICE', label: 'Preço', type: "price", width: 70, editable: true, hover: priceHover },
-    { name: 'BONUS', label: 'Bónus/Descontos', type: "check", width: 35, editable: true },
-    { name: 'USER_DISC', label: '', type: "discount", width: 110, editable: true },
+    { name: 'BONUS', label: 'Bónus/Descontos', type: "check", width: 40, editable: true },
+    { name: 'USER_DISC', label: '', type: "discount", width: 120, editable: true },
     { name: 'LINETOTAL', label: 'Total', width: 90, type: "amount", editable: true },
     { name: 'TAXRATE', label: 'IVA', type: "vat", width: 70, editable: false },
     // { name: 'WHSCODE', label: 'Arm', type: "text", width: 50, editable: true },
@@ -84,7 +84,13 @@ export default class Opor extends Component {
             title="Encomenda a fornecedor"
             baseApiUrl='/api/docs/doc/opor'
             footerSearchType="oitm"
-            footerLimitSearchCondition={`OITM."CardCode"='<CARDCODE>'`}
+            footerLimitSearchCondition={`OITM."CardCode"='<CARDCODE>' AND OCRD."U_apyITMCNT"='Y'
+                AND 1= CASE WHEN OCRD."U_apyITMCNT"='Y'  
+                THEN CASE WHEN 
+                        CASE WHEN OITM."FirmCode"=-1 THEN 'null' ELSE  OMRC."FirmName" END = '<CONTACT>'
+                    THEN 1 ELSE 0 END
+                ELSE 1 END` //<CONTACT> vazio retorna null
+            }
             headerFields={headerFields}
             onHeaderChange={this.onHeaderChange}
             onRowChange={this.onBeforeRowChange}

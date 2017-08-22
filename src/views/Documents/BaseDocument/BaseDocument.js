@@ -318,6 +318,7 @@ class BaseDocument extends Component {
       footerLimitSearch: this.state.footerLimitSearch,
       footerLimitSearchCondition,
       footerSearchType: this.props.footerSearchType,
+      footerSearchShowCatNum: this.props.footerSearchShowCatNum,
       onToogleLimitSearch: this.handleToogleLimitSearch,
       onFooterSearchResult: this.handleFooterSearchResult,
       onToggleShowTotals: this.handleToggleShowTotals,
@@ -362,6 +363,7 @@ BaseDocument.defaultProps = {
   headerFields: {},
   detailFields: [],
   footerLimitSearchCondition: '',
+  footerSearchShowCatNum: false,
   onRowChange: null,//   handleRowChange(currentRow, updated) => allows for specific doc behaviour
   onHeaderChange: null, //  onHeaderChange(docData, updated) => allows to react to user change on header
   currentModal: null

@@ -354,7 +354,7 @@ class DocAtualizacaoPrecos extends Component {
     return [
       { key: "LINENUM", name: "#", width: 40, formatter: SimpleFormatter },
       itemCodeCol,
-      { key: "Origem", name: "Grupo", draggable: true, width: 1 },
+      { key: "Origem", name: "", draggable: true, width: 1 },
       { key: "ITEM_NAME_WITH_TAGS", name: "Descrição", width: 400, formatter: DescritptionFormatter },
       { key: "STOCK", name: "Stock", width: 100, formatter: IntFormatter, headerRenderer: HeaderAlignRight },
       // {key: "UPC_NETNET", name: "Pr NET Ant", width: 100, formatter: PriceFormatter },
@@ -446,7 +446,7 @@ class DocAtualizacaoPrecos extends Component {
     })
       .then(result => {
         if (result.data)
-          hashHistory.push("/inv/prices/doc/" + result.data);
+          hashHistory.push({ pathname: "/inv/prices/doc", state: { id: result.data } });
       })
       .catch(error => byUs.showError(error, "Erro ao obter dados"));
   }
@@ -1001,8 +1001,7 @@ class DocAtualizacaoPrecos extends Component {
                                 this.serverRequest = axios
                                   .post(`/api/inv/precos/doc/${this.state.docData.ID}/clone`)
                                   .then(function (result) {
-
-                                    hashHistory.push("/inv/prices/doc/" + result.data.newID);
+                                    hashHistory.push({ pathname: "/inv/prices/doc", state: { id: result.data.newID } });
                                   })
                                   .catch(error => byUs.showError(error, "Erro ao duplicar dados"));
                               }

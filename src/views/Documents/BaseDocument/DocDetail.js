@@ -1,6 +1,7 @@
 
 import React, { PureComponent } from "react";
 import ByUsDataGrid from "../../../components/ByUsDataGrid";
+import { ByUsTextBox, ByUsTextBoxNumeric, ByUsComboBox, ByUsDate, ByUsToggle, ByUsFlag } from "../../../Inputs";
 
 class DocDetail extends PureComponent {
   constructor(props) {
@@ -16,15 +17,22 @@ class DocDetail extends PureComponent {
   render() {
     return (
       <div id="docDetail">
-        <ByUsDataGrid
-          ref="grid"
-          height={this.props.height}
-          fields={this.props.fields}
-          disabled={this.props.docData.DOCNUM > 0 ? true : false}
-          rows={this.props.docData.LINES}
-          onRowUpdate={this.props.onRowUpdate}
-          onRowSelect={this.props.onRowSelect}
-        ></ByUsDataGrid>
+        <div className="rowXXXXXXX">
+          <div id="docDetailGridXXXX" className="colXXXX-10">
+            <ByUsDataGrid
+              ref="grid"
+              height={this.props.height}
+              fields={this.props.fields}
+              disabled={this.props.docData.DOCNUM > 0 ? true : false}
+              rows={this.props.docData.LINES}
+              onRowUpdate={this.props.onRowUpdate}
+              onRowSelect={this.props.onRowSelect}
+            ></ByUsDataGrid>
+          </div >
+          <div id="docDetailSidebarXXX" className="colXXXX-2">
+
+          </div >
+        </div >
       </div >
     );
   }
