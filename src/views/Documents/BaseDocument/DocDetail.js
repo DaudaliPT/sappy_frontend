@@ -1,7 +1,7 @@
 
 import React, { PureComponent } from "react";
 import ByUsDataGrid from "../../../components/ByUsDataGrid";
-import { ByUsTextBox, ByUsTextBoxNumeric, ByUsComboBox, ByUsDate, ByUsToggle, ByUsFlag } from "../../../Inputs";
+// import { ByUsTextBox, ByUsTextBoxNumeric, ByUsComboBox, ByUsDate, ByUsToggle, ByUsFlag } from "../../../Inputs";
 
 class DocDetail extends PureComponent {
   constructor(props) {

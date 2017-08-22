@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { FormGroup, FormFeedback, Button, InputGroup, Input } from "reactstrap";
+import { FormGroup, InputGroup } from "reactstrap";
 
-var $ = window.$;
-const byUs = window.byUs;
+// var $ = window.$;
+// const byUs = window.byUs;
 
 class ByUsFlag extends Component {
   constructor(props) {

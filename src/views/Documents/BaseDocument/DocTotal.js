@@ -13,13 +13,13 @@ class DocFooter extends Component {
   }
 
   handleDocTotalChange(changeInfo) {
-    let desiredDocTotal = byUs.getNum(this.props.DOCTOTAL)
-    let { grossAmmount,
-      discountAmmount,
-      liquidAmount,
-      vatAmount,
-      totalAmount
-       } = this.props.totals
+    // let desiredDocTotal = byUs.getNum(this.props.DOCTOTAL)
+    // let { grossAmmount,
+    //   discountAmmount,
+    //   liquidAmount,
+    //   vatAmount,
+    //   totalAmount
+    //    } = this.props.totals
 
     //  TODO: implement total caculations
 

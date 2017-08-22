@@ -18,7 +18,7 @@ class orin extends Component {
         if (row.DRAFT === "Y" || row.DRAFT === "X") rowStyleClass += " vlist-row-warning";
 
         return (
-          <div className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={e => onRowClick({ row, index })}>
+          <div key={rowId} className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={e => onRowClick({ row, index })}>
             <div className="container vertical-align-middle">
 
               {/*very large displays*/}

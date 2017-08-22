@@ -9,7 +9,6 @@ const {
   Draggable: { Container: DraggableContainer }
 } = require('react-data-grid-addons');
 
-import safeJsonStringify from "safe-json-stringify";
 import axios from "axios";
 import uuid from "uuid/v4";
 import SearchBar from "./SearchBar.js";
@@ -245,7 +244,7 @@ class DocAtualizacaoPrecos extends Component {
         });
       })
       .catch(function (error) {
-        if (!error.__CANCEL__) byUs.showError(error,"Api error")
+        if (!error.__CANCEL__) byUs.showError(error, "Api error")
       });
 
 
@@ -372,7 +371,7 @@ class DocAtualizacaoPrecos extends Component {
         }
       })
       .catch(function (error) {
-        if (!error.__CANCEL__) byUs.showError(error,"Api error")
+        if (!error.__CANCEL__) byUs.showError(error, "Api error")
         that.setState({ searchText: "" })
       });
   }

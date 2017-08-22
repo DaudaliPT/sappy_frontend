@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 const byUs = window.byUs;
 const $ = window.$;
-import safeJsonStringify from "safe-json-stringify";
 import axios from "axios";
 import { Badge } from "reactstrap";
 import uuid from "uuid/v4";

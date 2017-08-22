@@ -107,20 +107,20 @@ export default {
     },
 
     handleOnConfirmar: (that) => {
-
-
         let onInvokeApiSuccess = (result) => {
             let data = result.data || {};
 
             if (data.message && data.message.indexOf("TOTALDIF") > -1) {
+
                 byUs.showWarning({
                     msg: "A criação do documento foi cancelada.",
                     moreInfo: `O total ${data.DocTotal} € é diferente do esperado!`,
                     cancelText: "Cancelar",
                     onCancel: () => { },
                     confirmText: "Adicionar mesmo assim",
+                    // eslint-disable-next-line
                     onConfirm: () => invokeAddDocAPI(data.DocTotal)
-                })
+                });
             } else {
                 byUs.showSuccess({
                     msg: "Documento criado",
@@ -204,7 +204,6 @@ export default {
                     onCancel: () => { }
                 })
             }
-            invokeAddDocAPI();
         }
 
         //wait for eventual updates on lost focus   

@@ -23,13 +23,13 @@ let priceHover = {
     }
 }
 
-let DESCDEBOP_options = [
-    { value: 'P', label: 'Pagamento' },
-    { value: 'M', label: 'Mensal' },
-    { value: 'T', label: 'Trimestral' },
-    { value: 'S', label: 'Semestral' },
-    { value: 'A', label: 'Anual' },
-]
+// let DESCDEBOP_options = [
+//     { value: 'P', label: 'Pagamento' },
+//     { value: 'M', label: 'Mensal' },
+//     { value: 'T', label: 'Trimestral' },
+//     { value: 'S', label: 'Semestral' },
+//     { value: 'A', label: 'Anual' },
+// ]
 
 let headerFields = {
     line1: [

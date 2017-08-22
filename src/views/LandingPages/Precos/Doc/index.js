@@ -11,7 +11,6 @@ const {
 } = require('react-data-grid-addons');
 
 import { Popover, PopoverContent } from 'reactstrap';
-import safeJsonStringify from "safe-json-stringify";
 import axios from "axios";
 import uuid from "uuid/v4";
 import SearchBar from "./SearchBar.js";

@@ -79,7 +79,7 @@ class ByUsTextBoxNumeric extends Component {
 
 
     return (
-      <FormGroup color={this.props.state} data-tip={this.props.label} title={stateMsg}>
+      <FormGroup color={stateColor} data-tip={this.props.label} title={stateMsg}>
         {/*{renderLabel()}*/}
         <InputGroup>
           <Input
@@ -95,7 +95,7 @@ class ByUsTextBoxNumeric extends Component {
           {renderRightButton()}
         </InputGroup>
 
-        {/* {stateMsg && <FormFeedback>{stateMsg}</FormFeedback>} */}
+        {stateMsg && <FormFeedback>{stateMsg}</FormFeedback>}
       </FormGroup>
     );
   }

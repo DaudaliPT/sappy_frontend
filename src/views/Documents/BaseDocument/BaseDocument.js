@@ -288,7 +288,7 @@ class BaseDocument extends Component {
   render() {
     let that = this;
     let docData = this.state.docData;
-    let { LINES } = docData;
+    // let { LINES } = docData;
 
     let totals = docData.totals || {};
     let headerProps = {

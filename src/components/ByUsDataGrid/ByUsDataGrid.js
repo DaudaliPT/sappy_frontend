@@ -101,7 +101,6 @@ class ByUsDataGrid extends Component {
         getRowMetaData: row => row,
         type: field.type
       };
-      let headerRenderer;
 
       if (gridWidth > totalWidth) col.width *= proporcao
 
@@ -154,7 +153,7 @@ class ByUsDataGrid extends Component {
       } else if (field.type.startsWith("discount")) {
 
         let parts = field.type.split('|');
-        let type = parts[0];
+        // let type = parts[0];
         col.color = parts[1];
         col.valueON = parts[2];
         col.valueOFF = parts[3];

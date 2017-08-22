@@ -1,8 +1,6 @@
 
 import React, { Component } from "react";
 import { ByUsTextBox, ByUsTextBoxNumeric, ByUsComboBox, ByUsDate, ByUsToggle, ByUsFlag } from "../../../Inputs";
-// import Switch from 'react-bootstrap-switch';//'react-switchery';
-import ToggleButton from 'react-toggle-button'
 
 class DocHeader extends Component {
   render() {

@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { hashHistory } from "react-router";
 import axios from "axios";
-import safeJsonStringify from "safe-json-stringify";
 const byUs = window.byUs;
 import BaseLandingPage from "../BaseLandingPage";
 
@@ -44,19 +43,13 @@ class LpDocumentos extends Component {
 
   render() {
     const renderActions = () => {
-      let { selectedItems } = this.state;
       let actions = [];
-
-      let currUrl = hashHistory.getCurrentLocation().pathname;
-
-
       actions.push({
         name: "Novo",
         color: "success",
         icon: "icon wb-plus",
         onClick: e => {
-          // exemplo: "/cmp/opch" + "/doc"
-          hashHistory.push(hashHistory.getCurrentLocation().pathname + "/doc");
+          hashHistory.push(hashHistory.getCurrentLocation().pathname + "/doc");// exemplo: "/cmp/opch" + "/doc"
         }
       })
 
