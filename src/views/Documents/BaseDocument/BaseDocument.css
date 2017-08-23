@@ -60,12 +60,17 @@
     padding: 0px 19px;
 }
 
-#docDetail>.row {
-    display: flex; 
-    margin-right:0px;
-} 
-
+#docDetail {
+    position: absolute;
+    width: calc(100% - 20px);
+    /* border: 1px solid blue;  */
+   } 
+ 
 #docDetailSidebar { 
+    position: absolute;
+    top:0px;
+    right: 0px; 
+    height: 100%;
     background: white !important;  
     padding: 20px;
 }
@@ -150,8 +155,10 @@
 
 
 
-div.flag>.ion-ios-flag,
-div.flag>.ion-ios-flag-outline
-{
-    font-size: 2rem!important;
+div.flag>.icon{
+    padding-left: 5px;
+    font-size: 2.4rem!important;
+}
+div.flag>i.icon:hover{
+    color:rgb( 98, 168, 234) !important;
 }

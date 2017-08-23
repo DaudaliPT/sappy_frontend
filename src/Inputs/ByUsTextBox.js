@@ -35,12 +35,6 @@ class ByUsTextBox extends Component {
   }
 
   render() {
-    let propsForInput = $.extend({}, this.props);
-    if (propsForInput.hasOwnProperty('stateMsg')) delete propsForInput.stateMsg;
-    if (propsForInput.hasOwnProperty('rightButton')) delete propsForInput.rightButton;
-    if (propsForInput.hasOwnProperty('onRightButtonClick')) delete propsForInput.onRightButtonClick;
-    propsForInput.value = this.state.value || '';
-
 
     var renderRightButton = () => {
       if (this.props.rightButton) {
@@ -51,7 +45,7 @@ class ByUsTextBox extends Component {
         return (
           <span className="input-group-btn">
             <Button color={color} outline id={this.props.name + "_rbtn"} className="right-button"
-              disabled={propsForInput.disabled || false}
+              disabled={this.props.disabled || false}
               onClick={this.props.onRightButtonClick}>
               {this.props.rightButton}
             </Button>
@@ -66,12 +60,17 @@ class ByUsTextBox extends Component {
       stateMsg = this.props.state.split('|')[1];
     }
 
+
     return (
       <FormGroup color={stateColor} data-tip={this.props.label} title={stateMsg}>
         {/*{renderLabel()}*/}
         <InputGroup>
           <Input
-            {...propsForInput}
+            type="text"
+            id={this.props.name}
+            value={this.state.value || ''}
+            placeholder={this.props.placeholder}
+            disabled={this.props.disabled}
             onChange={e => this.handleChange(e)}
             onBlur={e => this.handleBlur(e)}
           />

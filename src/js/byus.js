@@ -237,15 +237,19 @@ import moment from 'moment';
   }
 
   byUs.getNum = value => {
+    let ret = 0;
     if (typeof value === "number") return value;
     if (value === null || typeof value === "undefined") return 0;
     if (value === "") return 0;
-    if (typeof value === "string") return parseFloat(value);
 
-    console.warn("getNum", value)
-    return parseFloat(value)
+    if (typeof value === "string")
+      ret = parseFloat(value);
+    else
+      ret = parseFloat(value);
+
+    if (typeof ret === "number") return ret;
+    return 0
   }
-
 
   byUs.format = {
     price: (value) => {

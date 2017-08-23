@@ -50,6 +50,8 @@ class DocHeader extends Component {
       let fields = this.props.fields;
       let ret = [];
       Object.keys(fields).forEach(lineKey => {
+        if (lineKey === "sidebar") return
+
         let headerLine = fields[lineKey];
         let headerLineFields = [];
         for (var ix = 0; ix < headerLine.length; ix++) {

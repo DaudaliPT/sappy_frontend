@@ -30,7 +30,13 @@ class ByUsTextBoxNumeric extends Component {
 
   getFormatedValue(valueType, value) {
     if (value === null || value === undefined) return ""
-    if (typeof value === "string" && value === "") return ""
+    if (typeof value === "string") {
+      if (value === "") return ""
+      if (byUs.sessionInfo.company.oadm.DecSep === "," && value.indexOf(".") > -1 && value.indexOf(",") === -1) {
+        value = value.replace(".", ",");
+      }
+    }
+
 
     let rawValue = byUs.unformat.number(value)
     let formatedValue;

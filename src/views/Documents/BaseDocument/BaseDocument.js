@@ -79,6 +79,7 @@ class BaseDocument extends Component {
     let detailsTop = $("#docDetail").position().top;
     let detail = { ...this.state.detail }
     detail.height = (docHeight - detailsTop)
+
     this.setState({ detail })
   }
 
@@ -300,6 +301,8 @@ class BaseDocument extends Component {
     let detailProps = {
       ...this.state.detail,
       fields: this.props.detailFields,
+      sidebarFields: this.props.sidebarFields,
+      onSideBarFieldChange: this.handleHeaderFieldChange,
       docData,
       onRowUpdate: this.handleDetailRowChange,
       onRowSelect: this.handleDetailRowSelect
@@ -360,6 +363,7 @@ BaseDocument.defaultProps = {
   title: "title...",
   baseApiUrl: '',//  /api/docs/ordr/doc
   headerFields: {},
+  sidebarFields: {},
   detailFields: [],
   footerLimitSearchCondition: '',
   footerSearchShowCatNum: false,

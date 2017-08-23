@@ -166,6 +166,9 @@ body.site-navbar-small {
     }
 }
 
+.byus-search-bar>form>div>input { 
+  height: 33px
+}
 
 .react-grid-Header {
   background: rgba(255,255,255,1); 
