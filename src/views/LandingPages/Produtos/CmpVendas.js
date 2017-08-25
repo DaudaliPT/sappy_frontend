@@ -52,7 +52,7 @@ class CmpVendas extends Component {
         return (
             <ByUsSearchPage
                 searchPlaceholder="Procurar..."
-                searchApiUrl={`/api/inv/oitm/vendas/${this.props.ItemCode}`}
+                searchApiUrl={`/api/prod/vendas/${this.props.ItemCode}`}
                 noRecordsMessage="Não há vendas deste artigo"
                 renderRow={renderRow}
                 searchText={this.props.searchText} s

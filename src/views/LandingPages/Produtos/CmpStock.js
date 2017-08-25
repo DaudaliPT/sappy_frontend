@@ -38,7 +38,7 @@ class CmpStock extends Component {
         return (
             <ByUsSearchPage
                 searchPlaceholder="Procurar..."
-                searchApiUrl={`/api/inv/oitm/stock/${this.props.ItemCode}`}
+                searchApiUrl={`/api/prod/stock/${this.props.ItemCode}`}
                 renderRow={renderRow}
                 searchText={this.props.searchText} s
                 renderRowHeight={50}

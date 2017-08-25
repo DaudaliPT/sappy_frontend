@@ -102,7 +102,7 @@ class Produtos extends Component {
                   that.hoverTimeOutHandle = setTimeout(function () {
 
                     if (that.hoverServerRequest && that.hoverServerRequest.abort) that.hoverServerRequest.abort();
-                    that.hoverServerRequest = axios({ method: "get", url: `api/inv/oitm/${row.ItemCode}/priceinfo` })
+                    that.hoverServerRequest = axios({ method: "get", url: `api/prod/${row.ItemCode}/priceinfo` })
                       .then(result => {
                         let content = []
                         result.data.forEach(row => {
@@ -142,7 +142,7 @@ class Produtos extends Component {
 
                   that.hoverTimeOutHandle = setTimeout(function () {
                     if (that.hoverServerRequest && that.hoverServerRequest.abort) that.hoverServerRequest.abort();
-                    that.hoverServerRequest = axios({ method: "get", url: `api/inv/oitm/${row.ItemCode}/stockinfo` })
+                    that.hoverServerRequest = axios({ method: "get", url: `api/prod/${row.ItemCode}/stockinfo` })
                       .then(result => {
                         let content = []
 
@@ -191,7 +191,7 @@ class Produtos extends Component {
       <BaseLandingPage
         pageTitle="Gestão de artigos"
         searchPlaceholder="Procurar..."
-        searchApiUrl="api/inv/oitm/"
+        searchApiUrl="api/prod/"
         renderRow={renderRow}
         renderRowHeight={50}
         currentModal={this.state.currentModal}

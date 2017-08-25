@@ -133,7 +133,7 @@ class CmpGeral extends Component {
             ItemCode: this.state.ItemCode,
             Barcode: val
           },
-          url: `api/inv/oitm/new/isUniqueBarcode`
+          url: `api/prod/new/isUniqueBarcode`
         })
           .then(result => {
 
@@ -189,7 +189,7 @@ class CmpGeral extends Component {
       this.serverRequest = axios({
         method: "post",
         data: validateData,
-        url: `api/inv/oitm/new/isUniqueCatalogNr`
+        url: `api/prod/new/isUniqueCatalogNr`
       })
         .then(result => {
           let valFname = fieldName.replace("CardCode", "Substitute")
@@ -256,7 +256,7 @@ class CmpGeral extends Component {
           method: "delete",
           headers: { "Content-Type": "application/json" },
           data: JSON.stringify({ ...this.state }),
-          url: `api/inv/oitm/item/${this.state.ItemCode}`
+          url: `api/prod/item/${this.state.ItemCode}`
         })
           .then(result => {
             hashHistory.push("/inv/oitm");
@@ -339,7 +339,7 @@ class CmpGeral extends Component {
               newItem: this.state.Item,
               supplierCollection: this.state.supplierCollection
             }),
-            url: "api/inv/oitm/item"
+            url: "api/prod/item"
           })
             .then(result => {
               this.showMessage({

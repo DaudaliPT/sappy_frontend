@@ -5,17 +5,11 @@ import Full from "./containers/Full/";
 import Simple from "./containers/Simple/";
 
 import Inicio from "./views/Inicio/";
-// import UnderConstruction from "./views/UnderConstruction/";
-// import PageArtigo from "./views/PageArtigo/";
+import UnderConstruction from "./views/UnderConstruction/";
 import LandingPages from "./views/LandingPages";
-// import LandingPageAtualizacaoPrecos from "./views/LandingPages/AtualizacaoPrecos";
-// import LandingPageDocs from "./views/LandingPages/Documentos";
-// import LandingPageReports from "./views/LandingPages/Reports";
-// import DocAtualizacaoPrecos from "./views/DocAtualizacaoPrecos";
 
 import Login from "./views/Auth/Login/";
 import ForgotPassword from "./views/Auth/ForgotPassword/";
-import "./modified_site.css";
 
 import Documents from "./views/Documents/";
 
@@ -83,12 +77,11 @@ byUs.app = {
       icon: "icon fa-barcode",
       menus: [
         { name: "oitm", text: "Artigos", component: LandingPages.Produtos },
-        { name: "oitm/:itemcode", text: "Artigos Edit", component: LandingPages.Produtos.EditPage, dontCreateMenu: true },
-        // { name: "oitm2", text: "Artigos2", component: PageArtigo },
         { name: "prices", text: "Preços", component: LandingPages.Precos },
-        { name: "prices/doc", text: "Route->Abrir new doc atualização preços", component: LandingPages.Precos.Doc, dontCreateMenu: true },
-        { name: "prices/doc/:id", text: "Route->Abrir doc atualização preços", component: LandingPages.Precos.Doc, dontCreateMenu: true },
         { name: "etiq", text: "Etiquetas", component: LandingPages.Etiquetas },
+        { name: "oitm/:itemcode", text: "Artigos Edit", component: LandingPages.Produtos.EditPage, dontCreateMenu: true },
+        { name: "prices/doc", text: "Route->Abrir new doc atualização preços", component: LandingPages.Precos.Doc, dontCreateMenu: true },
+        // { name: "prices/doc/:id", text: "Route->Abrir doc atualização preços", component: LandingPages.Precos.Doc, dontCreateMenu: true },
         { name: "etiq/doc", text: "Route->Abrir new doc etiq", component: LandingPages.Etiquetas.Doc, dontCreateMenu: true },
         { name: "etiq/doc/:id", text: "Route->Abrir doc etiq", component: LandingPages.Etiquetas.Doc, dontCreateMenu: true }
         // { name: "transacoes", text: "Entradas e saídas", component: UnderConstruction },
@@ -98,17 +91,18 @@ byUs.app = {
       ]
     },
     // 6\. Financeiro (6.1 Caixa central, 6.2 Recebimentos, 6.3 Pagamentos, 6.4 Carteira de cheques)
-    // {
-    //   name: "fin",
-    //   text: "Financeiro",
-    //   icon: "icon fa-money",
-    //   menus: [
-    //     { name: "caixacentral", text: "Caixa central", component: UnderConstruction },
-    //     { name: "recebimentos", text: "Recebimentos", component: UnderConstruction },
-    //     { name: "pagamentos", text: "Pagamentos", component: UnderConstruction },
-    //     { name: "cartcheques", text: "Carteira de cheques", component: UnderConstruction }
-    //   ]
-    // },
+    {
+      name: "fin",
+      text: "Financeiro",
+      icon: "icon fa-money",
+      menus: [
+        { name: "caixa", text: "Caixa central", component: LandingPages.CaixaCentral },
+        { name: "rec", text: "Recebimentos", component: LandingPages.Recebimentos },
+        { name: "rec/doc", text: "Recebimentos", component: LandingPages.Recebimentos, dontCreateMenu: true },
+        // { name: "pagamentos", text: "Pagamentos", component: UnderConstruction },
+        // { name: "cartcheques", text: "Carteira de cheques", component: UnderConstruction }
+      ]
+    },
     //7\. Relatorios
     {
       name: "rpt",

@@ -6,10 +6,11 @@ import { Badge } from "reactstrap";
 import uuid from "uuid/v4";
 
 import BaseLandingPage from "../BaseLandingPage";
+import ModalAskDocumento from "./ModalAskDocumento";
 import ModalConfirmPrint from "./ModalConfirmPrint";
 import { hashHistory } from "react-router";
 
-class LpEtiquetas extends Component {
+class LpRecebimentos extends Component {
   constructor(props) {
     super(props);
     this.toggleModal = this.toggleModal.bind(this);
@@ -20,14 +21,15 @@ class LpEtiquetas extends Component {
     this.state = {
       currentModal: null,
       selectedItems: [],
-      defaultLayoutCode: ""
+      defaultLayoutCode: "",
+      showActions: false
     };
   }
 
   componentDidMount() {
     let that = this;
     axios
-      .get(`api/etiq/report`)
+      .get(`api/precos/report`)
       .then(function (result) {
         that.setState({
           defaultLayoutCode: result.data.LayoutCode
@@ -48,7 +50,7 @@ class LpEtiquetas extends Component {
     let id = checkbox.id;
     let docID = id.split("_")[1];
 
-    hashHistory.push("/inv/etiq/doc/" + docID);
+    hashHistory.push({ pathname: "/fin/rec/doc", state: { id: docID } });
   }
 
   handleRowSelection(e) {
@@ -78,9 +80,9 @@ class LpEtiquetas extends Component {
 
     if (selectedItems && selectedItems.length > 0) {
       this.serverRequest = axios
-        .post(`/api/etiq/doc/base`, { baseDocs: selectedItems })
+        .post(`/api/precos/doc/base`, { baseDocs: selectedItems })
         .then(function (result) {
-          hashHistory.push("/inv/etiq/doc/" + result.data.ID);
+          hashHistory.push({ pathname: "/fin/rec/doc", state: { id: result.data.ID } });
         })
         .catch(error => byUs.showError(error, "Erro ao adicionar linhas"));
     }
@@ -127,7 +129,7 @@ class LpEtiquetas extends Component {
               </div>
               <div className="col-1"> {row.DOCNUM || ("#" + row.ID)} </div>
               <div className="col-2"> {byUs.format.properDisplayDate(row.CONFIRMED || row.DATA)} </div>
-              <div className="col-7" style={{ maxHeight: "50px", overflow: "hidden" }}> <span> {renderBadges1()}{renderBadges()} </span> {row.OBSERVACOES} </div>
+              <div className="col-7" style={{ maxHeight: "50px", overflow: "hidden" }}> <span> {renderBadges1()}{renderBadges()} </span> {row.ESTADO + " " + row.OBSERVACOES} </div>
               <div className="col-1 lastcol">
                 <span className="float-right">{row.CREATED_BY_NAME}</span>
               </div>
@@ -153,7 +155,8 @@ class LpEtiquetas extends Component {
                 </div>
                 <div className="row secondrow">
                   <div className="col text-nowrap firstcol lastcol" style={{ maxHeight: "25px", overflow: "hidden" }}>
-                    {row.OBSERVACOES}
+
+                    {row.ESTADO + " " + row.OBSERVACOES}
                   </div>
                 </div>
               </div>
@@ -164,10 +167,27 @@ class LpEtiquetas extends Component {
     };
 
     const renderActions = () => {
+      let currentShowActions = this.state.showActions;
+
       let { selectedItems } = this.state;
+
       let actions = [];
 
-
+      actions = [
+        ...actions,
+        {
+          name: "main",
+          color: "danger",
+          icon: currentShowActions ? "icon wb-close animation-fade" : "icon wb-plus",
+          onClick: e => {
+            if (this.state.showActions) {
+              this.setState({ showActions: false });
+            } else {
+              this.setState({ showActions: true });
+            }
+          }
+        }
+      ];
       if (selectedItems && selectedItems.length > 0) {
         actions = [
           ...actions,
@@ -197,16 +217,27 @@ class LpEtiquetas extends Component {
           }
         ];
       }
-      else {
+
+      if (currentShowActions) {
         actions = [
           ...actions,
-
+          {
+            name: "Documento",
+            color: "success",
+            icon: "icon fa-list",
+            onClick: e => {
+              this.setState({
+                showActions: false,
+                currentModal: <ModalAskDocumento toggleModal={this.handleModalSearchClose} />
+              });
+            }
+          },
           {
             name: "Artigos",
             color: "success",
-            icon: "icon wb-plus",
+            icon: "icon fa-tags",
             onClick: e => {
-              hashHistory.push("/inv/etiq/doc");
+              hashHistory.push("/fin/rec/doc");
             }
           }
         ];
@@ -217,9 +248,9 @@ class LpEtiquetas extends Component {
 
     return (
       <BaseLandingPage
-        pageTitle="Impressão de etiquetas"
+        pageTitle="Atualização de preços"
         searchPlaceholder="Procurar..."
-        searchApiUrl="api/etiq/"
+        searchApiUrl="api/precos/"
         renderRow={renderRow}
         renderRowHeight={50}
         currentModal={this.state.currentModal}
@@ -230,5 +261,5 @@ class LpEtiquetas extends Component {
 }
 
 import Doc from './Doc';
-LpEtiquetas.Doc = Doc;
-export default LpEtiquetas; 
+LpRecebimentos.Doc = Doc;
+export default LpRecebimentos; 

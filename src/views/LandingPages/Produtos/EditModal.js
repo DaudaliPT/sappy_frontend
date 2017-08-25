@@ -71,7 +71,7 @@ class EditModal extends Component {
     this.setState({ loading: true });
     this.serverRequest = axios({
       method: "get",
-      url: "api/inv/oitm/item/" + itemcode
+      url: "api/prod/item/" + itemcode
     })
       .then(result => {
         let { Item, AlternateCatNum } = result.data;
@@ -127,7 +127,7 @@ class EditModal extends Component {
     let that = this;
     this.serverRequest = axios({
       method: "get",
-      url: `api/inv/oitm/info/${this.props.itemcode}/${nextORprevious}`
+      url: `api/prod/info/${this.props.itemcode}/${nextORprevious}`
     })
       .then(result => {
         if (result.data)

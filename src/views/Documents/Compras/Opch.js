@@ -10,7 +10,7 @@ export default class Opch extends Component {
         this.state = { currentModal: null }
 
         let priceHover = {
-            api: 'api/inv/oitm/info/<ITEMCODE>/upc',
+            api: 'api/prod/info/<ITEMCODE>/upc',
             render: ({ result, context }) => {
                 let content = []
 

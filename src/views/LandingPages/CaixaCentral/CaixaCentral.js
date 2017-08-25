@@ -4,15 +4,12 @@ import axios from "axios";
 var $ = window.$;
 var byUs = window.byUs;
 
-import CmpGeral from "./CmpGeral";
-import CmpStock from "./CmpStock";
-import CmpTransStock from "./CmpTransStock";
-import CmpVendas from "./CmpVendas";
-import CmpCompras from "./CmpCompras";
+import CmpClassificacao from "./CmpClassificacao";
+import CmpUnderConstruction from "./CmpUnderConstruction";
 import { hashHistory } from "react-router";
 
 
-class EditPage extends Component {
+class CaixaCentral extends Component {
   constructor(props) {
     super(props);
 
@@ -25,7 +22,7 @@ class EditPage extends Component {
     this.state = {
       ReadOnly: true,
       loading: true,
-      activeTab: "tabGeral"
+      activeTab: "tabClassificacao"
     }
   }
 
@@ -33,7 +30,7 @@ class EditPage extends Component {
     window.addEventListener("resize", this.calcPageHeight);
 
     this.calcPageHeight();
-    setTimeout(this.loadProduto(this.props.params.itemcode), 1);
+    // setTimeout(this.loadProduto(this.props.params.itemcode), 1);
   }
 
   calcPageHeight() {
@@ -68,9 +65,10 @@ class EditPage extends Component {
     let that = this;
 
     this.setState({ loading: true });
+
     this.serverRequest = axios({
       method: "get",
-      url: "api/prod/item/" + itemcode
+      url: "api/caixa/item/" + itemcode
     })
       .then(result => {
         let { Item, AlternateCatNum } = result.data;
@@ -119,7 +117,7 @@ class EditPage extends Component {
     let that = this;
     this.serverRequest = axios({
       method: "get",
-      url: `api/prod/info/${this.props.params.itemcode}/${nextORprevious}`
+      url: `api/caixa/info/${this.props.params.itemcode}/${nextORprevious}`
     })
       .then(result => {
         if (result.data)
@@ -143,19 +141,17 @@ class EditPage extends Component {
           <div className="row">
             <div className="col-md-9    px-md-15 px-0">
               <p className="page-title">
-                {/* <img src={"api/prod/item/barcodepng/" + this.props.params.itemcode} alt={this.props.params.itemcode} style={{ height: "3rem", filter: "opacity(50%)" }} /> */}
-
-                {this.state.loading ? '...' : (newItem.ItemName + ' (' + newItem.ItemCode + ')')}
+                Caixa Central
               </p>
             </div>
             <div className="col-md-3    px-md-15 px-0">
               <div className="byus-action-bar animation-slide-left">
-                {this.state.ReadOnly && this.state.activeTab === "tabGeral" &&
+                {this.state.ReadOnly && this.state.activeTab === "tabClassificacao" &&
                   <Button outline className="btn-md btn-flat" onClick={this.onTogleAllowEdit}>
                     <i className="icon wb-edit" />
                     <span className="hidden-sm-down"> Alterar</span>
                   </Button>}
-                {!this.state.ReadOnly && this.state.activeTab === "tabGeral" &&
+                {!this.state.ReadOnly && this.state.activeTab === "tabClassificacao" &&
                   <Button outline className="btn-md btn-flat" onClick={this.onTogleAllowEdit}>
                     <i className="icon wb-close" />
                     <span className="hidden-sm-down"> Alterar</span>
@@ -181,15 +177,17 @@ class EditPage extends Component {
                 <div className="panel-body ">
                   <div className="list-group faq-list" role="tablist">
                     <a className="list-group-item list-group-item-action active" data-toggle="tab" role="tab"
-                      id="tabGeral" onClick={this.handleOnTabClick}>Geral </a>
+                      id="tabClassificacao" onClick={this.handleOnTabClick}>Classificação </a>
                     <a className="list-group-item" data-toggle="tab" role="tab"
-                      id="tabVendas" onClick={this.handleOnTabClick}>Vendas</a>
+                      id="tabPendentes" onClick={this.handleOnTabClick}>Pendentes</a>
                     <a className="list-group-item" data-toggle="tab" role="tab"
-                      id="tabCompras" onClick={this.handleOnTabClick}>Compras</a>
+                      id="tabDistribuicao" onClick={this.handleOnTabClick}>Distribuição</a>
                     <a className="list-group-item" data-toggle="tab" role="tab"
-                      id="tabInventario" onClick={this.handleOnTabClick}>Inventário</a>
+                      id="tabDespesas" onClick={this.handleOnTabClick}>Despesas</a>
                     <a className="list-group-item" data-toggle="tab" role="tab"
-                      id="tabTransInv" onClick={this.handleOnTabClick}>Transações de Inventário</a>
+                      id="tabDepositos" onClick={this.handleOnTabClick}>Depósitos</a>
+                    <a className="list-group-item" data-toggle="tab" role="tab"
+                      id="tabResumo" onClick={this.handleOnTabClick}>Resumo</a>
                   </div>
                 </div>
               </div>
@@ -200,36 +198,41 @@ class EditPage extends Component {
               <div className="panel form-panel">
                 <div className="panel-body main-body">
                   {/* <div className="tab-content"> */}
-                  {this.state.activeTab === "tabGeral" &&
+                  {this.state.activeTab === "tabClassificacao" &&
                     <div className=" tab-pane animation-fade active" >
-                      <CmpGeral ItemCode={this.props.params.itemcode}
+                      <CmpClassificacao ItemCode={this.props.params.itemcode}
                         Item={this.state.newItem}
                         AlternateCatNum={this.state.AlternateCatNum}
-                        ReadOnly={this.state.ReadOnly}></CmpGeral>
+                        ReadOnly={this.state.ReadOnly}></CmpClassificacao>
                     </div>
                   }
-                  {this.state.activeTab === "tabVendas" &&
+                  {this.state.activeTab === "tabPendentes" &&
                     <div className=" animation-fade">
-                      <CmpVendas ItemCode={this.props.params.itemcode} ReadOnly={this.state.ReadOnly}></CmpVendas>
+                      <CmpUnderConstruction ItemCode={this.props.params.itemcode} ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
                     </div>
                   }
-                  {this.state.activeTab === "tabCompras" &&
+                  {this.state.activeTab === "tabDistribuicao" &&
                     <div className=" animation-fade">
-                      <CmpCompras ItemCode={this.props.params.itemcode} ReadOnly={this.state.ReadOnly}></CmpCompras>
+                      <CmpUnderConstruction ItemCode={this.props.params.itemcode} ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
                     </div>
                   }
-                  {this.state.activeTab === "tabInventario" &&
+                  {this.state.activeTab === "tabDespesas" &&
                     <div className=" animation-fade" >
-                      <CmpStock ItemCode={this.props.params.itemcode} ReadOnly={this.state.ReadOnly}></CmpStock>
+                      <CmpUnderConstruction ItemCode={this.props.params.itemcode} ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
                     </div>
                   }
-                  {this.state.activeTab === "tabTransInv" &&
+                  {this.state.activeTab === "tabDepositos" &&
                     <div className=" animation-fade" >
-                      <CmpTransStock ItemCode={this.props.params.itemcode} ReadOnly={this.state.ReadOnly}></CmpTransStock>
+                      <CmpUnderConstruction ItemCode={this.props.params.itemcode} ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
                     </div>
                   }
 
-                  {/* </div> */}
+                  {this.state.activeTab === "tabResumo" &&
+                    <div className=" animation-fade" >
+                      <CmpUnderConstruction ItemCode={this.props.params.itemcode} ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
+                    </div>
+                  }
+
                 </div>
               </div>
               {/* <!-- End Panel --> */}
@@ -240,4 +243,4 @@ class EditPage extends Component {
   }
 }
 
-export default EditPage;
+export default CaixaCentral;

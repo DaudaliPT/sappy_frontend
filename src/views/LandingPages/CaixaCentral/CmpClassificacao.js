@@ -48,15 +48,38 @@ class CmpTransStock extends Component {
         };
 
         return (
-            <ByUsSearchPage
-                searchPlaceholder="Procurar..."
-                searchApiUrl={`/api/prod/transstock/${this.props.ItemCode}`}
-                noRecordsMessage="Não há moviemntos deste artigo"
-                renderRow={renderRow}
-                searchText={this.props.searchText} s
-                renderRowHeight={50}
-                currentModal={this.state.currentModal}
-            />)
+            <div className="container">
+                <div className="row">
+                    <div className="col-6">
+
+                        <ByUsSearchPage
+                            searchPlaceholder="Procurar..."
+                            searchApiUrl={`/api/caixa/transstock/${this.props.ItemCode}`}
+                            noRecordsMessage="Não há moviemntos deste artigo"
+                            renderRow={renderRow}
+                            searchText={this.props.searchText}
+                            placeholder={"Pesquisar o cliente"}
+                            renderRowHeight={50}
+                            currentModal={this.state.currentModal}
+                        />
+                    </div>
+                    <div className="col-6">
+
+                        <ByUsSearchPage
+                            searchPlaceholder="Procurar..."
+                            searchApiUrl={`/api/caixa/transstock/${this.props.ItemCode}`}
+                            noRecordsMessage="Não há moviemntos deste artigo"
+                            renderRow={renderRow}
+                            searchText={this.props.searchText}
+                            renderRowHeight={50}
+                            currentModal={this.state.currentModal}
+                        />
+
+
+                    </div>
+                </div>
+            </div>)
+
     }
 }
 

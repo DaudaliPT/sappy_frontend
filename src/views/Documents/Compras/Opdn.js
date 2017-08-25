@@ -5,7 +5,7 @@ import EditModal from "../../LandingPages/Produtos/EditModal";
 const byUs = window.byUs;
 
 let priceHover = {
-    api: 'api/inv/oitm/info/<ITEMCODE>/upc',
+    api: 'api/prod/info/<ITEMCODE>/upc',
     render: ({ result, context }) => {
         let content = []
 

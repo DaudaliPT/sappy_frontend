@@ -51,7 +51,7 @@ class CmpCompras extends Component {
         return (
             <ByUsSearchPage
                 searchPlaceholder="Procurar..."
-                searchApiUrl={`/api/inv/oitm/compras/${this.props.ItemCode}`}
+                searchApiUrl={`/api/prod/compras/${this.props.ItemCode}`}
                 noRecordsMessage="Não há compras deste artigo"
                 renderRow={renderRow}
                 searchText={this.props.searchText} s

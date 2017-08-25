@@ -458,7 +458,7 @@ class DocAtualizacaoPrecos extends Component {
     })
       .then(result => {
         if (result.data)
-          hashHistory.push({ pathname: "/inv/prices/doc", state: { id: result.data } });
+          hashHistory.push({ pathname: "/fin/rec/doc", state: { id: result.data } });
       })
       .catch(error => byUs.showError(error, "Erro ao obter dados"));
   }
@@ -873,7 +873,7 @@ class DocAtualizacaoPrecos extends Component {
           icon: "icon wb-close",
           visible: true,
           onClick: e => {
-            hashHistory.push("/inv/prices/");
+            hashHistory.push("/fin/rec/");
           }
         },
         {
@@ -1013,7 +1013,7 @@ class DocAtualizacaoPrecos extends Component {
                                 this.serverRequest = axios
                                   .post(`/api/precos/doc/${this.state.docData.ID}/clone`)
                                   .then(function (result) {
-                                    hashHistory.push({ pathname: "/inv/prices/doc", state: { id: result.data.newID } });
+                                    hashHistory.push({ pathname: "/fin/rec/doc", state: { id: result.data.newID } });
                                   })
                                   .catch(error => byUs.showError(error, "Erro ao duplicar dados"));
                               }

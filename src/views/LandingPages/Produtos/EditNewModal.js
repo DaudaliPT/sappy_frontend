@@ -67,7 +67,7 @@ class ModalCreateArtigo extends Component {
         method: "get",
         headers: { "Content-Type": "application/json" },
         data: JSON.stringify({ ...this.state }),
-        url: "api/inv/oitm/item/" + this.state.changeItemCode
+        url: "api/prod/item/" + this.state.changeItemCode
       })
         .then(result => {
           let item = result.data.Item;
@@ -174,7 +174,7 @@ class ModalCreateArtigo extends Component {
             ItemCode: this.state.changeItemCode,
             Barcode: val
           },
-          url: `api/inv/oitm/new/isUniqueBarcode`
+          url: `api/prod/new/isUniqueBarcode`
         })
           .then(result => {
 
@@ -230,7 +230,7 @@ class ModalCreateArtigo extends Component {
       this.serverRequest = axios({
         method: "post",
         data: validateData,
-        url: `api/inv/oitm/new/isUniqueCatalogNr`
+        url: `api/prod/new/isUniqueCatalogNr`
       })
         .then(result => {
           let valFname = fieldName.replace("CardCode", "Substitute")
@@ -297,7 +297,7 @@ class ModalCreateArtigo extends Component {
           method: "delete",
           headers: { "Content-Type": "application/json" },
           data: JSON.stringify({ ...this.state }),
-          url: `api/inv/oitm/item/${this.state.changeItemCode}`
+          url: `api/prod/item/${this.state.changeItemCode}`
         })
           .then(result => {
             that.props.toggleModal("refresh");
@@ -390,7 +390,7 @@ class ModalCreateArtigo extends Component {
               supplierCollection: this.state.supplierCollection,
               saveDraft: this.state.saveDraft
             }),
-            url: "api/inv/oitm/item"
+            url: "api/prod/item"
           })
             .then(result => {
 

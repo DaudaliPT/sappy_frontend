@@ -29,7 +29,7 @@ class LpPrecos extends Component {
   componentDidMount() {
     let that = this;
     axios
-      .get(`api/inv/precos/report`)
+      .get(`api/precos/report`)
       .then(function (result) {
         that.setState({
           defaultLayoutCode: result.data.LayoutCode
@@ -80,7 +80,7 @@ class LpPrecos extends Component {
 
     if (selectedItems && selectedItems.length > 0) {
       this.serverRequest = axios
-        .post(`/api/inv/precos/doc/base`, { baseDocs: selectedItems })
+        .post(`/api/precos/doc/base`, { baseDocs: selectedItems })
         .then(function (result) {
           hashHistory.push({ pathname: "/inv/prices/doc", state: { id: result.data.ID } });
         })
@@ -250,7 +250,7 @@ class LpPrecos extends Component {
       <BaseLandingPage
         pageTitle="Atualização de preços"
         searchPlaceholder="Procurar..."
-        searchApiUrl="api/inv/precos/"
+        searchApiUrl="api/precos/"
         renderRow={renderRow}
         renderRowHeight={50}
         currentModal={this.state.currentModal}

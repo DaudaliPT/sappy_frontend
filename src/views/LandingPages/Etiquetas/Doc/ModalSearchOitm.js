@@ -113,7 +113,7 @@ class ModalSearchOitm extends Component {
 
           <ByUsSearchPage
             searchPlaceholder="Procurar..."
-            searchApiUrl="/api/inv/etiq/searchOitm/"
+            searchApiUrl="/api/etiq/searchOitm/"
             renderRow={renderRow}
             searchText={this.props.searchText}
             renderRowHeight={50}

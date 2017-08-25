@@ -225,7 +225,7 @@ class DocAtualizacaoPrecos extends Component {
   onMoveTo(nextORprevious) {
     this.serverRequest = axios({
       method: "get",
-      url: `/api/inv/etiq/doc/${this.state.docData.ID}/${nextORprevious}`
+      url: `/api/etiq/doc/${this.state.docData.ID}/${nextORprevious}`
     })
       .then(result => {
         if (result.data)
@@ -237,7 +237,7 @@ class DocAtualizacaoPrecos extends Component {
   componentDidMount() {
     let that = this;
     axios
-      .get(`api/inv/etiq/report`)
+      .get(`api/etiq/report`)
       .then(function (result) {
         that.setState({
           defaultLayoutCode: result.data.LayoutCode
@@ -290,7 +290,7 @@ class DocAtualizacaoPrecos extends Component {
     let that = this;
     if (this.props.params.id) {
       this.serverRequest = axios
-        .get(`/api/inv/etiq/doc/${this.props.params.id}`)
+        .get(`/api/etiq/doc/${this.props.params.id}`)
         .then(function (result) {
           let docData = result.data;
           that.setState({
@@ -347,7 +347,7 @@ class DocAtualizacaoPrecos extends Component {
     let { searchText } = this.state;
 
     this.serverRequest = axios
-      .get(`/api/inv/etiq/searchOitm/`, {
+      .get(`/api/etiq/searchOitm/`, {
         params: { searchText },
         cancelToken: new CancelToken(function executor(c) {
           that.cancelPreviousAxiosRequest = c;
@@ -390,7 +390,7 @@ class DocAtualizacaoPrecos extends Component {
       next();
     } else {
       this.serverRequest = axios
-        .post(`/api/inv/etiq/doc`)
+        .post(`/api/etiq/doc`)
         .then(function (result) {
           let docData = that.state.docData;
           docData = { ...docData, ...result.data };
@@ -405,7 +405,7 @@ class DocAtualizacaoPrecos extends Component {
   createDocLines(itemCodes) {
     let that = this;
     this.serverRequest = axios
-      .post(`/api/inv/etiq/doc/${this.state.docData.ID}/lines`, { itemCodes })
+      .post(`/api/etiq/doc/${this.state.docData.ID}/lines`, { itemCodes })
       .then(function (result) {
         that.setState({
           rows: result.data,
@@ -546,7 +546,7 @@ class DocAtualizacaoPrecos extends Component {
                     this.setState({ currentModal: null });
                     if (result === "CONFIRMADO") {
                       this.serverRequest = axios
-                        .delete(`/api/inv/etiq/doc/${this.state.docData.ID}`)
+                        .delete(`/api/etiq/doc/${this.state.docData.ID}`)
                         .then(function (result) {
                           hashHistory.goBack();
                         })
@@ -580,7 +580,7 @@ class DocAtualizacaoPrecos extends Component {
                     this.setState({ currentModal: null });
                     if (result === "CONFIRMADO") {
                       this.serverRequest = axios
-                        .post(`/api/inv/etiq/doc/${this.state.docData.ID}/deletelines`, {
+                        .post(`/api/etiq/doc/${this.state.docData.ID}/deletelines`, {
                           Lines: LINENUMS
                         })
                         .then(function (result) {
@@ -631,7 +631,7 @@ class DocAtualizacaoPrecos extends Component {
                     that.setState({ currentModal: null });
                     if (result === "CONFIRMADO") {
                       that.serverRequest = axios
-                        .post(`/api/inv/etiq/doc/${that.state.docData.ID}/confirm`)
+                        .post(`/api/etiq/doc/${that.state.docData.ID}/confirm`)
                         .then(function (result) {
 
 
@@ -766,7 +766,7 @@ class DocAtualizacaoPrecos extends Component {
                               this.setState({ currentModal: null });
                               if (result === "CONFIRMADO") {
                                 this.serverRequest = axios
-                                  .post(`/api/inv/etiq/doc/${this.state.docData.ID}/clone`)
+                                  .post(`/api/etiq/doc/${this.state.docData.ID}/clone`)
                                   .then(function (result) {
 
                                     hashHistory.push("/inv/etiq/doc/" + result.data.newID);

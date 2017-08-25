@@ -34,7 +34,7 @@ class ModalConfirmPrint extends Component {
         .then(function (result) {
           //Marcar documentos como impressos
           axios
-            .post("/api/inv/etiq/printed", parValues)
+            .post("/api/etiq/printed", parValues)
             .then(function (result) {
               that.props.setCurrentModal({ currentModal: null });
               location.reload();
@@ -58,7 +58,7 @@ class ModalConfirmPrint extends Component {
 
       //Marcar documentos como impressos
       axios
-        .post("/api/inv/etiq/printed", parValues)
+        .post("/api/etiq/printed", parValues)
         .then(function (result) {
         })
         .catch(function (error) {
