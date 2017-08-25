@@ -51,7 +51,7 @@ class CmpTransStock extends Component {
             <ByUsSearchPage
                 searchPlaceholder="Procurar..."
                 searchApiUrl={`/api/prod/transstock/${this.props.ItemCode}`}
-                noRecordsMessage="Não há moviemntos deste artigo"
+                noRecordsMessage="Não há movimentos deste artigo"
                 renderRow={renderRow}
                 searchText={this.props.searchText} s
                 renderRowHeight={50}

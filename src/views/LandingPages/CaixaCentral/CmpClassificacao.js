@@ -54,8 +54,8 @@ class CmpTransStock extends Component {
 
                         <ByUsSearchPage
                             searchPlaceholder="Procurar..."
-                            searchApiUrl={`/api/caixa/transstock/${this.props.ItemCode}`}
-                            noRecordsMessage="Não há moviemntos deste artigo"
+                            searchApiUrl={`/api/caixa/class/pn`}
+                            noRecordsMessage="Não há movimentos deste artigo"
                             renderRow={renderRow}
                             searchText={this.props.searchText}
                             placeholder={"Pesquisar o cliente"}
@@ -67,8 +67,8 @@ class CmpTransStock extends Component {
 
                         <ByUsSearchPage
                             searchPlaceholder="Procurar..."
-                            searchApiUrl={`/api/caixa/transstock/${this.props.ItemCode}`}
-                            noRecordsMessage="Não há moviemntos deste artigo"
+                            searchApiUrl={`/api/caixa/class/docs`}
+                            noRecordsMessage="Não há movimentos deste artigo"
                             renderRow={renderRow}
                             searchText={this.props.searchText}
                             renderRowHeight={50}
