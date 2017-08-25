@@ -196,6 +196,7 @@ class ByUsDataGrid extends Component {
 
       return col
     })
+
     if (gridWidth > totalWidth) {
       // colocar as diferenças na última coluna
       let lastField = ret[ret.length - 1];

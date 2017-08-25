@@ -42,7 +42,7 @@ const CustomToolbar = React.createClass({
 
 class IntFormatter extends Component {
   render() {
-    const formatedValue = parseFloat(this.props.value || 0).toFixed(0);
+    const formatedValue = byUs.format.integer(this.props.value);
     return (
       <div style={{ textAlign: "right" }}>
         {formatedValue}
@@ -53,10 +53,10 @@ class IntFormatter extends Component {
 
 class PriceFormatter extends Component {
   render() {
-    const formatedValue = parseFloat(this.props.value || 0).toFixed(3);
+    const formatedValue = byUs.format.price(this.props.value);
     return (
       <div style={{ textAlign: "right" }}>
-        {formatedValue} {" €"}
+        {formatedValue}
       </div>
     );
   }

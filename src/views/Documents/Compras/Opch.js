@@ -14,18 +14,30 @@ export default class Opch extends Component {
             render: ({ result, context }) => {
                 let content = []
 
-                if (result.data.length === 0) content.push(<tr><td>Nenhum histórico</td></tr>)
-                result.data.forEach(popuprow => {
+                if (result.data.length === 0)
+                    content.push(<tr><td>Nenhum histórico</td></tr>)
+                else {
                     content.push(<tr >
-                        <td>{byUs.format.properDisplayDate(popuprow.DOCDATE)}</td>
-                        {/* <td>{popuprow.DESCDOC + " " + popuprow.DOCNUM}</td> */}
-                        <td>{popuprow.CardCode}</td>
-                        <td>{byUs.format.price(popuprow.PRECOCALC, 3)}</td>
+                        <td>Data</td>
+                        <td>Fornecedor</td>
+                        <td>Preço</td>
+                        {/* <td>Desc.</td> */}
+                        <td>Pr.NET</td>
                     </tr>)
-                });
+                    result.data.forEach(popuprow => {
+                        content.push(<tr >
+                            <td>{byUs.format.properDisplayDate(popuprow.DocDate)}</td>
+                            <td>{popuprow.CardCode}</td>
+                            <td>{byUs.format.price(popuprow.PUR_PRICE, 3)}</td>
+                            {/* <td>{popuprow.USER_DISC}</td> */}
+                            <td>{byUs.format.price(popuprow.PRCNET, 3)}</td>
+                        </tr>)
+                    });
+                }
                 return <table>{content}</table>
             }
         }
+
 
         this.DESCDEBOP_options = [
             { value: 'P', label: 'Pagamento' },
@@ -52,9 +64,9 @@ export default class Opch extends Component {
             ]
         }
         this.sidebarFields = {
-            line1: [
-                { name: 'DESCCOM', label: 'Desc. Comercial', type: "text", width: "100%" },
-            ],
+            // line1: [
+            //     { name: 'DESCCOM', label: 'Desc. Comercial', type: "text", width: "100%" },
+            // ],
             line2: [
                 { name: 'DESCFIN', label: 'Desc. Financeiro', type: "text", width: "calc(100% - 35px)" },
                 { name: 'DESCFINAC', label: '', type: "check|success", width: "35px" },
@@ -64,7 +76,7 @@ export default class Opch extends Component {
                 { name: 'DESCDEBAC', label: '', type: "check|success", width: "35px" },
             ],
             line4: [
-                { name: 'DESCDEBPER', label: 'Periodicidade:', type: "combo", width: "100%", options: this.DESCDEBOP_options },
+                { name: 'DESCDEBPER', label: 'Tipo débito:', type: "combo", width: "100%", options: this.DESCDEBOP_options },
             ],
             line5: [
                 { name: 'DESCNET', label: 'Total Desc. NET', type: "percent", width: "100%", disabled: true }
@@ -88,7 +100,7 @@ export default class Opch extends Component {
             { name: 'USER_DISC', label: '', type: "discount", width: 120, editable: true },
             { name: 'LINETOTAL', label: 'Total', width: 90, type: "amount", editable: true },
             // { name: 'TAXRATE', label: 'IVA', type: "vat", width: 70, editable: false },
-            // { name: 'WHSCODE', label: 'Arm', type: "text", width: 50, editable: true },
+            { name: 'WHSCODE', label: 'Arm', type: "text", width: 50, editable: true },
             { name: 'HASINCONF', label: 'Inc.', type: "flag|danger", width: 35, editable: true },
             { name: 'NETPRICE', label: 'Pr.NET', width: 70, type: "price", editable: false }
         ]

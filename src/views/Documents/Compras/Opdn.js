@@ -4,25 +4,34 @@ import BaseDocument from "../BaseDocument";
 import EditModal from "../../LandingPages/Produtos/EditModal";
 const byUs = window.byUs;
 
-
 let priceHover = {
     api: 'api/inv/oitm/info/<ITEMCODE>/upc',
     render: ({ result, context }) => {
         let content = []
 
-        if (result.data.length === 0) content.push(<tr><td>Nenhum histórico</td></tr>)
-        result.data.forEach(popuprow => {
+        if (result.data.length === 0)
+            content.push(<tr><td>Nenhum histórico</td></tr>)
+        else {
             content.push(<tr >
-                <td>{byUs.format.properDisplayDate(popuprow.DOCDATE)}</td>
-                {/* <td>{popuprow.DESCDOC + " " + popuprow.DOCNUM}</td> */}
-                <td>{popuprow.CardCode}</td>
-                <td>{byUs.format.price(popuprow.PRECOCALC, 3)}</td>
+                <td>Data</td>
+                <td>Fornecedor</td>
+                <td>Preço</td>
+                {/* <td>Desc.</td> */}
+                <td>Pr.NET</td>
             </tr>)
-        });
+            result.data.forEach(popuprow => {
+                content.push(<tr >
+                    <td>{byUs.format.properDisplayDate(popuprow.DocDate)}</td>
+                    <td>{popuprow.CardCode}</td>
+                    <td>{byUs.format.price(popuprow.PUR_PRICE, 3)}</td>
+                    {/* <td>{popuprow.USER_DISC}</td> */}
+                    <td>{byUs.format.price(popuprow.PRCNET, 3)}</td>
+                </tr>)
+            });
+        }
         return <table>{content}</table>
     }
 }
-
 
 let headerFields = {
     line1: [
@@ -84,12 +93,12 @@ export default class Opdn extends Component {
             title="Recepção de mercadoria"
             baseApiUrl='/api/docs/doc/opdn'
             footerSearchType="oitm"
-            footerLimitSearchCondition={`OITM."CardCode"='<CARDCODE>' AND OCRD."U_apyITMCNT"='Y'
-                AND 1= CASE WHEN OCRD."U_apyITMCNT"='Y'  
-                THEN CASE WHEN 
-                        CASE WHEN OITM."FirmCode"=-1 THEN 'null' ELSE  OMRC."FirmName" END = '<CONTACT>'
-                    THEN 1 ELSE 0 END
-                ELSE 1 END` //<CONTACT> vazio retorna null
+            footerLimitSearchCondition={`OITM."CardCode"='<CARDCODE>' 
+            AND 1= CASE WHEN OCRD."U_apyITMCNT"='Y'  
+                        THEN CASE WHEN 
+                                CASE WHEN OITM."FirmCode"=-1 THEN 'null' ELSE  OMRC."FirmName" END = '<CONTACT>'
+                             THEN 1 ELSE 0 END
+                        ELSE 1 END` //<CONTACT> vazio retorna null
             }
             headerFields={headerFields}
             onHeaderChange={this.onHeaderChange}

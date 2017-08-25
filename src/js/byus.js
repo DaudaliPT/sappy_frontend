@@ -9,16 +9,6 @@ import moment from 'moment';
   // Public Property
   byUs.author = "Urbino Pescada";
 
-  // Public Method
-  byUs.getBackendURL = function (routes = "") {
-    let url = window.location.origin;
-
-    if (window.location.port !== 3005) {
-      url = url.replace(":" + window.location.port, ":3005");
-    }
-    url = urljoin(url, routes);
-    return url;
-  };
 
   byUs.isEqual = (val1, val2) => {
     if ((val1 === null || typeof val1 === "undefined")
@@ -111,34 +101,6 @@ import moment from 'moment';
     return sapFormat
   }
 
-  byUs.parseUserDisc = value => {
-    let parsed = { D1: null, D2: null, D3: null, DUN: null };
-    let parts = value.split('+');
-    parts.map(part => {
-      if (part.indexOf('€') > -1 || part.indexOf('e') > -1 || part.indexOf('E') > -1) {
-        part = part.replace('€', '').replace('e', '').replace('E', '');
-        if (!parsed.DUN) parsed.DUN = parseFloat(part)
-      } else {
-        if (!parsed.D1) parsed.D1 = parseFloat(part)
-        else if (!parsed.D2) parsed.D2 = parseFloat(part)
-        else if (!parsed.D3) parsed.D3 = parseFloat(part)
-      }
-
-      return part
-    })
-
-    return parsed
-  }
-  byUs.formatUserDisc = parsed => {
-    let formatted = "";
-    if (parsed.D1) formatted += (formatted ? " + " : "") + byUs.format.percent(parsed.D1).replace('.00 %', '%').replace(',00 %', '%');
-    if (parsed.D2) formatted += (formatted ? " + " : "") + byUs.format.percent(parsed.D2).replace('.00 %', '%').replace(',00 %', '%');
-    if (parsed.D3) formatted += (formatted ? " + " : "") + byUs.format.percent(parsed.D3).replace('.00 %', '%').replace(',00 %', '%');
-    if (parsed.DUN) formatted += (formatted ? " + " : "") + byUs.format.price(parsed.DUN);
-
-    return formatted
-  }
-
   byUs.accounting = accounting;
   byUs.moment = moment;
   byUs.unformat = {
@@ -219,18 +181,6 @@ import moment from 'moment';
       return null
     }
   }
-
-  // byUs.round = {
-  //   saprate: (value) => {
-  //     let decimals = byUs.sessionInfo.company.oadm.RateDec;
-  //     return accounting.unformat(byUs.accounting.toFixed(value, decimals));
-  //   },
-  //   sapsum: (value) => {
-  //     let decimals = byUs.sessionInfo.company.oadm.SumDec;
-  //     return accounting.unformat(byUs.accounting.toFixed(value, decimals));
-  //   }
-  // }
-
 
   byUs.round = (value, decimals) => {
     return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
@@ -351,13 +301,6 @@ import moment from 'moment';
       }
     }
   };
-
-  // Private Method
-  //   function addItem (item) {
-  //     if (item !== undefined) {
-  //       console.log('Adding ' + $.trim(item))
-  //     }
-  //   }
 
   byUs.CrystalReports = {
     DefaultValueSortMethod: { BasedOnValue: 0, BasedOnDescription: 1 },

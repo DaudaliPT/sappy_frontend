@@ -943,7 +943,20 @@ div>.has-danger  .Select-control {  border-color: rgb(217,  83,  79) !important;
 .input-search-btn>.icon.active{
   color:rgb(98, 168, 234);
 }
-.aicon[class*="ion-"] {
+
+div.flag{
+  text-align: center !important;
+}  
+div.flag>.icon[class*="ion-"] {
   font-size:1.5rem!important;
   line-height: 1.5;
+  text-align: center !important;
 }  
+
+
+div.flag>.icon{ 
+  font-size: 2.4rem!important;
+}
+div.flag>i.icon:hover{
+  color:rgb( 98, 168, 234) !important;
+}

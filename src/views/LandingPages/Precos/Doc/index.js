@@ -14,6 +14,7 @@ import { Popover, PopoverContent } from 'reactstrap';
 import axios from "axios";
 import uuid from "uuid/v4";
 import SearchBar from "./SearchBar.js";
+import Formatters from "../../../../components/ByUsDataGrid/Formatters";
 import { ByUsTextBox } from "../../../../Inputs";
 import { ModalMessageConfirm } from "../../../../Modals";
 
@@ -60,20 +61,9 @@ class CheckboxFormatter extends Component {
   }
 }
 
-// class NumberFormatter extends Component {
-//   render() {
-//     const formatedValue = parseFloat(this.props.value || 0).toFixed(2);
-//     return (
-//       <div style={{ textAlign: "right" }}>
-//         {formatedValue}
-//       </div>
-//     );
-//   }
-// }
-
 class IntFormatter extends Component {
   render() {
-    const formatedValue = parseFloat(this.props.value || 0).toFixed(0);
+    const formatedValue = byUs.format.integer(this.props.value);
     return (
       <div style={{ textAlign: "right" }}>
         {formatedValue}
@@ -98,8 +88,8 @@ class UPCPriceFormatter extends Component {
     let PREV_PRECO = 0;
     let LAST_PRECO = 0;
 
-    if (row.PREV_PRECO) PREV_PRECO = parseFloat(row.PREV_PRECO).toFixed(3);
-    if (row.LAST_PRECO) LAST_PRECO = parseFloat(row.LAST_PRECO).toFixed(3);
+    if (row.PREV_PRECO) PREV_PRECO = byUs.getNum(byUs.format.price(row.PREV_PRECO));
+    if (row.LAST_PRECO) LAST_PRECO = byUs.getNum(byUs.format.price(row.LAST_PRECO))
 
     if (PREV_PRECO > LAST_PRECO)
       classes = <span className="float-left" style={{ color: "green" }}><i className="icon wb-graph-down" /></span>;
@@ -107,7 +97,7 @@ class UPCPriceFormatter extends Component {
       classes = <span className="float-left" style={{ color: "lightgrey" }}><i className="icon wb-arrow-right" /></span>;
     if (PREV_PRECO < LAST_PRECO) classes = <span className="float-left" style={{ color: "red" }}><i className="icon wb-graph-up" /></span>;
 
-    const formatedValue = parseFloat(this.props.value || 0).toFixed(3);
+    const formatedValue = byUs.format.price(this.props.value);
     return (
       <div style={{ textAlign: "right" }} id={"upc" + row.LINENUM}
         onMouseLeave={e => {
@@ -124,15 +114,29 @@ class UPCPriceFormatter extends Component {
               .then(result => {
                 let content = []
 
-                if (result.data.length === 0) content.push(<tr><td>Nenhum histórico</td></tr>)
-                result.data.forEach(popuprow => {
+
+                if (result.data.length === 0)
+                  content.push(<tr><td>Nenhum histórico</td></tr>)
+                else {
                   content.push(<tr >
-                    <td>{byUs.format.properDisplayDate(popuprow.DOCDATE)}</td>
-                    {/* <td>{popuprow.DESCDOC + " " + popuprow.DOCNUM}</td> */}
-                    <td>{popuprow.CardCode}</td>
-                    <td>{byUs.format.price(popuprow.PRECOCALC, 3)}</td>
+                    <td>Data</td>
+                    <td>Fornecedor</td>
+                    <td>Preço</td>
+                    {/* <td>Desc.</td> */}
+                    <td>Pr.LIQ</td>
+                    <td>Pr.NET</td>
                   </tr>)
-                });
+                  result.data.forEach(popuprow => {
+                    content.push(<tr >
+                      <td>{byUs.format.properDisplayDate(popuprow.DocDate)}</td>
+                      <td>{popuprow.CardCode}</td>
+                      <td>{byUs.format.price(popuprow.PUR_PRICE, 3)}</td>
+                      {/* <td>{popuprow.USER_DISC}</td> */}
+                      <td>{byUs.format.price(popuprow.PRCLIQ, 3)}</td>
+                      <td>{byUs.format.price(popuprow.PRCNET, 3)}</td>
+                    </tr>)
+                  });
+                }
 
                 that.setState({
                   currentPopover:
@@ -148,7 +152,7 @@ class UPCPriceFormatter extends Component {
 
         {this.state.currentPopover}
         {classes}
-        {formatedValue} {" €"}
+        {formatedValue}
 
       </div>
     );
@@ -161,8 +165,8 @@ class NEW_PRICE_Formatter extends Component {
     let CURRENT_PRICE = 0;
     let NEW_PRICE = 0;
 
-    if (this.props.dependentValues.CURRENT_PRICE) CURRENT_PRICE = parseFloat(this.props.dependentValues.CURRENT_PRICE).toFixed(3);
-    if (this.props.dependentValues.NEW_PRICE) NEW_PRICE = parseFloat(this.props.dependentValues.NEW_PRICE).toFixed(3);
+    if (this.props.dependentValues.CURRENT_PRICE) CURRENT_PRICE = byUs.getNum(byUs.format.price(this.props.dependentValues.CURRENT_PRICE));
+    if (this.props.dependentValues.NEW_PRICE) NEW_PRICE = byUs.getNum(byUs.format.price(this.props.dependentValues.NEW_PRICE));
 
     if (CURRENT_PRICE > NEW_PRICE)
       classes = <span className="float-left" style={{ color: "green" }}><i className="icon wb-graph-down" /></span>;
@@ -171,11 +175,11 @@ class NEW_PRICE_Formatter extends Component {
     if (CURRENT_PRICE < NEW_PRICE)
       classes = <span className="float-left" style={{ color: "red" }}><i className="icon wb-graph-up" /></span>;
 
-    const formatedValue = parseFloat(this.props.value || 0).toFixed(3);
+    const formatedValue = byUs.format.price(this.props.value);
     return (
       <div style={{ textAlign: "right" }}>
         {classes}
-        {formatedValue} {" €"}
+        {formatedValue}
       </div>
     );
   }
@@ -183,10 +187,10 @@ class NEW_PRICE_Formatter extends Component {
 
 class PriceFormatter extends Component {
   render() {
-    const formatedValue = parseFloat(this.props.value || 0).toFixed(3);
+    const formatedValue = byUs.format.price(this.props.value);
     return (
       <div style={{ textAlign: "right" }}>
-        {formatedValue} {" €"}
+        {formatedValue}
       </div>
     );
   }
@@ -202,10 +206,10 @@ const HeaderAlignRight = ({ column }) => {
 
 class PercentFormatter extends Component {
   render() {
-    const formatedValue = parseFloat(this.props.value || 0).toFixed(2);
+    const formatedValue = byUs.format.percent(this.props.value);
     return (
       <div style={{ textAlign: "right" }}>
-        {formatedValue} {" %"}
+        {formatedValue}
       </div>
     );
   }
@@ -358,15 +362,24 @@ class DocAtualizacaoPrecos extends Component {
       { key: "STOCK", name: "Stock", width: 100, formatter: IntFormatter, headerRenderer: HeaderAlignRight },
       // {key: "UPC_NETNET", name: "Pr NET Ant", width: 100, formatter: PriceFormatter },
       // {key: "PREV_DOCDATE", name: "DT-1", width: 100, formatter: SimpleFormatter },
-      // {key: "PREV_PRECO", name: "UPC ANT", width: 100, formatter: PriceFormatter, headerRenderer: HeaderAlignRight },
+      { key: "PREV_PRECO", name: "UPC ANT", width: 100, formatter: PriceFormatter, headerRenderer: HeaderAlignRight },
       // {key: "LAST_DOCDATE", name: "DT", width: 100, formatter: SimpleFormatter },
 
       {
         key: "LAST_PRECO",
         name: "UPC",
-        width: 100,
+        width: 120,
         formatter: UPCPriceFormatter,
         headerRenderer: HeaderAlignRight,
+        getRowMetaData: row => row //In into my formatter I can access all the row values into this.props.dependentValues
+      }, {
+        key: "LAST_PRECO_ISNET",
+        name: "NET",
+        width: 50,
+        formatter: < Formatters.Flag />,
+        color: "success",
+        valueON: "icon ion-ios-done-all-outline",
+        valueOFF: "icon ion-ios-alert-outline",
         getRowMetaData: row => row //In into my formatter I can access all the row values into this.props.dependentValues
       },
       // {key: "PMC", name: "PMC", width: 100, formatter: PriceFormatter, headerRenderer: HeaderAlignRight },

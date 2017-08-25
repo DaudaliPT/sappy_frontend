@@ -53,6 +53,7 @@ class Full extends Component {
       if (that.hoverServerRequest && that.hoverServerRequest.abort) that.hoverServerRequest.abort();
       that.hoverServerRequest = axios({ method: "get", url: api })
         .then(result => {
+          debugger
           let content = render({ result, context: renderContext })
 
           that.setState({
@@ -165,6 +166,7 @@ class Full extends Component {
 
 
   showError(err, title, onConfirm) {
+    debugger
     let that = this;
     let moreInfo = '';
     let msg = ""
