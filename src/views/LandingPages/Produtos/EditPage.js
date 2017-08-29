@@ -175,7 +175,7 @@ class EditPage extends Component {
         </div>
         <div className="page-content container-fluid">
           <div className="row">
-            <div className="col-xl-3 col-md-4    px-md-15 px-0">
+            <div className="col-xl-2 col-md-3    px-md-15 px-0">
               {/* <!-- Panel --> */}
               <div className="panel">
                 <div className="panel-body ">
@@ -195,7 +195,7 @@ class EditPage extends Component {
               </div>
               {/* <!-- End Panel --> */}
             </div>
-            <div className="col-xl-9 col-md-8     px-md-15 px-0">
+            <div className="col-xl-10 col-md-9     px-md-15 px-0">
               {/* <!-- Panel --> */}
               <div className="panel form-panel">
                 <div className="panel-body main-body">

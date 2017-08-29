@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import uuid from 'uuid';
 const $ = window.$;
 
-class ByUsSearchBar extends Component {
+class ByUsSearchBar extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -86,7 +86,6 @@ ByUsSearchBar.defaultProps = {
     placeholder: "Procurar..."
   },
   onClickClear: item => { },
-
   limitSearch: false,
   limitSearchCondition: "",
   onToogleLimitSearch: () => { }

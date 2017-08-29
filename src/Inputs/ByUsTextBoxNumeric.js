@@ -41,7 +41,7 @@ class ByUsTextBoxNumeric extends Component {
     let rawValue = byUs.unformat.number(value)
     let formatedValue;
     if (valueType === "price") formatedValue = byUs.format.price(rawValue)
-    if (valueType === "valor") formatedValue = byUs.format.valor(rawValue)
+    if (valueType === "amount") formatedValue = byUs.format.amount(rawValue)
     if (valueType === "percent") formatedValue = byUs.format.percent(rawValue)
     if (valueType === "integer") formatedValue = byUs.format.integer(rawValue)
 

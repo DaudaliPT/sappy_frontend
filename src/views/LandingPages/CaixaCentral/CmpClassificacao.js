@@ -1,83 +1,210 @@
 import React, { Component } from "react";
+import axios from 'axios';
 import ByUsSearchPage from "../../../components/ByUsSearchPage";
+
+import { Badge } from "reactstrap";
+import uuid from "uuid/v4";
 const byUs = window.byUs;
+const $ = window.$;
+import CmpClassificacaoFooter from "./CmpClassificacaoFooter";
+import ModPagModal from "./ModPagModal";
 
 class CmpTransStock extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+
+        this.handlePNselection = this.handlePNselection.bind(this);
+        this.handleDocSelection = this.handleDocSelection.bind(this);
+        this.setClass = this.setClass.bind(this);
+
+        this.state = { selectedPN: '', selectedDocs: [], shiftKey: false, ctrlKey: false }
+
+
+    }
+
+    componentDidMount() {
+        let that = this;
+        $(window.document).on("keydown", function (e) {
+            console.log(e)
+            that.setState({
+                shiftKey: e.shiftKey, ctrlKey: e.ctrlKey
+            });
+        });
+        $(window.document).on("keyup", function (e) {
+            that.setState({
+                shiftKey: e.shiftKey, ctrlKey: e.ctrlKey
+            });
+        });
+    }
+
+    componentWillUnmount() {
+        $(window.document).off("keydown");
+        $(window.document).off("keyup");
+    }
+
+
+    handlePNselection(e) {
+        var rowDiv = $(e.target).closest(".byusVirtualRow")[0];
+
+        let cardCode = rowDiv.id.split("_")[1];
+        let { selectedPN } = this.state;
+        if (selectedPN === cardCode) selectedPN = ''; else selectedPN = cardCode;
+
+        this.setState({ selectedPN, selectedDocs: [] });
+    }
+
+    handleDocSelection(e) {
+        var rowDiv = $(e.target).closest(".byusVirtualRow")[0];
+
+        let id = rowDiv.id;
+        let transIdAndLine = id.split("_")[1];
+        let { selectedDocs } = this.state;
+        let ix = selectedDocs.indexOf(transIdAndLine);
+
+        if (ix === -1) {
+            selectedDocs.push(transIdAndLine);
+        } else {
+            if (ix > -1) selectedDocs.splice(ix, 1);
+        }
+
+        this.setState({ selectedDocs });
+    }
+
+    setClass(docClass) {
+        let that = this;
+        this.state.selectedDocs.forEach(docId => {
+            let transId = docId.split('#')[0]
+            let lineId = docId.split('#')[1]
+            axios
+                .post(`/api/caixa/class/update?transid=${transId}&line=${lineId}&class=${docClass}`)
+                .then(result => {
+                    let selectedPN = that.state.selectedPN;
+                    byUs.showToastr({ color: "success", msg: "Classificação actualizada" })
+                    that.setState({ selectedPN: '', selectedDocs: [] },
+                        () => setTimeout(that.setState({ selectedPN }), 1)
+                    );
+                })
+                .catch(error => byUs.showError(error, "Não foi possivel ataulizar classificação"));
+        })
     }
 
     render() {
-        const renderRow = ({ row, index }) => {
-            // let rowId = "row_" + index;
+        let { selectedPN, selectedDocs } = this.state;
+
+        const renderRowPN = ({ row, index }) => {
+
+            const selected = row.CARDCODE === selectedPN;
+
             let rowStyleClass = "";
-            let seta = null;
-            if (row.InvQty > 0) seta = <span className="float-left" style={{ color: "green" }}><i className="icon wb-graph-up" /></span>;
-            if (row.InvQty < 0) seta = <span className="float-left" style={{ color: "red" }}><i className="icon wb-graph-down" /></span>;
+            if (selected) rowStyleClass += " byus-selected-row";
             return (
-                <div className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={this.handleRowSelection}>
+                <div id={'PN_' + row.CARDCODE} className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={this.handlePNselection}>
                     <div className="container vertical-align-middle">
-
-
-                        {/*large displays*/}
-                        <div className="row hidden-lg-down">
-
-                            <div className="col-1 text-nowrap firstcol"> {byUs.format.properDisplayDate(row.DOC_DATETIME)} </div>
-                            <div className="col-2 text-nowrap"> {row.DESCDOC + ' ' + row.DocNum} </div>
-                            <div className="col-4 text-nowrap"> {row.WhsCode + ' - ' + row.WhsName} </div>
-                            <div className="col-2 text-nowrap">{seta} <span className="float-right">{byUs.format.quantity(row.InvQty, 0) + " " + row.InvntryUom}</span> </div>
-                            <div className="col-2 text-nowrap"><span className="float-right">{byUs.format.price(row.Price, 3)}</span> </div>
-                            <div className="col-1 text-nowrap lastcol"> <span className="float-right"> {row.FORMATED_LINETOTAL} </span> </div>
-
+                        <div className="row">
+                            <div className="col-10 text-nowrap firstcol"> {row.CARDNAME + ' (' + row.CARDCODE + ")"} </div>
                         </div>
-                        {/*mobile*/}
-                        <div className="hidden-xl-up">
-                            <div className="row">
-                                {/* <div className="col text-nowrap">  {row.CardCode + ' - ' + row.CardName} </div> */}
-                            </div>
-                            <div className="row secondrow">
-                                <div className="col-3 text-nowrap firstcol"> {byUs.format.properDisplayDate(row.DOC_DATETIME)} </div>
-                                <div className="col-4 text-nowrap"> {row.DocNum} </div>
-                                <div className="col-5 text-nowrap lastcol">  <span className="float-right">{byUs.format.quantity(row.InvQty, 0)}</span> </div>
-                            </div>
+                        <div className="row secondrow">
+                            <div className="col-6 text-nowrap firstcol"> {row.NUMDOCS + " " + (row.NUMDOCS === 1 ? " documento" : " documentos")}  </div>
+                            <div className="col-6 text-nowrap lastcol">  <span className="float-right">{byUs.format.amount(row.BALANCE)}</span> </div>
                         </div>
                     </div>
                 </div>
             );
         };
 
+        const renderRowDocs = ({ row, index }) => {
+
+            let rowId = "TRANS_" + row.TransId + '#' + row.Line_ID;
+            const selected = selectedDocs.indexOf(row.TransId + '#' + row.Line_ID) > -1;
+            let rowStyleClass = "";
+            if (selected) rowStyleClass += " byus-selected-row";
+            return (
+                <div id={rowId} className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={this.handleDocSelection} title={row.TransId}>
+                    <div className="container vertical-align-middle">
+
+                        <div className="row">
+                            <div className="col-4 text-nowrap firstcol">
+                                {row.ABREV + ' ' + row.DOCNUM}
+
+                                {row.U_apyCLASS === "C" && <Badge key={uuid()} color="warning" pill>C</Badge>}
+                                {row.U_apyCLASS === "D" && <Badge key={uuid()} color="primary" pill>D</Badge>}
+                            </div>
+                            <div className="col-4 text-nowrap"> {byUs.format.date(row.REFDATE)}  </div>
+                            <div className="col-2 text-nowrap">
+                                <span className="float-right">{
+                                    row.BALANCE !== row.DOCTOTAL ? "(" + byUs.format.amount(row.DOCTOTAL) + ") " : ""
+                                }</span> </div>
+                            <div className="col-2 text-nowrap lastcol">
+                                <span className="float-right">{byUs.format.amount(row.BALANCE)}</span> </div>
+                        </div>
+
+                    </div>
+                </div>
+            );
+        };
+
+        let totalOfSelectedDocs = 0
+        let showClassNone = false;
+        let showClassC = false;
+        let showClassD = false;
+        if (this.docsComponent) {
+            let docs = this.docsComponent.state.listItems;
+            docs.forEach(doc => {
+                let docId = doc.TransId + '#' + doc.Line_ID;
+                if (selectedDocs.indexOf(docId) > -1) {
+                    totalOfSelectedDocs += byUs.getNum(doc.BALANCE)
+                    showClassNone = (doc.TransType === '13' && selectedDocs.length === 1 && !(doc.U_apyCLASS === 'N' || !doc.U_apyCLASS));
+                    showClassC = (doc.TransType === '13' && selectedDocs.length === 1 && doc.U_apyCLASS != 'C');
+                    showClassD = (doc.TransType === '13' && selectedDocs.length === 1 && doc.U_apyCLASS != 'D');
+                }
+            })
+        }
+
+        let footerProps = {
+            actions: [
+                { name: "Nenhuma", color: "default", icon: "icon fa-close", visible: showClassNone, onClick: e => this.setClass('N') },
+                { name: "Crédito", color: "warning", icon: "icon fa-warning", visible: showClassC, onClick: e => this.setClass('C') },
+                { name: "Distribuição", color: "primary", icon: "icon fa-truck", visible: showClassD, onClick: e => this.setClass('D') },
+                {
+                    name: "Receber",
+                    content: <span>Receber <strong>{byUs.format.amount(totalOfSelectedDocs)}</strong></span>,
+                    color: "success", icon: "icon fa-check", visible: totalOfSelectedDocs > 0, onClick: e => {
+                        byUs.showModal(<ModPagModal modal={true} toggleModal={byUs.hideModal} totalReceber={totalOfSelectedDocs} />)
+                    }
+                }
+            ]
+        }
+
+
         return (
             <div className="container">
                 <div className="row">
                     <div className="col-6">
-
                         <ByUsSearchPage
+                            ref={node => this.pnComponent = node}
                             searchPlaceholder="Procurar..."
                             searchApiUrl={`/api/caixa/class/pn`}
-                            noRecordsMessage="Não há movimentos deste artigo"
-                            renderRow={renderRow}
-                            searchText={this.props.searchText}
+                            noRecordsMessage="Não há registos a mostrar"
+                            autoRefreshTime={5000}
+                            renderRow={renderRowPN}
                             placeholder={"Pesquisar o cliente"}
                             renderRowHeight={50}
-                            currentModal={this.state.currentModal}
                         />
                     </div>
                     <div className="col-6">
-
                         <ByUsSearchPage
+                            ref={node => this.docsComponent = node}
                             searchPlaceholder="Procurar..."
-                            searchApiUrl={`/api/caixa/class/docs`}
-                            noRecordsMessage="Não há movimentos deste artigo"
-                            renderRow={renderRow}
-                            searchText={this.props.searchText}
+                            searchApiUrl={`/api/caixa/class/docs?cardcode=${selectedPN}`}
+                            noRecordsMessage="Selecione primeiro um cliente"
+                            renderRow={renderRowDocs}
                             renderRowHeight={50}
-                            currentModal={this.state.currentModal}
                         />
-
-
                     </div>
                 </div>
+                {/* <p>{this.state.ctrlKey ? "ctrl" : ""} {this.state.shiftKey ? " shift" : ""}</p> */}
+                <CmpClassificacaoFooter {...footerProps}></CmpClassificacaoFooter>
+
             </div>)
 
     }

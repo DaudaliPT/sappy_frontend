@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import axios from "axios";
 import VirtualizedInfiniteLoader from "../VirtualizedInfiniteLoader";
 import ByUsSearchBar from "../ByUsSearchBar";
@@ -8,14 +8,13 @@ import uuid from 'uuid';
 const byUs = window.byUs;
 const $ = window.$;
 
-class ByUsSearchPage extends Component {
+class ByUsSearchPage extends PureComponent {
   constructor(props) {
     super(props);
 
     this.findAndGetFirstRows = this.findAndGetFirstRows.bind(this);
     this.loadNextPage = this.loadNextPage.bind(this);
     this.handleOnTabSelect = this.handleOnTabSelect.bind(this);
-    this.handeOnSideBarSelect = this.handeOnSideBarSelect.bind(this);
     this.handleOnChange_txtSearch = this.handleOnChange_txtSearch.bind(this);
     this.calcPageHeight = this.calcPageHeight.bind(this);
     this.handleToogleLimitSearch = this.handleToogleLimitSearch.bind(this)
@@ -37,12 +36,14 @@ class ByUsSearchPage extends Component {
       /*********/
       /** list of items to put on tabs bar */
       tabItems: {},
+
       /** contains the active selected tab id */
       activeTab: "",
 
       /*********/
       /** contains the loaded rows for virtalized-list */
       listItems: [],
+
       rvIsLoading: true,
       /** set when loading first or next rows, so that no more requests are made */
       rvHasNextPage: false,
@@ -57,12 +58,19 @@ class ByUsSearchPage extends Component {
     };
   }
 
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.searchText !== this.props.searchText
       || nextProps.searchApiUrl !== this.props.searchApiUrl
       || nextProps.currentModal !== this.props.currentModal
     ) {
-      setTimeout(this.findAndGetFirstRows, 1);
+
+      setTimeout(() => {
+        this.findAndGetFirstRows()
+        if (this.resfreshInterval) clearInterval(this.resfreshInterval);
+        if (this.props.autoRefreshTime) this.resfreshInterval = setInterval(this.findAndGetFirstRows, this.props.autoRefreshTime)
+      }, 1);
+
     }
   }
 
@@ -70,12 +78,16 @@ class ByUsSearchPage extends Component {
     window.addEventListener("resize", this.calcPageHeight);
 
     this.calcPageHeight();
-    setTimeout(this.findAndGetFirstRows, 1);
+
+    setTimeout(() => {
+      this.findAndGetFirstRows()
+      if (this.resfreshInterval) clearInterval(this.resfreshInterval);
+      if (this.props.autoRefreshTime) this.resfreshInterval = setInterval(this.findAndGetFirstRows, this.props.autoRefreshTime)
+    }, 1);
+
   }
 
   calcPageHeight() {
-    //Não sei porquê ficava a página ficava cortada ás vezes
-
     function getScrollParent(element, includeHidden) {
       var style = getComputedStyle(element);
       var excludeStaticParent = style.position === "absolute";
@@ -112,17 +124,18 @@ class ByUsSearchPage extends Component {
           useHeight = parentHeight
 
 
-        let minH = useHeight - $el.position().top - 150;
+        let minH = useHeight - $el.position().top - 80;
         if (minH < 350) { minH = 350; }
         $el.css("height", minH.toString() + "px");
       }
     }
   }
 
+
   componentWillUnmount() {
-    // $("body").removeClass("app-forum");
     if (this.serverRequest && this.serverRequest.abort) this.serverRequest.abort();
     window.removeEventListener("resize", this.calcPageHeight);
+    if (this.resfreshInterval) clearInterval(this.resfreshInterval);
   }
 
   handleOnTabSelect(item) {
@@ -135,33 +148,18 @@ class ByUsSearchPage extends Component {
     this.setState({ limitSearch: !that.state.limitSearch }, that.findAndGetFirstRows);
   }
 
-  handeOnSideBarSelect(item) {
-    let that = this;
-    let { activeSidebarItems } = this.state;
-
-    let i = activeSidebarItems.indexOf(item);
-    if (i !== -1) {
-      activeSidebarItems.splice(i, 1); //remover o item
-    } else {
-      activeSidebarItems.push(item); //adicionar
-    }
-
-    this.setState({ activeSidebarItems }, that.findAndGetFirstRows);
-  }
-
   handleOnChange_txtSearch(values) {
     var that = this;
     this.setState(
       {
         searchTags: values,
-        rvIsLoading: true
+        // rvIsLoading: true
       },
       function () {
         that.findAndGetFirstRows();
       }
     );
   }
-
 
   findAndGetFirstRows() {
     var that = this;
@@ -208,8 +206,10 @@ class ByUsSearchPage extends Component {
             Loaded: listItems.length
           };
           if (!(activeTab in tabItems)) activeTab = Object.keys(tabItems)[0];
-          let ReactVirtualized__List = document.getElementsByClassName("ReactVirtualized__List")[0];
-          ReactVirtualized__List.scrollTop = 0;
+          if (!that.props.autoRefreshTime) {
+            let ReactVirtualized__List = document.getElementsByClassName("ReactVirtualized__List")[0];
+            ReactVirtualized__List.scrollTop = 0;
+          }
 
           that.setState(
             { listItems, tabItems, activeTab, rvHasNextPage, hierarquyItems, totalInfo, rvIsLoading: false },
@@ -272,68 +272,65 @@ class ByUsSearchPage extends Component {
     let hasContent = !hasNoContent
 
     return (
-      // <div className="">
-      (
-        <div className="animated fadeIn">
-          <div className="page bg-white">
-            <div className="page-main">
-              {!hasContent &&
-                <ByUsNoContent message={this.props.noRecordsMessage}></ByUsNoContent>
-              }
-              {hasContent &&
-                <ByUsSearchBar
-                  totalInfo={totalInfo}
-                  onChange={this.handleOnChange_txtSearch}
-                  searchTags={this.state.searchTags}
-                  limitSearch={this.state.limitSearch}
-                  limitSearchCondition={this.props.limitSearchCondition}
-                  onToogleLimitSearch={this.handleToogleLimitSearch}
-                  inputProps={{
-                    placeholder: this.props.searchPlaceholder,
-                  }}
-                />
-              }
-              {hasContent &&
-                <ByUsTabsBar items={tabItems} activeItem={activeTab} onSelect={this.handleOnTabSelect} />
-              }
-              {hasContent &&
-                <div className="byusModalInfiniteList" id={this.byusModalInfiniteListID}>
-                  {VirtualizedInfiniteLoader({
-                    /** Are there more items to load? */
-                    hasNextPage: this.state.rvHasNextPage,
+      <div className="animated fadeIn">
+        <div className="page bg-white">
+          <div className="page-main">
+            {!hasContent &&
+              <ByUsNoContent message={this.props.noRecordsMessage}></ByUsNoContent>
+            }
+            {hasContent &&
+              <ByUsSearchBar
+                totalInfo={totalInfo}
+                onChange={this.handleOnChange_txtSearch}
+                searchTags={this.state.searchTags}
+                limitSearch={this.state.limitSearch}
+                limitSearchCondition={this.props.limitSearchCondition}
+                onToogleLimitSearch={this.handleToogleLimitSearch}
+                inputProps={{
+                  placeholder: this.props.searchPlaceholder,
+                }}
+              />
+            }
+            {hasContent &&
+              <ByUsTabsBar items={tabItems} activeItem={activeTab} onSelect={this.handleOnTabSelect} />
+            }
+            {hasContent &&
+              <div className="byusModalInfiniteList" id={this.byusModalInfiniteListID}>
+                {VirtualizedInfiniteLoader({
+                  /** Are there more items to load? */
+                  hasNextPage: this.state.rvHasNextPage,
 
-                    /** Are we currently loading a page of items? */
-                    isNextPageLoading: this.state.rvIsLoading,
+                  /** Are we currently loading a page of items? */
+                  isNextPageLoading: this.state.rvIsLoading,
 
-                    /** List of items loaded so far */
-                    list: this.state.listItems,
+                  /** List of items loaded so far */
+                  list: this.state.listItems,
 
-                    /** Callback function responsible for loading the next page of items */
-                    loadNextPage: this.loadNextPage,
+                  /** Callback function responsible for loading the next page of items */
+                  loadNextPage: this.loadNextPage,
 
-                    /** callback to function responsible for rendering the row */
-                    renderRow: this.props.renderRow,
-                    rowHeight: this.props.renderRowHeight,
+                  /** callback to function responsible for rendering the row */
+                  renderRow: this.props.renderRow,
+                  rowHeight: this.props.renderRowHeight,
 
-                  })}
-                </div>
-              }
-            </div>
+                })}
+              </div>
+            }
           </div>
-          {currentModal}
         </div>
-      )
-    );
+        {currentModal}
+      </div>
+    )
   }
 }
 
 ByUsSearchPage.defaultProps = {
-  pageTitle: "pageTitle not defined",
   searchPlaceholder: "Procurar...",
   searchApiUrl: "",
   renderHeaders: () => { },
   currentModal: null,
   renderRow: ({ row, index }) => { },
+  autoRefreshTime: 0,
   renderRowHeight: 20,
   limitSearch: false,
   limitSearchCondition: "",

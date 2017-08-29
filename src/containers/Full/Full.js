@@ -211,7 +211,7 @@ class Full extends Component {
 
     let toastrContainer = this.refs.container;
     setTimeout(e => {
-      if (color === "success") toastrContainer.sucess(msg, "", { closeButton: true })
+      if (color === "success") toastrContainer.success(msg, "", { closeButton: true })
       else if (color === "info") toastrContainer.info(msg, "", { closeButton: true })
       else if (color === "warning") toastrContainer.warning(msg, "", { closeButton: true })
       else if (color === "danger") toastrContainer.error(msg, "", { closeButton: true })

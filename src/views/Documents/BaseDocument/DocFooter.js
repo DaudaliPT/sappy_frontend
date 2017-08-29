@@ -37,7 +37,7 @@ class DocFooter extends Component {
             <span className="hidden-sm-down">Total</span>
             <span id="total-btn-text">
               <strong>
-                {"   " + byUs.format.valor(this.props.totals.totalAmount)}
+                {"   " + byUs.format.amount(this.props.totals.totalAmount)}
               </strong>
             </span>
             {!this.props.showTotals && <i className="icon wb-dropup" />}

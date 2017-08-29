@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
-class ByUsTabsBar extends Component {
+class ByUsTabsBar extends PureComponent {
   constructor(props) {
     super(props);
 

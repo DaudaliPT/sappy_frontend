@@ -193,7 +193,10 @@ import moment from 'moment';
     if (value === "") return 0;
 
     if (typeof value === "string")
-      ret = parseFloat(value);
+      if (value.indexOf(".") > -1 && value.indexOf(",") === -1)
+        ret = parseFloat(value);
+      else
+        ret = byUs.unformat.number(value);
     else
       ret = parseFloat(value);
 
@@ -238,12 +241,6 @@ import moment from 'moment';
 
       return ret;
     },
-    valor: (value) => {
-      let decimals = byUs.sessionInfo.company.oadm.SumDec;
-      if (typeof value === 'string') value = parseFloat(value);
-      return accounting.formatMoney(value, null, decimals);
-    },
-
     date: value => {
       if (!value) return ""
       let sapFormat = getDateFormat();

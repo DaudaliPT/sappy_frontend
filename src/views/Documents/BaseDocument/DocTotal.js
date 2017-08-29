@@ -35,25 +35,25 @@ class DocFooter extends Component {
 
         <div className="row">
           <div className="col">Mercadoria</div>
-          <div className="col"><span className="float-right">{byUs.format.valor(totals.grossAmmount)}</span></div>
+          <div className="col"><span className="float-right">{byUs.format.amount(totals.grossAmmount)}</span></div>
         </div>
         <div className="row">
           <div className="col">Descontos</div>
-          <div className="col"><span className="float-right">{byUs.format.valor(totals.discountAmmount)}</span></div>
+          <div className="col"><span className="float-right">{byUs.format.amount(totals.discountAmmount)}</span></div>
         </div>
         <div className="row">
           <div className="col">Valor Líquido</div>
-          <div className="col"><span className="float-right">{byUs.format.valor(totals.liquidAmount)}</span></div>
+          <div className="col"><span className="float-right">{byUs.format.amount(totals.liquidAmount)}</span></div>
         </div>
         {byUs.getNum(docData.EXTRADISC) !== 0 &&
           <div className="row">
             <div className="col-6">Desc.Adicional</div>
-            <div className="col"><span className="float-right">{byUs.format.valor(byUs.getNum(docData.EXTRADISC))}</span></div>
+            <div className="col"><span className="float-right">{byUs.format.amount(byUs.getNum(docData.EXTRADISC))}</span></div>
           </div>
         }
         <div className="row">
           <div className="col">IVA</div>
-          <div className="col"><span className="float-right">{byUs.format.valor(totals.vatAmount)}</span></div>
+          <div className="col"><span className="float-right">{byUs.format.amount(totals.vatAmount)}</span></div>
         </div>
         <div className="row">
           <div className="col-6">Arredondamento</div>
@@ -63,7 +63,7 @@ class DocFooter extends Component {
               disabled={!editable}
               value={byUs.getNum(docData.ROUNDVAL)}
               onChange={this.props.onFieldChange}
-              valueType="valor" />
+              valueType="amount" />
           </div>
         </div>
         <hr />
@@ -75,7 +75,7 @@ class DocFooter extends Component {
               disabled={!editable}
               value={totals.totalAmount /*byUs.getNum(this.props.DOCTOTAL) ||  totals.totalAmount */}
               onChange={this.props.onFieldChange}
-              valueType="valor" />
+              valueType="amount" />
           </div>
         </div>
       </div>
