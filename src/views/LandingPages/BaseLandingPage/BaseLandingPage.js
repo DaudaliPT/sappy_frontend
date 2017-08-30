@@ -251,59 +251,57 @@ class BaseLandingPage extends Component {
     return (
       // <div className="">
       (
-        <div className="animated fadeIn">
-          <div className="page bg-white-disabled">
+        <div className="page bg-white-disabled">
 
-            {/*<!-- Forum Sidebar -->*/}
-            <SideBar
-              totalInfo={totalInfo}
-              activeSidebarItems={activeSidebarItems}
-              items={hierarquyItems}
-              onSelect={this.handeOnSideBarSelect}
-            />
+          {/*<!-- Forum Sidebar -->*/}
+          <SideBar
+            totalInfo={totalInfo}
+            activeSidebarItems={activeSidebarItems}
+            items={hierarquyItems}
+            onSelect={this.handeOnSideBarSelect}
+          />
+
+          {/*<!-- Forum Content -->*/}
+          <div className="page-main">
+
+            {/*<!-- Forum Content Header -->*/}
+            <div className="page-header">
+              <h1 className="page-title">{this.props.pageTitle}</h1>
+
+              <ByUsSearchBar
+                totalInfo={totalInfo}
+                onChange={this.handleOnChange_txtSearch}
+                searchTags={this.state.searchTags}
+                inputProps={{
+                  placeholder: this.props.searchPlaceholder,
+                }}
+              />
+            </div>
+
+            {/*<!-- Forum Nav -->*/}
+            <ByUsTabsBar items={tabItems} activeItem={activeTab} onSelect={this.handleOnTabSelect} />
 
             {/*<!-- Forum Content -->*/}
-            <div className="page-main">
 
-              {/*<!-- Forum Content Header -->*/}
-              <div className="page-header">
-                <h1 className="page-title">{this.props.pageTitle}</h1>
+            <div id="byusInfiniteList">
+              {VirtualizedInfiniteLoader({
+                /** Are there more items to load? */
+                hasNextPage: this.state.rvHasNextPage,
 
-                <ByUsSearchBar
-                  totalInfo={totalInfo}
-                  onChange={this.handleOnChange_txtSearch}
-                  searchTags={this.state.searchTags}
-                  inputProps={{
-                    placeholder: this.props.searchPlaceholder,
-                  }}
-                />
-              </div>
+                /** Are we currently loading a page of items? */
+                isNextPageLoading: this.state.rvIsLoading,
 
-              {/*<!-- Forum Nav -->*/}
-              <ByUsTabsBar items={tabItems} activeItem={activeTab} onSelect={this.handleOnTabSelect} />
+                /** List of items loaded so far */
+                list: this.state.listItems,
 
-              {/*<!-- Forum Content -->*/}
+                /** Callback function responsible for loading the next page of items */
+                loadNextPage: this.loadNextPage,
 
-              <div id="byusInfiniteList">
-                {VirtualizedInfiniteLoader({
-                  /** Are there more items to load? */
-                  hasNextPage: this.state.rvHasNextPage,
+                /** callback to function responsible for rendering the row */
+                renderRow: ({ row, index }) => this.props.renderRow({ row, index, onRowClick: this.props.onRowClick }),
+                rowHeight: this.props.renderRowHeight,
 
-                  /** Are we currently loading a page of items? */
-                  isNextPageLoading: this.state.rvIsLoading,
-
-                  /** List of items loaded so far */
-                  list: this.state.listItems,
-
-                  /** Callback function responsible for loading the next page of items */
-                  loadNextPage: this.loadNextPage,
-
-                  /** callback to function responsible for rendering the row */
-                  renderRow: ({ row, index }) => this.props.renderRow({ row, index, onRowClick: this.props.onRowClick }),
-                  rowHeight: this.props.renderRowHeight,
-
-                })}
-              </div>
+              })}
             </div>
           </div>
           {renderActions()}

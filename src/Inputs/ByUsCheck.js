@@ -27,7 +27,6 @@ class ByUsCheck extends Component {
 
 
     let checked = this.props.value != null ? this.props.value : false;
-    // let ON = this.props.column.valueON || "icon fa fa-warning faa-slow faa-shake animated";
     let ON = "icon ion-ios-checkmark-circle-outline";
     let OFF = "icon ion-ios-radio-button-off";//-ios-close-circle-outline";
     let color = this.props.color || "success";

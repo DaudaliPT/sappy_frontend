@@ -271,52 +271,48 @@ class ByUsSearchPage extends PureComponent {
 
     let hasContent = !hasNoContent
     return (
-      <div className="animated fadeIn">
-        <div className="page bg-white">
-          <div className="page-main">
-            {!hasContent &&
-              <ByUsNoContent message={this.props.noRecordsMessage}></ByUsNoContent>
-            }
-            {hasContent &&
-              <ByUsSearchBar
-                totalInfo={totalInfo}
-                onChange={this.handleOnChange_txtSearch}
-                searchTags={this.state.searchTags}
-                limitSearch={this.state.limitSearch}
-                limitSearchCondition={this.props.limitSearchCondition}
-                onToogleLimitSearch={this.handleToogleLimitSearch}
-                inputProps={{
-                  placeholder: this.props.searchPlaceholder,
-                }}
-              />
-            }
-            {hasContent &&
-              <ByUsTabsBar items={tabItems} activeItem={activeTab} onSelect={this.handleOnTabSelect} />
-            }
-            {hasContent &&
-              <div className="byusModalInfiniteList" id={this.byusModalInfiniteListID}>
-                {VirtualizedInfiniteLoader({
-                  /** Are there more items to load? */
-                  hasNextPage: this.state.rvHasNextPage,
+      <div >
+        {!hasContent &&
+          <ByUsNoContent message={this.props.noRecordsMessage}></ByUsNoContent>
+        }
+        {hasContent &&
+          <ByUsSearchBar
+            totalInfo={totalInfo}
+            onChange={this.handleOnChange_txtSearch}
+            searchTags={this.state.searchTags}
+            limitSearch={this.state.limitSearch}
+            limitSearchCondition={this.props.limitSearchCondition}
+            onToogleLimitSearch={this.handleToogleLimitSearch}
+            inputProps={{
+              placeholder: this.props.searchPlaceholder,
+            }}
+          />
+        }
+        {hasContent &&
+          <ByUsTabsBar items={tabItems} activeItem={activeTab} onSelect={this.handleOnTabSelect} />
+        }
+        {hasContent &&
+          <div className="byusModalInfiniteList" id={this.byusModalInfiniteListID}>
+            {VirtualizedInfiniteLoader({
+              /** Are there more items to load? */
+              hasNextPage: this.state.rvHasNextPage,
 
-                  /** Are we currently loading a page of items? */
-                  isNextPageLoading: this.state.rvIsLoading,
+              /** Are we currently loading a page of items? */
+              isNextPageLoading: this.state.rvIsLoading,
 
-                  /** List of items loaded so far */
-                  list: this.state.listItems,
+              /** List of items loaded so far */
+              list: this.state.listItems,
 
-                  /** Callback function responsible for loading the next page of items */
-                  loadNextPage: this.loadNextPage,
+              /** Callback function responsible for loading the next page of items */
+              loadNextPage: this.loadNextPage,
 
-                  /** callback to function responsible for rendering the row */
-                  renderRow: this.props.renderRow,
-                  rowHeight: this.props.renderRowHeight,
+              /** callback to function responsible for rendering the row */
+              renderRow: this.props.renderRow,
+              rowHeight: this.props.renderRowHeight,
 
-                })}
-              </div>
-            }
+            })}
           </div>
-        </div>
+        }
         {currentModal}
       </div>
     )

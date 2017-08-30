@@ -27,7 +27,6 @@ class ByUsFlag extends Component {
 
 
     let checked = this.props.value != null ? this.props.value : false;
-    // let ON = this.props.column.valueON || "icon fa fa-warning faa-slow faa-shake animated";
     let ON = "icon ion-ios-flag";
     let OFF = "icon ion-ios-flag-outline";
     let color = this.props.color || "success";

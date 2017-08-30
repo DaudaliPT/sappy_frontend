@@ -993,93 +993,91 @@ class DocAtualizacaoPrecos extends Component {
     return (
       // <div className="">
       (
-        <div className="animated fadeIn">
-          <div className="page">
+        <div className="page">
 
-            <div className="page-header container-fluid">
-              <div className="row">
-                <div className="col-xl-8 col-md-4">
-                  <h5 className="page-title">Atualização de preços {this.state.docData.DOCNUM && this.state.docData.DOCNUM} </h5>
-                </div>
-                <div className="col-xl-4 col-md-8">
-                  <div className="byus-action-bar animation-slide-left">
-                    <Button outline className="btn-md btn-flat" onClick={e => {
-                      this.setState({
-                        currentModal: (
-                          <ModalMessageConfirm
-                            toggleModal={result => {
-                              this.setState({ currentModal: null });
-                              if (result === "CONFIRMADO") {
-                                this.serverRequest = axios
-                                  .post(`/api/precos/doc/${this.state.docData.ID}/clone`)
-                                  .then(function (result) {
-                                    hashHistory.push({ pathname: "/inv/prices/doc", state: { id: result.data.newID } });
-                                  })
-                                  .catch(error => byUs.showError(error, "Erro ao duplicar dados"));
-                              }
-                            }}
-                            title="Confirmar ação"
-                            text="Deseja duplicar este documento?"
-                            moreInfo="Se continuar irá criar um rascunho com o mesmo conteúdo"
-                            btnConfirmar="Duplicar"
-                            iconConfirmar="icon wb-copy"
-                            color="primary"
-                          />
-                        )
-                      });
-                    }}>
-                      <i className="icon wb-copy" />
-                      <span className="hidden-sm-down"> </span>
-                    </Button>
-                    <Button outline className="btn-md btn-flat" onClick={e => this.onMoveTo('previous')}>
-                      <i className="icon wb-arrow-left" />
-                      <span className="hidden-sm-down"> </span>
-                    </Button>
-                    <Button outline className="btn-md btn-flat" onClick={e => this.onMoveTo('next')}>
-                      <i className="icon wb-arrow-right" />
-                      <span className="hidden-sm-down"> </span>
-                    </Button>
+          <div className="page-header container-fluid">
+            <div className="row">
+              <div className="col-xl-8 col-md-4">
+                <h5 className="page-title">Atualização de preços {this.state.docData.DOCNUM && this.state.docData.DOCNUM} </h5>
+              </div>
+              <div className="col-xl-4 col-md-8">
+                <div className="byus-action-bar animation-slide-left">
+                  <Button outline className="btn-md btn-flat" onClick={e => {
+                    this.setState({
+                      currentModal: (
+                        <ModalMessageConfirm
+                          toggleModal={result => {
+                            this.setState({ currentModal: null });
+                            if (result === "CONFIRMADO") {
+                              this.serverRequest = axios
+                                .post(`/api/precos/doc/${this.state.docData.ID}/clone`)
+                                .then(function (result) {
+                                  hashHistory.push({ pathname: "/inv/prices/doc", state: { id: result.data.newID } });
+                                })
+                                .catch(error => byUs.showError(error, "Erro ao duplicar dados"));
+                            }
+                          }}
+                          title="Confirmar ação"
+                          text="Deseja duplicar este documento?"
+                          moreInfo="Se continuar irá criar um rascunho com o mesmo conteúdo"
+                          btnConfirmar="Duplicar"
+                          iconConfirmar="icon wb-copy"
+                          color="primary"
+                        />
+                      )
+                    });
+                  }}>
+                    <i className="icon wb-copy" />
+                    <span className="hidden-sm-down"> </span>
+                  </Button>
+                  <Button outline className="btn-md btn-flat" onClick={e => this.onMoveTo('previous')}>
+                    <i className="icon wb-arrow-left" />
+                    <span className="hidden-sm-down"> </span>
+                  </Button>
+                  <Button outline className="btn-md btn-flat" onClick={e => this.onMoveTo('next')}>
+                    <i className="icon wb-arrow-right" />
+                    <span className="hidden-sm-down"> </span>
+                  </Button>
 
-                  </div>
                 </div>
               </div>
-
             </div>
-            {/*<!-- Forum Content -->*/}
-            {/*<div className="page-main">*/}
-            {this.state.docData.DOCNUM && <div className="panel">
-              {header}
-            </div>}
 
-            {/*<!-- Forum Content -->*/}
-            <div className="panel">
-              <div>
-                <DraggableContainer>
-
-                  <ReactDataGrid
-                    ref={node => this.grid = node}
-                    enableCellSelect={true}
-                    columns={cols}
-                    rowGetter={this.getRowAt}
-                    rowsCount={this.getSize()}
-                    minHeight={this.state.searchGridH}
-                    onGridRowsUpdated={this.handleGridRowsUpdated}
-                    onCellClick={this.handleOnCellClick}
-                    rowSelection={rowSelection}
-
-                    enableDragAndDrop={true}
-                    onRowExpandToggle={this.onRowExpandToggle}
-                    toolbar={<CustomToolbar groupBy={this.state.groupBy} onColumnGroupAdded={this.onColumnGroupAdded} onColumnGroupDeleted={this.onColumnGroupDeleted} />}
-                  ></ReactDataGrid>
-                </DraggableContainer>
-              </div>
-
-              {renderActions()}
-
-              {this.state.currentModal}
-            </div>
           </div>
-        </div >
+          {/*<!-- Forum Content -->*/}
+          {/*<div className="page-main">*/}
+          {this.state.docData.DOCNUM && <div className="panel">
+            {header}
+          </div>}
+
+          {/*<!-- Forum Content -->*/}
+          <div className="panel">
+            <div>
+              <DraggableContainer>
+
+                <ReactDataGrid
+                  ref={node => this.grid = node}
+                  enableCellSelect={true}
+                  columns={cols}
+                  rowGetter={this.getRowAt}
+                  rowsCount={this.getSize()}
+                  minHeight={this.state.searchGridH}
+                  onGridRowsUpdated={this.handleGridRowsUpdated}
+                  onCellClick={this.handleOnCellClick}
+                  rowSelection={rowSelection}
+
+                  enableDragAndDrop={true}
+                  onRowExpandToggle={this.onRowExpandToggle}
+                  toolbar={<CustomToolbar groupBy={this.state.groupBy} onColumnGroupAdded={this.onColumnGroupAdded} onColumnGroupDeleted={this.onColumnGroupDeleted} />}
+                ></ReactDataGrid>
+              </DraggableContainer>
+            </div>
+
+            {renderActions()}
+
+            {this.state.currentModal}
+          </div>
+        </div>
       )
     );
   }
