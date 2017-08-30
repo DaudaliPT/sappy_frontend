@@ -29,6 +29,7 @@ class Full extends Component {
 
     this.state = {
       currentAppModal: null,
+      currentMsgModal: null,
       currentPopover: null
     }
   }
@@ -72,7 +73,7 @@ class Full extends Component {
     let that = this;
 
     this.setState({
-      currentAppModal:
+      currentMsgModal:
       < SweetAlert success title={title || "Sucesso"}
 
         showCancel={typeof onCancel === "function"}
@@ -80,7 +81,7 @@ class Full extends Component {
         cancelBtnBsStyle={cancelStyle || "default"}
         cancelBtnText={cancelText || "Cancelar"}
         onCancel={() => {
-          that.setState({ currentAppModal: null })
+          that.setState({ currentMsgModal: null })
           onCancel && onCancel()
         }}
 
@@ -89,7 +90,7 @@ class Full extends Component {
 
         onConfirm={
           () => {
-            that.setState({ currentAppModal: null })
+            that.setState({ currentMsgModal: null })
             onConfirm && onConfirm()
           }} >
         {msg}
@@ -104,7 +105,7 @@ class Full extends Component {
     let that = this;
 
     this.setState({
-      currentAppModal:
+      currentMsgModal:
       < SweetAlert info title={title || "Questão"}
 
         showCancel={typeof onCancel === "function"}
@@ -112,7 +113,7 @@ class Full extends Component {
         cancelBtnBsStyle={cancelStyle || "default"}
         cancelBtnText={cancelText || "Cancelar"}
         onCancel={() => {
-          that.setState({ currentAppModal: null })
+          that.setState({ currentMsgModal: null })
           onCancel && onCancel()
         }}
 
@@ -120,7 +121,7 @@ class Full extends Component {
         confirmBtnBsStyle={confirmStyle || "success"}
         onConfirm={
           () => {
-            that.setState({ currentAppModal: null })
+            that.setState({ currentMsgModal: null })
             onConfirm && onConfirm()
           }} >
         {msg}
@@ -136,7 +137,7 @@ class Full extends Component {
     let that = this;
 
     this.setState({
-      currentAppModal:
+      currentMsgModal:
       < SweetAlert warning title={title || "Aviso"}
 
         showCancel={typeof onCancel === "function"}
@@ -144,7 +145,7 @@ class Full extends Component {
         cancelBtnBsStyle={cancelStyle || "default"}
         cancelBtnText={cancelText || "Cancelar"}
         onCancel={() => {
-          that.setState({ currentAppModal: null })
+          that.setState({ currentMsgModal: null })
           onCancel && onCancel()
         }}
 
@@ -153,7 +154,7 @@ class Full extends Component {
 
         onConfirm={
           () => {
-            that.setState({ currentAppModal: null })
+            that.setState({ currentMsgModal: null })
             onConfirm && onConfirm()
           }} >
         {msg}
@@ -166,7 +167,6 @@ class Full extends Component {
 
 
   showError(err, title, onConfirm) {
-    debugger
     let that = this;
     let moreInfo = '';
     let msg = ""
@@ -186,11 +186,11 @@ class Full extends Component {
     if (!msg) msg = safeJsonStringify(err);
 
     this.setState({
-      currentAppModal:
+      currentMsgModal:
       <SweetAlert error title={title || "Erro"}
         onConfirm={
           () => {
-            that.setState({ currentAppModal: null })
+            that.setState({ currentMsgModal: null })
             onConfirm && onConfirm()
           }}>
         {msg}
@@ -243,8 +243,9 @@ class Full extends Component {
           preventDuplicates={true}
           className="toast-top-right"
         />
-        {this.state.currentPopover}
         {this.state.currentAppModal}
+        {this.state.currentMsgModal}
+        {this.state.currentPopover}
       </div>
     );
   }

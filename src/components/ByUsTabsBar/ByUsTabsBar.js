@@ -15,7 +15,6 @@ class ByUsTabsBar extends PureComponent {
 
   render() {
     var { items, activeItem } = this.props;
-
     const renderItems = () => {
       return Object.keys(items).map(key => {
         let classes = (activeItem === key ? "active" : "") + " nav-link";

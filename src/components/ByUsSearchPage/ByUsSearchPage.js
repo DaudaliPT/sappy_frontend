@@ -270,7 +270,6 @@ class ByUsSearchPage extends PureComponent {
       this.state.activeTab === tabItems[0])
 
     let hasContent = !hasNoContent
-
     return (
       <div className="animated fadeIn">
         <div className="page bg-white">

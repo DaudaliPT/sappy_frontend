@@ -78,18 +78,20 @@ class CmpTransStock extends Component {
             axios
                 .post(`/api/caixa/class/update?transid=${transId}&line=${lineId}&class=${docClass}`)
                 .then(result => {
+                    //forçar refresh
                     let selectedPN = that.state.selectedPN;
-                    byUs.showToastr({ color: "success", msg: "Classificação actualizada" })
                     that.setState({ selectedPN: '', selectedDocs: [] },
                         () => setTimeout(that.setState({ selectedPN }), 1)
                     );
                 })
-                .catch(error => byUs.showError(error, "Não foi possivel ataulizar classificação"));
+                .catch(error => byUs.showError(error, "Não foi possivel atualizar classificação"));
         })
     }
 
     render() {
         let { selectedPN, selectedDocs } = this.state;
+        let docsList = [];
+        if (this.docsComponent) docsList = this.docsComponent.state.listItems
 
         const renderRowPN = ({ row, index }) => {
 
@@ -148,14 +150,13 @@ class CmpTransStock extends Component {
         let showClassC = false;
         let showClassD = false;
         if (this.docsComponent) {
-            let docs = this.docsComponent.state.listItems;
-            docs.forEach(doc => {
+            docsList.forEach(doc => {
                 let docId = doc.TransId + '#' + doc.Line_ID;
                 if (selectedDocs.indexOf(docId) > -1) {
                     totalOfSelectedDocs += byUs.getNum(doc.BALANCE)
                     showClassNone = (doc.TransType === '13' && selectedDocs.length === 1 && !(doc.U_apyCLASS === 'N' || !doc.U_apyCLASS));
-                    showClassC = (doc.TransType === '13' && selectedDocs.length === 1 && doc.U_apyCLASS != 'C');
-                    showClassD = (doc.TransType === '13' && selectedDocs.length === 1 && doc.U_apyCLASS != 'D');
+                    showClassC = (doc.TransType === '13' && selectedDocs.length === 1 && doc.U_apyCLASS !== 'C');
+                    showClassD = (doc.TransType === '13' && selectedDocs.length === 1 && doc.U_apyCLASS !== 'D');
                 }
             })
         }
@@ -169,7 +170,20 @@ class CmpTransStock extends Component {
                     name: "Receber",
                     content: <span>Receber <strong>{byUs.format.amount(totalOfSelectedDocs)}</strong></span>,
                     color: "success", icon: "icon fa-check", visible: totalOfSelectedDocs > 0, onClick: e => {
-                        byUs.showModal(<ModPagModal modal={true} toggleModal={byUs.hideModal} totalReceber={totalOfSelectedDocs} />)
+                        byUs.showModal(<ModPagModal modal={true}
+                            toggleModal={sucess => {
+                                //force refresh
+                                let selectedPN = this.state.selectedPN;
+                                this.setState({ selectedPN: '', selectedDocs: [] },
+                                    () => setTimeout(this.setState({ selectedPN }), 1)
+                                );
+
+                                byUs.hideModal()
+                            }}
+                            selectedPN={selectedPN}
+                            selectedDocs={selectedDocs}
+                            docsList={docsList}
+                            totalReceber={totalOfSelectedDocs} />)
                     }
                 }
             ]

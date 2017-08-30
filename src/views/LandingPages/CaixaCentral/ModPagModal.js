@@ -21,7 +21,11 @@ class ModPagModal extends Component {
 
   componentDidMount() {
     window.addEventListener("resize", this.calcPageHeight);
-
+    this.onFieldChange({
+      fieldName: "totalReceber",
+      formatedValue: byUs.format.amount(this.props.totalReceber),
+      rawValue: byUs.getNum(this.props.totalReceber)
+    })
     this.calcPageHeight();
   }
 
@@ -58,45 +62,126 @@ class ModPagModal extends Component {
       Object.assign(newStateValues, { [fieldName]: val });
     }
 
+    //Não pode ter transferência e multibanco
+    if (fieldName.indexOf("ValorTransferencia") > -1 && newStateValues.ValorMultibanco) {
+      byUs.showToastr({ color: "warning", msg: "Não pode ter Transferência e Multibanco em simultaneo." })
+      newStateValues.ValorMultibanco = "";
+    }
+    if (fieldName.indexOf("ValorMultibanco") > -1 && newStateValues.ValorTransferencia) {
+
+      byUs.showToastr({ color: "warning", msg: "Não pode ter Multibanco e Transferência em simultaneo." })
+      newStateValues.ValorTransferencia = "";
+    }
+
+    newStateValues.totalMeiosPag
+      = byUs.getNum(this.state.ValorNumerario)
+      + byUs.getNum(this.state.ValorMultibanco)
+      + byUs.getNum(this.state.ValorTransferencia)
+      + byUs.getNum(this.state.ValorCheque);
+
+    newStateValues.troco = newStateValues.totalMeiosPag - newStateValues.totalReceber;
+
+    if (newStateValues.troco > byUs.getNum(this.state.ValorNumerario)) {
+      byUs.showToastr({ color: "danger", msg: "O troco não pode ser superior ao valor em numerário" })
+      newStateValues.continuarColor = "danger";
+      newStateValues.continuarContent = <span> <i className="icon wb-warning" /> Troco {byUs.format.amount(newStateValues.troco)}</span>;
+    } else if (newStateValues.troco < 0) {
+      newStateValues.continuarColor = "danger";
+      newStateValues.continuarContent = <span> <i className="icon wb-warning" />  Em falta {byUs.format.amount(-1 * newStateValues.troco)}</span>
+    } else if (newStateValues.troco > 0) {
+      newStateValues.continuarColor = "warning";
+      newStateValues.continuarContent = <span> <i className="icon wb-check" /> Concluir (Troco {byUs.format.amount(newStateValues.troco)})</span>
+    } else {
+      newStateValues.continuarColor = "success";
+      newStateValues.continuarContent = <span> <i className="icon wb-check" /> Concluir {byUs.format.amount(newStateValues.troco)}</span>
+    }
     this.setState(newStateValues);
   }
 
   onCreateReceipt() {
     let that = this;
-    this.state.selectedDocs.forEach(docId => {
-      let transId = docId.split('#')[0]
-      let lineId = docId.split('#')[1]
 
-      let data = {
-        DocType: "rCustomer",
-        CardCode: this.props.selectedPN,
-        CashAccount: "111",
-        CheckAccount: "119",
-        TransferAccount: "118",
-        CashSum: 0,
-        TransferSum: 34.37,
-        // TransferDate: "2016-06-09",
-        TransferReference: "MB",
-        PaymentInvoices: [
-          {
-            DocEntry: 00,
-            InvoiceType: "it_Invoice",
-            PaidSum: 0
-          }
-        ]
-      }
 
-      axios
-        .post(`/api/caixa/class/receipt`, data)
-        .then(result => {
-          let selectedPN = that.state.selectedPN;
-          byUs.showToastr({ color: "success", msg: "Classificação actualizada" })
-          that.setState({ selectedPN: '', selectedDocs: [] },
-            () => setTimeout(that.setState({ selectedPN }), 1)
-          );
+    let data = {
+      DocType: "rCustomer",
+      CardCode: this.props.selectedPN,
+      CashAccount: "111",
+      CheckAccount: "119",
+      TransferAccount: "118",
+      CashSum: byUs.getNum(this.state.ValorNumerario) - byUs.getNum(this.state.troco),
+      TransferSum: byUs.getNum(this.state.ValorTransferencia),
+      // TransferDate: "2016-06-09", 
+      PaymentInvoices: [
+
+      ]
+    }
+    if (byUs.getNum(this.state.ValorMultibanco)) {
+      data.TransferSum = byUs.getNum(this.state.ValorMultibanco)
+      data.TransferReference = 'MB'
+    }
+
+    this.props.selectedDocs.forEach(docId => {
+
+      let doc = this.props.docsList.find(doc => docId === (doc.TransId + "#" + doc.Line_ID))
+
+      let InvoiceType = ""
+      if (byUs.getNum(doc.TransType) === -3) InvoiceType = "it_ClosingBalance";
+      else if (byUs.getNum(doc.TransType) === -1) InvoiceType = "it_AllTransactions";
+      else if (byUs.getNum(doc.TransType) === -2) InvoiceType = "it_OpeningBalance";
+      else if (byUs.getNum(doc.TransType) === 13) InvoiceType = "it_Invoice";
+      else if (byUs.getNum(doc.TransType) === 14) InvoiceType = "it_CredItnote";
+      else if (byUs.getNum(doc.TransType) === 15) InvoiceType = "it_TaxInvoice"
+      else if (byUs.getNum(doc.TransType) === 16) InvoiceType = "it_Return";
+      else if (byUs.getNum(doc.TransType) === 18) InvoiceType = "it_PurchaseInvoice";
+      else if (byUs.getNum(doc.TransType) === 19) InvoiceType = "it_PurchaseCreditNote";
+      else if (byUs.getNum(doc.TransType) === 20) InvoiceType = "it_PurchaseDeliveryNote";
+      else if (byUs.getNum(doc.TransType) === 21) InvoiceType = "it_PurchaseReturn";
+      else if (byUs.getNum(doc.TransType) === 24) InvoiceType = "it_Receipt";
+      else if (byUs.getNum(doc.TransType) === 25) InvoiceType = "it_Deposit";
+      else if (byUs.getNum(doc.TransType) === 30) InvoiceType = "it_JournalEntry";
+      else if (byUs.getNum(doc.TransType) === 46) InvoiceType = "it_PaymentAdvice";
+      else if (byUs.getNum(doc.TransType) === 57) InvoiceType = "it_ChequesForPayment";
+      else if (byUs.getNum(doc.TransType) === 58) InvoiceType = "it_StockReconciliations";
+      else if (byUs.getNum(doc.TransType) === 59) InvoiceType = "it_GeneralReceiptToStock";
+      else if (byUs.getNum(doc.TransType) === 60) InvoiceType = "it_GeneralReleaseFromStock";
+      else if (byUs.getNum(doc.TransType) === 67) InvoiceType = "it_TransferBetweenWarehouses";
+      else if (byUs.getNum(doc.TransType) === 68) InvoiceType = "it_WorkInstructions";
+      else if (byUs.getNum(doc.TransType) === 76) InvoiceType = "it_DeferredDeposit";
+      else if (byUs.getNum(doc.TransType) === 132) InvoiceType = "it_CorrectionInvoice ";
+      else if (byUs.getNum(doc.TransType) === 163) InvoiceType = "it_APCorrectionInvoice ";
+      else if (byUs.getNum(doc.TransType) === 165) InvoiceType = "it_ARCorrectionInvoice ";
+      else if (byUs.getNum(doc.TransType) === 203) InvoiceType = "it_DownPayment ";
+      else if (byUs.getNum(doc.TransType) === 204) InvoiceType = "it_PurchaseDownPayment ";
+
+      if (byUs.getNum(doc.TransType) !== 24 && byUs.getNum(doc.TransType) !== 46) {
+        data.PaymentInvoices.push({
+          DocEntry: doc.CreatedBy,
+          InvoiceType,
+          PaidSum: doc.BALANCE
         })
-        .catch(error => byUs.showError(error, "Não foi possivel ataulizar classificação"));
+      }
+      else {
+        data.PaymentInvoices.push({
+          DocEntry: doc.TransId,
+          DocLine: doc.Line_ID,
+          InvoiceType,
+          PaidSum: doc.BALANCE
+        })
+      }
     })
+
+    axios
+      .post(`/api/caixa/class/receipt`, data)
+      .then(result => {
+
+        that.props.toggleModal(result.data.DocNum);
+        byUs.showSuccess({
+          msg: "Documento criado",
+          moreInfo: `Criou com sucesso o documento ${result.data.DocNum}!`,
+          confirmText: "Concluido"
+        })
+      })
+      .catch(error => byUs.showError(error, "Não foi possivel adicionar o recibo"));
   }
 
   render() {
@@ -147,50 +232,7 @@ class ModPagModal extends Component {
       </div>
     }
 
-    let renderConfirmar = () => {
 
-      let totalMeiosPag
-        = byUs.getNum(this.state.ValorNumerario)
-        + byUs.getNum(this.state.ValorMultibanco)
-        + byUs.getNum(this.state.ValorTransferencia)
-        + byUs.getNum(this.state.ValorCheque);
-
-      let totalReceber = byUs.getNum(this.props.totalReceber);
-      let troco = totalMeiosPag - totalReceber;
-
-
-
-      if (troco > byUs.getNum(this.state.ValorNumerario)) {
-        byUs.showToastr({ color: "danger", msg: "O troco não pode ser superior ao valor em numerário" })
-        return (
-          <Button color="danger" disabled>
-            <span> <i className="icon wb-warning" /> Troco {byUs.format.amount(troco)}</span>
-          </Button>)
-      }
-
-      if (troco < 0) {
-
-        return (
-          <Button color="danger" disabled>
-            <span> <i className="icon wb-warning" /> Em falta {byUs.format.amount(-1 * troco)}</span>
-          </Button>)
-      }
-
-
-      if (troco > 0) {
-        return (
-          <Button color="warning" onClick={this.onCreateReceipt}>
-            <span> <i className="icon wb-check" /> Concluir (Troco {byUs.format.amount(troco)})</span>
-          </Button>)
-      }
-
-
-
-      return (
-        <Button color="success" onClick={this.onCreateReceipt}>
-          <span> <i className="icon wb-check" /> Concluir {byUs.format.amount(troco)}</span>
-        </Button>)
-    }
 
 
     return (
@@ -214,7 +256,7 @@ class ModPagModal extends Component {
                       <a className="list-group-item list-group-item-action active" data-toggle="tab" role="tab" id="tab1" onClick={this.handleOnTabClick}>Numerário </a>
                       <a className="list-group-item" data-toggle="tab" role="tab" id="tab2" onClick={this.handleOnTabClick}>Multibanco</a>
                       <a className="list-group-item" data-toggle="tab" role="tab" id="tab3" onClick={this.handleOnTabClick}>Transferência</a>
-                      <a className="list-group-item" data-toggle="tab" role="tab" id="tab4" onClick={this.handleOnTabClick}>Cheque</a>
+                      {/* <a className="list-group-item" data-toggle="tab" role="tab" id="tab4" onClick={this.handleOnTabClick}>Cheque</a> */}
                     </div>
                   </div>
                 </div>
@@ -228,7 +270,7 @@ class ModPagModal extends Component {
                       {this.state.activeTab === "tab1" && renderNumerario()}
                       {this.state.activeTab === "tab2" && renderMultibanco()}
                       {this.state.activeTab === "tab3" && renderTransferencia()}
-                      {this.state.activeTab === "tab4" && renderCheque()}
+                      {/* {this.state.activeTab === "tab4" && renderCheque()} */}
                     </div>
                   </div>
                 </div>
@@ -238,8 +280,10 @@ class ModPagModal extends Component {
           </div>
 
           <div className="byus-action-bar animation-slide-left">
-            {renderConfirmar()}
 
+            <Button color={this.state.continuarColor} disabled={this.state.continuarColor === "danger"} onClick={this.onCreateReceipt}>
+              {this.state.continuarContent}
+            </Button>
           </div>
         </ModalBody>
       </Modal >

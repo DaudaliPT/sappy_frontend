@@ -97,8 +97,8 @@ byUs.app = {
       icon: "icon fa-money",
       menus: [
         { name: "caixa", text: "Caixa central", component: LandingPages.CaixaCentral },
-        { name: "rec", text: "Recebimentos", component: LandingPages.Recebimentos },
-        { name: "rec/doc", text: "Recebimentos", component: LandingPages.Recebimentos, dontCreateMenu: true },
+        // { name: "rec", text: "Recebimentos", component: LandingPages.Recebimentos },
+        // { name: "rec/doc", text: "Recebimentos", component: LandingPages.Recebimentos, dontCreateMenu: true },
         // { name: "pagamentos", text: "Pagamentos", component: UnderConstruction },
         // { name: "cartcheques", text: "Carteira de cheques", component: UnderConstruction }
       ]
