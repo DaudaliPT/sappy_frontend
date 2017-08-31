@@ -10,6 +10,7 @@ var { ToastContainer, ToastMessage } = ReactToastr;
 const ToastMessageFactory = React.createFactory(ToastMessage.animation);
 
 var byUs = window.byUs;
+var $ = window.$;
 
 class Full extends Component {
 
@@ -54,8 +55,11 @@ class Full extends Component {
       if (that.hoverServerRequest && that.hoverServerRequest.abort) that.hoverServerRequest.abort();
       that.hoverServerRequest = axios({ method: "get", url: api })
         .then(result => {
-          debugger
           let content = render({ result, context: renderContext })
+
+          let $le = $("#" + target);
+          if ($le.length === 0) return console.log("popover ignored because element does not exists anymore")
+
 
           that.setState({
             currentPopover:

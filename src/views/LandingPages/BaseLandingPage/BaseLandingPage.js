@@ -158,7 +158,7 @@ class BaseLandingPage extends Component {
           };
           if (!(activeTab in tabItems)) activeTab = Object.keys(tabItems)[0];
           let ReactVirtualized__List = document.getElementsByClassName("ReactVirtualized__List")[0];
-          ReactVirtualized__List.scrollTop = 0;
+          if (ReactVirtualized__List) ReactVirtualized__List.scrollTop = 0;
 
           that.setState(
             { listItems, tabItems, activeTab, rvHasNextPage, hierarquyItems, totalInfo, rvIsLoading: false },

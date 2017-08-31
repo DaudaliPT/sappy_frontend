@@ -211,7 +211,7 @@ class EditModal extends Component {
                       <div className=" tab-pane animation-fade active" >
                         <CmpGeral ItemCode={this.props.itemcode}
                           Item={this.state.newItem}
-                          AlternateCatNum={this.state.AlternateCatNum}
+                          supplierCollection={this.state.supplierCollection}
                           ReadOnly={this.state.ReadOnly}></CmpGeral>
                       </div>
                     }

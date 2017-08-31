@@ -113,13 +113,17 @@ class Produtos extends Component {
                           </tr>)
                         });
 
+                        let target = rowId + "prc";
+                        let $le = $("#" + target);
+                        if ($le.length === 0) return console.log("popover ignored because element does not exists anymore")
+
                         that.setState({
                           currentPopover:
-                          <Popover className="animation-fadein" isOpen={true} target={rowId + "prc"} toggle={this.togglePopover} placement="left" onMouseLeave={e => { that.setState({ currentPopover: null }) }}>
-                            {/* <PopoverTitle>{"Preços->" + row.ItemName}</PopoverTitle> */}
+                          <Popover className="animation-fadein" isOpen={true} target={target} toggle={this.togglePopover} placement="left" onMouseLeave={e => { that.setState({ currentPopover: null }) }}>
                             <PopoverContent><table>{content}</table></PopoverContent>
                           </Popover>
                         })
+
 
                       })
                       .catch(error => byUs.showError(error, "Erro ao obter dados"));
@@ -154,9 +158,13 @@ class Produtos extends Component {
                           </tr>)
                         });
 
+                        let target = rowId + "stk";
+                        let $le = $("#" + target);
+                        if ($le.length === 0) return console.log("popover ignored because element does not exists anymore")
+
                         that.setState({
                           currentPopover:
-                          <Popover isOpen={true} target={rowId + "stk"} toggle={this.togglePopover} placement="left" onMouseLeave={e => { that.setState({ currentPopover: null }) }}>
+                          <Popover isOpen={true} target={target} toggle={this.togglePopover} placement="left" onMouseLeave={e => { that.setState({ currentPopover: null }) }}>
                             <PopoverContent><table>{content}</table></PopoverContent>
                           </Popover>
                         })

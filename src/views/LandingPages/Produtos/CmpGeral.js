@@ -9,7 +9,8 @@ import { hashHistory } from "react-router";
 
 const getInitialState = function (props) {
   let Item = props.Item || {};
-  let AlternateCatNum = props.AlternateCatNum || [];
+
+  let supplierCollection = props.supplierCollection || [];
 
   //Preparar as propriedades
   let Propriedades = [];
@@ -19,19 +20,20 @@ const getInitialState = function (props) {
     if (propertyValue) Propriedades.push(index.toString());
   }
 
-  //preparar supplierCollection
-  let supplierCollection = [{
-    "CardCode": Item.Mainsupplier,
-    "Substitute": Item.SupplierCatalogNo
-  }];
-  AlternateCatNum.forEach(obj => {
-    if (obj.CardCode !== Item.Mainsupplier) {
-      supplierCollection.push({
-        "CardCode": obj.CardCode,
-        "Substitute": obj.Substitute
-      });
-    }
-  })
+  // //preparar supplierCollection
+  // let supplierCollection = [{
+  //   "CardCode": Item.Mainsupplier,
+  //   "Substitute": Item.SupplierCatalogNo
+  // }];
+
+  // AlternateCatNum.forEach(obj => {
+  //   if (obj.CardCode !== Item.Mainsupplier && Item.SupplierCatalogNo !== obj.Substitute) {
+  //     supplierCollection.push({
+  //       "CardCode": obj.CardCode,
+  //       "Substitute": obj.Substitute
+  //     });
+  //   }
+  // })
 
   let newState = {
     saving: false,

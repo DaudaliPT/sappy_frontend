@@ -15,19 +15,12 @@ class CmpStock extends Component {
                 <div className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={this.handleRowSelection}>
                     <div className="container vertical-align-middle">
 
-                        {/*large displays*/}
-                        <div className="row hidden-lg-down">
+                        <div className="row">
 
                             <div className="col-4 text-nowrap firstcol"> {row.WhsCode + ' - ' + row.WhsName} </div>
-                            <div className="col-2 text-nowrap lastcol"> <span className="float-right">{byUs.format.quantity(row.OnHand, 0) + " " + row.InvntryUom}</span> </div>
+                            <div className="col-2 text-nowrap "> <span className="float-right">{byUs.format.quantity(row.OnHand, 0) + " " + row.InvntryUom}</span> </div>
+                            <div className="col-2 text-nowrap lastcol"> <span className="float-right">{byUs.format.price(row.AvgPrice)}</span> </div>
 
-                        </div>
-                        {/*mobile*/}
-                        <div className="hidden-xl-up">
-                            <div className="row">
-                                <div className="col text-nowrap">  {row.WhsCode + ' - ' + row.WhsName} </div>
-                                <div className="col-2 text-nowrap lastcol"> <span className="float-right">{byUs.format.quantity(row.OnHand, 0) + " " + row.InvntryUom}</span> </div>
-                            </div>
                         </div>
 
                     </div>

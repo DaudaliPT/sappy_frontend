@@ -114,7 +114,6 @@ class UPCPriceFormatter extends Component {
               .then(result => {
                 let content = []
 
-
                 if (result.data.length === 0)
                   content.push(<tr><td>Nenhum histórico</td></tr>)
                 else {
@@ -122,25 +121,30 @@ class UPCPriceFormatter extends Component {
                     <td>Data</td>
                     <td>Fornecedor</td>
                     <td>Preço</td>
-                    {/* <td>Desc.</td> */}
-                    <td>Pr.LIQ</td>
-                    <td>Pr.NET</td>
                   </tr>)
                   result.data.forEach(popuprow => {
+                    let preco = "";
+                    if (byUs.getNum(popuprow.PRCNET) !== 0) {
+                      preco = byUs.format.price(popuprow.PRCNET, 3) + " N";
+                    } else {
+                      preco = byUs.format.price(popuprow.PRCLIQ, 3);
+                    }
+
                     content.push(<tr >
                       <td>{byUs.format.properDisplayDate(popuprow.DocDate)}</td>
-                      <td>{popuprow.CardCode}</td>
-                      <td>{byUs.format.price(popuprow.PUR_PRICE, 3)}</td>
-                      {/* <td>{popuprow.USER_DISC}</td> */}
-                      <td>{byUs.format.price(popuprow.PRCLIQ, 3)}</td>
-                      <td>{byUs.format.price(popuprow.PRCNET, 3)}</td>
+                      <td style={{ maxWidth: "130px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{popuprow.CardName}</td>
+                      <td>{preco}</td>
                     </tr>)
                   });
                 }
 
+                let target = "upc" + row.LINENUM;
+                let $le = $("#" + target);
+                if ($le.length === 0) return console.log("popover ignored because element does not exists anymore")
+
                 that.setState({
                   currentPopover:
-                  <Popover isOpen={true} target={"upc" + row.LINENUM} toggle={this.togglePopover} placement="left" onMouseLeave={e => { that.setState({ currentPopover: null }) }}>
+                  <Popover isOpen={true} target={target} toggle={this.togglePopover} placement="left" onMouseLeave={e => { that.setState({ currentPopover: null }) }}>
                     <PopoverContent><table>{content}</table></PopoverContent>
                   </Popover>
                 })
@@ -372,16 +376,17 @@ class DocAtualizacaoPrecos extends Component {
         formatter: UPCPriceFormatter,
         headerRenderer: HeaderAlignRight,
         getRowMetaData: row => row //In into my formatter I can access all the row values into this.props.dependentValues
-      }, {
-        key: "LAST_PRECO_ISNET",
-        name: "",
-        width: 40,
-        formatter: < Formatters.Flag />,
-        color: "success",
-        valueON: "icon ion-ios-done-all-outline",
-        valueOFF: "icon ion-ios-alert-outline",
-        getRowMetaData: row => row //In into my formatter I can access all the row values into this.props.dependentValues
       },
+      // {
+      //   key: "LAST_PRECO_ISNET",
+      //   name: "",
+      //   width: 40,
+      //   formatter: < Formatters.Flag />,
+      //   color: "success",
+      //   valueON: "icon ion-ios-done-all-outline",
+      //   valueOFF: "icon ion-ios-alert-outline",
+      //   getRowMetaData: row => row //In into my formatter I can access all the row values into this.props.dependentValues
+      // },
       // {key: "PMC", name: "PMC", width: 100, formatter: PriceFormatter, headerRenderer: HeaderAlignRight },
       { key: "DATA_ULTIMA_ALT", name: "Data At.", width: 100, formatter: DateFormatter },
       { key: "CURRENT_PRICE", name: "P Cash", width: 100, formatter: PriceFormatter, headerRenderer: HeaderAlignRight },

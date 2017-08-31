@@ -332,7 +332,7 @@ class BaseDocument extends Component {
           visible: (this.state.docData.ID > 0 && this.state.hasSelectedRows),
           onClick: e => actionFunc.handleOnApagarLinhas(that)
         },
-        { name: "Cancelar", color: "primary", icon: "icon wb-close", visible: true, onClick: e => actionFunc.handleOnCancelar(that) },
+        { name: "Voltar", color: "primary", icon: "icon wb-close", visible: true, onClick: e => actionFunc.handleOnCancelar(that) },
         { name: "Confirmar", color: "success", icon: "icon fa-check", visible: (this.state.docData.ID > 0), onClick: e => actionFunc.handleOnConfirmar(that) }
       ]
     }

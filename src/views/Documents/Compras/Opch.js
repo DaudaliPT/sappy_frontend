@@ -102,7 +102,8 @@ export default class Opch extends Component {
             // { name: 'TAXRATE', label: 'IVA', type: "vat", width: 70, editable: false },
             { name: 'WHSCODE', label: 'Arm', type: "text", width: 50, editable: true },
             { name: 'HASINCONF', label: 'Inc.', type: "flag|danger", width: 35, editable: true },
-            { name: 'NETPRICE', label: 'Pr.NET', width: 70, type: "price", editable: false }
+            { name: 'NETPRICE', label: 'Pr.NET', width: 70, type: "price", editable: false },
+            { name: 'NETTOTAL', label: 'V.NET', width: 70, type: "amount", editable: false }
         ]
     }
 

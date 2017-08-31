@@ -81,14 +81,14 @@ export default {
                 currentModal: (
                     <ModalMessageConfirm
                         title="Confirmar ação"
-                        text="Deseja guardar ou apagar os dados já introduzidos?"
+                        text="Deseja manter ou apagar os dados já introduzidos?"
                         color="primary"
                         colorCancelar="warning"
                         btnCancelar="Apagar"
                         iconCancelar="icon fa-trash"
-                        btnConfirmar="Guardar"
+                        btnConfirmar="Manter"
                         iconConfirmar="icon fa-save"
-                        moreInfo="Se escolher guardar, as alterações ficarão disponiveis como rascunho..."
+                        moreInfo="Se escolher manter, as alterações ficarão disponiveis como rascunho..."
                         toggleModal={(result) => {
                             that.setState({ currentModal: null });
                             if (result === "CONFIRMADO") {

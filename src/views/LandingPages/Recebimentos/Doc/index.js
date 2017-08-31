@@ -138,9 +138,13 @@ class UPCPriceFormatter extends Component {
                   });
                 }
 
+                let target = "upc" + row.LINENUM;
+                let $le = $("#" + target);
+                if ($le.length === 0) return console.log("popover ignored because element does not exists anymore")
+
                 that.setState({
                   currentPopover:
-                  <Popover isOpen={true} target={"upc" + row.LINENUM} toggle={this.togglePopover} placement="left" onMouseLeave={e => { that.setState({ currentPopover: null }) }}>
+                  <Popover isOpen={true} target={target} toggle={this.togglePopover} placement="left" onMouseLeave={e => { that.setState({ currentPopover: null }) }}>
                     <PopoverContent><table>{content}</table></PopoverContent>
                   </Popover>
                 })
