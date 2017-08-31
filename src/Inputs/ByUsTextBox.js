@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { FormGroup, FormFeedback, Button, InputGroup, Input } from "reactstrap";
-var $ = window.$;
 const byUs = window.byUs;
 
 class ByUsTextBox extends Component {

@@ -14,7 +14,7 @@ import { Popover, PopoverContent } from 'reactstrap';
 import axios from "axios";
 import uuid from "uuid/v4";
 import SearchBar from "./SearchBar.js";
-import Formatters from "../../../../components/ByUsDataGrid/Formatters";
+// import Formatters from "../../../../components/ByUsDataGrid/Formatters";
 import { ByUsTextBox } from "../../../../Inputs";
 import { ModalMessageConfirm } from "../../../../Modals";
 

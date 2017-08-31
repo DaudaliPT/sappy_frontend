@@ -5,7 +5,7 @@ import Full from "./containers/Full/";
 import Simple from "./containers/Simple/";
 
 import Inicio from "./views/Inicio/";
-import UnderConstruction from "./views/UnderConstruction/";
+// import UnderConstruction from "./views/UnderConstruction/";
 import LandingPages from "./views/LandingPages";
 
 import Login from "./views/Auth/Login/";

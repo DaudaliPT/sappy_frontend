@@ -1,12 +1,8 @@
 import React, { Component } from "react";
-import { Button } from "reactstrap";
-import axios from "axios";
 var $ = window.$;
-var byUs = window.byUs;
 
 import CmpClassificacao from "./CmpClassificacao";
 import CmpUnderConstruction from "./CmpUnderConstruction";
-import { hashHistory } from "react-router";
 
 
 class CaixaCentral extends Component {
@@ -57,8 +53,6 @@ class CaixaCentral extends Component {
   }
 
   render() {
-    let newItem = this.state.newItem || {}
-
     return (
       <div className="page">
         <div className="page-header container-fluid">

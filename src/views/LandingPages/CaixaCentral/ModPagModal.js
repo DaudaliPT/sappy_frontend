@@ -4,7 +4,7 @@ import axios from "axios";
 var $ = window.$;
 var byUs = window.byUs;
 
-import { ByUsTextBox, ByUsTextBoxNumeric, ByUsComboBox } from "../../../Inputs";
+import { ByUsTextBoxNumeric } from "../../../Inputs";
 
 class ModPagModal extends Component {
   constructor(props) {
@@ -48,7 +48,6 @@ class ModPagModal extends Component {
 
   // Recebe os valores dos campos MY*
   onFieldChange(changeInfo) {
-    let that = this;
     let formatedValue = changeInfo.formatedValue;
     let val = changeInfo.rawValue;
     let fieldName = changeInfo.fieldName;
@@ -220,17 +219,17 @@ class ModPagModal extends Component {
         />
       </div>
     }
-    let renderCheque = () => {
-      return <div>
-        <ByUsTextBoxNumeric
-          valueType="amount"
-          label="Valor da cheque:"
-          name="ValorCheque"
-          value={this.state.ValorCheque}
-          onChange={this.onFieldChange}
-        />
-      </div>
-    }
+    // let renderCheque = () => {
+    //   return <div>
+    //     <ByUsTextBoxNumeric
+    //       valueType="amount"
+    //       label="Valor da cheque:"
+    //       name="ValorCheque"
+    //       value={this.state.ValorCheque}
+    //       onChange={this.onFieldChange}
+    //     />
+    //   </div>
+    // }
 
 
 

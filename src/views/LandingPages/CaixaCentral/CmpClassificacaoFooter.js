@@ -1,9 +1,5 @@
 
 import React, { Component } from "react";
-import { Button } from "reactstrap";
-import ByUsSearchAndChoose from '../../../components/ByUsSearchAndChoose';
-const byUs = window.byUs;
-
 class CmpClassificacaoFooter extends Component {
   constructor(props) {
     super(props)
@@ -11,9 +7,9 @@ class CmpClassificacaoFooter extends Component {
   }
 
   render() {
-    let docData = this.props.docData || {}
-    let editable = docData.DOCNUM > 0 ? false : true;
-    let loaded = !this.props.loading;
+    // let docData = this.props.docData || {}
+    // let editable = docData.DOCNUM > 0 ? false : true;
+    // let loaded = !this.props.loading;
 
     let renderActions = () => {
       let actions = this.props.actions;
