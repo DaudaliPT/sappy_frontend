@@ -20,21 +20,6 @@ const getInitialState = function (props) {
     if (propertyValue) Propriedades.push(index.toString());
   }
 
-  // //preparar supplierCollection
-  // let supplierCollection = [{
-  //   "CardCode": Item.Mainsupplier,
-  //   "Substitute": Item.SupplierCatalogNo
-  // }];
-
-  // AlternateCatNum.forEach(obj => {
-  //   if (obj.CardCode !== Item.Mainsupplier && Item.SupplierCatalogNo !== obj.Substitute) {
-  //     supplierCollection.push({
-  //       "CardCode": obj.CardCode,
-  //       "Substitute": obj.Substitute
-  //     });
-  //   }
-  // })
-
   let newState = {
     saving: false,
     ItemCode: props.ItemCode || '',

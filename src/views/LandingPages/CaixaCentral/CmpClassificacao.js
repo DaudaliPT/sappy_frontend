@@ -191,7 +191,7 @@ class CmpTransStock extends Component {
 
 
         return (
-            <div className="container">
+            <div>
                 <div className="row">
                     <div className="col-6">
                         <ByUsSearchPage
