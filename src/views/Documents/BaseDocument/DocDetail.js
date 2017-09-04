@@ -8,10 +8,16 @@ class DocDetail extends PureComponent {
     super(props);
 
     this.getSelectedRows = this.getSelectedRows.bind(this);
+    this.scrollToLastLine = this.scrollToLastLine.bind(this);
   }
 
   getSelectedRows() {
     return this.refs.grid.getState().selectedIndexes.map(i => this.refs.grid.getRowAt(i).LINENUM)
+  }
+
+  scrollToLastLine() {
+
+    return this.refs.grid.scrollToRow(this.refs.grid.getSize())
   }
 
   render() {

@@ -99,11 +99,11 @@ export default class Opch extends Component {
             { name: 'BONUS', label: 'Bónus/Descontos', type: "check", width: 40, editable: true },
             { name: 'USER_DISC', label: '', type: "discount", width: 120, editable: true },
             { name: 'LINETOTAL', label: 'Total', width: 90, type: "amount", editable: true },
-            // { name: 'TAXRATE', label: 'IVA', type: "vat", width: 70, editable: false },
-            { name: 'WHSCODE', label: 'Arm', type: "text", width: 50, editable: true },
+            { name: 'VATGROUP', label: 'IVA', type: "vat", width: 70, editable: true },
+            // { name: 'WHSCODE', label: 'Arm', type: "text", width: 50, editable: true },
             { name: 'HASINCONF', label: 'Inc.', type: "flag|danger", width: 35, editable: true },
-            { name: 'NETPRICE', label: 'Pr.NET', width: 70, type: "price", editable: false },
-            { name: 'NETTOTAL', label: 'V.NET', width: 70, type: "amount", editable: false }
+            { name: 'NETPRICE', label: 'Pr.NET', width: 70, type: "price", editable: false }
+            // { name: 'NETTOTAL', label: 'V.NET', width: 70, type: "amount", editable: false }
         ]
     }
 

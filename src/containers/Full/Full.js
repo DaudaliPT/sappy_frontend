@@ -4,7 +4,13 @@ import safeJsonStringify from "safe-json-stringify";
 
 import { Popover, PopoverContent } from 'reactstrap';
 import axios from "axios";
-import SweetAlert from 'react-bootstrap-sweetalert';
+import swal from 'sweetalert2'
+import 'sweetalert2/dist/sweetalert2.css';
+swal.setDefaults({
+  reverseButtons: true,
+  buttonsStyling: false
+})
+
 var ReactToastr = require("react-toastr");
 var { ToastContainer, ToastMessage } = ReactToastr;
 const ToastMessageFactory = React.createFactory(ToastMessage.animation);
@@ -22,6 +28,7 @@ class Full extends Component {
     byUs.showSuccess = this.showSuccess.bind(this);
     byUs.showQuestion = this.showQuestion.bind(this);
     byUs.showWarning = this.showWarning.bind(this);
+    byUs.showDanger = this.showDanger.bind(this);
     byUs.showError = this.showError.bind(this);
     byUs.showPopover = this.showPopover.bind(this);
     byUs.hidePopover = this.hidePopover.bind(this);
@@ -74,99 +81,68 @@ class Full extends Component {
   }
 
   showSuccess({ title, msg, moreInfo, onConfirm, onCancel, confirmText, confirmStyle, cancelText, cancelStyle } = {}) {
-    let that = this;
-
-    this.setState({
-      currentMsgModal:
-      < SweetAlert success title={title || "Sucesso"}
-
-        showCancel={typeof onCancel === "function"}
-
-        cancelBtnBsStyle={cancelStyle || "default"}
-        cancelBtnText={cancelText || "Cancelar"}
-        onCancel={() => {
-          that.setState({ currentMsgModal: null })
-          onCancel && onCancel()
-        }}
-
-        confirmBtnText={confirmText || "OK"}
-        confirmBtnBsStyle={confirmStyle || "success"}
-
-        onConfirm={
-          () => {
-            that.setState({ currentMsgModal: null })
-            onConfirm && onConfirm()
-          }} >
-        {msg}
-        < small >
-          <br />          {moreInfo}
-        </small >
-      </SweetAlert >
-    })
+    swal(
+      {
+        title: title || "Successo",
+        html: `${msg || ""}<small><br />${moreInfo || ''}</small>`,
+        type: 'success',
+        showCancelButton: typeof onCancel === "function",
+        confirmButtonText: confirmText || "Confirmar",
+        cancelButtonText: cancelText || 'Cancelar',
+        cancelButtonClass: 'btn  mr-5 btn-lg btn-' + (cancelStyle || "secondary"),
+        confirmButtonClass: 'btn ml-5 btn-lg btn-' + (confirmStyle || "success")
+      })
+      .then(() => onConfirm && onConfirm()
+      , dismiss => onCancel && onCancel())
   }
 
   showQuestion({ title, msg, moreInfo, onConfirm, onCancel, confirmText, confirmStyle, cancelText, cancelStyle } = {}) {
-    let that = this;
-
-    this.setState({
-      currentMsgModal:
-      < SweetAlert info title={title || "Questão"}
-
-        showCancel={typeof onCancel === "function"}
-
-        cancelBtnBsStyle={cancelStyle || "default"}
-        cancelBtnText={cancelText || "Cancelar"}
-        onCancel={() => {
-          that.setState({ currentMsgModal: null })
-          onCancel && onCancel()
-        }}
-
-        confirmBtnText={confirmText || "Ok"}
-        confirmBtnBsStyle={confirmStyle || "success"}
-        onConfirm={
-          () => {
-            that.setState({ currentMsgModal: null })
-            onConfirm && onConfirm()
-          }} >
-        {msg}
-        < small >
-          <br />          {moreInfo}
-        </small >
-      </SweetAlert >
-    })
+    swal(
+      {
+        title: title || "Questão",
+        html: `${msg || ""}<small><br />${moreInfo || ''}</small>`,
+        type: 'question',
+        showCancelButton: typeof onCancel === "function",
+        confirmButtonText: confirmText || "Confirmar",
+        cancelButtonText: cancelText || 'Cancelar',
+        cancelButtonClass: 'btn  mr-5 btn-lg btn-' + (cancelStyle || "secondary"),
+        confirmButtonClass: 'btn ml-5 btn-lg btn-' + (confirmStyle || "success")
+      })
+      .then(() => onConfirm && onConfirm()
+      , dismiss => onCancel && onCancel())
   }
 
 
   showWarning({ title, msg, moreInfo, onConfirm, onCancel, confirmText, confirmStyle, cancelText, cancelStyle } = {}) {
-    let that = this;
+    swal(
+      {
+        title: title || "Aviso",
+        html: `${msg || ""}<small><br />${moreInfo || ''}</small>`,
+        type: 'warning',
+        showCancelButton: typeof onCancel === "function",
+        confirmButtonText: confirmText || "Ok",
+        cancelButtonText: cancelText || 'Cancelar',
+        cancelButtonClass: 'btn  mr-5 btn-lg btn-' + (cancelStyle || "secondary"),
+        confirmButtonClass: 'btn ml-5 btn-lg btn-' + (confirmStyle || "warning")
+      })
+      .then(() => onConfirm && onConfirm()
+      , dismiss => onCancel && onCancel())
+  }
 
-    this.setState({
-      currentMsgModal:
-      < SweetAlert warning title={title || "Aviso"}
-
-        showCancel={typeof onCancel === "function"}
-
-        cancelBtnBsStyle={cancelStyle || "default"}
-        cancelBtnText={cancelText || "Cancelar"}
-        onCancel={() => {
-          that.setState({ currentMsgModal: null })
-          onCancel && onCancel()
-        }}
-
-        confirmBtnText={confirmText || "Ok"}
-        confirmBtnBsStyle={confirmStyle || "danger"}
-
-        onConfirm={
-          () => {
-            that.setState({ currentMsgModal: null })
-            onConfirm && onConfirm()
-          }} >
-        {msg}
-        < small >
-          <br />          {moreInfo}
-        </small >
-      </SweetAlert >
-    })
+  showDanger({ title, msg, moreInfo, onConfirm, onCancel, confirmText, confirmStyle, cancelText, cancelStyle } = {}) {
+    swal(
+      {
+        title: title || "Muita atenção!!!",
+        html: `${msg || ""}<small><br />${moreInfo || ''}</small>`,
+        type: 'warning',
+        showCancelButton: typeof onCancel === "function",
+        confirmButtonText: confirmText || "Confirmar",
+        cancelButtonText: cancelText || 'Cancelar',
+        cancelButtonClass: 'btn  mr-5 btn-lg btn-' + (cancelStyle || "secondary"),
+        confirmButtonClass: 'btn ml-5 btn-lg btn-' + (confirmStyle || "danger")
+      })
+      .then(() => onConfirm && onConfirm()
+      , dismiss => onCancel && onCancel())
   }
 
 
@@ -189,20 +165,15 @@ class Full extends Component {
 
     if (!msg) msg = safeJsonStringify(err);
 
-    this.setState({
-      currentMsgModal:
-      <SweetAlert error title={title || "Erro"}
-        onConfirm={
-          () => {
-            that.setState({ currentMsgModal: null })
-            onConfirm && onConfirm()
-          }}>
-        {msg}
-        <small>
-          <br />          {moreInfo}
-        </small>
-      </SweetAlert >
-    })
+
+    swal(
+      {
+        title: title || "Erro",
+        html: `${msg || ""}<small><br />${moreInfo || ""}</small>`,
+        type: 'error',
+        confirmButtonClass: 'btn btn-danger'
+      })
+      .then(() => onConfirm && onConfirm())
   }
 
   showToastr(objPars = {}) {

@@ -42,6 +42,7 @@
     "react-virtualized-select": "^3.0.1",
     "reactstrap": "4.5.0",
     "safe-json-stringify": "^1.0.4",
+    "sweetalert2": "^6.6.10",
     "text-mask-addons": "^3.6.0",
     "toastr": "^2.1.2",
     "url-join": "^2.0.1",

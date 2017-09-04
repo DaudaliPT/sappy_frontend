@@ -138,11 +138,12 @@ class VatFormatter extends Component {
         return nextProps.value !== this.props.value;
     }
     render() {
-        let value = byUs.getNum(this.props.value);
+        let value = this.props.value;
         let row = this.props.dependentValues;
         return (
             <div title={value} >
-                {value + "% (" + row.VATGROUP + ')'}
+                {value}
+                <small>{" (" + byUs.getNum(row.TAXRATE) + '%)'}</small>
             </div >);
     }
 }

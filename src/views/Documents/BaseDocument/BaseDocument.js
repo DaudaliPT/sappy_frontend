@@ -274,7 +274,10 @@ class BaseDocument extends Component {
         .post(`${this.props.baseApiUrl}/${this.state.docData.ID}/lines`, { itemCodes })
         .then(function (result) {
           let newDocData = { ...that.state.docData, ...result.data }
-          that.setState({ docData: newDocData });
+          that.setState({ docData: newDocData }, () => {
+            //scroll to end
+            that.refs.DocDetail.scrollToLastLine();
+          });
         })
         .catch(error => byUs.showError(error, "Erro ao adicionar linhas"));
     }

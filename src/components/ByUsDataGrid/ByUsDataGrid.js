@@ -24,6 +24,7 @@ class ByUsDataGrid extends Component {
     this.onRowExpandToggle = this.onRowExpandToggle.bind(this);
     this.handleGridRowsUpdated = this.handleGridRowsUpdated.bind(this);
     this.getState = this.getState.bind(this);
+    this.scrollToRow = this.scrollToRow.bind(this);
 
     this.state = this.createStateFromProps(props);
   }
@@ -76,6 +77,12 @@ class ByUsDataGrid extends Component {
 
   getSize() {
     return this.getRows().length;
+  }
+
+  scrollToRow(idx) {
+    var top = this.thisComponent.getRowOffsetHeight() * idx;
+    var gridCanvas = this.thisComponent.getDataGridDOMNode().querySelector('.react-grid-Canvas');
+    gridCanvas.scrollTop = top;
   }
 
   buildColumnList(props) {

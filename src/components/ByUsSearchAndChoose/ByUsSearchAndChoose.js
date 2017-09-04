@@ -88,7 +88,7 @@ class ByUsSearchAndChoose extends Component {
             that.openSearchModal();
           } else {
             that.setState({ searchText: "" })
-            byUs.showError("Não encontrado")
+            byUs.showWarning({ title: "Nada encontrado", moreInfo: "Não foi possivel encontrar ao procurar por '" + searchText + "'" })
           }
         })
         .catch(function (error) {

@@ -112,10 +112,11 @@ export default {
 
             if (data.message && data.message.indexOf("TOTALDIF") > -1) {
 
-                byUs.showWarning({
-                    msg: "A criação do documento foi cancelada.",
-                    moreInfo: `O total ${data.DocTotal} € é diferente do esperado!`,
+                byUs.showDanger({
+                    msg: `O total ${data.DocTotal} € é diferente do esperado!`,
+                    moreInfo: "A criação do documento foi cancelada.",
                     cancelText: "Cancelar",
+                    cancelStyle: "success",
                     onCancel: () => { },
                     confirmText: "Adicionar mesmo assim",
                     // eslint-disable-next-line
@@ -123,7 +124,7 @@ export default {
                 });
             } else {
                 byUs.showSuccess({
-                    msg: "Documento criado",
+                    title: "Documento criado",
                     moreInfo: `Criou com sucesso o documento ${result.data.DocNum}!`,
                     cancelText: "Adicionar outro",
                     onCancel: () => {
