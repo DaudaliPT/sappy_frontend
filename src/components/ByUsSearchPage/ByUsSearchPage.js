@@ -20,6 +20,7 @@ class ByUsSearchPage extends PureComponent {
     this.handleToogleLimitSearch = this.handleToogleLimitSearch.bind(this)
 
     this.byusModalInfiniteListID = 'byusModalInfiniteList' + uuid();
+    this.byusModalTabsBarID = 'byusModalTabsBar' + uuid();
     this.state = {
 
       /** holds the text typed by the user */
@@ -106,15 +107,17 @@ class ByUsSearchPage extends PureComponent {
       return document.body;
     }
 
-    let $el = $("#" + this.byusModalInfiniteListID);
-    if ($el[0]) {
+    let $elTab = $("#" + this.byusModalTabsBarID);
+    let $elList = $("#" + this.byusModalInfiniteListID);
+    if ($elList[0] && $elTab[0]) {
 
       let $body = $("body");
-      let scrollAbleparent = getScrollParent($el[0], false);
+      let scrollAbleparent = getScrollParent($elList[0], false);
       let $scrollAbleparent = $(scrollAbleparent);
 
-      // let $body = $("body");
-      if ($scrollAbleparent && $el && $body) {
+      if ($scrollAbleparent && $body) {
+
+
         let bodyHeight = $body.height();
         let parentHeight = $scrollAbleparent.height();
         let useHeight = 0;
@@ -123,10 +126,9 @@ class ByUsSearchPage extends PureComponent {
         else
           useHeight = parentHeight
 
-
-        let minH = useHeight - $el.position().top - 80;
+        let minH = useHeight - ($elList.position().top - $elTab[0].clientHeight) * 2 - 100 - $elTab[0].clientHeight;
         if (minH < 350) { minH = 350; }
-        $el.css("height", minH.toString() + "px");
+        $elList.css("height", minH.toString() + "px");
       }
     }
   }
@@ -289,7 +291,9 @@ class ByUsSearchPage extends PureComponent {
           />
         }
         {hasContent &&
-          <ByUsTabsBar items={tabItems} activeItem={activeTab} onSelect={this.handleOnTabSelect} />
+          <div className="byusModalTabsBar" id={this.byusModalTabsBarID}>
+            <ByUsTabsBar items={tabItems} activeItem={activeTab} onSelect={this.handleOnTabSelect} />
+          </div>
         }
         {hasContent &&
           <div className="byusModalInfiniteList" id={this.byusModalInfiniteListID}>

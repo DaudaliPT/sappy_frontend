@@ -23,7 +23,7 @@ let priceHover = {
                 content.push(<tr >
                     <td>{byUs.format.properDisplayDate(popuprow.DocDate)}</td>
                     <td>{popuprow.CardCode}</td>
-                    <td>{byUs.format.price(popuprow.PUR_PRICE, 3)}</td>
+                    <td>{byUs.formsat.price(popuprow.PUR_PRICE, 3)}</td>
                     {/* <td>{popuprow.USER_DISC}</td> */}
                     <td>{byUs.format.price(popuprow.PRCNET, 3)}</td>
                 </tr>)
@@ -37,7 +37,7 @@ let headerFields = {
     line1: [
         { name: 'CARDCODE', label: 'Fornecedor', type: "combo", api: "/api/cbo/ocrd/s", gridSize: 6, required: true },
         { name: 'DOCSERIES', label: 'Série', type: "combo", api: "/api/cbo/nnm1/22", gridSize: 4, required: true },
-        { name: 'DOCDATE', label: 'Data', type: "date", gridSize: 2, required: true },
+        { name: 'TAXDATE', label: 'Data Documento', type: "date", gridSize: 2, required: true },
         { name: 'DOCDUEDATE', label: 'Data entrega', type: "date", gridSize: 2, required: true }
     ],
     line2: [

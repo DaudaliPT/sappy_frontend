@@ -86,9 +86,9 @@ class ModalAskDocumento extends Component {
                   <input type="checkbox" className="contacts-checkbox selectable-item" checked={selected} id={rowId} />
                   <label htmlFor={rowId} />
                 </span>
-                <span className="ml-10"> {row.DocNum}</span>
+                <span className="ml-10"> {row.ABREV + " " + row.DocNum}</span>
               </div>
-              <div className="col-2"> {byUs.format.properDisplayDateTime(row.DOC_DATETIME)}</div>
+              <div className="col-2"> {byUs.format.properDisplayDate(row.TaxDate)}</div>
               <div className="col-6"> {row.CardCode + " - " + row.CardName}{renderBadges()} </div>
               <div className="col-2 lastcol">
                 <span className="float-right"> {row.FORMATED_DOCTOTAL} </span>
@@ -101,9 +101,9 @@ class ModalAskDocumento extends Component {
                 <div className="col text-nowrap"> {row.CardCode + " - " + row.CardName} </div>
               </div>
               <div className="row secondrow">
-                <div className="col-4 text-nowrap firstcol"> {row.DocNum} </div>
+                <div className="col-4 text-nowrap firstcol"> {row.ABREV + " " + row.DocNum} </div>
                 <div className="col-5 text-nowrap firstcol">
-                  {" "}{byUs.format.properDisplayDateTime(row.DOC_DATETIME)} <span className="hidden-lg-down"> {renderBadges()} </span>{" "}
+                  {" "}{byUs.format.properDisplayDate(row.TaxDate)} <span className="hidden-lg-down"> {renderBadges()} </span>{" "}
                 </div>
                 <div className="col-3 text-nowrap lastcol">
                   <span className="float-right">{row.FORMATED_DOCTOTAL}</span>

@@ -131,7 +131,7 @@ class CmpTransStock extends Component {
                                 {row.U_apyCLASS === "C" && <Badge key={uuid()} color="warning" pill>C</Badge>}
                                 {row.U_apyCLASS === "D" && <Badge key={uuid()} color="primary" pill>D</Badge>}
                             </div>
-                            <div className="col-4 text-nowrap"> {byUs.format.date(row.REFDATE)}  </div>
+                            <div className="col-4 text-nowrap"> {byUs.format.date(row.TAXDATE)}  </div>
                             <div className="col-2 text-nowrap">
                                 <span className="float-right">{
                                     row.BALANCE !== row.DOCTOTAL ? "(" + byUs.format.amount(row.DOCTOTAL) + ") " : ""

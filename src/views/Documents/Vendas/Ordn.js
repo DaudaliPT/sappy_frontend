@@ -8,7 +8,7 @@ let headerFields = {
     line1: [
         { name: 'CARDCODE', label: 'Cliente', type: "combo", api: "/api/cbo/ocrd/c", gridSize: 6, required: true },
         { name: 'DOCSERIES', label: 'Série', type: "combo", api: "/api/cbo/nnm1/16", gridSize: 4, required: true },
-        { name: 'DOCDATE', label: 'Data', type: "date", gridSize: 2, required: true }
+        { name: 'TAXDATE', label: 'Data Documento', type: "date", gridSize: 2, required: true }
         // { name: 'DOCDUEDATE', label: 'Data vencimento', type: "date", gridSize: 2, required: true }
     ],
     line2: [
