@@ -73,6 +73,9 @@ class DocHeader extends Component {
       <div id="docHeader">
         <div className="header-title">
           <h3 className="header-title-text" onClick={this.props.toggleHeader}>{title}</h3>
+          <span className={" " + notHiddenClass}>
+            {this.props.docData.CARDCODE && (" (" + this.props.docData.CARDCODE + " - " + this.props.docData.CARDNAME) + ")"}
+          </span>
           <div className="header-actions">
             <a className={"header-action icon " + expandIcon} onClick={this.props.toggleHeader}></a>
           </div>
@@ -80,9 +83,7 @@ class DocHeader extends Component {
         <div className={"header-body " + hiddenClass}>
           {renderHeaderFields()}
         </div>
-        <div className={"header-body " + notHiddenClass}>
-          {this.props.docData.CARDCODE + " - " + this.props.docData.CARDNAME}
-        </div>
+
       </div>
     );
   }

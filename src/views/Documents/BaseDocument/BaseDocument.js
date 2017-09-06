@@ -211,7 +211,6 @@ class BaseDocument extends Component {
 
 
     this.ensureDocHeaderExists(() => {
-
       that.serverRequest = axios
         .patch(this.props.baseApiUrl + "/" + this.state.docData.ID, updated)
         .then(function (result) {

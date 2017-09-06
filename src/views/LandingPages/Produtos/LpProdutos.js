@@ -109,7 +109,7 @@ class Produtos extends Component {
                           content.push(<tr >
                             <td>{row.ListName}</td>
                             <td>{byUs.format.price(row.Price)}</td>
-                            <td>{byUs.format.properDisplayDate(row.U_rsaDtPrcUpdt)}</td>
+                            <td>{byUs.format.properDisplayDate(row.U_apyUPDATED)}</td>
                           </tr>)
                         });
 

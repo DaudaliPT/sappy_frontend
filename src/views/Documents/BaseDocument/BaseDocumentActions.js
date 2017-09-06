@@ -169,6 +169,18 @@ export default {
                 byUs.showToastr({ color: "danger", msg })
             }
 
+            // Embora funcionasse, não é aqui que deve estar. Coloquei no backend
+            // Validar a data do documento
+            // if (newDocData.TAXDATE && byUs.moment(newDocData.TAXDATE).isAfter()) { //isAfter() sem parametros compara com now()
+            //     hasChangesToState = true;
+            //     newDocData["TAXDATE_LOGICMSG"] = "danger|Não pode ser superior à data atual."
+            // }
+            // if (newDocData.TAXDATE && newDocData.DOCDUEDATE && byUs.moment(newDocData.TAXDATE).isAfter(newDocData.DOCDUEDATE)) {
+            //     hasChangesToState = true;
+            //     newDocData["DOCDUEDATE_LOGICMSG"] = "danger|Não pode ser inferior à data do documento."
+            // }
+
+
             if (hasChangesToState) return that.setState({ docData: newDocData });
 
             //Validar se há erros ativos

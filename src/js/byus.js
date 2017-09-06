@@ -145,7 +145,7 @@ import moment from 'moment';
         if (d.isValid()) return d.format(HANA_DEFAULT_DATE_FORMAT);
 
       } else {
-        if (value === ".") {
+        if (value === "." || value === "0") {
           return moment().format(HANA_DEFAULT_DATE_FORMAT);
 
         } else if (value.length > 0) {
