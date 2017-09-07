@@ -56,6 +56,7 @@ class Full extends Component {
     if (objType.toString() === '15') url = 'vnd/odln/doc'
     if (objType.toString() === '16') url = 'vnd/ordn/doc'
     if (objType.toString() === '17') url = 'vnd/ordr/doc'
+
     if (objType.toString() === '18') url = 'cmp/opch/doc'
     if (objType.toString() === '19') url = 'cmp/orpc/doc'
     if (objType.toString() === '20') url = 'cmp/opdn/doc'
