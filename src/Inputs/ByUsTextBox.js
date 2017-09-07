@@ -74,6 +74,7 @@ class ByUsTextBox extends Component {
             onBlur={e => this.handleBlur(e)}
           />
           {renderRightButton()}
+
         </InputGroup>
 
         {stateMsg && <FormFeedback>{stateMsg}</FormFeedback>}

@@ -1070,6 +1070,35 @@ class DocAtualizacaoPrecos extends Component {
                   onGridRowsUpdated={this.handleGridRowsUpdated}
                   onCellClick={this.handleOnCellClick}
                   rowSelection={rowSelection}
+                  rowGroupRenderer={(props) => {
+                    let treeDepth = props.treeDepth || 0;
+                    let marginLeft = treeDepth * 20;
+
+                    let style = {
+                      height: '50px',
+                      border: '1px solid #dddddd',
+                      paddingTop: '15px',
+                      paddingLeft: '5px'
+                    };
+
+                    let onKeyDown = (e) => {
+                      if (e.key === 'ArrowLeft') return props.onRowExpandToggle(false);
+                      if (e.key === 'ArrowRight') return props.onRowExpandToggle(true);
+                      if (e.key === 'Enter') return props.onRowExpandToggle(!props.isExpanded);
+                    }
+
+
+                    let text = props.name.split('|')[0];
+                    let linkType = props.name.split('|')[1];
+                    let linkEntry = props.name.split('|')[2];
+
+                    return (
+                      <div style={style} onKeyDown={onKeyDown} tabIndex={0}>
+                        <span className="row-expand-icon" style={{ float: 'left', marginLeft: marginLeft, cursor: 'pointer' }} onClick={props.onRowExpandClick} >{props.isExpanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}</span>
+                        <strong>{props.columnGroupName}:                                {byUs.DocLink(linkType, linkEntry)}                          {props.name}</strong>
+                      </div>
+                    );
+                  }}
 
                   enableDragAndDrop={true}
                   onRowExpandToggle={this.onRowExpandToggle}
@@ -1082,7 +1111,7 @@ class DocAtualizacaoPrecos extends Component {
 
             {this.state.currentModal}
           </div>
-        </div>
+        </div >
       )
     );
   }

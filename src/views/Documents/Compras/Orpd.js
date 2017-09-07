@@ -47,7 +47,7 @@ let headerFields = {
         { name: 'CONTACT', label: 'Contato/Sub.For', type: "combo", api: "/api/cbo/ocpr/<CARDCODE>", gridSize: 2 },
         { name: 'NUMATCARD', label: 'Ref.fornecedor', type: "text", gridSize: 2 },
         { name: 'COMMENTS', label: 'Observações', type: "text", gridSize: 5 },
-        { name: 'HASINCONF', label: 'Inconf.', type: "flag|danger", gridSize: 1 }
+        { name: 'HASINCONF', label: '', type: "flag|danger", gridSize: 1 }
     ]
 }
 
@@ -68,7 +68,7 @@ let detailFields = [
     { name: 'LINETOTAL', label: 'Total', width: 90, type: "amount", editable: true },
     { name: 'VATGROUP', label: 'IVA', type: "vat", width: 70, editable: false },
     // { name: 'WHSCODE', label: 'Arm', type: "text", width: 50, editable: true },
-    { name: 'HASINCONF', label: 'Inc.', type: "flag|danger", width: 35, editable: true }
+    { name: 'HASINCONF', label: '', type: "flag|danger", width: 35, editable: true }
 ]
 
 export default class Orpd extends Component {

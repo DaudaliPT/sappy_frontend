@@ -66,7 +66,7 @@ class ByUsDate extends Component {
     if (this.props.disabled) return
     let rawValue = byUs.unformat.date(val)
 
-    if (byUs.isDiferent(rawValue, this.props.receivedValue)) {
+    if (byUs.isDiferent(rawValue, this.state.receivedValue)) {
       this.setState(this.createStateFromProps({ value: rawValue }))
       this.props.onChange({
         fieldName: this.props.name

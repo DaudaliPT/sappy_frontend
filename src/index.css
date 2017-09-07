@@ -150,20 +150,12 @@ body.site-navbar-small {
 
 
 @media (min-width: 992px) {
-    .modal-lg {
-        max-width: 80% !important; 
-    }
-    .byus-search-bar { 
-        width: 300px;
-    } 
+    .modal-lg {       max-width: 80% !important;    }
+    .byus-search-bar {        width: 50%;    } 
 }
 @media (max-width: 480px) {
-    .modal-lg {
-        max-width: 90% !important;  
-    }
-    .byus-search-bar { 
-        width: 150px;
-    }
+    .modal-lg {        max-width: 90% !important;      }
+    /* .byus-search-bar {        width: 150px;    } */
 }
 
 .byus-search-bar>form>div>input { 
@@ -231,6 +223,11 @@ body.site-navbar-small {
   content: "" !important;   
  
 } 
+
+.react-grid-checkbox:disabled:checked+.react-grid-checkbox-label:before {
+    background:rgba(98,168,234,0.5) !important;   }  
+.react-grid-checkbox:disabled:not(:checked)+.react-grid-checkbox-label:before {
+    background:rgba(98,168,234,0.2) !important; }  
 
 .react-grid-checkbox+.react-grid-checkbox-label:before { 
     border: 1px solid #ddd !important;
@@ -505,15 +502,24 @@ body {
   .page-aside {    background: rgb(255,255,255) !important;  }
 }
 
+.page-aside .list-group-item.active:before {  
+  font-family: "Web Icons"!important;
+  content: "" !important;   
+  position:absolute;
+  left : 4px;
+  
+} 
 .page-aside .list-group-item.active { 
-  color: #62a8ea;
-  background-color: rgba(98,168,234,0.1) !important;
-  cursor: crosshair !important; 
+  color: #e4eaec !important; 
+  background-color: #62a8ea!important;
 } 
 .page-aside .list-group-item {
-  padding: .25rem 1.5rem !important;
+  padding: .2rem 1.5rem !important;
   white-space: normal !important;
   cursor: pointer; 
+}
+.page-aside .list-group-item .badge {
+ line-height: inherit !important;
 }
 .panel-group .panel-collapse .panel-body {
   padding: 0px !important; 
@@ -613,7 +619,8 @@ input, optgroup,select,textarea {
   /* SETA ABRIR POPUP */
 .fa-arrow-circle-right       {color:darkorange;}
 .fa-arrow-circle-right:hover {color:orangered;}
-
+.fa-arrow-circle-right.disabled       {color:darkgrey;}
+.fa-arrow-circle-right.disabled:hover {color:slategray;}
 
 .ReactVirtualized__Grid__innerScrollContainer {
     background: white;

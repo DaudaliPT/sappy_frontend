@@ -22,7 +22,9 @@ class CmpCompras extends Component {
                         <div className="row hidden-lg-down">
 
                             <div className="col-1 text-nowrap firstcol"> {byUs.format.properDisplayDate(row.DOC_DATETIME)} </div>
-                            <div className="col-2 text-nowrap"> {row.DESCDOC + ' ' + row.DocNum} </div>
+                            <div className="col-2 text-nowrap">
+                                {byUs.DocLink(row.ObjType, row.DocEntry)}
+                                {row.DESCDOC + ' ' + row.DocNum} </div>
                             <div className="col-5 text-truncate" title={row.CardCode + ' - ' + row.CardName}> {row.CardCode + ' - ' + row.CardName} </div>
                             <div className="col-2 text-nowrap"> <span className="float-right">{byUs.format.quantity(row.InvQty, 0) + " " + row.InvntryUom + " x " + row.FORMATED_PRICE} </span> </div>
                             <div className="col-2 text-nowrap lastcol">
@@ -39,7 +41,9 @@ class CmpCompras extends Component {
                             </div>
                             <div className="row secondrow">
                                 <div className="col-3 text-nowrap firstcol"> {byUs.format.properDisplayDate(row.DOC_DATETIME)} </div>
-                                <div className="col-4 text-nowrap"> {row.DESCDOC + ' ' + row.DocNum} </div>
+                                <div className="col-4 text-nowrap">
+                                    {byUs.DocLink(row.ObjType, row.DocEntry)}
+                                    {row.DESCDOC + ' ' + row.DocNum} </div>
                                 <div className="col-5 text-nowrap lastcol">  <span className="float-right">{byUs.format.quantity(row.InvQty, 0) + " x " + row.FORMATED_PRICE}</span> </div>
                             </div>
                         </div>

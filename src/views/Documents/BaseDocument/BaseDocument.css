@@ -57,7 +57,7 @@
 #docFooter{   
     background:rgba(32, 46, 55,0.9);
     /* transparent;    */
-    padding: 0px 19px;
+    padding: 0px 19px !important;
 }
 
 #docDetail {

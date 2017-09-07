@@ -56,9 +56,11 @@ class CheckboxFormatter extends Component {
     render() {
         let checked = this.props.value != null ? this.props.value : false;
         let checkboxName = "checkbox" + this.props.rowIdx;
+        let disabled = this.props.column.cellClass === "locked-col"; //por que editable é colocado a false para não permiteir escrever na textbox da coluna
+
         return (
             <div className="react-grid-checkbox-container checkbox-align" >
-                <input className="react-grid-checkbox" type="checkbox" name={checkboxName} checked={checked} />
+                <input className="react-grid-checkbox" type="checkbox" name={checkboxName} checked={checked} disabled={disabled} />
                 <label htmlFor={checkboxName} className="react-grid-checkbox-label" />
             </div>
         );

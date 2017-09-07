@@ -203,11 +203,16 @@ class BaseDocument extends Component {
   handleHeaderFieldChange(changeInfo) {
     let that = this;
     // let formatedValue = changeInfo.formatedValue;
-    let val = changeInfo.rawValue;
     let fieldName = changeInfo.fieldName;
+    let oldVal = this.state.docData[fieldName];
+    let val = changeInfo.rawValue;
 
     let updated = { [fieldName]: val || null }
     if (that.props.onHeaderChange) updated = that.props.onHeaderChange(this.state.docData, updated);
+
+    // check if really changed
+    if (byUs.isEqual(oldVal, val)) return console.log("skip update");
+    console.log(fieldName, oldVal, val)
 
 
     this.ensureDocHeaderExists(() => {

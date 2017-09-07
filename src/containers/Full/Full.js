@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import MenuBar from "../../components/MenuBar";
 import safeJsonStringify from "safe-json-stringify";
 
+import { hashHistory } from "react-router";
 import { Popover, PopoverContent } from 'reactstrap';
 import axios from "axios";
 import swal from 'sweetalert2'
@@ -25,6 +26,8 @@ class Full extends Component {
     byUs.showModal = this.showModal.bind(this);
     byUs.hideModal = this.hideModal.bind(this);
 
+    byUs.DocLink = this.DocLink.bind(this);
+
     byUs.showSuccess = this.showSuccess.bind(this);
     byUs.showQuestion = this.showQuestion.bind(this);
     byUs.showWarning = this.showWarning.bind(this);
@@ -40,6 +43,36 @@ class Full extends Component {
       currentMsgModal: null,
       currentPopover: null
     }
+  }
+
+
+
+  DocLink(objType, docEntry) {
+    if (!objType) return
+    if (!docEntry) return
+    let url = "";
+    if (objType.toString() === '13') url = 'vnd/oinv/doc'
+    if (objType.toString() === '14') url = 'vnd/orin/doc'
+    if (objType.toString() === '15') url = 'vnd/odln/doc'
+    if (objType.toString() === '16') url = 'vnd/ordn/doc'
+    if (objType.toString() === '17') url = 'vnd/ordr/doc'
+    if (objType.toString() === '18') url = 'cmp/opch/doc'
+    if (objType.toString() === '19') url = 'cmp/orpc/doc'
+    if (objType.toString() === '20') url = 'cmp/opdn/doc'
+    if (objType.toString() === '21') url = 'cmp/orpd/doc'
+    if (objType.toString() === '22') url = 'cmp/opor/doc'
+
+    if (!url) return <span><i className="icon fa-arrow-circle-right disabled" aria-hidden="true" />{' '}
+    </span>
+    return <span><i className="icon fa-arrow-circle-right" aria-hidden="true"
+      onClick={e => {
+        byUs.hideModal()
+        hashHistory.push({
+          pathname: url,
+          state: { DocEntry: docEntry }
+        })
+      }} />{' '}
+    </span>
   }
 
   showModal(modal) {

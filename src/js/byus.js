@@ -13,6 +13,8 @@ import moment from 'moment';
     if ((val1 === null || typeof val1 === "undefined")
       && (val2 === null || typeof val2 === "undefined")) return true;
 
+    if (!val1 && !val2) return true
+
     return (val1 === val2)
   }
   byUs.isDiferent = (val1, val2) => !byUs.isEqual(val1, val2);
