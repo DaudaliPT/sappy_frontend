@@ -26,7 +26,7 @@ class Full extends Component {
     byUs.showModal = this.showModal.bind(this);
     byUs.hideModal = this.hideModal.bind(this);
 
-    byUs.DocLink = this.DocLink.bind(this);
+    byUs.LinkTo = this.LinkTo.bind(this);
 
     byUs.showSuccess = this.showSuccess.bind(this);
     byUs.showQuestion = this.showQuestion.bind(this);
@@ -47,7 +47,7 @@ class Full extends Component {
 
 
 
-  DocLink(objType, docEntry) {
+  LinkTo(objType, docEntry) {
     if (!objType) return
     if (!docEntry) return
     let url = "";

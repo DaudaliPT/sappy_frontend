@@ -25,7 +25,7 @@ class CmpTransStock extends Component {
 
                             <div className="col-1 text-nowrap firstcol"> {byUs.format.properDisplayDate(row.DOC_DATETIME)} </div>
                             <div className="col-2 text-nowrap">
-                                {byUs.DocLink(row.ObjType, row.DocEntry)}
+                                {byUs.LinkTo(row.ObjType, row.DocEntry)}
                                 {row.DESCDOC + ' ' + row.DocNum} </div>
                             <div className="col-4 text-nowrap"> {row.WhsCode + ' - ' + row.WhsName} </div>
                             <div className="col-2 text-nowrap">{seta} <span className="float-right">{byUs.format.quantity(row.InvQty, 0) + " " + row.InvntryUom}</span> </div>
@@ -41,7 +41,7 @@ class CmpTransStock extends Component {
                             <div className="row secondrow">
                                 <div className="col-3 text-nowrap firstcol"> {byUs.format.properDisplayDate(row.DOC_DATETIME)} </div>
                                 <div className="col-4 text-nowrap">
-                                    {byUs.DocLink(row.ObjType, row.DocEntry)}
+                                    {byUs.LinkTo(row.ObjType, row.DocEntry)}
                                     {row.DocNum} </div>
                                 <div className="col-5 text-nowrap lastcol">  <span className="float-right">{byUs.format.quantity(row.InvQty, 0)}</span> </div>
                             </div>
