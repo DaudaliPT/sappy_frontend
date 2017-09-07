@@ -808,11 +808,9 @@ div>.has-danger  .Select-control {  border-color: rgb(217,  83,  79) !important;
     border-bottom-left-radius: 0.215rem !important;
     box-shadow: initial !important;
 }
-.is-focused >.Select-control{
-    border-top-color: rgb(98, 168, 234)!important;
-    border-right-color: rgb(98, 168, 234)!important;
-    border-bottom-color: rgb(98, 168, 234)!important;
-    border-left-color: rgb(98, 168, 234)!important;
+.is-focused >.Select-control 
+{
+    border: 1px solid   rgb(98, 168, 234)!important; 
 }
 
 .toast-top-right {
