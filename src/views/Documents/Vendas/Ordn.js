@@ -13,8 +13,8 @@ let headerFields = {
     ],
     line2: [
         { name: 'SHIPADDR', label: 'Morada Envio', type: "combo", api: "/api/cbo/crd1/<CARDCODE>/s", gridSize: 4 },
-        // { name: 'BILLADDR', label: 'Morada Facturação', type: "combo", api: "/api/cbo/crd1/<CARDCODE>/b", gridSize: 2 },
-        { name: 'CONTACT', label: 'Contacto/Sub.Cli', type: "combo", api: "/api/cbo/ocpr/<CARDCODE>", gridSize: 2 },
+        // { name: 'BILLADDR', label: 'Morada Faturação', type: "combo", api: "/api/cbo/crd1/<CARDCODE>/b", gridSize: 2 },
+        { name: 'CONTACT', label: 'Contato/Sub.Cli', type: "combo", api: "/api/cbo/ocpr/<CARDCODE>", gridSize: 2 },
         { name: 'NUMATCARD', label: 'Ref.cliente', type: "text", gridSize: 2 },
         { name: 'COMMENTS', label: 'Observações', type: "text", gridSize: 5 },
         { name: 'HASINCONF', label: 'Inconf.', type: "flag|danger", gridSize: 1 }

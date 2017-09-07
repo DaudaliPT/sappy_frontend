@@ -8,7 +8,7 @@ class oinv extends Component {
   render() {
     let docProps = {
       docTableName: "opch",
-      pageTitle: "Facturas de Fornecedores",
+      pageTitle: "Faturas de Fornecedores",
       renderRowHeight: 50,
       renderRow: ({ row, index, onRowClick }) => {
 

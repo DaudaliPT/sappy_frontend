@@ -29,7 +29,7 @@ byUs.app = {
         { name: "ordr", component: LandingPages.Documentos.ordr, text: "Encomendas" },
         { name: "odln", component: LandingPages.Documentos.odln, text: "Entregas" },
         { name: "ordn", component: LandingPages.Documentos.ordn, text: "Devoluções" },
-        { name: "oinv", component: LandingPages.Documentos.oinv, text: "Facturas" },
+        { name: "oinv", component: LandingPages.Documentos.oinv, text: "Faturas" },
         { name: "orin", component: LandingPages.Documentos.orin, text: "Notas de Crédito" },
         { name: "ordr/doc", component: Documents.Ordr, dontCreateMenu: true, text: "Doc" },
         { name: "odln/doc", component: Documents.Odln, dontCreateMenu: true, text: "Doc" },
@@ -49,7 +49,7 @@ byUs.app = {
         { name: "opor", component: LandingPages.Documentos.opor, text: "Encomendas" },
         { name: "opdn", component: LandingPages.Documentos.opdn, text: "Receções" },
         { name: "orpd", component: LandingPages.Documentos.orpd, text: "Devoluções" },
-        { name: "opch", component: LandingPages.Documentos.opch, text: "Facturas" },
+        { name: "opch", component: LandingPages.Documentos.opch, text: "Faturas" },
         { name: "orpc", component: LandingPages.Documentos.orpc, text: "Notas de Crédito" },
         { name: "opor/doc", component: Documents.Opor, dontCreateMenu: true, text: "Doc" },
         { name: "opdn/doc", component: Documents.Opdn, dontCreateMenu: true, text: "Doc" },
@@ -60,14 +60,14 @@ byUs.app = {
         // { name: "contratos", component: UnderConstruction, text: "Contratos de compra" }
       ]
     },
-    // 4\. Parceiros (4.1 Gestão de parceiros, 4.2 Contactos)
+    // 4\. Parceiros (4.1 Gestão de parceiros, 4.2 Contatos)
     // {
     //   name: "pn",
     //   text: "Parceiros",
     //   icon: "icon fa-group",
     //   menus: [
     //     { name: "main", text: "Gestão de Parceiros", component: UnderConstruction },
-    //     { name: "contatos", text: "Contactos", component: UnderConstruction }
+    //     { name: "contatos", text: "Contatos", component: UnderConstruction }
     //   ]
     // },
     // 5\. Inventário (5.1 Gestão de artigos, 5.2 Gestão de preços, 5.3 Gestão de preços via doc, 5.4 Entradas e saídas, 5.5 Transferências, 5.6 Contagem de inventário, 5.7 Etiquetas de artigos, 5.8 Artigos por Fornecedor)

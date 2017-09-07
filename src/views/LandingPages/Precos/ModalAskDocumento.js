@@ -89,8 +89,12 @@ class ModalAskDocumento extends Component {
                 <span className="ml-10"> {row.ABREV + " " + row.DocNum}</span>
               </div>
               <div className="col-2"> {byUs.format.properDisplayDate(row.TaxDate)}</div>
-              <div className="col-6"> {row.CardCode + " - " + row.CardName}{renderBadges()} </div>
-              <div className="col-2 lastcol">
+              <div className="col-5">
+                {row.CardCode + " - " + row.CardName}
+                {/* {renderBadges()} */}
+              </div>
+              <div className="col-3 lastcol">
+                {row.CONTACT_NAME ? row.CONTACT_NAME : ""}
                 <span className="float-right"> {row.FORMATED_DOCTOTAL} </span>
               </div>
             </div>
