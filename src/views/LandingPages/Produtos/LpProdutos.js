@@ -131,7 +131,7 @@ class Produtos extends Component {
 
                   }, 300);
                 }} >
-                <span><Badge key={uuid()} color="info" className="badge-outline"> i </Badge></span>
+                {/* <span><Badge key={uuid()} color="info" className="badge-outline"> i </Badge></span> */}
                 <span className="float-right">{row.FORMATED_PRICE}</span>
               </div>
 
@@ -173,7 +173,7 @@ class Produtos extends Component {
                       .catch(error => byUs.showError(error, "Erro ao obter dados"));
                   }, 300);
                 }} >
-                <span><Badge key={uuid()} color="info" className="badge-outline"> i </Badge></span>
+                {/* <span><Badge key={uuid()} color="info" className="badge-outline"> i </Badge></span> */}
                 <span className="float-right">{byUs.format.quantity(row.OnHand, 0) + " " + row.InvntryUom}</span>
               </div>
             </div>

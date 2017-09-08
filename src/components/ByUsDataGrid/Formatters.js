@@ -67,6 +67,27 @@ class CheckboxFormatter extends Component {
     }
 }
 
+
+class BonusFormatter extends Component {
+    render() {
+        let value = byUs.getNum(this.props.value);
+        let showAPswitch = value !== 0;//value.indexOf('BONUS') > -1;
+        if (!showAPswitch) return null
+
+
+        let checkedAPswitch = this.props.dependentValues["BONUS_NAP"];
+        let color = checkedAPswitch ? "warning" : "success";
+        let ON = value + " NAP";
+        let OFF = value; // + " AP";
+        return (
+            <div className="switch large">
+                <input type="checkbox" checked={checkedAPswitch} />
+                <span className={"slider sm round " + color}>{checkedAPswitch ? ON : OFF} </span>
+            </div>
+        );
+    }
+}
+
 class DiscountFormatter extends Component {
     render() {
         let value = this.props.value || '';
@@ -193,6 +214,7 @@ let Formatters = {
     Check: CheckboxFormatter,
     Switch: SwitchFormatter,
     Flag: FlagFormatter,
-    Discount: DiscountFormatter
+    Discount: DiscountFormatter,
+    Bonus: BonusFormatter
 }
 export default Formatters;

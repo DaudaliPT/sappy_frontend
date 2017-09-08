@@ -199,6 +199,48 @@ class ByUsDataGrid extends Component {
             }
           }
         }
+      } else if (field.type.startsWith("bonus")) {
+
+        let parts = field.type.split('|');
+        // let type = parts[0];
+        col.color = parts[1];
+        col.valueON = parts[2];
+        col.valueOFF = parts[3];
+        col.formatter = <Formatters.Bonus />;
+        if (editable) {
+          col.events = {
+            onClick: (ev, args) => {
+              let currentRow = this.getRowAt(args.rowIdx);
+              if (byUs.getNum(currentRow.QTBONUS) !== 0) {
+                ev.stopPropagation();
+
+                let currentValue = currentRow["BONUS_NAP"];
+                currentValue = currentValue === 1 ? 0 : 1;
+                this.handleGridRowsUpdated({
+                  fromRow: args.rowIdx,
+                  toRow: args.rowIdx,
+                  updated: { BONUS_NAP: currentValue }
+                });
+              }
+            },
+            onKeyDown: (ev, args) => {
+              let currentRow = this.getRowAt(args.rowIdx);
+              if (byUs.getNum(currentRow.QTBONUS) !== 0 && ev.keyCode === 32) {
+                ev.preventDefault();
+                ev.stopPropagation();
+
+                let currentRow = this.getRowAt(args.rowIdx);
+                let currentValue = currentRow["BONUS_NAP"];
+                currentValue = currentValue === 1 ? 0 : 1;
+                this.handleGridRowsUpdated({
+                  fromRow: args.rowIdx,
+                  toRow: args.rowIdx,
+                  updated: { BONUS_NAP: currentValue }
+                });
+              }
+            }
+          }
+        }
       }
 
       return col

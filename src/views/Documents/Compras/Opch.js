@@ -95,15 +95,18 @@ export default class Opch extends Component {
             { name: 'QTCX', label: 'Cx', type: "quantity", width: 60, editable: true },
             { name: 'QTPK', label: 'Pk', type: "quantity", width: 60, editable: true },
             { name: 'QTSTK', label: 'Qtd', type: "quantity", width: 60, editable: true },
+            { name: 'QTBONUS', label: 'Qt.Bónus', type: "bonus", width: 120, editable: true },
+            // { name: 'BONUS_NAP', label: 'NAP', type: "check", width: 40, editable: true },
             { name: 'PRICE', label: 'Preço', type: "price", width: 70, editable: true, hover: priceHover },
-            { name: 'BONUS', label: 'Bónus/Descontos', type: "check", width: 40, editable: true },
-            { name: 'USER_DISC', label: '', type: "discount", width: 120, editable: true },
+            { name: 'USER_DISC', label: 'Descontos', type: "text", width: 120, editable: true },
             { name: 'LINETOTAL', label: 'Total', width: 90, type: "amount", editable: true },
+            // { name: 'LINETOTALBONUS', label: 'TotalB', width: 90, type: "amount", editable: true },
             { name: 'VATGROUP', label: 'IVA', type: "vat", width: 70, editable: true },
             // { name: 'WHSCODE', label: 'Arm', type: "text", width: 50, editable: true },
             { name: 'HASINCONF', label: '', type: "flag|danger", width: 35, editable: true },
-            { name: 'NETPRICE', label: 'Pr.NET', width: 70, type: "price", editable: false }
-            // { name: 'NETTOTAL', label: 'V.NET', width: 70, type: "amount", editable: false }
+            { name: 'NETPRICE', label: 'Pr.NET', width: 70, type: "price", editable: false },
+            { name: 'NETTOTAL', label: 'V.NET', width: 70, type: "amount", editable: false },
+            { name: 'NETTOTALBONUS', label: 'V.NET.BONUS', width: 70, type: "amount", editable: false }
         ]
     }
 
