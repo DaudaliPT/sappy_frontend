@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import MenuBar from "../../components/MenuBar";
+import { ModalWaitProgress } from "../../Modals";
 import safeJsonStringify from "safe-json-stringify";
 
 import { hashHistory } from "react-router";
@@ -9,6 +10,7 @@ import swal from 'sweetalert2'
 import 'sweetalert2/dist/sweetalert2.css';
 swal.setDefaults({
   reverseButtons: true,
+  allowOutsideClick: false,
   buttonsStyling: false
 })
 
@@ -37,10 +39,12 @@ class Full extends Component {
     byUs.hidePopover = this.hidePopover.bind(this);
     byUs.showToastr = this.showToastr.bind(this);
     byUs.clearToastr = this.clearToastr.bind(this);
+    byUs.showWaitProgress = this.showWaitProgress.bind(this);
+    byUs.hideWaitProgress = this.hideWaitProgress.bind(this);
 
     this.state = {
       currentAppModal: null,
-      currentMsgModal: null,
+      currentProgressModal: null,
       currentPopover: null
     }
   }
@@ -112,6 +116,26 @@ class Full extends Component {
         })
         .catch(error => byUs.showError(error, "Erro ao obter dados"));
     }, 300);
+  }
+
+  showWaitProgress(msg) {
+    swal(
+      {
+        html: `<div class="example-loading example-well h-150 vertical-align text-center">
+                <div class="loader vertical-align-middle loader-tadpole" />
+              </div>
+              <h4>${msg || ""}</h4>`,
+        showCancelButton: false,
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        allowEnterKey: false
+      })
+  }
+
+  hideWaitProgress(msg) {
+    // this.setState({ currentProgressModal: null })
+    swal.isVisible() && swal.closeModal();
   }
 
   showSuccess({ title, msg, moreInfo, onConfirm, onCancel, confirmText, confirmStyle, cancelText, cancelStyle } = {}) {
@@ -253,7 +277,7 @@ class Full extends Component {
           className="toast-top-right"
         />
         {this.state.currentAppModal}
-        {this.state.currentMsgModal}
+        {this.state.currentProgressModal}
         {this.state.currentPopover}
       </div>
     );

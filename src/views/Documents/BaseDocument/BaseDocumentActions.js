@@ -110,6 +110,8 @@ export default {
         let onInvokeApiSuccess = (result) => {
             let data = result.data || {};
 
+            // byUs.hideWaitProgress();
+
             if (data.message && data.message.indexOf("TOTALDIF") > -1) {
 
                 byUs.showDanger({
@@ -137,13 +139,19 @@ export default {
         }
 
         let invokeAddDocAPI = (forceTotal) => {
+
+            byUs.showWaitProgress("A adicionar documento, aguarde por favor...");
+
             let url = `${that.props.baseApiUrl}/${that.state.docData.ID}/confirm`
             let data = { forceTotal }
 
             that.serverRequest = axios
                 .post(url, { data })
                 .then(result => onInvokeApiSuccess(result))
-                .catch(error => byUs.showError(error, "Erro ao criar documento"));
+                .catch(error => {
+                    // byUs.hideWaitProgress();
+                    byUs.showError(error, "Erro ao criar documento")
+                });
         }
 
         let performBeforeAddChecks = () => {
