@@ -4,6 +4,7 @@ import BaseDocument from "../BaseDocument";
 import EditModal from "../../LandingPages/Produtos/EditModal";
 const byUs = window.byUs;
 
+
 let priceHover = {
     api: 'api/prod/info/<ITEMCODE>/upc',
     render: ({ result, context }) => {
@@ -16,15 +17,13 @@ let priceHover = {
                 <td>Data</td>
                 <td>Fornecedor</td>
                 <td>Preço</td>
-                {/* <td>Desc.</td> */}
                 <td>Pr.NET</td>
             </tr>)
             result.data.forEach(popuprow => {
                 content.push(<tr >
                     <td>{byUs.format.properDisplayDate(popuprow.DocDate)}</td>
-                    <td>{popuprow.CardCode}</td>
+                    <td style={{ maxWidth: "130px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{popuprow.CardName}</td>
                     <td>{byUs.format.price(popuprow.PUR_PRICE, 3)}</td>
-                    {/* <td>{popuprow.USER_DISC}</td> */}
                     <td>{byUs.format.price(popuprow.PRCNET, 3)}</td>
                 </tr>)
             });

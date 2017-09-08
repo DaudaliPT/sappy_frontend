@@ -35,8 +35,10 @@ class Full extends Component {
     byUs.showWarning = this.showWarning.bind(this);
     byUs.showDanger = this.showDanger.bind(this);
     byUs.showError = this.showError.bind(this);
+
     byUs.showPopover = this.showPopover.bind(this);
     byUs.hidePopover = this.hidePopover.bind(this);
+
     byUs.showToastr = this.showToastr.bind(this);
     byUs.clearToastr = this.clearToastr.bind(this);
     byUs.showWaitProgress = this.showWaitProgress.bind(this);

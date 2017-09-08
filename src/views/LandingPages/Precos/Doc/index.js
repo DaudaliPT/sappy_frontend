@@ -390,7 +390,8 @@ class DocAtualizacaoPrecos extends Component {
       // {key: "PMC", name: "PMC", width: 100, formatter: PriceFormatter, headerRenderer: HeaderAlignRight },
       { key: "DATA_ULTIMA_ALT", name: "Data At.", width: 100, formatter: DateFormatter },
       { key: "CURRENT_PRICE", name: "P Cash", width: 100, formatter: PriceFormatter, headerRenderer: HeaderAlignRight },
-      // {key: "NEW_PRICE_BASE", name: "Base Preço", width: 80, formatter: PriceFormatter, headerRenderer: HeaderAlignRight },
+      { key: "NEW_PRICE_BASE", name: "Base Preço", width: 80, formatter: PriceFormatter, headerRenderer: HeaderAlignRight },
+      { key: "NEW_PRICE_SUGESTED", name: "Preço Suj", width: 80, formatter: PriceFormatter, headerRenderer: HeaderAlignRight },
       {
         editable: allowEdit,
         cellClass: allowEdit && "editable-col",

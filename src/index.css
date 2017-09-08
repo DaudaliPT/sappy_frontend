@@ -626,13 +626,24 @@ input, optgroup,select,textarea {
     background: white;
 }
 
-td{
-    padding: 5px;
+.popover td{
+    padding:0px 10px;
 }
 
 .popover{
-    max-width: 500px!important; 
+  max-width: 500px!important; 
+  background: rgba(32, 46, 55,0.9) !important;
 }
+.popover:after{
+  border-left-color: rgba(32, 46, 55,0.9) !important;
+}
+.popover-content {
+  /* font-size: 0.8rem!important; */
+  font-weight: 500; 
+  color:rgba(255,255,255,0.5) !important;
+  padding: 10px!important;
+}
+
 
  .right-button {
      width: 30px; 

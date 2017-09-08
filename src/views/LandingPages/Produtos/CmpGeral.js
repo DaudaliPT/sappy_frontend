@@ -134,8 +134,8 @@ class CmpGeral extends Component {
           .catch(error => byUs.showError(error, "Erro ao validar dados"));
       }
 
-      let bc = ItemBarCodeCollection.filter(item => {
-        return item.AbsEntry === ix + 1;
+      let bc = ItemBarCodeCollection.filter((item, pos) => {
+        return pos === ix;
       });
       if (bc.length > 0) {
         Object.assign(bc[0], { [slField]: val });
