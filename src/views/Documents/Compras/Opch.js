@@ -105,9 +105,9 @@ export default class Opch extends Component {
             { name: 'VATGROUP', label: 'IVA', type: "vat", width: 70, editable: true },
             // { name: 'WHSCODE', label: 'Arm', type: "text", width: 50, editable: true },
             { name: 'HASINCONF', label: '', type: "flag|danger", width: 35, editable: true },
-            { name: 'NETPRICE', label: 'Pr.NET', width: 70, type: "price", editable: false },
-            { name: 'NETTOTAL', label: 'V.NET', width: 70, type: "amount", editable: false },
-            { name: 'NETTOTALBONUS', label: 'V.NET.BONUS', width: 70, type: "amount", editable: false }
+            { name: 'NETPRICE', label: 'Pr.NET', width: 70, type: "price", editable: false }
+            // { name: 'NETTOTAL', label: 'V.NET', width: 70, type: "amount", editable: false },
+            // { name: 'NETTOTALBONUS', label: 'V.NET.BONUS', width: 70, type: "amount", editable: false }
         ]
     }
 

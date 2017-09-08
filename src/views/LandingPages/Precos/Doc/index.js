@@ -44,17 +44,16 @@ const CustomToolbar = React.createClass({
   }
 });
 
+
+
 class CheckboxFormatter extends Component {
   render() {
     let checked = this.props.value != null ? this.props.value : false;
     let checkboxName = "checkbox" + this.props.rowIdx;
+    let disabled = this.props.column.cellClass === "locked-col"; //por que editable é colocado a false para não permiteir escrever na textbox da coluna
     return (
-      <div className="react-grid-checkbox-container checkbox-align" onClick={
-
-        this.handleChange
-
-      }>
-        <input className="react-grid-checkbox" type="checkbox" name={checkboxName} checked={checked} />
+      <div className="react-grid-checkbox-container checkbox-align" >
+        <input className="react-grid-checkbox" type="checkbox" name={checkboxName} checked={checked} disabled={disabled} />
         <label htmlFor={checkboxName} className="react-grid-checkbox-label" />
       </div>
     );
@@ -390,8 +389,8 @@ class DocAtualizacaoPrecos extends Component {
       // {key: "PMC", name: "PMC", width: 100, formatter: PriceFormatter, headerRenderer: HeaderAlignRight },
       { key: "DATA_ULTIMA_ALT", name: "Data At.", width: 100, formatter: DateFormatter },
       { key: "CURRENT_PRICE", name: "P Cash", width: 100, formatter: PriceFormatter, headerRenderer: HeaderAlignRight },
-      { key: "NEW_PRICE_BASE", name: "Base Preço", width: 80, formatter: PriceFormatter, headerRenderer: HeaderAlignRight },
-      { key: "NEW_PRICE_SUGESTED", name: "Preço Suj", width: 80, formatter: PriceFormatter, headerRenderer: HeaderAlignRight },
+      // { key: "NEW_PRICE_BASE", name: "Base Preço", width: 80, formatter: PriceFormatter, headerRenderer: HeaderAlignRight },
+      // { key: "NEW_PRICE_SUGESTED", name: "Preço Suj", width: 80, formatter: PriceFormatter, headerRenderer: HeaderAlignRight },
       {
         editable: allowEdit,
         cellClass: allowEdit && "editable-col",
@@ -407,8 +406,10 @@ class DocAtualizacaoPrecos extends Component {
         key: "TICK",
         name: "Act.",
         width: 50,
+        cellClass: allowEdit ? "editable-col" : "locked-col",
+        getRowMetaData: row => row, //In into my formatter I can access all the row values into this.props.dependentValues
         headerRenderer: HeaderAlignRight,
-        formatter: CheckboxFormatter,
+        formatter: <CheckboxFormatter />,
         events: {
           onClick: (ev, args) => {
             ev.stopPropagation();
