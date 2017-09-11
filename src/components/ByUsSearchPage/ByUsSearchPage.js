@@ -269,9 +269,10 @@ class ByUsSearchPage extends PureComponent {
     let hasNoContent = (this.state.rvIsLoading === false &&
       this.state.listItems.length === 0 &&
       this.state.searchTags.length === 0 &&
-      this.state.activeTab === tabItems[0])
+      this.state.activeTab === Object.keys(tabItems)[0])
 
     let hasContent = !hasNoContent
+    debugger
     return (
       <div >
         {!hasContent &&

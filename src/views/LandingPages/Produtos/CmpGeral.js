@@ -3,7 +3,7 @@ import { Button } from "reactstrap";
 import axios from "axios";
 // var $ = window.$;
 var byUs = window.byUs;
-import { ByUsTextBox, ByUsTextBoxNumeric, ByUsComboBox } from "../../../Inputs";
+import { ByUsTextBox, ByUsTextBoxNumeric, ByUsComboBox, ByUsToggle } from "../../../Inputs";
 import { ByUsModalMessage } from "../../../Modals";
 import { hashHistory } from "react-router";
 
@@ -203,6 +203,9 @@ class CmpGeral extends Component {
       let ItemPrices = [...Item.ItemPrices];
       ItemPrices[0].Price = val;
       Object.assign(Item, { ItemPrices });
+    } else if (fieldName.indexOf("Frozen") > -1) {
+      Item.Valid = val ? 'tNO' : 'tYES'
+      Item.Frozen = val ? 'tYES' : 'tNO'
     } else {
       Object.assign(Item, { [fieldName]: val });
     }
@@ -600,7 +603,21 @@ class CmpGeral extends Component {
               />
             </div>
           </div>
+          <div className="row">
+            <div className="col-6">
+              <ByUsToggle
+                disabled={this.state.ReadOnly}
+                label=""
+                name="Frozen"
+                contentOFF="Activo"
+                contentON="Inactivo"
+                color={Item.Frozen === "tNO" ? "success" : "danger"}
+                value={Item.Frozen !== "tNO"}
+                onChange={this.onFieldChange}
+              />
+            </div>
 
+          </div>
         </div>
       </div>)
     }

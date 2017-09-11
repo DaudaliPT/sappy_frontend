@@ -207,6 +207,7 @@ class Full extends Component {
 
 
   showError(err, title, onConfirm) {
+    console.error(title, err)
     // let that = this;
     let moreInfo = '';
     let msg = ""

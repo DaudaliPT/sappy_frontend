@@ -48,8 +48,13 @@ class EditPage extends Component {
   }
 
   handleItemSaved() {
-
-    this.loadProduto(this.props.params.itemcode);
+    let that = this;
+    this.setState({
+      ReadOnly: true,
+      loading: true
+    },
+      this.loadProduto(that.props.params.itemcode)
+    )
   }
 
   componentWillUnmount() {
@@ -66,8 +71,26 @@ class EditPage extends Component {
       modalMessage: {}
     });
   }
+
   onTogleAllowEdit(e) {
-    this.setState({ ReadOnly: !this.state.ReadOnly })
+    let newReadOnly = !this.state.ReadOnly;
+    this.setState({ ReadOnly: newReadOnly })
+
+    if (newReadOnly === false) {
+      // MAKE THIS REQUEST SO THAT WHEN USER SAVES IS ALMOST CERTAIN THAT THER IS A VALID SESSION
+      axios({
+        method: "get",
+        url: "api/prod/item/makeslready/" + this.props.params.itemcode
+      })
+        .then(result => {
+          // IGNORE THE RESULT
+          console.log("make sl ready")
+        })
+        .catch(error => {
+          //only log to the console
+          console.error("Não foi possível aceder á SL", error)
+        })
+    }
   }
 
   loadProduto(itemcode) {
@@ -130,7 +153,7 @@ class EditPage extends Component {
         if (result.data)
           that.setState({ ReadOnly: true }, hashHistory.push("/inv/oitm/" + result.data));
       })
-      .catch(error => byUs.showError(error, "Não foi possível navegar para anterior"));
+      .catch(error => byUs.showError(error, "Não foi possível navegar"));
   }
 
   handleOnTabClick(e) {

@@ -69,49 +69,50 @@ class EditModal extends Component {
     let that = this;
 
     this.setState({ loading: true });
-    this.serverRequest = axios({
-      method: "get",
-      url: "api/prod/item/" + itemcode
-    })
-      .then(result => {
-        let { Item, AlternateCatNum } = result.data;
+    this.serverRequest =
+      axios({
+        method: "get",
+        url: "api/prod/item/" + itemcode
+      })
+        .then(result => {
+          let { Item, AlternateCatNum } = result.data;
 
-        //Preparar as propriedades
-        let Propriedades = [];
-        for (var index = 1; index < 65; index++) {
-          var propertyName = "Properties" + index;
-          let propertyValue = Item[propertyName] === "tYES";
-          if (propertyValue) Propriedades.push(index.toString());
-        }
-
-        //preparar supplierCollection
-        let supplierCollection = [{
-          "CardCode": Item.Mainsupplier,
-          "Substitute": Item.SupplierCatalogNo
-        }];
-        AlternateCatNum.forEach(obj => {
-          if (obj.CardCode !== Item.Mainsupplier) {
-            supplierCollection.push({
-              "CardCode": obj.CardCode,
-              "Substitute": obj.Substitute
-            });
+          //Preparar as propriedades
+          let Propriedades = [];
+          for (var index = 1; index < 65; index++) {
+            var propertyName = "Properties" + index;
+            let propertyValue = Item[propertyName] === "tYES";
+            if (propertyValue) Propriedades.push(index.toString());
           }
-        })
 
-        that.setState({
-          loading: false,
-          newItem: Item,
-          numberOfBarCodes: Item.ItemBarCodeCollection.length,
-          Propriedades,
-          supplierCollection,
-          showFabricante: Item.Mainsupplier === "F0585"/*UNAPOR*/,
-          U_rsaMargem: Item.U_rsaMargem,
-          PrecoCash: Item.ItemPrices[0].Price
+          //preparar supplierCollection
+          let supplierCollection = [{
+            "CardCode": Item.Mainsupplier,
+            "Substitute": Item.SupplierCatalogNo
+          }];
+          AlternateCatNum.forEach(obj => {
+            if (obj.CardCode !== Item.Mainsupplier) {
+              supplierCollection.push({
+                "CardCode": obj.CardCode,
+                "Substitute": obj.Substitute
+              });
+            }
+          })
+
+          that.setState({
+            loading: false,
+            newItem: Item,
+            numberOfBarCodes: Item.ItemBarCodeCollection.length,
+            Propriedades,
+            supplierCollection,
+            showFabricante: Item.Mainsupplier === "F0585"/*UNAPOR*/,
+            U_rsaMargem: Item.U_rsaMargem,
+            PrecoCash: Item.ItemPrices[0].Price
+          })
         })
-      })
-      .catch(error => {
-        this.setState({ saving: false }, byUs.showError(error, "Erro ao obter dados"));
-      })
+        .catch(error => {
+          this.setState({ saving: false }, byUs.showError(error, "Erro ao obter dados"));
+        })
 
   }
 

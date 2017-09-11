@@ -12,13 +12,14 @@ class ByUsToggle extends Component {
 
 
   handleToggle() {
+    if (this.props.disabled) return
     let value = this.props.value;
     let changeInfo = { fieldName: this.props.name, rawValue: !value, formatedValue: !value };
     this.props.onChange(changeInfo);
   }
 
   render() {
-    let sliderColor = this.props.value ? "warning" : "secondary";
+    let sliderColor = this.props.disabled ? "secondary" : (this.props.color || "warning");
     let stateColor, stateMsg;
     if (this.props.state) {
       stateColor = this.props.state.split('|')[0];
@@ -30,9 +31,9 @@ class ByUsToggle extends Component {
         {/*{renderLabel()}*/}
         <InputGroup>
 
-          <label className="switch" >
+          <label className="switch large" >
             <input type="checkbox" checked={this.props.value} onChange={this.handleToggle} />
-            <span className={"slider round " + sliderColor}>{this.props.value ? (this.props.contentON || "ON") : (this.props.contentOFF || "OFF")} </span>
+            <span className={"slider sm round " + sliderColor}>{this.props.value ? (this.props.contentON || "ON") : (this.props.contentOFF || "OFF")} </span>
           </label>
         </InputGroup>
 

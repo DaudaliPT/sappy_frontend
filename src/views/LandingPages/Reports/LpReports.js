@@ -37,6 +37,8 @@ class LpReports extends Component {
 
     // byUs.showProgress
 
+    byUs.showWaitProgress("A processar, aguarde por favor...");
+
     if (this.cancelPreviousAxiosRequest) this.cancelPreviousAxiosRequest();
     var CancelToken = axios.CancelToken;
     this.serverRequest = axios
@@ -47,20 +49,39 @@ class LpReports extends Component {
         })
       })
       .then(function (result) {
+        byUs.hideWaitProgress();
+
         let reportParameters = result.data;
         if (typeof reportParameters === "string") {
           reportParameters = JSON.parse(reportParameters);
         }
 
-        that.setState({
-          currentModal: <ModalReportParams
-            modal={true}
-            DocCode={DocCode}
-            DocName={DocName}
-            reportParameters={reportParameters}
-            toggleModal={that.toggleModal}
-          />
-        });
+
+        if (reportParameters.length === 0) {
+          var baseUrl = "";
+
+          if (window.location.port === "3000") {
+            //   Nota: Em desenv, é preciso redirecionar o pedido.Já em produtivo a api é servida na mesma porta do pedido
+            baseUrl = "http://localhost:3005";
+          }
+
+          var apiRoute = "/api/reports/getPdf(" + DocCode + ")";
+          var apiQuery = "?parValues=" + encodeURIComponent(JSON.stringify(reportParameters));
+          // Executar o mapa
+
+          window.open(baseUrl + apiRoute + apiQuery, "_blank");
+
+        } else {
+          that.setState({
+            currentModal: <ModalReportParams
+              modal={true}
+              DocCode={DocCode}
+              DocName={DocName}
+              reportParameters={reportParameters}
+              toggleModal={that.toggleModal}
+            />
+          });
+        }
       })
       .catch(function (error) {
         if (!error.__CANCEL__) byUs.showError(error, "Api error")
