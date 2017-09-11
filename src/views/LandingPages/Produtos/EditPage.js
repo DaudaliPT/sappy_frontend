@@ -18,6 +18,7 @@ class EditPage extends Component {
 
     this.toggleModalMessage = this.toggleModalMessage.bind(this);
     this.handleOnTabClick = this.handleOnTabClick.bind(this);
+    this.handleItemSaved = this.handleItemSaved.bind(this);
     this.onMoveTo = this.onMoveTo.bind(this);
     this.loadProduto = this.loadProduto.bind(this)
     this.onTogleAllowEdit = this.onTogleAllowEdit.bind(this);
@@ -44,6 +45,11 @@ class EditPage extends Component {
       let minH = $scrollAbleparent.height() - $el.position().top - 100;
       $el.css("height", minH.toString() + "px");
     }
+  }
+
+  handleItemSaved() {
+
+    this.loadProduto(this.props.params.itemcode);
   }
 
   componentWillUnmount() {
@@ -114,7 +120,6 @@ class EditPage extends Component {
 
   }
 
-
   onMoveTo(nextORprevious) {
     let that = this;
     this.serverRequest = axios({
@@ -148,8 +153,10 @@ class EditPage extends Component {
                 {this.state.loading ? '...' : (newItem.ItemName + ' (' + newItem.ItemCode + ')')}
               </p>
             </div>
+
             <div className="col-md-3    px-md-15 px-0">
               <div className="byus-action-bar animation-slide-left">
+
                 {this.state.ReadOnly && this.state.activeTab === "tabGeral" &&
                   <Button outline className="btn-md btn-flat" onClick={this.onTogleAllowEdit}>
                     <i className="icon wb-edit" />
@@ -173,6 +180,7 @@ class EditPage extends Component {
           </div>
 
         </div>
+
         <div className="page-content container-fluid">
           <div className="row">
             <div className="col-xl-2 col-md-3    px-md-15 px-0">
@@ -195,6 +203,8 @@ class EditPage extends Component {
               </div>
               {/* <!-- End Panel --> */}
             </div>
+
+
             <div className="col-xl-10 col-md-9     px-md-15 px-0">
               {/* <!-- Panel --> */}
               <div className="panel form-panel">
@@ -204,6 +214,7 @@ class EditPage extends Component {
                     <div className=" tab-pane animation-fade active" >
                       <CmpGeral ItemCode={this.props.params.itemcode}
                         Item={this.state.newItem}
+                        onItemSaved={this.handleItemSaved}
                         supplierCollection={this.state.supplierCollection}
                         ReadOnly={this.state.ReadOnly}></CmpGeral>
                     </div>

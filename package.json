@@ -2,7 +2,7 @@
   "name": "sappy",
   "version": "0.1.0",
   "description": "Rachidas project frontend",
-  "proxy": "http://localhost:3005",
+  "proxy": "http://192.168.0.243:3005",
   "private": true,
   "dependencies": {
     "autonumeric": "^4.0.3",

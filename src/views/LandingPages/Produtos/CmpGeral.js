@@ -46,10 +46,8 @@ class CmpGeral extends Component {
     this.onFieldChange = this.onFieldChange.bind(this);
     this.onClick_AddBarCode = this.onClick_AddBarCode.bind(this);
     this.onClick_AddSupplier = this.onClick_AddSupplier.bind(this);
-    this.showMessage = this.showMessage.bind(this);
     this.onDeleteArtigo = this.onDeleteArtigo.bind(this);
     this.onSaveArtigo = this.onSaveArtigo.bind(this);
-    this.toggleModalMessage = this.toggleModalMessage.bind(this);
 
     this.state = getInitialState(props);
   }
@@ -67,12 +65,6 @@ class CmpGeral extends Component {
     if (this.serverRequest && this.serverRequest.abort) {
       this.serverRequest.abort();
     }
-  }
-
-  toggleModalMessage(refresh) {
-    this.setState({
-      modalMessage: {}
-    });
   }
 
   // Recebe os valores dos campos MY*
@@ -218,21 +210,6 @@ class CmpGeral extends Component {
     this.setState(newStateValues);
   }
 
-  showMessage({ title, message, moreInfo, okText, cancelText, onClickOk, onClickCancel, color } = {}) {
-    let modalMessage = {
-      title,
-      message,
-      moreInfo,
-      okText,
-      cancelText,
-      onClickOk,
-      onClickCancel,
-      color
-    };
-    this.setState({ modalMessage });
-  }
-
-
   onDeleteArtigo(e) {
     var that = this;
 
@@ -249,14 +226,7 @@ class CmpGeral extends Component {
             hashHistory.push("/inv/oitm");
           })
           .catch(error => {
-            this.setState({ saving: false }, () => {
-              this.showMessage({
-                title: "Error!",
-                message: error.response.data.message,
-                moreInfo: error.response.data.moreInfo,
-                color: "danger"
-              });
-            });
+            this.setState({ saving: false }, byUs.showError(error, "Erro ao apagar"));
           });
       });
     }
@@ -266,14 +236,14 @@ class CmpGeral extends Component {
         saving: false
       },
       () => {
-        this.showMessage({
-          title: "Apagar?",
-          message: "Deseja apagar este artigo?",
-          okText: "Apagar",
+        byUs.showDanger({
+          title: "Apagar artigo?",
+          moreInfo: `Se confirmar a remoção deste artigo, ele será removido do sistema.`,
           cancelText: "Cancelar",
-          onClickCancel: that.toggleModalMessage,
-          color: "danger",
-          onClickOk: apagarArtigo
+          onCancel: () => { },
+          confirmText: "Apagar artigo",
+          // eslint-disable-next-line
+          onConfirm: apagarArtigo
         });
       }
     );
@@ -329,26 +299,17 @@ class CmpGeral extends Component {
             url: "api/prod/item"
           })
             .then(result => {
-              this.showMessage({
-                title: "Concluído!",
-                message: "Gravação concluída do artigo " + result.data.ItemCode,
-                color: "info",
-                cancelText: "",
-                okText: "Ok",
-                onClickOk: () => {
-                  that.toggleModalMessage();
-                }
-              });
+
+              that.props.onItemSaved(); //notify parent
+
+
+              byUs.showSuccess({
+                title: "Alterações gravadas",
+                moreInfo: `O artigo ${result.data.ItemCode} foi alterado!`
+              })
             })
             .catch(error => {
-              this.setState({ saving: false }, () => {
-                this.showMessage({
-                  title: "Error!",
-                  message: error.response.data.message,
-                  moreInfo: error.response.data.moreInfo,
-                  color: "danger"
-                });
-              });
+              this.setState({ saving: false }, byUs.showError(error, "Erro ao gravar"));
             });
         });
       };
@@ -358,16 +319,14 @@ class CmpGeral extends Component {
           saving: false
         },
         () => {
-          this.showMessage({
-            title: "Confirmação",
-            message: "Confirma a alteração deste artigo?",
-            okText: "Confirmar",
+          byUs.showQuestion({
+            title: "Confirma?",
+            moreInfo: `Se confirmar, as alterações ao artigo serão gravadas no sistema.`,
             cancelText: "Cancelar",
-            onClickCancel: that.toggleModalMessage,
-            color: "success",
-            onClickOk: gravarArtigo
+            onCancel: () => { },
+            confirmText: "Confirmar",
+            onConfirm: gravarArtigo
           });
-
         }
       );
     }
@@ -653,16 +612,17 @@ class CmpGeral extends Component {
         {renderContent()}
 
         <div className="byus-action-bar animation-slide-left">
+
           {!this.state.ReadOnly &&
             <Button color="danger" disabled={this.state.saving || this.state.loading} onClick={this.onDeleteArtigo}>
               <i className="icon wb-trash" />
-              <span className="hidden-sm-down"> Apagar </span>
+              <span className="hidden-sm-down"> Apagar artigo </span>
             </Button>
           }
           {!this.state.ReadOnly &&
             <Button color="success" disabled={this.state.saving || this.state.loading} onClick={this.onSaveArtigo}>
               <i className="icon wb-check" />
-              <span className="hidden-sm-down"> Gravar</span>
+              <span className="hidden-sm-down"> Gravar alterações</span>
             </Button>
           }
         </div>

@@ -48,7 +48,6 @@ class ModalCreateArtigo extends Component {
     this.onFieldChange = this.onFieldChange.bind(this);
     this.onClick_AddBarCode = this.onClick_AddBarCode.bind(this);
     this.onClick_AddSupplier = this.onClick_AddSupplier.bind(this);
-    this.showMessage = this.showMessage.bind(this);
     this.onDeleteDraft = this.onDeleteDraft.bind(this);
     this.onSaveArtigo = this.onSaveArtigo.bind(this);
     this.onSaveDraft = this.onSaveDraft.bind(this);
@@ -108,14 +107,7 @@ class ModalCreateArtigo extends Component {
           })
         })
         .catch(error => {
-          this.setState({ saving: false }, () => {
-            this.showMessage({
-              title: "Error!",
-              message: error.response.data.message,
-              moreInfo: error.response.data.moreInfo,
-              color: "danger"
-            });
-          });
+          this.setState({ saving: false }, byUs.showError(error, "Erro ao obter dados"));
         })
     }
   }
@@ -272,21 +264,6 @@ class ModalCreateArtigo extends Component {
     this.setState(newStateValues);
   }
 
-  showMessage({ title, message, moreInfo, okText, cancelText, onClickOk, onClickCancel, color } = {}) {
-    let modalMessage = {
-      title,
-      message,
-      moreInfo,
-      okText,
-      cancelText,
-      onClickOk,
-      onClickCancel,
-      color
-    };
-    this.setState({ modalMessage });
-  }
-
-
   onDeleteDraft(e) {
     var that = this;
 
@@ -303,14 +280,7 @@ class ModalCreateArtigo extends Component {
             that.props.toggleModal("refresh");
           })
           .catch(error => {
-            this.setState({ saving: false }, () => {
-              this.showMessage({
-                title: "Error!",
-                message: error.response.data.message,
-                moreInfo: error.response.data.moreInfo,
-                color: "danger"
-              });
-            });
+            this.setState({ saving: false }, byUs.showError(error, "Erro ao apagar"));
           });
       });
     }
@@ -320,14 +290,13 @@ class ModalCreateArtigo extends Component {
         saving: false
       },
       () => {
-        this.showMessage({
-          title: "Apagar?",
-          message: "Deseja apagar este rascunho?",
-          okText: "Apagar Rascunho",
+        byUs.showWarning({
+          title: "Apagar rascunho?",
+          moreInfo: `Se confirmar a remoção deste rascunho, ele será removido do sistema.`,
           cancelText: "Cancelar",
-          onClickCancel: that.toggleModalMessage,
-          color: "danger",
-          onClickOk: apagarArtigo
+          onCancel: () => { },
+          confirmText: "Apagar rascunho",
+          onConfirm: apagarArtigo
         });
       }
     );
@@ -398,30 +367,25 @@ class ModalCreateArtigo extends Component {
                 this.props.onNewItemCreated(result.data.ItemCode)
               }
               else {
-                this.showMessage({
-                  title: "Concluído!",
-                  message: "Criado o com o código " + result.data.ItemCode,
-                  color: "info",
-                  cancelText: "",
-                  okText: "Ok",
-                  onClickOk: () => {
-                    that.toggleModalMessage();
+
+                byUs.showSuccess({
+                  title: "Successo!",
+                  moreInfo: `Criou o artigo ${result.data.ItemCode}!`,
+                  cancelText: "Adicionar outro",
+                  onCancel: () => {
 
                     //manter a janela aberta em novo artigo
                     that.setState(getInitialState({}));
+                  },
+                  confirmText: "Concluido",
+                  onConfirm: () => {
+                    that.props.toggleModal("refresh");
                   }
-                });
+                })
               }
             })
             .catch(error => {
-              this.setState({ saving: false }, () => {
-                this.showMessage({
-                  title: "Error!",
-                  message: error.response.data.message,
-                  moreInfo: error.response.data.moreInfo,
-                  color: "danger"
-                });
-              });
+              this.setState({ saving: false }, byUs.showError(error, "Erro ao gravar"));
             });
         });
       };
@@ -434,14 +398,13 @@ class ModalCreateArtigo extends Component {
           if (saveDraft) {
             criarArtigo();
           } else {
-            this.showMessage({
-              title: "Confirmação",
-              message: "Confirma a criação deste artigo?",
-              okText: "Confirmar",
+            byUs.showQuestion({
+              title: "Confirma?",
+              moreInfo: `Se confirmar, será criado este novo artigo em sistema.`,
               cancelText: "Cancelar",
-              onClickCancel: that.toggleModalMessage,
-              color: "warning",
-              onClickOk: criarArtigo
+              onCancel: () => { },
+              confirmText: "Confirmar",
+              onConfirm: criarArtigo
             });
           }
         }
@@ -717,7 +680,7 @@ class ModalCreateArtigo extends Component {
         <ModalFooter>
           {(this.state.changeItemCode && this.state.changeItemCode.indexOf('DRAFT') === 0)
             &&
-            <Button color="danger" disabled={this.state.saving || this.state.loading} onClick={this.onDeleteDraft}>
+            <Button color="warning" disabled={this.state.saving || this.state.loading} onClick={this.onDeleteDraft}>
               <i className="icon wb-trash active" />
               <span className="hidden-sm-down"> Apagar Rascunho</span>
             </Button>

@@ -26,10 +26,16 @@ class LpReports extends Component {
 
   handleOnClick_report(e) {
     e.preventDefault();
-    var thisBtn = $(e.target).closest("button")[0];
     var that = this;
-    let DocCode = thisBtn.id;
-    let DocName = thisBtn.name;
+    // var thisBtn = $(e.target).closest("button")[0];
+
+    var vrow = $(e.target).closest(".byusVirtualRow")[0];
+    let id = vrow.id;
+    let DocCode = id.split("|")[1];
+    let DocName = id.split("|")[2];
+
+
+    // byUs.showProgress
 
     if (this.cancelPreviousAxiosRequest) this.cancelPreviousAxiosRequest();
     var CancelToken = axios.CancelToken;
@@ -55,8 +61,6 @@ class LpReports extends Component {
             toggleModal={that.toggleModal}
           />
         });
-
-        // }
       })
       .catch(function (error) {
         if (!error.__CANCEL__) byUs.showError(error, "Api error")
@@ -66,10 +70,10 @@ class LpReports extends Component {
   render() {
     const renderRow = ({ row, index }) => {
 
-      let rowId = "row_" + row.DocCode
+      let rowId = "row|" + row.DocCode + "|" + row.DocName;
       let rowStyleClass = "";
       return (
-        <div className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={this.handleRowClick} id={rowId} >
+        <div className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={this.handleOnClick_report} id={rowId} >
           <div className="container vertical-align-middle">
 
             {/*large displays*/}
@@ -84,7 +88,7 @@ class LpReports extends Component {
                 <span className="title hidden-sm-down"> <strong>{row.DocName}</strong></span>
                 <br className="hidden-sm-down" />
                 <span className="metas hidden-sm-down">{row.Notes}</span>
-                <span className="float-right">
+                {/* <span className="float-right">
                   <button
                     type="button"
                     className="byus-execute btn btn-round btn-outline btn-default"
@@ -95,7 +99,7 @@ class LpReports extends Component {
                     <i className="icon fa-file-pdf-o font-size-20 active" />
                     <span className="hidden-sm-down"> Executar</span>
                   </button>
-                </span>
+                </span> */}
               </div>
             </div>
           </div >
@@ -109,7 +113,7 @@ class LpReports extends Component {
         searchPlaceholder="Procurar..."
         searchApiUrl="api/reports"
         renderRow={renderRow}
-        renderRowHeight={80}
+        renderRowHeight={60}
         currentModal={this.state.currentModal}
         currentPopover={null}
         refresh={false}

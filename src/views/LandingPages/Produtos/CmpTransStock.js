@@ -13,8 +13,8 @@ class CmpTransStock extends Component {
             // let rowId = "row_" + index;
             let rowStyleClass = "";
             let seta = null;
-            if (row.InvQty > 0) seta = <span className="float-left" style={{ color: "green" }}><i className="icon wb-graph-up" /></span>;
-            if (row.InvQty < 0) seta = <span className="float-left" style={{ color: "red" }}><i className="icon wb-graph-down" /></span>;
+            if (row.InvQty > 0) seta = <span className="float-left" style={{ color: "green" }}><i className="icon wb-upload" /></span>;
+            if (row.InvQty < 0) seta = <span className="float-left" style={{ color: "red" }}><i className="icon wb-download" /></span>;
             return (
                 <div className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={this.handleRowSelection}>
                     <div className="container vertical-align-middle">

@@ -110,14 +110,7 @@ class EditModal extends Component {
         })
       })
       .catch(error => {
-        this.setState({ saving: false }, () => {
-          this.showMessage({
-            title: "Error!",
-            message: error.response.data.message,
-            moreInfo: error.response.data.moreInfo,
-            color: "danger"
-          });
-        });
+        this.setState({ saving: false }, byUs.showError(error, "Erro ao obter dados"));
       })
 
   }
