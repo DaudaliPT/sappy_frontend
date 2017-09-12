@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import MenuBar from "../../components/MenuBar";
-import { ModalWaitProgress } from "../../Modals";
 import safeJsonStringify from "safe-json-stringify";
 
 import { hashHistory } from "react-router";

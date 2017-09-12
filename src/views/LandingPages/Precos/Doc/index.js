@@ -1090,7 +1090,7 @@ class DocAtualizacaoPrecos extends Component {
                     }
 
 
-                    let text = props.name.split('|')[0];
+                    /* let text = props.name.split('|')[0]; */
                     let linkType = props.name.split('|')[1];
                     let linkEntry = props.name.split('|')[2];
 
