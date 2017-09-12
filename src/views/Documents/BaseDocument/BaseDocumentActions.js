@@ -107,7 +107,7 @@ export default {
     },
 
     handleOnConfirmar: (that) => {
-        let onInvokeApiSuccess = (result) => {
+        let handleAddDocApiResponse = (result) => {
             let data = result.data || {};
 
             // byUs.hideWaitProgress();
@@ -125,9 +125,10 @@ export default {
                     onConfirm: () => invokeAddDocAPI(data.DocTotal)
                 });
             } else {
+
                 byUs.showSuccess({
                     title: "Documento criado",
-                    moreInfo: `Criou com sucesso o documento ${result.data.DocNum}!`,
+                    msg: `Criou com sucesso o documento ${result.data.DocNum}!`,
                     cancelText: "Adicionar outro",
                     onCancel: () => {
                         hashHistory.replace(hashHistory.getCurrentLocation().pathname + "?new=" + new Date().getTime())
@@ -147,7 +148,7 @@ export default {
 
             that.serverRequest = axios
                 .post(url, { data })
-                .then(result => onInvokeApiSuccess(result))
+                .then(result => handleAddDocApiResponse(result))
                 .catch(error => {
                     // byUs.hideWaitProgress();
                     byUs.showError(error, "Erro ao criar documento")
