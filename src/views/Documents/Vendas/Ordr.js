@@ -62,7 +62,9 @@ export default class Ordr extends Component {
             {...this.props}
             ref="doc"
             title="Encomenda de cliente"
-            baseApiUrl='/api/docs/doc/ordr'
+            apiDocsNew='/api/docs/new/ordr'
+            apiDocsView='/api/docs/view/ordr'
+            apiDocsEdit='/api/docs/edit/ordr'
             footerSearchType="oitm"
             headerFields={headerFields}
             onHeaderChange={this.onHeaderChange}

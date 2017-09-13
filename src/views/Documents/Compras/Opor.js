@@ -91,7 +91,9 @@ export default class Opor extends Component {
             {...this.props}
             ref="doc"
             title="Encomenda a fornecedor"
-            baseApiUrl='/api/docs/doc/opor'
+            apiDocsNew='/api/docs/new/opor'
+            apiDocsView='/api/docs/view/opor'
+            apiDocsEdit='/api/docs/edit/opor'
             footerSearchType="oitm"
             footerLimitSearchCondition={`OITM."CardCode"='<CARDCODE>' 
             AND 1= CASE WHEN OCRD."U_apyITMCNT"='Y'  

@@ -91,7 +91,9 @@ export default class Orpd extends Component {
             {...this.props}
             ref="doc"
             title="Devolução de mercadoria"
-            baseApiUrl='/api/docs/doc/orpd'
+            apiDocsNew='/api/docs/new/orpd'
+            apiDocsView='/api/docs/view/orpd'
+            apiDocsEdit='/api/docs/edit/orpd'
             footerSearchType="oitm"
             footerLimitSearchCondition={`OITM."CardCode"='<CARDCODE>' 
             AND 1= CASE WHEN OCRD."U_apyITMCNT"='Y'  

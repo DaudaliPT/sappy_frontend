@@ -61,7 +61,9 @@ export default class Oinv extends Component {
             {...this.props}
             ref="doc"
             title="Fatura a cliente"
-            baseApiUrl='/api/docs/doc/oinv'
+            apiDocsNew='/api/docs/new/oinv'
+            apiDocsView='/api/docs/view/oinv'
+            apiDocsEdit='/api/docs/edit/oinv'
             footerSearchType="oitm"
             headerFields={headerFields}
             onHeaderChange={this.onHeaderChange}

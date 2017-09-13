@@ -63,7 +63,9 @@ export default class Odln extends Component {
             {...this.props}
             ref="doc"
             title="Entrega a cliente"
-            baseApiUrl='/api/docs/doc/odln'
+            apiDocsNew='/api/docs/new/odln'
+            apiDocsView='/api/docs/view/odln'
+            apiDocsEdit='/api/docs/edit/odln'
             footerSearchType="oitm"
             headerFields={headerFields}
             onHeaderChange={this.onHeaderChange}

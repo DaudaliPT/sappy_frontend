@@ -16,6 +16,7 @@ class BaseDocument extends Component {
 
     this.recalcComponentsHeight = this.recalcComponentsHeight.bind(this)
     this.toggleHeader = this.toggleHeader.bind(this)
+    this.toggleEditable = this.toggleEditable.bind(this)
     this.loadDoc = this.loadDoc.bind(this)
 
     this.ensureDocHeaderExists = this.ensureDocHeaderExists.bind(this);
@@ -37,6 +38,8 @@ class BaseDocument extends Component {
       hasSelectedRows: false,
       footerLimitSearch: props.footerLimitSearchCondition || false,
       loading: true,
+      changingTotals: false,
+      editable: false,
       docData: {
         LINES: []
       },
@@ -44,6 +47,7 @@ class BaseDocument extends Component {
         title: props.title,
         expanded: true,
         toggleHeader: this.toggleHeader,
+        toggleEditable: this.toggleEditable
       },
       detail: {
       },
@@ -92,6 +96,41 @@ class BaseDocument extends Component {
     header.expanded = !header.expanded
     this.setState({ header }, this.recalcComponentsHeight)
   }
+  toggleEditable() {
+    let that = this;
+    let locationState = this.props.location.state || {}
+    let editable = this.state.editable;
+
+    if (editable) return that.setState({ editable: !editable }, that.loadDoc)
+
+    if (!locationState.DocEntry) return
+    let docentry = locationState.DocEntry;
+    this.serverRequest = axios
+      .get(`${this.props.apiDocsEdit}/${docentry}/haschanges`)
+      .then(function (result) {
+
+        let changes = result.data || [];
+        if (changes.length === 0) return that.setState({ editable: !editable }, that.loadDoc)
+
+        byUs.showQuestion({
+          title: "Continuar edição?",
+          msg: "Há alterações não confirmadas neste documento.",
+          moreInfo: "Pode continuar a editar ou ignorar as alterações registadas e recomeçar do zero.",
+          onConfirm: () => { that.setState({ editable: !editable }, that.loadDoc) },
+          confirmText: "Continuar edição",
+          cancelText: "Ignorar alterações anteriores",
+          onCancel: () => {
+            that.serverRequest = axios
+              .post(`${that.props.apiDocsEdit}/${docentry}/deletechanges`)
+              .then(function (result) {
+                that.setState({ editable: !editable }, that.loadDoc)
+              })
+              .catch(error => byUs.showError(error, "Erro ao obter dados"));
+          }
+        })
+      })
+      .catch(error => byUs.showError(error, "Erro ao obter dados"));
+  }
 
   forceReload() {
     this.loadDoc();
@@ -103,9 +142,10 @@ class BaseDocument extends Component {
     let locationState = this.props.location.state || {}
 
     if (locationState.DocEntry) {
+
       let docentry = locationState.DocEntry;
       this.serverRequest = axios
-        .get(`${this.props.baseApiUrl}/view/${docentry}`)
+        .get(`${this.props.apiDocsEdit}/${docentry}?editable=${this.state.editable ? 'yes' : ''}`)
         .then(function (result) {
 
           let newDocData = result.data
@@ -121,7 +161,7 @@ class BaseDocument extends Component {
     if (this.state.docData && this.state.docData.ID) id = this.state.docData.ID;
     if (id) {
       this.serverRequest = axios
-        .get(`${this.props.baseApiUrl}/${id}`)
+        .get(`${this.props.apiDocsNew}/${id}`)
         .then(function (result) {
 
           let newDocData = result.data
@@ -137,7 +177,7 @@ class BaseDocument extends Component {
 
       //procurar série predefinida
       this.serverRequest = axios
-        .get(this.props.baseApiUrl + "/dfltseries")
+        .get(this.props.apiDocsNew + "/dfltseries")
         .then(function (result) {
           let docData = that.state.docData;
           docData = { ...docData, DOCSERIES: result.data.Series };
@@ -152,7 +192,6 @@ class BaseDocument extends Component {
   ensureDocHeaderExists(next) {
     let that = this;
 
-
     if (this.state.docData.ID) {
       next();
     } else {
@@ -160,7 +199,7 @@ class BaseDocument extends Component {
       delete data.LINES
 
       this.serverRequest = axios
-        .post(this.props.baseApiUrl, data)
+        .post(this.props.apiDocsNew, data)
         .then(function (result) {
           let docData = that.state.docData;
           docData = { ...docData, ...result.data };
@@ -175,26 +214,14 @@ class BaseDocument extends Component {
   setNewDataAndDisplayAlerts(docData) {
     let that = this;
 
-
     if (docData.ReturnMessage) {
       byUs.showToastr(docData.ReturnMessage);
       delete docData.ReturnMessage
     }
 
-    // create alerts 
-    // let oldDocData = this.state.docData;
-    // Object.keys(docData)
-    //   .filter(k => k.indexOf("_VALIDATEMSG") > -1)
-    //   .forEach(f => {
-    //     let validatemsg = docData[f];
-    //     if (validatemsg && oldDocData[f] !== validatemsg) {
-    //       let color = validatemsg.split('|')[0];
-    //       let msg = validatemsg.split('|')[1];
-    //       byUs.showToastr({ color, msg });
-    //     }
-    //   });   
     this.setState({
       loading: false,
+      changingTotals: false,
       docData
     }, that.recalcComponentsHeight)
 
@@ -210,21 +237,37 @@ class BaseDocument extends Component {
     let updated = { [fieldName]: val || null }
     if (that.props.onHeaderChange) updated = that.props.onHeaderChange(this.state.docData, updated);
 
-    // check if really changed
-    if (byUs.isEqual(oldVal, val)) return console.log("skip update");
-    console.log(fieldName, oldVal, val)
+    // // check if really changed
+    // if (byUs.isEqual(oldVal, val)) return console.log("skip update");
+    // console.log(fieldName, oldVal, val)
+    if ('EXTRADISC,EXTRADISCPERC,DOCTOTAL'.indexOf(fieldName) > -1) this.setState({ changingTotals: true })
 
-
-    this.ensureDocHeaderExists(() => {
+    if (this.state.docData.DOCENTRY > 0) {
       that.serverRequest = axios
-        .patch(this.props.baseApiUrl + "/" + this.state.docData.ID, updated)
+        .patch(this.props.apiDocsEdit + "/" + this.state.docData.DOCENTRY + `?editable=${this.state.editable ? 'yes' : ''}`, updated)
         .then(function (result) {
           let docData = { ...that.state.docData, ...result.data };
+          delete docData.changing
           delete docData[changeInfo.fieldName + "_LOGICMSG"]
           that.setNewDataAndDisplayAlerts(docData);
         })
         .catch(error => byUs.showError(error, "Erro ao gravar cabeçalho"));
-    });
+    }
+    else {
+
+      this.ensureDocHeaderExists(() => {
+        that.serverRequest = axios
+          .patch(this.props.apiDocsNew + "/" + this.state.docData.ID, updated)
+          .then(function (result) {
+            let docData = { ...that.state.docData, ...result.data };
+            delete docData.changing
+            delete docData[changeInfo.fieldName + "_LOGICMSG"]
+            that.setNewDataAndDisplayAlerts(docData);
+          })
+          .catch(error => byUs.showError(error, "Erro ao gravar cabeçalho"));
+      });
+
+    }
 
   }
 
@@ -236,7 +279,7 @@ class BaseDocument extends Component {
     if (this.props.onRowChange) updated = this.props.onRowChange(currentRow, updated)
 
     this.serverRequest = axios
-      .patch(`${this.props.baseApiUrl}/${this.state.docData.ID}/line/${currentRow.LINENUM}`, { ...updated })
+      .patch(`${this.props.apiDocsNew}/${this.state.docData.ID}/line/${currentRow.LINENUM}`, { ...updated })
       .then(function (result) {
         let new_row = result.data.UPDATED_LINE;
         // create a new object and replace the line on it, keeping the other intact
@@ -275,7 +318,7 @@ class BaseDocument extends Component {
 
     let createDocLines = (itemCodes) => {
       this.serverRequest = axios
-        .post(`${this.props.baseApiUrl}/${this.state.docData.ID}/lines`, { itemCodes })
+        .post(`${this.props.apiDocsNew}/${this.state.docData.ID}/lines`, { itemCodes })
         .then(function (result) {
           let newDocData = { ...that.state.docData, ...result.data }
           that.setState({ docData: newDocData }, () => {
@@ -296,10 +339,13 @@ class BaseDocument extends Component {
   render() {
     let that = this;
     let docData = this.state.docData;
+    let changingTotals = this.state.changingTotals;
+    let editable = this.state.editable;
 
     let totals = docData.totals || {};
     let headerProps = {
       ...this.state.header,
+      editable,
       docData,
       fields: this.props.headerFields,
       onFieldChange: this.handleHeaderFieldChange
@@ -320,9 +366,12 @@ class BaseDocument extends Component {
       field => footerLimitSearchCondition = byUs.replaceAll(footerLimitSearchCondition, "<" + field + ">", docData[field])
     )
 
+    let canConfirmar = (this.state.docData.ID > 0 || (this.state.docData.DOCNUM > 0 && editable));
+
     let footerProps = {
       ...this.state.footer,
       docData,
+      editable,
       loading: this.state.loading,
       footerLimitSearch: this.state.footerLimitSearch,
       footerLimitSearchCondition,
@@ -340,12 +389,13 @@ class BaseDocument extends Component {
           onClick: e => actionFunc.handleOnApagarLinhas(that)
         },
         { name: "Voltar", color: "primary", icon: "icon wb-close", visible: true, onClick: e => actionFunc.handleOnCancelar(that) },
-        { name: "Confirmar", color: "success", icon: "icon fa-check", visible: (this.state.docData.ID > 0), onClick: e => actionFunc.handleOnConfirmar(that) }
+        { name: "Confirmar", color: "success", icon: "icon fa-check", visible: canConfirmar, onClick: e => actionFunc.handleOnConfirmar(that) }
       ]
     }
     let totalProps = {
       totals,
       docData,
+      changingTotals,
       onFieldChange: this.handleHeaderFieldChange
     }
 
@@ -368,7 +418,7 @@ class BaseDocument extends Component {
 
 BaseDocument.defaultProps = {
   title: "title...",
-  baseApiUrl: '',//  /api/docs/ordr/doc
+  apiDocsNew: '',//  /api/docs/ordr/doc
   headerFields: {},
   sidebarFields: {},
   detailFields: [],

@@ -26,7 +26,7 @@ export default {
 
                         if (result === "CONFIRMADO") {
                             that.serverRequest = axios
-                                .delete(`${that.props.baseApiUrl}/${that.state.docData.ID}`)
+                                .delete(`${that.props.apiDocsNew}/${that.state.docData.ID}`)
                                 .then(result => hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", '')))
                                 .catch(error => byUs.showError(error, "Erro ao apagar dados"));
                         }
@@ -57,7 +57,7 @@ export default {
 
                         if (result === "CONFIRMADO") {
                             that.serverRequest = axios
-                                .post(`${that.props.baseApiUrl}/${that.state.docData.ID}/deletelines`, {
+                                .post(`${that.props.apiDocsNew}/${that.state.docData.ID}/deletelines`, {
                                     Lines: LINENUMS
                                 })
                                 .then(result => {
@@ -95,7 +95,7 @@ export default {
                                 hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", ''))
                             } else if (result === "CANCELADO") {
                                 that.serverRequest = axios
-                                    .delete(`${that.props.baseApiUrl}/${that.state.docData.ID}`)
+                                    .delete(`${that.props.apiDocsNew}/${that.state.docData.ID}`)
                                     .then(result => hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", '')))
                                     .catch(error => byUs.showError(error, "Erro ao apagar dados"));
                             }
@@ -107,55 +107,10 @@ export default {
     },
 
     handleOnConfirmar: (that) => {
-        let handleAddDocApiResponse = (result) => {
-            let data = result.data || {};
 
-            // byUs.hideWaitProgress();
 
-            if (data.message && data.message.indexOf("TOTALDIF") > -1) {
 
-                byUs.showDanger({
-                    msg: `O total ${data.DocTotal} € é diferente do esperado!`,
-                    moreInfo: "A criação do documento foi cancelada.",
-                    cancelText: "Cancelar",
-                    cancelStyle: "success",
-                    onCancel: () => { },
-                    confirmText: "Adicionar mesmo assim",
-                    // eslint-disable-next-line
-                    onConfirm: () => invokeAddDocAPI(data.DocTotal)
-                });
-            } else {
-
-                byUs.showSuccess({
-                    title: "Documento criado",
-                    msg: `Criou com sucesso o documento ${result.data.DocNum}!`,
-                    cancelText: "Adicionar outro",
-                    onCancel: () => {
-                        hashHistory.replace(hashHistory.getCurrentLocation().pathname + "?new=" + new Date().getTime())
-                    },
-                    confirmText: "Concluido",
-                    onConfirm: () => hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", ''))
-                })
-            }
-        }
-
-        let invokeAddDocAPI = (forceTotal) => {
-
-            byUs.showWaitProgress("A adicionar documento, aguarde por favor...");
-
-            let url = `${that.props.baseApiUrl}/${that.state.docData.ID}/confirm`
-            let data = { forceTotal }
-
-            that.serverRequest = axios
-                .post(url, { data })
-                .then(result => handleAddDocApiResponse(result))
-                .catch(error => {
-                    // byUs.hideWaitProgress();
-                    byUs.showError(error, "Erro ao criar documento")
-                });
-        }
-
-        let performBeforeAddChecks = () => {
+        let performChecks = () => {
             //Validar campos de preenchimento obrigatório
             let newDocData = { ...that.state.docData };
             let fieldsRequired = []
@@ -184,11 +139,10 @@ export default {
             //     hasChangesToState = true;
             //     newDocData["TAXDATE_LOGICMSG"] = "danger|Não pode ser superior à data atual."
             // }
-            // if (newDocData.TAXDATE && newDocData.DOCDUEDATE && byUs.moment(newDocData.TAXDATE).isAfter(newDocData.DOCDUEDATE)) {
-            //     hasChangesToState = true;
-            //     newDocData["DOCDUEDATE_LOGICMSG"] = "danger|Não pode ser inferior à data do documento."
-            // }
-
+            if (newDocData.TAXDATE && newDocData.DOCDUEDATE && byUs.moment(newDocData.TAXDATE).isAfter(newDocData.DOCDUEDATE)) {
+                hasChangesToState = true;
+                newDocData["DOCDUEDATE_LOGICMSG"] = "danger|Não pode ser inferior à data do documento."
+            }
 
             if (hasChangesToState) return that.setState({ docData: newDocData });
 
@@ -208,7 +162,109 @@ export default {
                     return aviso.startsWith("warning");
                 })
 
-            if (hasWarning) {
+
+
+
+            //Alterações a documentos existentes
+            let invokePatchDocAPI = (forceTotal) => {
+
+                byUs.showWaitProgress("A atualizar documento, aguarde por favor...");
+
+                let handlePatchDocApiResponse = (result) => {
+                    let data = result.data || {};
+
+                    byUs.showSuccess({
+                        title: "Documento atualizado",
+                        msg: `Atualizou com sucesso o documento ${result.data.DocNum}!`,
+                        cancelText: "Adicionar novo",
+                        onCancel: () => {
+                            hashHistory.replace(hashHistory.getCurrentLocation().pathname + "?new=" + new Date().getTime())
+                        },
+                        confirmText: "Concluido",
+                        onConfirm: () => hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", ''))
+                    })
+
+                }
+
+                let url = `${that.props.apiDocsEdit}/${that.state.docData.DOCENTRY}/confirm`
+
+                that.serverRequest = axios
+                    .post(url)
+                    .then(result => handlePatchDocApiResponse(result))
+                    .catch(error => {
+                        byUs.showError(error, "Erro ao gravar documento")
+                    });
+            }
+            if (newDocData.DOCENTRY > 0 && hasWarning)
+                return byUs.showWarning({
+                    title: "Atenção!",
+                    msg: "Ainda há campos com avisos!",
+                    moreInfo: "Deseja mesmo assim gravar as alterações a este documento?",
+                    onConfirm: invokePatchDocAPI,
+                    confirmText: "Ignorar e gravar alterações",
+                    onCancel: () => { }
+                })
+
+            if (newDocData.DOCENTRY > 0)
+                return byUs.showQuestion({
+                    title: "Deseja Continuar?",
+                    msg: "Se continuar irá gravar as alterações a este documento.",
+                    onConfirm: invokePatchDocAPI,
+                    confirmText: "Gravar alterações",
+                    onCancel: () => { }
+                })
+
+
+            // Novos documentos
+
+            let invokeAddDocAPI = (forceTotal) => {
+
+                byUs.showWaitProgress("A adicionar documento, aguarde por favor...");
+
+                let handleAddDocApiResponse = (result) => {
+                    let data = result.data || {};
+
+                    // byUs.hideWaitProgress();
+
+                    if (data.message && data.message.indexOf("TOTALDIF") > -1) {
+
+                        byUs.showDanger({
+                            msg: `O total ${data.DocTotal} € é diferente do esperado!`,
+                            moreInfo: "A criação do documento foi cancelada.",
+                            cancelText: "Cancelar",
+                            cancelStyle: "success",
+                            onCancel: () => { },
+                            confirmText: "Adicionar mesmo assim",
+                            // eslint-disable-next-line
+                            onConfirm: () => invokeAddDocAPI(data.DocTotal)
+                        });
+                    } else {
+
+                        byUs.showSuccess({
+                            title: "Documento criado",
+                            msg: `Criou com sucesso o documento ${result.data.DocNum}!`,
+                            cancelText: "Adicionar outro",
+                            onCancel: () => {
+                                hashHistory.replace(hashHistory.getCurrentLocation().pathname + "?new=" + new Date().getTime())
+                            },
+                            confirmText: "Concluido",
+                            onConfirm: () => hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", ''))
+                        })
+                    }
+                }
+
+                let url = `${that.props.apiDocsNew}/${that.state.docData.ID}/confirm`
+                let data = { forceTotal }
+
+                that.serverRequest = axios
+                    .post(url, { data })
+                    .then(result => handleAddDocApiResponse(result))
+                    .catch(error => {
+                        // byUs.hideWaitProgress();
+                        byUs.showError(error, "Erro ao criar documento")
+                    });
+            }
+            if (hasWarning)
                 return byUs.showWarning({
                     title: "Atenção!",
                     msg: "Ainda há campos com avisos!",
@@ -217,18 +273,20 @@ export default {
                     confirmText: "Ignorar e criar documento",
                     onCancel: () => { }
                 })
-            } else {
-                return byUs.showQuestion({
-                    title: "Deseja Continuar?",
-                    msg: "Se continuar irá criar este documento.",
-                    onConfirm: invokeAddDocAPI,
-                    confirmText: "Criar documento",
-                    onCancel: () => { }
-                })
-            }
+
+            return byUs.showQuestion({
+                title: "Deseja Continuar?",
+                msg: "Se continuar irá criar este documento.",
+                onConfirm: invokeAddDocAPI,
+                confirmText: "Criar documento",
+                onCancel: () => { }
+            })
+
         }
 
+
+
         //wait for eventual updates on lost focus   
-        setTimeout(performBeforeAddChecks, 1000);
+        setTimeout(performChecks, 1000);
     }
 }

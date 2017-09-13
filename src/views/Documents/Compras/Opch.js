@@ -9,9 +9,6 @@ export default class Opch extends Component {
         super(props)
         this.state = { currentModal: null }
 
-
-
-
         let priceHover = {
             api: 'api/prod/info/<ITEMCODE>/upc',
             render: ({ result, context }) => {
@@ -53,15 +50,15 @@ export default class Opch extends Component {
                 { name: 'CARDCODE', label: 'Fornecedor', type: "combo", api: "/api/cbo/ocrd/s", gridSize: 6, required: true },
                 { name: 'DOCSERIES', label: 'Série', type: "combo", api: "/api/cbo/nnm1/18", gridSize: 4, required: true },
                 { name: 'TAXDATE', label: 'Data Documento', type: "date", gridSize: 2, required: true },
-                { name: 'DOCDUEDATE', label: 'Data vencimento', type: "date", gridSize: 2, required: true }
+                { name: 'DOCDUEDATE', label: 'Data vencimento', type: "date", gridSize: 2, required: true, savedEditable: true }
             ],
             line2: [
                 // { name: 'SHIPADDR', label: 'Morada Envio', type: "combo", api: "/api/cbo/crd1/<CARDCODE>/s", gridSize: 4 },
                 { name: 'BILLADDR', label: 'Morada Faturação', type: "combo", api: "/api/cbo/crd1/<CARDCODE>/b", gridSize: 2 },
                 { name: 'CONTACT', label: 'Contato/Sub.For', type: "combo", api: "/api/cbo/ocpr/<CARDCODE>", gridSize: 2 },
                 { name: 'NUMATCARD', label: 'Ref.fornecedor', type: "text", gridSize: 2, required: true },
-                { name: 'COMMENTS', label: 'Observações', type: "text", gridSize: 5 },
-                { name: 'HASINCONF', label: '', type: "flag|danger", gridSize: 1 }
+                { name: 'COMMENTS', label: 'Observações', type: "text", gridSize: 5, savedEditable: true },
+                { name: 'HASINCONF', label: '', type: "flag|danger", gridSize: 1, savedEditable: true }
             ]
         }
         this.sidebarFields = {
@@ -126,7 +123,9 @@ export default class Opch extends Component {
             {...this.props}
             ref="doc"
             title="Fatura de compra"
-            baseApiUrl='/api/docs/doc/opch'
+            apiDocsNew='/api/docs/new/opch'
+            apiDocsView='/api/docs/view/opch'
+            apiDocsEdit='/api/docs/edit/opch'
             footerSearchType="oitm"
             footerSearchShowCatNum={true}
             footerLimitSearchCondition={`OITM."CardCode"='<CARDCODE>' 

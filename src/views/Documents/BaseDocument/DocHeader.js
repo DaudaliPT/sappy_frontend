@@ -1,6 +1,7 @@
 
 import React, { Component } from "react";
 import { ByUsTextBox, ByUsTextBoxNumeric, ByUsComboBox, ByUsDate, ByUsToggle, ByUsFlag } from "../../../Inputs";
+import { Button } from "reactstrap";
 
 class DocHeader extends Component {
   render() {
@@ -20,10 +21,19 @@ class DocHeader extends Component {
         Object.keys(this.props.docData).forEach(field => route = route.replace('<' + field + '>', this.props.docData[field]))
       }
 
+
+      let enabled = true;
+      if (this.props.docData.DOCNUM > 0) {
+        enabled = this.props.editable && headerField.savedEditable
+      } else {
+        enabled = !headerField.disabled;
+      }
+
+
       let commonProps = {
         name: headerField.name,
         label: headerField.label,
-        disabled: this.props.docData.DOCNUM > 0 ? true : headerField.disabled,
+        disabled: !enabled,
         value: this.props.docData[headerField.name],
         state: this.props.docData[headerField.name + "_VALIDATEMSG"] || this.props.docData[headerField.name + "_LOGICMSG"],
         onChange: this.props.onFieldChange,
@@ -64,6 +74,7 @@ class DocHeader extends Component {
     };
 
     let expandIcon = this.props.expanded ? "wb-minus" : "wb-plus";
+    let editIcon = this.props.editable ? "wb-close" : "wb-edit";
     let hiddenClass = this.props.expanded ? "" : "hidden-xxl-down";
     let notHiddenClass = this.props.expanded ? "hidden-xxl-down" : "";
     let title = this.props.title;
@@ -77,7 +88,18 @@ class DocHeader extends Component {
             {this.props.docData.CARDCODE && (" (" + this.props.docData.CARDCODE + " - " + this.props.docData.CARDNAME) + ")"}
           </span>
           <div className="header-actions">
-            <a className={"header-action icon " + expandIcon} onClick={this.props.toggleHeader}></a>
+
+            {this.props.docData.DOCNUM &&
+              <div className="header-action">
+                <Button outline className="btn-sm btn-flat" onClick={this.props.toggleEditable}>
+                  <i className={"icon " + editIcon} />
+                  <span className="hidden-sm-down"> Alterar</span>
+                </Button>
+              </div>}
+
+            <Button outline className="btn-sm btn-flat" onClick={this.props.toggleHeader}>
+              <i className={"icon " + expandIcon} />
+            </Button>
           </div>
         </div>
         <div className={"header-body " + hiddenClass}>

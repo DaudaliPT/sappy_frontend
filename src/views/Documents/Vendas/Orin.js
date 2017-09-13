@@ -61,7 +61,9 @@ export default class Orin extends Component {
             {...this.props}
             ref="doc"
             title="Nota de Crédito a cliente"
-            baseApiUrl='/api/docs/doc/orin'
+            apiDocsNew='/api/docs/new/orin'
+            apiDocsView='/api/docs/view/orin'
+            apiDocsEdit='/api/docs/edit/orin'
             footerSearchType="oitm"
             headerFields={headerFields}
             onHeaderChange={this.onHeaderChange}

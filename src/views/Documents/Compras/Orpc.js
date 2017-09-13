@@ -101,7 +101,9 @@ export default class Orpc extends Component {
             {...this.props}
             ref="doc"
             title="Nota de crédito de fornecedor"
-            baseApiUrl='/api/docs/doc/orpc'
+            apiDocsNew='/api/docs/new/orpc'
+            apiDocsView='/api/docs/view/orpc'
+            apiDocsEdit='/api/docs/edit/orpc'
             footerSearchType="oitm"
             footerSearchShowCatNum={true}
             footerLimitSearchCondition={`OITM."CardCode"='<CARDCODE>' 

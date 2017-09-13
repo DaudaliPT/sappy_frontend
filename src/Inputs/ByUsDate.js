@@ -66,14 +66,16 @@ class ByUsDate extends Component {
     if (this.props.disabled) return
     let rawValue = byUs.unformat.date(val)
 
-    if (byUs.isDiferent(rawValue, this.state.receivedValue)) {
-      this.setState(this.createStateFromProps({ value: rawValue }))
-      this.props.onChange({
-        fieldName: this.props.name
-        , rawValue
-        , formatedValue: byUs.format.date(rawValue)
-      });
-    }
+    if (byUs.isEqual(rawValue, this.state.receivedValue)) return this.setState(this.createStateFromProps({ value: this.state.receivedValue }))
+
+    this.setState(this.createStateFromProps({ value: rawValue }))
+    this.props.onChange({
+      fieldName: this.props.name
+      , rawValue
+      , formatedValue: byUs.format.date(rawValue)
+    });
+
+
   }
 
   render() {

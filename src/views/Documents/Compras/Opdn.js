@@ -91,7 +91,9 @@ export default class Opdn extends Component {
             {...this.props}
             ref="doc"
             title="Recepção de mercadoria"
-            baseApiUrl='/api/docs/doc/opdn'
+            apiDocsNew='/api/docs/new/opdn'
+            apiDocsView='/api/docs/view/opdn'
+            apiDocsEdit='/api/docs/edit/opdn'
             footerSearchType="oitm"
             footerLimitSearchCondition={`OITM."CardCode"='<CARDCODE>' 
             AND 1= CASE WHEN OCRD."U_apyITMCNT"='Y'  

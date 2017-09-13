@@ -12,7 +12,8 @@ class DocFooter extends Component {
 
   render() {
     let docData = this.props.docData || {}
-    let editable = docData.DOCNUM > 0 ? false : true;
+    let allowAddLines = docData.DOCNUM > 0 ? false : true;
+    let editable = docData.DOCNUM > 0 ? this.props.editable : true;
     let loaded = !this.props.loading;
 
     let renderActions = () => {
@@ -49,7 +50,7 @@ class DocFooter extends Component {
     };
     return (
       <nav id="docFooter" className="site-navbar navbar navbar-default navbar-fixed-bottom" >
-        {editable && loaded &&
+        {allowAddLines && loaded &&
           <div className="byus-search-bar float-left">
             <ByUsSearchAndChoose
               searchType={this.props.footerSearchType}
