@@ -265,7 +265,7 @@ class ModPagModal extends Component {
                 {/* <!-- Panel --> */}
                 <div className="panel form-panel">
                   <div className="panel-body main-body">
-                    <div className="animation-fade" >
+                    <div className="animaDISABELDtion-fade" >
                       {this.state.activeTab === "tab1" && renderNumerario()}
                       {this.state.activeTab === "tab2" && renderMultibanco()}
                       {this.state.activeTab === "tab3" && renderTransferencia()}

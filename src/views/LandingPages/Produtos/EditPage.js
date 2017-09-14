@@ -234,7 +234,7 @@ class EditPage extends Component {
                 <div className="panel-body main-body">
                   {/* <div className="tab-content"> */}
                   {this.state.activeTab === "tabGeral" &&
-                    <div className=" tab-pane animation-fade active" >
+                    <div className=" tab-pane animDISABELDation-fade active" >
                       <CmpGeral ItemCode={this.props.params.itemcode}
                         Item={this.state.newItem}
                         onItemSaved={this.handleItemSaved}
@@ -243,22 +243,22 @@ class EditPage extends Component {
                     </div>
                   }
                   {this.state.activeTab === "tabVendas" &&
-                    <div className=" animation-fade">
+                    <div className=" animaDISABELDtion-fade">
                       <CmpVendas ItemCode={this.props.params.itemcode} ReadOnly={this.state.ReadOnly}></CmpVendas>
                     </div>
                   }
                   {this.state.activeTab === "tabCompras" &&
-                    <div className=" animation-fade">
+                    <div className=" animaDISABELDtion-fade">
                       <CmpCompras ItemCode={this.props.params.itemcode} ReadOnly={this.state.ReadOnly}></CmpCompras>
                     </div>
                   }
                   {this.state.activeTab === "tabInventario" &&
-                    <div className=" animation-fade" >
+                    <div className=" animaDISABELDtion-fade" >
                       <CmpStock ItemCode={this.props.params.itemcode} ReadOnly={this.state.ReadOnly}></CmpStock>
                     </div>
                   }
                   {this.state.activeTab === "tabTransInv" &&
-                    <div className=" animation-fade" >
+                    <div className=" animaDISABELDtion-fade" >
                       <CmpTransStock ItemCode={this.props.params.itemcode} ReadOnly={this.state.ReadOnly}></CmpTransStock>
                     </div>
                   }

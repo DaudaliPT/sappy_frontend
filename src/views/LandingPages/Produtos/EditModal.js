@@ -202,7 +202,7 @@ class EditModal extends Component {
                   <div className="panel-body main-body">
                     {/* <div className="tab-content"> */}
                     {this.state.activeTab === "tabGeral" &&
-                      <div className=" tab-pane animation-fade active" >
+                      <div className=" tab-pane animDISABELDation-fade active" >
                         <CmpGeral ItemCode={this.props.itemcode}
                           Item={this.state.newItem}
                           supplierCollection={this.state.supplierCollection}
@@ -210,22 +210,22 @@ class EditModal extends Component {
                       </div>
                     }
                     {this.state.activeTab === "tabVendas" &&
-                      <div className=" animation-fade">
+                      <div className=" animatDISABELDion-fade">
                         <CmpVendas ItemCode={this.props.itemcode} ReadOnly={this.state.ReadOnly}></CmpVendas>
                       </div>
                     }
                     {this.state.activeTab === "tabCompras" &&
-                      <div className=" animation-fade">
+                      <div className=" animatiDISABELDon-fade">
                         <CmpCompras ItemCode={this.props.itemcode} ReadOnly={this.state.ReadOnly}></CmpCompras>
                       </div>
                     }
                     {this.state.activeTab === "tabInventario" &&
-                      <div className=" animation-fade" >
+                      <div className=" animatiDISABELDon-fade" >
                         <CmpStock ItemCode={this.props.itemcode} ReadOnly={this.state.ReadOnly}></CmpStock>
                       </div>
                     }
                     {this.state.activeTab === "tabTransInv" &&
-                      <div className=" animation-fade" >
+                      <div className=" animaDISABELDtion-fade" >
                         <CmpTransStock ItemCode={this.props.itemcode} ReadOnly={this.state.ReadOnly}></CmpTransStock>
                       </div>
                     }

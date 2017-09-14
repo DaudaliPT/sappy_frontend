@@ -178,7 +178,7 @@ class LpRecebimentos extends Component {
         {
           name: "main",
           color: "danger",
-          icon: currentShowActions ? "icon wb-close animation-fade" : "icon wb-plus",
+          icon: currentShowActions ? "icon wb-close animatDISABELDion-fade" : "icon wb-plus",
           onClick: e => {
             if (this.state.showActions) {
               this.setState({ showActions: false });
