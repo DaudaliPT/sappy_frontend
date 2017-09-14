@@ -34,8 +34,7 @@ class BaseDocument extends Component {
 
   getinitialState(props) {
     return {
-      currentModal: null,
-      hasSelectedRows: false,
+      selectedLineNums: [],
       footerLimitSearch: props.footerLimitSearchCondition || false,
       loading: true,
       changingTotals: false,
@@ -298,8 +297,16 @@ class BaseDocument extends Component {
       .catch(error => byUs.showError(error, "Erro ao gravar linha"));
   }
 
-  handleDetailRowSelect(selectedIndexes) {
-    this.setState({ hasSelectedRows: selectedIndexes.length > 0 });
+  handleDetailRowSelect(selectedLineNums) {
+    this.setState({ selectedLineNums });
+  }
+
+  handleDetailRowReorder(draggedRows, rowTarget, orderedRows) {
+    console.log(draggedRows, rowTarget, orderedRows)
+
+
+
+
   }
 
   handleToggleShowTotals() {
@@ -358,7 +365,8 @@ class BaseDocument extends Component {
       onSideBarFieldChange: this.handleHeaderFieldChange,
       docData,
       onRowUpdate: this.handleDetailRowChange,
-      onRowSelect: this.handleDetailRowSelect
+      onRowSelect: this.handleDetailRowSelect,
+      onRowReorder: this.handleDetailRowReorder
     }
 
     let footerLimitSearchCondition = this.props.footerLimitSearchCondition || '';
@@ -382,10 +390,9 @@ class BaseDocument extends Component {
       onToggleShowTotals: this.handleToggleShowTotals,
       totals,
       actions: [
-        // { name: "Apagar", color: "danger", icon: "icon wb-trash", visible: (this.state.docData.ID > 0 && !this.state.hasSelectedRows), onClick: e => actionFunc.handleOnApagar(that) },
         {
-          name: "Apagar linhas", color: "danger", icon: "icon wb-trash",
-          visible: (this.state.docData.ID > 0 && this.state.hasSelectedRows),
+          name: this.state.selectedLineNums.length === 1 ? "Apagar linha" : "Apagar linhas", color: "danger", icon: "icon wb-trash",
+          visible: (this.state.docData.ID > 0 && this.state.selectedLineNums.length > 0),
           onClick: e => actionFunc.handleOnApagarLinhas(that)
         },
         { name: "Voltar", color: "primary", icon: "icon wb-close", visible: true, onClick: e => actionFunc.handleOnCancelar(that) },
@@ -409,8 +416,6 @@ class BaseDocument extends Component {
         {this.state.footer.showTotals &&
           <DocTotal {...totalProps}></DocTotal>
         }
-        {this.props.currentModal}
-        {this.state.currentModal}
       </div >
     );
   }
@@ -426,7 +431,6 @@ BaseDocument.defaultProps = {
   footerSearchShowCatNum: false,
   onRowChange: null,//   handleRowChange(currentRow, updated) => allows for specific doc behaviour
   onHeaderChange: null, //  onHeaderChange(docData, updated) => allows to react to user change on header
-  currentModal: null
 }
 
 export default BaseDocument;

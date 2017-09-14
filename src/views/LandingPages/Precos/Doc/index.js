@@ -3,12 +3,12 @@ import React, { Component } from "react";
 import { Button, Badge } from "reactstrap";
 import { hashHistory } from "react-router";
 
-import ReactDataGrid from "react-data-grid";
 const {
   ToolsPanel: { AdvancedToolbar: Toolbar, GroupedColumnsPanel },
   Data: { Selectors },
   Draggable: { Container: DraggableContainer }
-} = require('react-data-grid-addons');
+} = require('react-data-grid/packages/react-data-grid-addons/dist/react-data-grid-addons');
+import ReactDataGrid from 'react-data-grid/packages/react-data-grid/dist/react-data-grid';
 
 import { Popover, PopoverContent } from 'reactstrap';
 import axios from "axios";

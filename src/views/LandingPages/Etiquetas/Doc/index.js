@@ -7,7 +7,8 @@ const {
   ToolsPanel: { AdvancedToolbar: Toolbar, GroupedColumnsPanel },
   Data: { Selectors },
   Draggable: { Container: DraggableContainer }
-} = require('react-data-grid-addons');
+} = require('react-data-grid/packages/react-data-grid-addons/dist/react-data-grid-addons');
+import ReactDataGrid from 'react-data-grid/packages/react-data-grid/dist/react-data-grid';
 
 import axios from "axios";
 import uuid from "uuid/v4";
@@ -16,7 +17,6 @@ import { ByUsTextBox } from "../../../../Inputs";
 
 import { ModalMessageConfirm } from "../../../../Modals";
 import ModalConfirmPrint from "../ModalConfirmPrint";
-import ReactDataGrid from "react-data-grid";
 import ModalSearchOitm from "./ModalSearchOitm";
 import EditModal from "../../Produtos/EditModal";
 

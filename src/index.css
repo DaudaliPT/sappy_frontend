@@ -221,7 +221,7 @@ body.site-navbar-small {
   
   font-family: "Web Icons"!important;
   content: "" !important;   
- 
+  line-height: 25px!important; /* depois de colocar o drag das row, o checkbox ficava para baixo*/
 } 
 
 .react-grid-checkbox:disabled:checked+.react-grid-checkbox-label:before {

@@ -7,6 +7,7 @@ class DefaultFormater extends Component {
     shouldComponentUpdate(nextProps) {
         return nextProps.value !== this.props.value;
     }
+
     render() {
         let { column, dependentValues, rowIdx, value } = this.props;
         let { type, hover, onLinkClick } = column
@@ -162,7 +163,7 @@ class VatFormatter extends Component {
     }
     render() {
         let value = this.props.value;
-        let row = this.props.dependentValues;
+        let row = this.props.dependentValues || {};
         return (
             <div title={value} >
                 {value}
@@ -175,9 +176,9 @@ class VatFormatter extends Component {
 class TagsFormatter extends Component {
     render() {
         let tagsValue = this.props.value;
-
-        if (this.props.dependentValues.hasOwnProperty(this.props.column.key + "_WITH_TAGS")) {
-            tagsValue = this.props.dependentValues[this.props.column.key + "_WITH_TAGS"]
+        let dependentValues = this.props.dependentValues || {};
+        if (dependentValues.hasOwnProperty(this.props.column.key + "_WITH_TAGS")) {
+            tagsValue = dependentValues[this.props.column.key + "_WITH_TAGS"]
         }
 
         const badges = tagsValue.split("|");

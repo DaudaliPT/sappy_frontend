@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ReactDataGrid from "react-data-grid";
+import ReactDataGrid from 'react-data-grid/packages/react-data-grid/dist/react-data-grid';
 const byUs = window.byUs;
 import HeaderAlignRight from './HeaderAlignRight'
 import Formatters from './Formatters'
@@ -8,7 +8,9 @@ const {
   ToolsPanel: { AdvancedToolbar, GroupedColumnsPanel },
   Data: { Selectors },
   Draggable
-} = require('react-data-grid-addons');
+} = require('react-data-grid/packages/react-data-grid-addons/dist/react-data-grid-addons');
+
+const RowRenderer = Draggable.DropTargetRowContainer(ReactDataGrid.Row);
 
 class ByUsDataGrid extends Component {
   constructor(props) {
@@ -19,6 +21,7 @@ class ByUsDataGrid extends Component {
     this.buildColumnList = this.buildColumnList.bind(this);
     this.onRowsSelected = this.onRowsSelected.bind(this);
     this.onRowsDeselected = this.onRowsDeselected.bind(this);
+    this.onRowReorder = this.onRowReorder.bind(this);
     this.onColumnGroupAdded = this.onColumnGroupAdded.bind(this);
     this.onColumnGroupDeleted = this.onColumnGroupDeleted.bind(this);
     this.onRowExpandToggle = this.onRowExpandToggle.bind(this);
@@ -41,7 +44,8 @@ class ByUsDataGrid extends Component {
       rows: JSON.parse(JSON.stringify(props.rows)),
       // rows: props.rows,
       expandedRows: {},
-      selectedIndexes: []
+      selectedIndexes: [],
+      selectedIds: []
     };
   }
 
@@ -50,19 +54,58 @@ class ByUsDataGrid extends Component {
   }
 
 
-  onRowsSelected(rows) {
-    let selectedIndexes = this.state.selectedIndexes.concat(rows.map(r => r.rowIdx))
+  // onRowsSelected(rows) {
+  //   let selectedIndexes = this.state.selectedIndexes.concat(rows.map(r => r.rowIdx))
 
-    this.setState({ selectedIndexes });
-    this.props.onRowSelect && this.props.onRowSelect(selectedIndexes);
+  //   this.setState({ selectedIndexes });
+  //   this.props.onRowSelect && this.props.onRowSelect(selectedIndexes);
+  // }
+  onRowsSelected(rows) {
+    let selectedIds = this.state.selectedIds.concat(rows.map(r => r.row[this.props.rowKey]))
+    this.setState({ selectedIds });
+    this.props.onRowSelect && this.props.onRowSelect(selectedIds);
   }
 
-  onRowsDeselected(rows) {
-    let rowIndexes = rows.map(r => r.rowIdx);
-    let selectedIndexes = this.state.selectedIndexes.filter(i => rowIndexes.indexOf(i) === -1);
+  // onRowsDeselected(rows) {
+  //   let rowIndexes = rows.map(r => r.rowIdx);
+  //   let selectedIndexes = this.state.selectedIndexes.filter(i => rowIndexes.indexOf(i) === -1);
 
-    this.setState({ selectedIndexes });
-    this.props.onRowSelect && this.props.onRowSelect(selectedIndexes);
+  //   this.setState({ selectedIndexes });
+  //   this.props.onRowSelect && this.props.onRowSelect(selectedIndexes);
+  // }
+  onRowsDeselected(rows) {
+    let rowIds = rows.map(r => r.row[this.props.rowKey]);
+    let selectedIds = this.state.selectedIds.filter(i => rowIds.indexOf(i) === -1);
+    this.setState({ selectedIds });
+    this.props.onRowSelect && this.props.onRowSelect(selectedIds);
+  }
+
+  onRowReorder(e) {
+
+    // let selectedRows = this.state.selectedIndexes.map(i => this.getRowAt(i))
+    // let draggedRows = selectedRows.indexOf(e.rowSource.idx) > -1 ? selectedRows : [e.rowSource.data];
+
+    // let orderedRows = this.getRows.filter(function (r) {
+    //   return draggedRows.indexOf(r) === -1;
+    // });
+
+    // let args = [e.rowTarget.idx, 0].concat(orderedRows);
+    // Array.prototype.splice.apply(orderedRows, args);
+    // this.setState({ rows: orderedRows });
+
+    // this.props.onRowReorder && this.props.onRowReorder(draggedRows, e.rowTarget, orderedRows);
+
+
+
+    // let selectedRows = Selectors.getSelectedRowsByKey({ rowKey: this.props.rowKey, selectedKeys: this.state.selectedIds, rows: this.state.rows });
+    // let draggedRows = this.isDraggedRowSelected(selectedRows, e.rowSource) ? selectedRows : [e.rowSource.data];
+    // let undraggedRows = this.state.rows.filter(function (r) {
+    //   return draggedRows.indexOf(r) === -1;
+    // });
+    // let args = [e.rowTarget.idx, 0].concat(draggedRows);
+    // Array.prototype.splice.apply(undraggedRows, args);
+    // this.setState({ rows: undraggedRows });
+
   }
 
   getRows() {
@@ -103,7 +146,7 @@ class ByUsDataGrid extends Component {
         hover: field.hover,
         editable,
         cellClass: editable ? "editable-col" : "locked-col",
-        formatter: <Formatters.Default />,
+        formatter: Formatters.Default,
         onLinkClick: field.onLinkClick,
         getRowMetaData: row => row,
         type: field.type
@@ -112,12 +155,11 @@ class ByUsDataGrid extends Component {
       if (gridWidth > totalWidth) col.width *= proporcao
 
       if ("quantity,price,amount".indexOf(field.type) > -1) {
-        // col.formatter = <Formatters.Number />;
         col.headerRenderer = HeaderAlignRight;
       } else if (field.type === "vat") {
-        col.formatter = <Formatters.Vat />;
+        col.formatter = Formatters.Vat;
       } else if (field.type === "tags") {
-        col.formatter = <Formatters.Tags />;
+        col.formatter = Formatters.Tags;
       } else if (field.type.startsWith("check") || field.type.startsWith("switch") || field.type.startsWith("flag")) {
 
         let parts = field.type.split('|');
@@ -126,9 +168,9 @@ class ByUsDataGrid extends Component {
         col.valueON = parts[2];
         col.valueOFF = parts[3];
 
-        if (type === "check") col.formatter = <Formatters.Check />;
-        if (type === "switch") col.formatter = <Formatters.Switch />;
-        if (type === "flag") col.formatter = <Formatters.Flag />;
+        if (type === "check") col.formatter = Formatters.Check;
+        if (type === "switch") col.formatter = Formatters.Switch;
+        if (type === "flag") col.formatter = Formatters.Flag;
         if (editable) {
           col.editable = false; //don't allow double ckick and enter the edit mode with textBox
           col.events = {
@@ -164,7 +206,7 @@ class ByUsDataGrid extends Component {
         col.color = parts[1];
         col.valueON = parts[2];
         col.valueOFF = parts[3];
-        col.formatter = <Formatters.Discount />;
+        col.formatter = Formatters.Discount;
         if (editable) {
           col.events = {
             onClick: (ev, args) => {
@@ -206,7 +248,7 @@ class ByUsDataGrid extends Component {
         col.color = parts[1];
         col.valueON = parts[2];
         col.valueOFF = parts[3];
-        col.formatter = <Formatters.Bonus />;
+        col.formatter = Formatters.Bonus;
         if (editable) {
           col.events = {
             onClick: (ev, args) => {
@@ -260,8 +302,34 @@ class ByUsDataGrid extends Component {
 
   handleGridRowsUpdated({ fromRow, toRow, updated }) {
     let colUpdated = Object.keys(updated)[0];
-    let newValue = updated[colUpdated];
-    if (newValue.replace) updated[colUpdated] = newValue.replace(',', '.');
+    let col = this.state.columns.find(col => col.key === colUpdated)
+
+    if ("quantity,price,amount".indexOf(col.type) > -1) {
+      let newValue = updated[colUpdated];
+      if (newValue.replace) newValue = newValue.replace(',', '.');
+
+      let chars = newValue.split('');
+      let hasOperators = false;
+      let hasInvalidChars = false;
+
+      chars.forEach(c => {
+        if ('.'.indexOf(c) > -1) return;
+        if ('+-*/^'.indexOf(c) > -1) return hasOperators = true;
+        let charCode = c.charCodeAt(0);
+        if (charCode < 48 || charCode > 57) return hasInvalidChars = true;
+      });
+
+
+      if (hasInvalidChars) return byUs.showError({ message: "'" + newValue + "' não é uma expressão válida" }, "Erro na expressão")
+      if (hasOperators) {
+        try {
+          newValue = eval(newValue)
+        } catch (error) {
+          return byUs.showError(error, "Erro na expressão")
+        }
+      }
+      updated[colUpdated] = newValue
+    }
 
     for (var index = fromRow; index <= toRow; index++) {
       let ix = index;
@@ -307,15 +375,26 @@ class ByUsDataGrid extends Component {
       <Draggable.Container >
         <ReactDataGrid
           ref={node => this.thisComponent = node}
-          rowGetter={this.getRowAt}
           columns={this.state.columns}
+          minHeight={this.props.height}
+          enableDragAndDrop={true}
+          enableCellSelect={true}
+          enableCellSelection={true}
+          onRowExpandToggle={this.onRowExpandToggle}
+          onGridRowsUpdated={this.handleGridRowsUpdated}
+          onCellClick={this.handleOnCellClick}
+          rowGetter={this.getRowAt}
+          rowActionsCell={Draggable.RowActionsCell}
+          rowRenderer={<RowRenderer onRowDrop={this.onRowReorder} />}
           rowsCount={this.getSize()}
           rowSelection={{
             showCheckbox: true,
             enableShiftSelect: true,
             onRowsSelected: this.onRowsSelected,
             onRowsDeselected: this.onRowsDeselected,
-            selectBy: { indexes: this.state.selectedIndexes }
+            selectBy: {
+              keys: { rowKey: this.props.rowKey, values: this.state.selectedIds }
+            }
           }}
           toolbar={
             <AdvancedToolbar>
@@ -324,12 +403,6 @@ class ByUsDataGrid extends Component {
                 onColumnGroupDeleted={this.onColumnGroupDeleted} />
             </AdvancedToolbar>
           }
-          minHeight={this.props.height}
-          enableCellSelect={true}
-          enableDragAndDrop={true}
-          onGridRowsUpdated={this.handleGridRowsUpdated}
-          onCellClick={this.handleOnCellClick}
-          onRowExpandToggle={this.onRowExpandToggle}
         ></ReactDataGrid >
       </Draggable.Container >
     );
@@ -341,13 +414,16 @@ ByUsDataGrid.defaultProps = {
     // {key: "FIELD1", name: "col1" },
     // {key: "FIELD2", name: "col2" }
   ],
+  rowKey: "LINENUM",
   rows: [
     // {FIELD1: "FEILD1_ROW1", FIELD2: "FIELD2_ROW1" },
     // {FIELD1: "FEILD1_ROW2", FIELD2: "FIELD2_ROW2" }
   ],
   hideToolbar: true,
   height: 300,
-  onRowUpdate: (currentRow, updated) => { }
+  onRowUpdate: (currentRow, updated) => { },
+  onRowSelect: (selectedIndexes) => { },
+  onRowReorder: (draggedRows, rowTarget, orderedRows) => { },
 }
 
 export default ByUsDataGrid;

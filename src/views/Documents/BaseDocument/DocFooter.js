@@ -7,7 +7,6 @@ const byUs = window.byUs;
 class DocFooter extends Component {
   constructor(props) {
     super(props)
-    this.state = { currentModal: null }
   }
 
   render() {

@@ -271,8 +271,8 @@ class ByUsSearchPage extends PureComponent {
       this.state.searchTags.length === 0 &&
       this.state.activeTab === Object.keys(tabItems)[0])
 
-    let hasContent = !hasNoContent
-    debugger
+    let hasContent = !hasNoContent || !this.props.noRecordsMessage
+
     return (
       <div >
         {!hasContent &&

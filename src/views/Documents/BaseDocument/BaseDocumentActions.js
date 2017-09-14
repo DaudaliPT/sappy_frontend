@@ -9,107 +9,62 @@ const byUs = window.byUs;
 
 export default {
 
-    handleOnApagar: (that) => {
-        that.setState({
-            currentModal: (
-                <ModalMessageConfirm
-                    title="Confirmar ação"
-                    text="Deseja apagar este documento?"
-                    btnCancelar="Cancelar"
-                    iconCancelar="icon fa-close"
-                    btnConfirmar="Apagar"
-                    iconConfirmar="icon fa-trash"
-                    color="danger"
-                    moreInfo="Se continuar irá perder as informações já introduzidas."
-                    toggleModal={(result) => {
-                        that.setState({ currentModal: null });
-
-                        if (result === "CONFIRMADO") {
-                            that.serverRequest = axios
-                                .delete(`${that.props.apiDocsNew}/${that.state.docData.ID}`)
-                                .then(result => hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", '')))
-                                .catch(error => byUs.showError(error, "Erro ao apagar dados"));
-                        }
-                    }}
-                />
-            )
-        });
-    },
-
     handleOnApagarLinhas: (that) => {
 
-        let LINENUMS = that.refs.DocDetail.getSelectedRows();
+        let LINENUMS = that.state.selectedLineNums;
 
+        let title = "Apagar linha?"
+        let confirmText = "Apagar linha"
+        let moreInfo = "Se continuar a linha " + LINENUMS.toString() + " será removida do documento.";
+        if (LINENUMS.length > 1) {
+            title = "Apagar linhas?"
+            confirmText = "Apagar linhas"
+            moreInfo = "Se continuar as linhas " + LINENUMS.toString() + " serão removidas do documento.";
+        }
 
-        that.setState({
-            currentModal: (
-                <ModalMessageConfirm
-                    title="Confirmar ação"
-                    text="Deseja apagar estas linhas?"
-                    btnCancelar="Cancelar"
-                    iconCancelar="icon fa-close"
-                    btnConfirmar="Apagar"
-                    iconConfirmar="icon fa-trash"
-                    color="danger"
-                    moreInfo="Se continuar irá apagar as linhas selecionadas."
-                    toggleModal={(result) => {
-                        that.setState({ currentModal: null });
+        byUs.showDanger({
+            title,
+            moreInfo,
+            confirmText,
+            onConfirm: () => {
+                that.serverRequest =
+                    axios
+                        .post(`${that.props.apiDocsNew}/${that.state.docData.ID}/deletelines`, {
+                            Lines: LINENUMS
+                        })
+                        .then(result => {
+                            let docData = { ...that.state.docData, ...result.data };
+                            that.setState({ hasSelectedRows: false, docData })
+                        })
+                        .catch(error => byUs.showError(error, "Não foi possível apagar linhas"));
+            },
+            onCancel: () => { }
+        })
 
-                        if (result === "CONFIRMADO") {
-                            that.serverRequest = axios
-                                .post(`${that.props.apiDocsNew}/${that.state.docData.ID}/deletelines`, {
-                                    Lines: LINENUMS
-                                })
-                                .then(result => {
-                                    let docData = { ...that.state.docData, ...result.data };
-                                    that.setState({ hasSelectedRows: false, docData })
-                                })
-                                .catch(error => byUs.showError(error, "Não foi possível apagar linhas"));
-                        }
-                    }}
-                />
-            )
-        });
     },
 
     handleOnCancelar: (that) => {
-
         if (!that.state.docData.ID) {
             hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", ''));
         } else {
-            that.setState({
-                currentModal: (
-                    <ModalMessageConfirm
-                        title="Confirmar ação"
-                        text="Deseja manter ou apagar os dados já introduzidos?"
-                        color="primary"
-                        colorCancelar="warning"
-                        btnCancelar="Apagar"
-                        iconCancelar="icon fa-trash"
-                        btnConfirmar="Manter"
-                        iconConfirmar="icon fa-save"
-                        moreInfo="Se escolher manter, as alterações ficarão disponiveis como rascunho..."
-                        toggleModal={(result) => {
-                            that.setState({ currentModal: null });
-                            if (result === "CONFIRMADO") {
-                                hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", ''))
-                            } else if (result === "CANCELADO") {
-                                that.serverRequest = axios
-                                    .delete(`${that.props.apiDocsNew}/${that.state.docData.ID}`)
-                                    .then(result => hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", '')))
-                                    .catch(error => byUs.showError(error, "Erro ao apagar dados"));
-                            }
-                        }}
-                    />
-                )
-            });
+            byUs.showQuestion({
+                title: "Manter rascunho?",
+                moreInfo: "Se escolher manter, as alterações ficarão disponiveis como rascunho e poderá continuar mais tarde...",
+                onConfirm: () => { hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", '')) },
+                cancelText: "Descartar",
+                confirmText: "Manter rascunho",
+                onCancel: () => {
+                    that.serverRequest =
+                        axios
+                            .delete(`${that.props.apiDocsNew}/${that.state.docData.ID}`)
+                            .then(result => hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", '')))
+                            .catch(error => byUs.showError(error, "Erro ao apagar dados"));
+                }
+            })
         }
     },
 
     handleOnConfirmar: (that) => {
-
-
-
         let performChecks = () => {
             //Validar campos de preenchimento obrigatório
             let newDocData = { ...that.state.docData };

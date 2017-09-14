@@ -24,7 +24,7 @@ class DocFooter extends Component {
           <div className="col"><span className="float-right">{byUs.format.amount(totals.grossAmmount)}</span></div>
         </div>
         <div className="row">
-          <div className="col">Descontos</div>
+          <div className="col">Desc.Linha</div>
           <div className="col"><span className="float-right">{byUs.format.amount(totals.discountAmmount)}</span></div>
         </div>
         <div className="row">
