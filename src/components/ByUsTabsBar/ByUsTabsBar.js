@@ -29,7 +29,7 @@ class ByUsTabsBar extends PureComponent {
     };
 
     return (
-      <div className="page-nav-tabs hidden-lg-down">
+      <div className="page-nav-tabs hidden-DISABLED-lg-down">
         <ul id="byus-tabscontent" className="nav nav-tabs nav-tabs-line" role="tablist">
           {renderItems()}
         </ul>

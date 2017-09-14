@@ -123,21 +123,22 @@ class CmpTransStock extends Component {
             return (
                 <div id={rowId} className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={this.handleDocSelection} title={row.TransId}>
                     <div className="container vertical-align-middle">
-
                         <div className="row">
-                            <div className="col-4 text-nowrap firstcol">
+                            <div className="col-3 text-nowrap firstcol">
                                 {row.ABREV + ' ' + row.DOCNUM}
-
-                                {row.U_apyCLASS === "C" && <Badge key={uuid()} color="warning" pill>C</Badge>}
-                                {row.U_apyCLASS === "D" && <Badge key={uuid()} color="primary" pill>D</Badge>}
                             </div>
-                            <div className="col-4 text-nowrap"> {byUs.format.date(row.TAXDATE)}  </div>
+                            <div className="col-5 text-nowrap">
+                                {byUs.format.date(row.REFDATE)}
+                                {row.U_apyCLASS === "C" && <Badge key={uuid()} color="warning" pill>Cred</Badge>}
+                                {row.U_apyCLASS === "D" && <Badge key={uuid()} color="primary" pill>Dist</Badge>}
+                            </div>
                             <div className="col-2 text-nowrap">
                                 <span className="float-right">{
                                     row.BALANCE !== row.DOCTOTAL ? "(" + byUs.format.amount(row.DOCTOTAL) + ") " : ""
                                 }</span> </div>
                             <div className="col-2 text-nowrap lastcol">
-                                <span className="float-right">{byUs.format.amount(row.BALANCE)}</span> </div>
+                                <span className="float-right">{byUs.format.amount(row.BALANCE)}</span>
+                            </div>
                         </div>
 
                     </div>
@@ -198,7 +199,6 @@ class CmpTransStock extends Component {
                             ref={node => this.pnComponent = node}
                             searchPlaceholder="Procurar..."
                             searchApiUrl={`/api/caixa/class/pn`}
-                            noRecordsMessage="Não há registos a mostrar"
                             autoRefreshTime={5000}
                             renderRow={renderRowPN}
                             placeholder={"Pesquisar o cliente"}
@@ -212,7 +212,7 @@ class CmpTransStock extends Component {
                             searchApiUrl={`/api/caixa/class/docs?cardcode=${selectedPN}`}
                             noRecordsMessage="Selecione primeiro um cliente"
                             renderRow={renderRowDocs}
-                            renderRowHeight={50}
+                            renderRowHeight={35}
                         />
                     </div>
                 </div>

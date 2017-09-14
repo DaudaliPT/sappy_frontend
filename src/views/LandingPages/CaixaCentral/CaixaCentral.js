@@ -63,7 +63,7 @@ class CaixaCentral extends Component {
               </p>
             </div>
             <div className="col-md-3    px-md-15 px-0">
-              <div className="byus-action-bar animation-slide-left">
+              <div className="byus-action-bar animaDISABELDtion-slide-left">
 
               </div>
             </div>
@@ -100,36 +100,38 @@ class CaixaCentral extends Component {
                 <div className="panel-body main-body">
                   {/* <div className="tab-content"> */}
                   {this.state.activeTab === "tabClassificacao" &&
-                    <div className=" tab-pane animation-fade active" >
-                      <CmpClassificacao ItemCode={this.props.params.itemcode}
+                    <div className=" tab-pane animaDISABELDtion-fade active" >
+                      <CmpClassificacao
+                        ItemCode={this.props.params.itemcode}
                         Item={this.state.newItem}
                         AlternateCatNum={this.state.AlternateCatNum}
-                        ReadOnly={this.state.ReadOnly}></CmpClassificacao>
+                        ReadOnly={this.state.ReadOnly}>
+                      </CmpClassificacao>
                     </div>
                   }
                   {this.state.activeTab === "tabPendentes" &&
-                    <div className=" animation-fade">
+                    <div className=" animaDISABELDtion-fade">
                       <CmpUnderConstruction ItemCode={this.props.params.itemcode} ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
                     </div>
                   }
                   {this.state.activeTab === "tabDistribuicao" &&
-                    <div className=" animation-fade">
+                    <div className=" animatDISABELDion-fade">
                       <CmpUnderConstruction ItemCode={this.props.params.itemcode} ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
                     </div>
                   }
                   {this.state.activeTab === "tabDespesas" &&
-                    <div className=" animation-fade" >
+                    <div className=" animaDISABELDtion-fade" >
                       <CmpUnderConstruction ItemCode={this.props.params.itemcode} ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
                     </div>
                   }
                   {this.state.activeTab === "tabDepositos" &&
-                    <div className=" animation-fade" >
+                    <div className=" animatDISABELDion-fade" >
                       <CmpUnderConstruction ItemCode={this.props.params.itemcode} ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
                     </div>
                   }
 
                   {this.state.activeTab === "tabResumo" &&
-                    <div className=" animation-fade" >
+                    <div className=" animatDISABELDion-fade" >
                       <CmpUnderConstruction ItemCode={this.props.params.itemcode} ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
                     </div>
                   }
