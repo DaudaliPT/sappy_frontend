@@ -230,7 +230,7 @@ class BaseDocument extends Component {
     let that = this;
     // let formatedValue = changeInfo.formatedValue;
     let fieldName = changeInfo.fieldName;
-    let oldVal = this.state.docData[fieldName];
+    // let oldVal = this.state.docData[fieldName];
     let val = changeInfo.rawValue;
 
     let updated = { [fieldName]: val || null }

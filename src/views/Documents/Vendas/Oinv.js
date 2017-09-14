@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import BaseDocument from "../BaseDocument";
-import Shared from "../Shared";
-const byUs = window.byUs;
-
+import Shared from "../Shared"; 
 export default class Opch extends Component {
     constructor(props) {
         super(props)

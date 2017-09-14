@@ -4,15 +4,11 @@ import { Button } from "reactstrap";
 import ByUsSearchAndChoose from '../../../components/ByUsSearchAndChoose';
 const byUs = window.byUs;
 
-class DocFooter extends Component {
-  constructor(props) {
-    super(props)
-  }
-
+class DocFooter extends Component { 
   render() {
     let docData = this.props.docData || {}
     let allowAddLines = docData.DOCNUM > 0 ? false : true;
-    let editable = docData.DOCNUM > 0 ? this.props.editable : true;
+    // let editable = docData.DOCNUM > 0 ? this.props.editable : true;
     let loaded = !this.props.loading;
 
     let renderActions = () => {

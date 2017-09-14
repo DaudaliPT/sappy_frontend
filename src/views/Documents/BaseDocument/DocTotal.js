@@ -5,11 +5,7 @@ import React, { Component } from "react";
 import { ByUsTextBoxNumeric } from "../../../Inputs";
 const byUs = window.byUs;
 
-class DocFooter extends Component {
-  constructor(props) {
-    super(props)
-  }
-
+class DocFooter extends Component { 
   render() {
     let docData = this.props.docData || {}
     let editable = docData.DOCNUM > 0 ? false : true;

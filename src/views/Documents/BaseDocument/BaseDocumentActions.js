@@ -1,8 +1,7 @@
 
-import React from "react";
+// import React from "react";
 import { hashHistory } from "react-router";
 import axios from "axios";
-import { ModalMessageConfirm } from "../../../Modals";
 
 const byUs = window.byUs;
 // const $ = window.$;
@@ -126,8 +125,6 @@ export default {
                 byUs.showWaitProgress("A atualizar documento, aguarde por favor...");
 
                 let handlePatchDocApiResponse = (result) => {
-                    let data = result.data || {};
-
                     byUs.showSuccess({
                         title: "Documento atualizado",
                         msg: `Atualizou com sucesso o documento ${result.data.DocNum}!`,

@@ -323,6 +323,7 @@ class ByUsDataGrid extends Component {
       if (hasInvalidChars) return byUs.showError({ message: "'" + newValue + "' não é uma expressão válida" }, "Erro na expressão")
       if (hasOperators) {
         try {
+          // eslint-disable-next-line
           newValue = eval(newValue)
         } catch (error) {
           return byUs.showError(error, "Erro na expressão")
