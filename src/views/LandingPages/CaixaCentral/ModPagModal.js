@@ -16,10 +16,12 @@ class ModPagModal extends Component {
     this.onClick_GetRemaingValue = this.onClick_GetRemaingValue.bind(this);
     this.onClick_AddRemoveCheque = this.onClick_AddRemoveCheque.bind(this);
     this.updateTotalCheques = this.updateTotalCheques.bind(this);
+    this.getvalidationResults = this.getvalidationResults.bind(this);
 
     this.state = {
       activeTab: "tab1",
-      cheques: [{}]
+      cheques: [{ data: "." }],
+      showValidations: false
     }
   }
 
@@ -99,6 +101,8 @@ class ModPagModal extends Component {
       Object.assign(newStateValues, { [fieldName]: (fieldName.indexOf("Valor") > -1 ? formatedValue : val) })
     }
 
+    // if (this.state[fieldName + "_VALIDATEMSG"]) newStateValues[fieldName + "_VALIDATEMSG"] = ""
+
 
     let totalReceber = byUs.getNum(fieldName === "totalReceber" ? formatedValue : this.state.totalReceber)
     let ValorNumerario = byUs.getNum(fieldName === "ValorNumerario" ? formatedValue : this.state.ValorNumerario)
@@ -118,6 +122,7 @@ class ModPagModal extends Component {
       newStateValues.ValorTransferencia = "";
       ValorTransferencia = 0;
     }
+
 
     let totalMeiosPag = ValorNumerario + ValorMultibanco + ValorTransferencia + ValorCheques
     let troco = totalMeiosPag - totalReceber;
@@ -172,7 +177,7 @@ class ModPagModal extends Component {
         //Assumir dados co cheque atual +1
         cheques.push({
           banco: cheque.banco,
-          numero: byUs.getNum(cheque.numero) + 1,
+          numero: cheque.numero ? (byUs.getNum(cheque.numero) + 1).toString() : "",
           valor: byUs.format.amount(currVal < emFalta ? currVal : emFalta)
         })
       }
@@ -216,105 +221,176 @@ class ModPagModal extends Component {
       })
   }
 
-  onCreateReceipt() {
-    let that = this;
-
-
-    let data = {
-      DocType: "rCustomer",
-      CardCode: this.props.selectedPN,
-      CashAccount: "111",
-      CheckAccount: "119",
-      TransferAccount: "118",
-      CashSum: byUs.getNum(this.state.ValorNumerario) - byUs.getNum(this.state.troco),
-      TransferSum: byUs.getNum(this.state.ValorTransferencia),
-      // TransferDate: "2016-06-09", 
-      Remarks: this.state.Observacoes,
-      PaymentInvoices: [
-
-      ]
-    }
-    if (byUs.getNum(this.state.ValorMultibanco)) {
-      data.TransferSum = byUs.getNum(this.state.ValorMultibanco)
-      data.TransferReference = 'MB'
+  getvalidationResults(state) {
+    let alerts = {};
+    let toastrMsg = []
+    if (state.ValorTransferencia && (!state.RefTransferencia || !state.ContaTransferencia)) {
+      if (!state.RefTransferencia) alerts.RefTransferencia = "warning|Deve preencher a referência"
+      if (!state.ContaTransferencia) alerts.ContaTransferencia = "danger|Indique a conta de destino da transferência"
     }
 
-
-    data.PaymentChecks = [];
-    this.state.cheques.forEach(cheque => {
-      data.PaymentChecks.push({
-        DueDate: byUs.format.YYYY_MM_DD(cheque.data),
-        CheckNumber: cheque.numero,
-        BankCode: cheque.banco,
-        CheckSum: byUs.getNum(cheque.valor)
-      })
-    });
-
-    this.props.selectedDocs.forEach(docId => {
-
-      let doc = this.props.docsList.find(doc => docId === (doc.TransId + "#" + doc.Line_ID))
-
-      let InvoiceType = ""
-      if (byUs.getNum(doc.TransType) === -3) InvoiceType = "it_ClosingBalance";
-      else if (byUs.getNum(doc.TransType) === -1) InvoiceType = "it_AllTransactions";
-      else if (byUs.getNum(doc.TransType) === -2) InvoiceType = "it_OpeningBalance";
-      else if (byUs.getNum(doc.TransType) === 13) InvoiceType = "it_Invoice";
-      else if (byUs.getNum(doc.TransType) === 14) InvoiceType = "it_CredItnote";
-      else if (byUs.getNum(doc.TransType) === 15) InvoiceType = "it_TaxInvoice"
-      else if (byUs.getNum(doc.TransType) === 16) InvoiceType = "it_Return";
-      else if (byUs.getNum(doc.TransType) === 18) InvoiceType = "it_PurchaseInvoice";
-      else if (byUs.getNum(doc.TransType) === 19) InvoiceType = "it_PurchaseCreditNote";
-      else if (byUs.getNum(doc.TransType) === 20) InvoiceType = "it_PurchaseDeliveryNote";
-      else if (byUs.getNum(doc.TransType) === 21) InvoiceType = "it_PurchaseReturn";
-      else if (byUs.getNum(doc.TransType) === 24) InvoiceType = "it_Receipt";
-      else if (byUs.getNum(doc.TransType) === 25) InvoiceType = "it_Deposit";
-      else if (byUs.getNum(doc.TransType) === 30) InvoiceType = "it_JournalEntry";
-      else if (byUs.getNum(doc.TransType) === 46) InvoiceType = "it_PaymentAdvice";
-      else if (byUs.getNum(doc.TransType) === 57) InvoiceType = "it_ChequesForPayment";
-      else if (byUs.getNum(doc.TransType) === 58) InvoiceType = "it_StockReconciliations";
-      else if (byUs.getNum(doc.TransType) === 59) InvoiceType = "it_GeneralReceiptToStock";
-      else if (byUs.getNum(doc.TransType) === 60) InvoiceType = "it_GeneralReleaseFromStock";
-      else if (byUs.getNum(doc.TransType) === 67) InvoiceType = "it_TransferBetweenWarehouses";
-      else if (byUs.getNum(doc.TransType) === 68) InvoiceType = "it_WorkInstructions";
-      else if (byUs.getNum(doc.TransType) === 76) InvoiceType = "it_DeferredDeposit";
-      else if (byUs.getNum(doc.TransType) === 132) InvoiceType = "it_CorrectionInvoice ";
-      else if (byUs.getNum(doc.TransType) === 163) InvoiceType = "it_APCorrectionInvoice ";
-      else if (byUs.getNum(doc.TransType) === 165) InvoiceType = "it_ARCorrectionInvoice ";
-      else if (byUs.getNum(doc.TransType) === 203) InvoiceType = "it_DownPayment ";
-      else if (byUs.getNum(doc.TransType) === 204) InvoiceType = "it_PurchaseDownPayment ";
-
-      if (byUs.getNum(doc.TransType) !== 24 && byUs.getNum(doc.TransType) !== 46) {
-        data.PaymentInvoices.push({
-          DocEntry: doc.CreatedBy,
-          InvoiceType,
-          PaidSum: doc.BALANCE
-        })
-      }
-      else {
-        data.PaymentInvoices.push({
-          DocEntry: doc.TransId,
-          DocLine: doc.Line_ID,
-          InvoiceType,
-          PaidSum: doc.BALANCE
-        })
+    state.cheques.forEach((cheque, ix) => {
+      if (byUs.getNum(cheque.valor)) {
+        if (!cheque.data) alerts["cheques#" + ix + "data"] = "danger|Data em falta"
+        if (!cheque.banco) alerts["cheques#" + ix + "banco"] = "warning|Deve preencher o banco"
+        if (!cheque.numero) alerts["cheques#" + ix + "numero"] = "danger|Numero em falta"
       }
     })
 
-    axios
-      .post(`/api/caixa/class/receipt`, data)
-      .then(result => {
 
-        that.props.toggleModal(result.data.DocNum);
-        byUs.showSuccess({
-          msg: "Documento criado",
-          moreInfo: `Criou com sucesso o documento ${result.data.DocNum}!`,
-          confirmText: "Concluido"
+    return { alerts, toastrMsg }
+  }
+
+  onCreateReceipt() {
+    let that = this;
+
+    // perform checks
+    //Validar campos de preenchimento obrigatório
+    let newState = { ...that.state };
+    let fieldsRequired = []
+    let hasChangesToState = false;
+
+    let { alerts, toastrMsg } = this.getvalidationResults(newState);
+
+    toastrMsg.forEach(toastrData => byUs.showToastr(toastrData));
+
+    if (Object.keys(alerts).length > 0) this.setState({ showValidations: true })
+    //Validar se há erros ativos
+    let hasDanger = Object.keys(alerts).find(f => alerts[f].startsWith("danger"))
+    if (hasDanger) {
+      if (toastrMsg.length > 0) return // já deu mensagens
+      return byUs.showToastr({ color: "danger", msg: "Há campos com erros. Verifique se preencheu todos os campos obrigatórios..." })
+    }
+
+    //Validar se há avisos ativos
+    let hasWarning = Object.keys(alerts).find(f => alerts[f].startsWith("warning"))
+
+
+    let invokeAddDocAPI = () => {
+      let data = {
+        DocType: "rCustomer",
+        CardCode: this.props.selectedPN,
+        CashAccount: "111",
+        CheckAccount: "119",
+        CashSum: byUs.getNum(this.state.ValorNumerario) - byUs.getNum(this.state.troco),
+        // TransferDate: "2016-06-09", 
+        Remarks: this.state.Observacoes,
+        PaymentInvoices: [
+
+        ]
+      }
+      if (byUs.getNum(this.state.ValorMultibanco)) {
+        data.TransferAccount = "118"
+        data.TransferSum = byUs.getNum(this.state.ValorMultibanco)
+        data.TransferReference = 'MB'
+      };
+
+      if (byUs.getNum(this.state.ValorTransferencia)) {
+        data.TransferAccount = this.state.ContaTransferencia
+        data.TransferSum = byUs.getNum(this.state.ValorTransferencia)
+        data.TransferReference = this.state.RefTransferencia
+      }
+
+      data.PaymentChecks = [];
+      this.state.cheques.forEach(cheque => {
+        data.PaymentChecks.push({
+          DueDate: byUs.format.YYYY_MM_DD(cheque.data),
+          CheckNumber: cheque.numero,
+          BankCode: cheque.banco,
+          CheckSum: byUs.getNum(cheque.valor)
         })
+      });
+
+      this.props.selectedDocs.forEach(docId => {
+
+        let doc = this.props.docsList.find(doc => docId === (doc.TransId + "#" + doc.Line_ID))
+
+        let InvoiceType = ""
+        if (byUs.getNum(doc.TransType) === -3) InvoiceType = "it_ClosingBalance";
+        else if (byUs.getNum(doc.TransType) === -1) InvoiceType = "it_AllTransactions";
+        else if (byUs.getNum(doc.TransType) === -2) InvoiceType = "it_OpeningBalance";
+        else if (byUs.getNum(doc.TransType) === 13) InvoiceType = "it_Invoice";
+        else if (byUs.getNum(doc.TransType) === 14) InvoiceType = "it_CredItnote";
+        else if (byUs.getNum(doc.TransType) === 15) InvoiceType = "it_TaxInvoice"
+        else if (byUs.getNum(doc.TransType) === 16) InvoiceType = "it_Return";
+        else if (byUs.getNum(doc.TransType) === 18) InvoiceType = "it_PurchaseInvoice";
+        else if (byUs.getNum(doc.TransType) === 19) InvoiceType = "it_PurchaseCreditNote";
+        else if (byUs.getNum(doc.TransType) === 20) InvoiceType = "it_PurchaseDeliveryNote";
+        else if (byUs.getNum(doc.TransType) === 21) InvoiceType = "it_PurchaseReturn";
+        else if (byUs.getNum(doc.TransType) === 24) InvoiceType = "it_Receipt";
+        else if (byUs.getNum(doc.TransType) === 25) InvoiceType = "it_Deposit";
+        else if (byUs.getNum(doc.TransType) === 30) InvoiceType = "it_JournalEntry";
+        else if (byUs.getNum(doc.TransType) === 46) InvoiceType = "it_PaymentAdvice";
+        else if (byUs.getNum(doc.TransType) === 57) InvoiceType = "it_ChequesForPayment";
+        else if (byUs.getNum(doc.TransType) === 58) InvoiceType = "it_StockReconciliations";
+        else if (byUs.getNum(doc.TransType) === 59) InvoiceType = "it_GeneralReceiptToStock";
+        else if (byUs.getNum(doc.TransType) === 60) InvoiceType = "it_GeneralReleaseFromStock";
+        else if (byUs.getNum(doc.TransType) === 67) InvoiceType = "it_TransferBetweenWarehouses";
+        else if (byUs.getNum(doc.TransType) === 68) InvoiceType = "it_WorkInstructions";
+        else if (byUs.getNum(doc.TransType) === 76) InvoiceType = "it_DeferredDeposit";
+        else if (byUs.getNum(doc.TransType) === 132) InvoiceType = "it_CorrectionInvoice ";
+        else if (byUs.getNum(doc.TransType) === 163) InvoiceType = "it_APCorrectionInvoice ";
+        else if (byUs.getNum(doc.TransType) === 165) InvoiceType = "it_ARCorrectionInvoice ";
+        else if (byUs.getNum(doc.TransType) === 203) InvoiceType = "it_DownPayment ";
+        else if (byUs.getNum(doc.TransType) === 204) InvoiceType = "it_PurchaseDownPayment ";
+
+        if (byUs.getNum(doc.TransType) !== 24 && byUs.getNum(doc.TransType) !== 46) {
+          data.PaymentInvoices.push({
+            DocEntry: doc.CreatedBy,
+            InvoiceType,
+            PaidSum: doc.BALANCE
+          })
+        }
+        else {
+          data.PaymentInvoices.push({
+            DocEntry: doc.TransId,
+            DocLine: doc.Line_ID,
+            InvoiceType,
+            PaidSum: doc.BALANCE
+          })
+        }
       })
-      .catch(error => byUs.showError(error, "Não foi possivel adicionar o recibo"));
+
+      axios
+        .post(`/api/caixa/class/receipt`, data)
+        .then(result => {
+
+          that.props.toggleModal(result.data.DocNum);
+          byUs.showSuccess({
+            msg: "Documento criado",
+            moreInfo: `Criou com sucesso o documento ${result.data.DocNum}!`,
+            confirmText: "Concluido"
+          })
+        })
+        .catch(error => byUs.showError(error, "Não foi possivel adicionar o recibo"));
+    }
+
+    if (!hasWarning)
+      return byUs.showQuestion({
+        title: "Deseja Continuar?",
+        msg: "Se continuar irá criar este documento.",
+        onConfirm: invokeAddDocAPI,
+        confirmText: "Criar documento",
+        onCancel: () => { }
+      })
+    else
+      return byUs.showWarning({
+        title: "Atenção!",
+        msg: "Ainda há campos com avisos!",
+        moreInfo: "Deseja mesmo assim criar este documento?",
+        onConfirm: invokeAddDocAPI,
+        confirmText: "Ignorar e criar documento",
+        onCancel: () => { }
+      })
+
+
+
+
   }
 
   render() {
+    let alerts = {};
+    if (this.state.showValidations) alerts = this.getvalidationResults(this.state).alerts;
     let getRightButton = (valor) => !valor ? <i className="icon wb-arrow-left" /> : <i className="icon wb-close" />
 
     let renderNumerario = () => (
@@ -376,6 +452,7 @@ class ModPagModal extends Component {
             <ByUsTextBox
               label="Referência:"
               name="RefTransferencia"
+              state={alerts.RefTransferencia}
               value={this.state.RefTransferencia}
               onChange={this.onFieldChange}
             />
@@ -385,6 +462,7 @@ class ModPagModal extends Component {
               name="ContaTransferencia"
               label="Destino"
               value={this.state.ContaTransferencia}
+              state={alerts.ContaTransferencia}
               getOptionsApiRoute="/api/cbo/oact/cnt12"
               onChange={this.onFieldChange}
             />
@@ -405,13 +483,26 @@ class ModPagModal extends Component {
 
         return <div key={"cheques#" + ix} className="row">
           <div className="col-3 pr-1">
-            <ByUsDate label="Data" name={"cheques#" + ix + "#data"} value={cheque.data} onChange={this.onFieldChange} />
+            <ByUsDate label="Data" name={"cheques#" + ix + "#data"}
+              value={cheque.data}
+              state={alerts["cheques#" + ix + "data"]}
+              onChange={this.onFieldChange} />
           </div>
           <div className="col-4 pl-1 pr-1">
-            <ByUsComboBox label="Banco" name={"cheques#" + ix + "#banco"} value={cheque.banco} getOptionsApiRoute="/api/cbo/odsc" onChange={this.onFieldChange} />
+            <ByUsComboBox label="Banco"
+              name={"cheques#" + ix + "#banco"}
+              value={cheque.banco}
+              state={alerts["cheques#" + ix + "banco"]}
+              getOptionsApiRoute="/api/cbo/odsc"
+              onChange={this.onFieldChange} />
           </div>
           <div className="col-2 pl-1 pr-1">
-            <ByUsTextBox label="Numero" name={"cheques#" + ix + "#numero"} value={cheque.numero} onChange={this.onFieldChange} />
+            <ByUsTextBox
+              label="Numero"
+              name={"cheques#" + ix + "#numero"}
+              value={cheque.numero}
+              state={alerts["cheques#" + ix + "numero"]}
+              onChange={this.onFieldChange} />
           </div>
           <div className="col-3 pl-1">
             <ByUsTextBoxNumeric

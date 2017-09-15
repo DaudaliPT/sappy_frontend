@@ -184,7 +184,7 @@ class BaseLandingPage extends Component {
         startIndex: listItems.length,
         maxRecords: 100
       };
-      debugger
+
       that.serverRequest = axios
         .get(that.props.searchApiUrl + "/more", { params })
         .then(function (result) {

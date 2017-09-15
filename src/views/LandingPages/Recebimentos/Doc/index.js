@@ -653,7 +653,7 @@ class DocAtualizacaoPrecos extends Component {
 
   handleOnCellClick() {
     // let that = this;
-    debugger;
+    // debugger;
   }
 
   handleGridRowsUpdated({ fromRow, toRow, updated }) {

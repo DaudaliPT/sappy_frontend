@@ -102,26 +102,23 @@ class CaixaCentral extends Component {
                   {this.state.activeTab === "tabClassificacao" &&
                     <div className=" tab-pane animaDISABELDtion-fade active" >
                       <CmpClassificacao
-                        ItemCode={this.props.params.itemcode}
-                        Item={this.state.newItem}
-                        AlternateCatNum={this.state.AlternateCatNum}
                         ReadOnly={this.state.ReadOnly}>
                       </CmpClassificacao>
                     </div>
                   }
                   {this.state.activeTab === "tabPendentes" &&
                     <div className=" animaDISABELDtion-fade">
-                      <CmpUnderConstruction ItemCode={this.props.params.itemcode} ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
+                      <CmpUnderConstruction ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
                     </div>
                   }
                   {this.state.activeTab === "tabDistribuicao" &&
                     <div className=" animatDISABELDion-fade">
-                      <CmpUnderConstruction ItemCode={this.props.params.itemcode} ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
+                      <CmpUnderConstruction ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
                     </div>
                   }
                   {this.state.activeTab === "tabDespesas" &&
                     <div className=" animaDISABELDtion-fade" >
-                      <CmpUnderConstruction ItemCode={this.props.params.itemcode} ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
+                      <CmpUnderConstruction ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
                     </div>
                   }
                   {this.state.activeTab === "tabDepositos" &&
@@ -132,7 +129,7 @@ class CaixaCentral extends Component {
 
                   {this.state.activeTab === "tabResumo" &&
                     <div className=" animatDISABELDion-fade" >
-                      <CmpUnderConstruction ItemCode={this.props.params.itemcode} ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
+                      <CmpUnderConstruction ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
                     </div>
                   }
 

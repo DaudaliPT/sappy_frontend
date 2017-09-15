@@ -101,7 +101,6 @@ class ByUsComboBox extends Component {
       stateColor = "danger";
       stateMsg = this.state.loadingError;
     } else if (this.props.state) {
-      debugger
       stateColor = this.props.state.split('|')[0];
       stateMsg = this.props.state.split('|')[1];
     }
