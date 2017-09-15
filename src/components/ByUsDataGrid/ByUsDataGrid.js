@@ -81,21 +81,6 @@ class ByUsDataGrid extends Component {
   }
 
   onRowReorder(e) {
-
-    // let selectedRows = this.state.selectedIndexes.map(i => this.getRowAt(i))
-    // let draggedRows = selectedRows.indexOf(e.rowSource.idx) > -1 ? selectedRows : [e.rowSource.data];
-
-    // let orderedRows = this.getRows().filter(function (r) {
-    //   return draggedRows.indexOf(r) === -1;
-    // });
-
-    // let args = [e.rowTarget.idx, 0].concat(orderedRows);
-    // Array.prototype.splice.apply(orderedRows, args);
-    // // this.setState({ rows: orderedRows });
-
-
-
-
     let selectedRows = Selectors.getSelectedRowsByKey({ rowKey: this.props.rowKey, selectedKeys: this.state.selectedIds, rows: this.state.rows });
     let isDraggedRowSelected = selectedRows.find(row => row[this.props.rowKey] === e.rowSource.data[this.props.rowKey])
     let draggedRows = isDraggedRowSelected ? selectedRows : [e.rowSource.data];
@@ -104,9 +89,7 @@ class ByUsDataGrid extends Component {
     });
     let args = [e.rowTarget.idx, 0].concat(draggedRows);
     Array.prototype.splice.apply(orderedRows, args);
-    // this.setState({ rows: orderedRows });
     this.props.onRowReorder && this.props.onRowReorder(draggedRows, e.rowTarget, orderedRows);
-
   }
 
   getRows() {
@@ -381,7 +364,6 @@ class ByUsDataGrid extends Component {
           minHeight={this.props.height}
           enableDragAndDrop={true}
           enableCellSelect={true}
-          enableCellSelection={true}
           onRowExpandToggle={this.onRowExpandToggle}
           onGridRowsUpdated={this.handleGridRowsUpdated}
           onCellClick={this.handleOnCellClick}
