@@ -34,6 +34,7 @@ class ByUsTextBox extends Component {
   }
 
   render() {
+    let that = this;
 
     var renderRightButton = () => {
       if (this.props.rightButton) {
@@ -45,7 +46,9 @@ class ByUsTextBox extends Component {
           <span className="input-group-btn">
             <Button color={color} outline id={this.props.name + "_rbtn"} className="right-button"
               disabled={this.props.disabled || false}
-              onClick={this.props.onRightButtonClick}>
+              onClick={() => {
+                that.props.onRightButtonClick(that)
+              }}>
               {this.props.rightButton}
             </Button>
           </span>
@@ -66,6 +69,7 @@ class ByUsTextBox extends Component {
         <InputGroup>
           <Input
             type="text"
+            ref={this.props.name}
             id={this.props.name}
             value={this.state.value || ''}
             placeholder={this.props.placeholder}

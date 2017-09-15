@@ -4,7 +4,7 @@ import axios from "axios";
 var $ = window.$;
 var byUs = window.byUs;
 
-import { ByUsTextBoxNumeric } from "../../../Inputs";
+import { ByUsTextBox, ByUsTextBoxNumeric, ByUsDate, ByUsComboBox, ByUsCheckHr } from "../../../Inputs";
 
 class ModPagModal extends Component {
   constructor(props) {
@@ -13,9 +13,13 @@ class ModPagModal extends Component {
     this.handleOnTabClick = this.handleOnTabClick.bind(this);
     this.onFieldChange = this.onFieldChange.bind(this);
     this.onCreateReceipt = this.onCreateReceipt.bind(this);
+    this.onClick_GetRemaingValue = this.onClick_GetRemaingValue.bind(this);
+    this.onClick_AddRemoveCheque = this.onClick_AddRemoveCheque.bind(this);
+    this.updateTotalCheques = this.updateTotalCheques.bind(this);
 
     this.state = {
-      activeTab: "tab1"
+      activeTab: "tab1",
+      cheques: [{}]
     }
   }
 
@@ -31,7 +35,7 @@ class ModPagModal extends Component {
 
   calcPageHeight() {
     let $el = $(".modal-content>.main-body");
-    console.log($el)
+    // console.log($el)
     let $scrollAbleparent = $("body");
     if ($scrollAbleparent && $el) {
       let minH = $scrollAbleparent.height() - $el.position().top - 370;
@@ -45,56 +49,169 @@ class ModPagModal extends Component {
     this.setState({ activeTab: tab });
   }
 
+  updateTotalCheques(cheques) {
+
+    let v = cheques.reduce((sum, fld) => sum + byUs.getNum(fld.valor), 0);
+    // Alterar apenas o valor total de cheques
+    return this.onFieldChange({
+      fieldName: "ValorCheques",
+      rawValue: v,
+      formatedValue: byUs.format.amount(v)
+    })
+  }
 
   // Recebe os valores dos campos MY*
   onFieldChange(changeInfo) {
+    let that = this;
     let formatedValue = changeInfo.formatedValue;
     let val = changeInfo.rawValue;
     let fieldName = changeInfo.fieldName;
 
-    let newStateValues = this.state;
+    // console.log("onFieldChange:" + fieldName)
 
-    //Correctly save to ServiceLayer properties
-    if (fieldName.indexOf("Valor") > -1) {
-      Object.assign(newStateValues, { [fieldName]: formatedValue });
+    let newStateValues = {};
+
+    if (fieldName.indexOf("cheques#") > -1) {
+      let ix = byUs.getNum(fieldName.split("#")[1]);
+      let prop = fieldName.split("#")[2];
+
+      let cheques = [...this.state.cheques]
+
+      if (prop === "valor") {
+        cheques[ix] = Object.assign({}, cheques[ix], { [prop]: formatedValue });
+
+        let v = cheques.reduce((sum, fld) => sum + byUs.getNum(fld.valor), 0);
+        if (changeInfo.realtime) {
+          // Alterar apenas o valor total de cheques
+          return that.updateTotalCheques(cheques);
+        } else {
+          return this.setState({ cheques },
+            //Após alterar o valor do cheque, alterar o valor total de cheques
+            () => that.updateTotalCheques(cheques)
+          )
+        }
+      } else {
+        cheques[ix][prop] = val;
+        newStateValues.cheques = cheques
+      }
     } else {
-      Object.assign(newStateValues, { [fieldName]: val });
+      //Correctly save to ServiceLayer properties
+      Object.assign(newStateValues, { [fieldName]: (fieldName.indexOf("Valor") > -1 ? formatedValue : val) })
     }
+
+
+    let totalReceber = byUs.getNum(fieldName === "totalReceber" ? formatedValue : this.state.totalReceber)
+    let ValorNumerario = byUs.getNum(fieldName === "ValorNumerario" ? formatedValue : this.state.ValorNumerario)
+    let ValorMultibanco = byUs.getNum(fieldName === "ValorMultibanco" ? formatedValue : this.state.ValorMultibanco)
+    let ValorTransferencia = byUs.getNum(fieldName === "ValorTransferencia" ? formatedValue : this.state.ValorTransferencia)
+    let ValorCheques = byUs.getNum(fieldName === "ValorCheques" ? formatedValue : this.state.ValorCheques)
+    let continuarColor;
+    let continuarContent;
 
     //Não pode ter transferência e multibanco
-    if (fieldName.indexOf("ValorTransferencia") > -1 && newStateValues.ValorMultibanco) {
+    if (fieldName.indexOf("ValorTransferencia") > -1 && ValorMultibanco) {
       byUs.showToastr({ color: "warning", msg: "Não pode ter Transferência e Multibanco em simultaneo." })
       newStateValues.ValorMultibanco = "";
-    }
-    if (fieldName.indexOf("ValorMultibanco") > -1 && newStateValues.ValorTransferencia) {
-
+      ValorMultibanco = 0;
+    } else if (fieldName.indexOf("ValorMultibanco") > -1 && ValorTransferencia) {
       byUs.showToastr({ color: "warning", msg: "Não pode ter Multibanco e Transferência em simultaneo." })
       newStateValues.ValorTransferencia = "";
+      ValorTransferencia = 0;
     }
 
-    newStateValues.totalMeiosPag
-      = byUs.getNum(this.state.ValorNumerario)
-      + byUs.getNum(this.state.ValorMultibanco)
-      + byUs.getNum(this.state.ValorTransferencia)
-      + byUs.getNum(this.state.ValorCheque);
+    let totalMeiosPag = ValorNumerario + ValorMultibanco + ValorTransferencia + ValorCheques
+    let troco = totalMeiosPag - totalReceber;
 
-    newStateValues.troco = newStateValues.totalMeiosPag - newStateValues.totalReceber;
 
-    if (newStateValues.troco > byUs.getNum(this.state.ValorNumerario)) {
+    if (troco > ValorNumerario) {
       byUs.showToastr({ color: "danger", msg: "O troco não pode ser superior ao valor em numerário" })
-      newStateValues.continuarColor = "danger";
-      newStateValues.continuarContent = <span> <i className="icon wb-warning" /> Troco {byUs.format.amount(newStateValues.troco)}</span>;
-    } else if (newStateValues.troco < 0) {
-      newStateValues.continuarColor = "danger";
-      newStateValues.continuarContent = <span> <i className="icon wb-warning" />  Em falta {byUs.format.amount(-1 * newStateValues.troco)}</span>
-    } else if (newStateValues.troco > 0) {
-      newStateValues.continuarColor = "warning";
-      newStateValues.continuarContent = <span> <i className="icon wb-check" /> Concluir (Troco {byUs.format.amount(newStateValues.troco)})</span>
+      continuarColor = "danger";
+      continuarContent = <span> <i className="icon wb-warning" /> Troco {byUs.format.amount(troco)}</span>;
+    } else if (troco < 0) {
+      continuarColor = "danger";
+      continuarContent = <span> <i className="icon wb-warning" />  Em falta {byUs.format.amount(-1 * troco)}</span>
+    } else if (troco > 0) {
+      continuarColor = "warning";
+      continuarContent = <span> <i className="icon wb-check" /> Concluir (Troco {byUs.format.amount(troco)})</span>
     } else {
-      newStateValues.continuarColor = "success";
-      newStateValues.continuarContent = <span> <i className="icon wb-check" /> Concluir {byUs.format.amount(newStateValues.troco)}</span>
+      continuarColor = "success";
+      continuarContent = <span> <i className="icon wb-check" /> Concluir {byUs.format.amount(troco)}</span>
     }
+
+    newStateValues.continuarColor = continuarColor;
+    newStateValues.continuarContent = continuarContent;
+    newStateValues.totalMeiosPag = totalMeiosPag;
+    newStateValues.troco = troco;
+
+
+    if (changeInfo.realtime) newStateValues[fieldName] = this.state[fieldName]
+
     this.setState(newStateValues);
+  }
+
+  onClick_AddRemoveCheque(cmpThis) {
+
+    let that = this
+    let fieldName = cmpThis.props.name.split("#")[0];
+    let ix = byUs.getNum(cmpThis.props.name.split("#")[1]);
+    let cheques = [...this.state.cheques]
+    let currVal = byUs.getNum(cheques[ix].valor);
+    let totalReceber = byUs.getNum(this.state.totalReceber);
+    let totalMeiosPag = byUs.getNum(this.state.totalMeiosPag);
+    let emFalta = 0
+    if (totalReceber > totalMeiosPag) emFalta = totalReceber - totalMeiosPag
+
+    if (currVal) {
+      if (ix < cheques.length - 1) {
+        cheques.splice(ix, 1);
+      } else {
+        if (emFalta === 0) return
+        let cheque = cheques[ix]
+        //Assumir dados co cheque atual +1
+        cheques.push({
+          banco: cheque.banco,
+          numero: byUs.getNum(cheque.numero) + 1,
+          valor: byUs.format.amount(currVal < emFalta ? currVal : emFalta)
+        })
+      }
+
+      this.setState({ cheques }, that.updateTotalCheques(cheques))
+
+    } else {
+      totalMeiosPag -= currVal
+      if (totalReceber > totalMeiosPag) emFalta = totalReceber - totalMeiosPag
+
+      that.onFieldChange({
+        fieldName: "cheques#" + ix + "#valor",
+        rawValue: emFalta,
+        formatedValue: byUs.format.amount(totalReceber - totalMeiosPag)
+      })
+    }
+  }
+
+  onClick_GetRemaingValue(cmpThis) {
+    let fieldName = cmpThis.props.name;
+    let currVal = byUs.getNum(this.state[fieldName]);
+    let totalReceber = byUs.getNum(this.state.totalReceber);
+    let totalMeiosPag = byUs.getNum(this.state.totalMeiosPag);
+
+
+    if (fieldName.indexOf("ValorTransferencia") > -1 || fieldName.indexOf("ValorMultibanco") > -1) {
+      totalMeiosPag -= byUs.getNum(this.state.ValorTransferencia)
+      totalMeiosPag -= byUs.getNum(this.state.ValorMultibanco)
+    } else {
+      totalMeiosPag -= currVal
+    }
+
+    let rawValue = 0;
+    if (!currVal && totalReceber - totalMeiosPag > 0) rawValue = totalReceber - totalMeiosPag;
+
+    if (currVal !== rawValue)
+      this.onFieldChange({
+        fieldName,
+        formatedValue: rawValue ? byUs.format.amount(rawValue) : "",
+        rawValue
+      })
   }
 
   onCreateReceipt() {
@@ -110,6 +227,7 @@ class ModPagModal extends Component {
       CashSum: byUs.getNum(this.state.ValorNumerario) - byUs.getNum(this.state.troco),
       TransferSum: byUs.getNum(this.state.ValorTransferencia),
       // TransferDate: "2016-06-09", 
+      Remarks: this.state.Observacoes,
       PaymentInvoices: [
 
       ]
@@ -118,6 +236,17 @@ class ModPagModal extends Component {
       data.TransferSum = byUs.getNum(this.state.ValorMultibanco)
       data.TransferReference = 'MB'
     }
+
+
+    data.PaymentChecks = [];
+    this.state.cheques.forEach(cheque => {
+      data.PaymentChecks.push({
+        DueDate: byUs.format.YYYY_MM_DD(cheque.data),
+        CheckNumber: cheque.numero,
+        BankCode: cheque.banco,
+        CheckSum: byUs.getNum(cheque.valor)
+      })
+    });
 
     this.props.selectedDocs.forEach(docId => {
 
@@ -184,52 +313,131 @@ class ModPagModal extends Component {
   }
 
   render() {
-    let renderNumerario = () => {
-      return <div>
-        <ByUsTextBoxNumeric
-          valueType="amount"
-          label="Valor em numerário:"
-          name="ValorNumerario"
-          value={this.state.ValorNumerario}
-          onChange={this.onFieldChange}
-        />
-      </div>
-    }
+    let getRightButton = (valor) => !valor ? <i className="icon wb-arrow-left" /> : <i className="icon wb-close" />
 
-    let renderMultibanco = () => {
-      return <div>
-        <ByUsTextBoxNumeric
-          valueType="amount"
-          label="Valor da pagamento:"
-          name="ValorMultibanco"
-          value={this.state.ValorMultibanco}
-          onChange={this.onFieldChange}
-        />
-      </div>
-    }
+    let renderNumerario = () => (
+      <div   >
+        <div className="row">
+          <div className="col-4 pr-1">
+            <ByUsTextBoxNumeric
+              valueType="amount"
+              label="Valor em numerário:"
+              name="ValorNumerario"
+              value={this.state.ValorNumerario}
+              onChange={this.onFieldChange}
+              realTimeChange={true}
+              rightButton={getRightButton(this.state.ValorNumerario)}
+              onRightButtonClick={this.onClick_GetRemaingValue}
+            />
+          </div>
+        </div>
+      </div>)
 
-    let renderTransferencia = () => {
-      return <div>
-        <ByUsTextBoxNumeric
-          valueType="amount"
-          label="Valor da transferência:"
-          name="ValorTransferencia"
-          value={this.state.ValorTransferencia}
-          onChange={this.onFieldChange}
-        />
-      </div>
+
+    let renderMultibanco = () => (
+      <div  >
+        <div className="row">
+          <div className="col-4 pr-1">
+            <ByUsTextBoxNumeric
+              valueType="amount"
+              label="Valor do pagamento:"
+              name="ValorMultibanco"
+              value={this.state.ValorMultibanco}
+              onChange={this.onFieldChange}
+              realTimeChange={true}
+              rightButton={getRightButton(this.state.ValorMultibanco)}
+              onRightButtonClick={this.onClick_GetRemaingValue}
+            />
+          </div>
+        </div>
+      </div>)
+
+
+    let renderTransferencia = () => (
+      <div  >
+        <div className="row">
+          <div className="col-4 pr-1">
+            <ByUsTextBoxNumeric
+              valueType="amount"
+              label="Valor da transferência:"
+              name="ValorTransferencia"
+              value={this.state.ValorTransferencia}
+              onChange={this.onFieldChange}
+              realTimeChange={true}
+              rightButton={getRightButton(this.state.ValorTransferencia)}
+              onRightButtonClick={this.onClick_GetRemaingValue}
+            />
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-4 pr-1">
+            <ByUsTextBox
+              label="Referência:"
+              name="RefTransferencia"
+              value={this.state.RefTransferencia}
+              onChange={this.onFieldChange}
+            />
+          </div>
+          <div className="col-4 pl-1">
+            <ByUsComboBox
+              name="ContaTransferencia"
+              label="Destino"
+              value={this.state.ContaTransferencia}
+              getOptionsApiRoute="/api/cbo/oact/cnt12"
+              onChange={this.onFieldChange}
+            />
+          </div>
+        </div>
+      </div >)
+
+
+    let renderCheques = () => {
+      let cheques = this.state.cheques || [];
+      let renderCheque = (cheque, ix) => <div key={"cheques#" + ix} className="row">
+        <div className="col-3 pr-1">
+          <ByUsDate label="Data" name={"cheques#" + ix + "#data"} value={cheque.data} onChange={this.onFieldChange} />
+        </div>
+        <div className="col-4 pl-1 pr-1">
+          <ByUsComboBox label="Banco" name={"cheques#" + ix + "#banco"} value={cheque.banco} getOptionsApiRoute="/api/cbo/odsc" onChange={this.onFieldChange} />
+        </div>
+        <div className="col-2 pl-1 pr-1">
+          <ByUsTextBox label="Numero" name={"cheques#" + ix + "#numero"} value={cheque.numero} onChange={this.onFieldChange} />
+        </div>
+        <div className="col-3 pl-1">
+          <ByUsTextBoxNumeric
+            valueType="amount"
+            label="Valor"
+            name={"cheques#" + ix + "#valor"}
+            value={cheque.valor}
+            onChange={this.onFieldChange}
+            realTimeChange={true}
+            rightButton={
+              ix < this.state.cheques.length - 1
+                ? "-"
+                : (cheque.valor ? "+" : <i className="icon wb-arrow-left" />)}
+            onRightButtonClick={this.onClick_AddRemoveCheque} />
+        </div>
+      </div >
+
+      let chequeElemts = []
+      for (var ix = 0; ix < cheques.length; ix++) {
+        let cheque = cheques[ix] || {}
+        chequeElemts.push(renderCheque(cheque, ix))
+      }
+      return <div >
+        {chequeElemts}
+        <div className="row">
+          <div className="col-3 offset-9 pl-1">
+            <ByUsTextBoxNumeric
+              valueType="amount"
+              label="Total de cheques:"
+              name="ValorCheques"
+              value={this.state.ValorCheques}
+              disabled={true} />
+          </div>
+        </div>
+      </div >
     }
-    // let renderCheque = () => {
-    //   return <div>
-    //     <ByUsTextBoxNumeric
-    //       valueType="amount"
-    //       label="Valor da cheque:"
-    //       name="ValorCheque"
-    //       value={this.state.ValorCheque}
-    //       onChange={this.onFieldChange}
-    //     />
-    //   </div>
-    // }
 
 
 
@@ -239,46 +447,65 @@ class ModPagModal extends Component {
         <ModalHeader toggle={this.props.toggleModal}  >
           Meio de pagamento
         </ModalHeader>
-        <ModalBody>
-          <div className="container">
-            <div className="row">
-              <div className="col   px-0">
-                <p></p>
+        <ModalBody >
+
+          <div className="panel">
+            {/* <div className="panel-body "> */}
+            <div className="container">
+
+              <div className="row">
+                <div className="col   px-0">
+                  <p></p>
+                </div>
               </div>
-            </div>
-            <div className="row">
-              <div className="col-4   px-0">
-                {/* <!-- Panel --> */}
-                <div className="panel">
-                  <div className="panel-body ">
-                    <div className="list-group faq-list" role="tablist">
-                      <a className="list-group-item list-group-item-action active" data-toggle="tab" role="tab" id="tab1" onClick={this.handleOnTabClick}>Numerário </a>
-                      <a className="list-group-item" data-toggle="tab" role="tab" id="tab2" onClick={this.handleOnTabClick}>Multibanco</a>
-                      <a className="list-group-item" data-toggle="tab" role="tab" id="tab3" onClick={this.handleOnTabClick}>Transferência</a>
-                      {/* <a className="list-group-item" data-toggle="tab" role="tab" id="tab4" onClick={this.handleOnTabClick}>Cheque</a> */}
+              <div className="row">
+                <div className="col-2   px-0">
+                  <div className="list-group faq-list" role="tablist">
+                    <a className={"list-group-item list-group-item-action active " + (this.state.ValorNumerario ? "filled" : "")} data-toggle="tab" role="tab" id="tab1" onClick={this.handleOnTabClick}>Numerário </a>
+                    <a className={"list-group-item " + (this.state.ValorMultibanco ? "filled" : "")} data-toggle="tab" role="tab" id="tab2" onClick={this.handleOnTabClick}>Multibanco</a>
+                    <a className={"list-group-item " + (this.state.ValorTransferencia ? "filled" : "")} data-toggle="tab" role="tab" id="tab3" onClick={this.handleOnTabClick}>Transferência</a>
+                    <a className={"list-group-item " + (this.state.ValorCheques ? "filled" : "")} data-toggle="tab" role="tab" id="tab4" onClick={this.handleOnTabClick}>Cheque</a>
+                  </div>
+                </div>
+                <div className="col-10      px-0">
+                  <div className="painel-modopag" >
+                    {this.state.activeTab === "tab1" && renderNumerario()}
+                    {this.state.activeTab === "tab2" && renderMultibanco()}
+                    {this.state.activeTab === "tab3" && renderTransferencia()}
+                    {this.state.activeTab === "tab4" && renderCheques()}
+
+                  </div>
+
+                  <div className="painel-modopag-bottom" >
+                    <div className="row">
+                      <div className="col-12   ">
+                        <ByUsTextBox
+                          label="Observações"
+                          name="Observacoes"
+                          value={this.state.Observacoes}
+                          onChange={this.onFieldChange}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="row">
+                      <div className="col-12   ">
+                        <ByUsCheckHr
+                          label="Enviar por email para... (ainda em desenvolvimento...)"
+                          name="apyByMail"
+                          value={this.state.apyByMail}
+                          onChange={this.onFieldChange}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
-                {/* <!-- End Panel --> */}
-              </div>
-              <div className="col-8      px-0">
-                {/* <!-- Panel --> */}
-                <div className="panel form-panel">
-                  <div className="panel-body main-body">
-                    <div className="animaDISABELDtion-fade" >
-                      {this.state.activeTab === "tab1" && renderNumerario()}
-                      {this.state.activeTab === "tab2" && renderMultibanco()}
-                      {this.state.activeTab === "tab3" && renderTransferencia()}
-                      {/* {this.state.activeTab === "tab4" && renderCheque()} */}
-                    </div>
-                  </div>
-                </div>
-                {/* <!-- End Panel --> */}
               </div>
             </div>
           </div>
 
           <div className="byus-action-bar animation-slide-left">
+
 
             <Button color={this.state.continuarColor} disabled={this.state.continuarColor === "danger"} onClick={this.onCreateReceipt}>
               {this.state.continuarContent}

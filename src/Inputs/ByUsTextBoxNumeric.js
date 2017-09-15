@@ -15,7 +15,9 @@ class ByUsTextBoxNumeric extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState(this.createStateFromProps(nextProps))
+
+    if (this.props.value !== nextProps.value)
+      this.setState(this.createStateFromProps(nextProps))
   }
 
   createStateFromProps(props) {
@@ -25,7 +27,19 @@ class ByUsTextBoxNumeric extends Component {
 
 
   handleChange(e) {
-    this.setState({ value: e.target.value })
+    let that = this;
+    let value = e.target.value;
+    this.setState({ value }, () => {
+      if (that.props.realTimeChange) {
+        let changeInfo = {
+          fieldName: that.props.name,
+          rawValue: byUs.getNum(value),
+          formatedValue: value,
+          realtime: true
+        };
+        that.props.onChange(changeInfo);
+      }
+    })
   }
 
   getFormatedValue(valueType, value) {
@@ -58,6 +72,7 @@ class ByUsTextBoxNumeric extends Component {
   }
 
   render() {
+    let that = this
     var renderRightButton = () => {
       if (this.props.rightButton) {
         let color = "success";
@@ -69,9 +84,12 @@ class ByUsTextBoxNumeric extends Component {
             <Button color={color} outline id={this.props.name + "_rbtn"} className="right-button"
 
               disabled={this.props.disabled || false}
-              onClick={this.props.onRightButtonClick}
-            >              {this.props.rightButton}            </Button>
-          </span>
+              onClick={() => {
+                that.props.onRightButtonClick(that)
+              }}>
+              {this.props.rightButton}
+            </Button>
+          </span >
         );
       }
     };
@@ -90,6 +108,7 @@ class ByUsTextBoxNumeric extends Component {
         <InputGroup>
           <Input
             type="text"
+            ref={this.props.name}
             id={this.props.name}
             className="text-right"
             value={this.state.value}
@@ -111,6 +130,7 @@ ByUsTextBoxNumeric.defaultProps = {
   name: "TextBox",
   valueType: "price",
   disabled: false,
+  realTimeChange: false,
   rightButton: null,
   onChange: (changeInfo) => {
     console.log(changeInfo);

@@ -250,6 +250,25 @@ import moment from 'moment';
       return "";
     },
 
+    YYYY_MM_DD: value => {
+      let parsedDate;
+
+      if (!value) return '';
+      if (value instanceof Date) {
+        parsedDate = value;
+      } else {
+        parsedDate = new Date(value);
+      }
+      let day = parsedDate.getDate();
+      let month = parsedDate.getMonth() + 1; //Months are zero based
+      let year = parsedDate.getFullYear();
+
+      if (day.toString().length === 1) day = "0" + day;
+      if (month.toString().length === 1) month = "0" + month;
+
+      return year + "-" + month + "-" + day;
+    },
+
     properDisplayDate: value => {
       let parsedDate;
 

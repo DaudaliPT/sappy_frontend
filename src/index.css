@@ -150,10 +150,12 @@ body.site-navbar-small {
 
 
 @media (min-width: 992px) {
+    .modal-md {       max-width: 60% !important;    }
     .modal-lg {       max-width: 80% !important;    }
     .byus-search-bar {        width: 50%;    } 
 }
 @media (max-width: 480px) {
+  .modal-md {       max-width: 90% !important;    }
     .modal-lg {        max-width: 90% !important;      }
     /* .byus-search-bar {        width: 150px;    } */
 }
@@ -644,12 +646,28 @@ input, optgroup,select,textarea {
   padding: 10px!important;
 }
 
+.painel-modopag{
+  padding-left:30px;
+  min-height: 200px;  
+}
+.painel-modopag-bottom{
+  padding-left:30px;
+}
+
+.filled{
+font-weight: bold;
+
+}
 
  .right-button {
      width: 30px; 
      height: 100%;
      margin-left: 0px !important;    
- }
+     padding-left: 0px !important;
+     padding-right: 0px !important;
+     align-content:center !important;
+    }
+ 
  
 /* --------------------------------------------------------------------------- */
 /* HOME PAGE */

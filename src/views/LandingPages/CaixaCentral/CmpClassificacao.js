@@ -15,6 +15,7 @@ class CmpTransStock extends Component {
 
         this.handlePNselection = this.handlePNselection.bind(this);
         this.handleDocSelection = this.handleDocSelection.bind(this);
+        this.handleDocRefresh = this.handleDocRefresh.bind(this);
         this.setClass = this.setClass.bind(this);
 
         this.state = { selectedPN: '', selectedDocs: [], shiftKey: false, ctrlKey: false }
@@ -68,6 +69,11 @@ class CmpTransStock extends Component {
         }
 
         this.setState({ selectedDocs });
+    }
+
+    handleDocRefresh(e) {
+        let { selectedDocs } = this.state;
+        this.setState({ selectedDocs: [...selectedDocs] });
     }
 
     setClass(docClass) {
@@ -146,21 +152,23 @@ class CmpTransStock extends Component {
             );
         };
 
+        let totalOfDocs = 0
         let totalOfSelectedDocs = 0
         let showClassNone = false;
         let showClassC = false;
         let showClassD = false;
-        if (this.docsComponent) {
-            docsList.forEach(doc => {
-                let docId = doc.TransId + '#' + doc.Line_ID;
-                if (selectedDocs.indexOf(docId) > -1) {
-                    totalOfSelectedDocs += byUs.getNum(doc.BALANCE)
-                    showClassNone = (doc.TransType === '13' && selectedDocs.length === 1 && !(doc.U_apyCLASS === 'N' || !doc.U_apyCLASS));
-                    showClassC = (doc.TransType === '13' && selectedDocs.length === 1 && doc.U_apyCLASS !== 'C');
-                    showClassD = (doc.TransType === '13' && selectedDocs.length === 1 && doc.U_apyCLASS !== 'D');
-                }
-            })
-        }
+        // if (this.docsComponent) {
+        docsList.forEach(doc => {
+            totalOfDocs += byUs.getNum(doc.BALANCE)
+            let docId = doc.TransId + '#' + doc.Line_ID;
+            if (selectedDocs.indexOf(docId) > -1) {
+                totalOfSelectedDocs += byUs.getNum(doc.BALANCE)
+                showClassNone = (doc.TransType === '13' && selectedDocs.length === 1 && !(doc.U_apyCLASS === 'N' || !doc.U_apyCLASS));
+                showClassC = (doc.TransType === '13' && selectedDocs.length === 1 && doc.U_apyCLASS !== 'C');
+                showClassD = (doc.TransType === '13' && selectedDocs.length === 1 && doc.U_apyCLASS !== 'D');
+            }
+        })
+        // }
 
         let footerProps = {
             actions: [
@@ -186,6 +194,16 @@ class CmpTransStock extends Component {
                             docsList={docsList}
                             totalReceber={totalOfSelectedDocs} />)
                     }
+                },
+                {
+                    name: "Total", color: "dark",
+                    content: <span>
+                        <span className="hidden-sm-down">Total</span>
+                        <span id="total-btn-text">
+                            <strong>{"   " + byUs.format.amount(totalOfDocs)}</strong>
+                        </span>
+                    </span>
+                    , visible: true, onClick: e => { }
                 }
             ]
         }
@@ -212,12 +230,13 @@ class CmpTransStock extends Component {
                             searchApiUrl={`/api/caixa/class/docs?cardcode=${selectedPN}`}
                             noRecordsMessage="Selecione primeiro um cliente"
                             renderRow={renderRowDocs}
+                            onRefresh={this.handleDocRefresh}
                             renderRowHeight={35}
                         />
                     </div>
                 </div>
                 {/* <p>{this.state.ctrlKey ? "ctrl" : ""} {this.state.shiftKey ? " shift" : ""}</p> */}
-                <CmpClassificacaoFooter {...footerProps}></CmpClassificacaoFooter>
+                <CmpClassificacaoFooter {...footerProps }></CmpClassificacaoFooter>
 
             </div>)
 
