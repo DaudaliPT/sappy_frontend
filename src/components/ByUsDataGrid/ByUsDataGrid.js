@@ -85,26 +85,27 @@ class ByUsDataGrid extends Component {
     // let selectedRows = this.state.selectedIndexes.map(i => this.getRowAt(i))
     // let draggedRows = selectedRows.indexOf(e.rowSource.idx) > -1 ? selectedRows : [e.rowSource.data];
 
-    // let orderedRows = this.getRows.filter(function (r) {
+    // let orderedRows = this.getRows().filter(function (r) {
     //   return draggedRows.indexOf(r) === -1;
     // });
 
     // let args = [e.rowTarget.idx, 0].concat(orderedRows);
     // Array.prototype.splice.apply(orderedRows, args);
+    // // this.setState({ rows: orderedRows });
+
+
+
+
+    let selectedRows = Selectors.getSelectedRowsByKey({ rowKey: this.props.rowKey, selectedKeys: this.state.selectedIds, rows: this.state.rows });
+    let isDraggedRowSelected = selectedRows.find(row => row[this.props.rowKey] === e.rowSource.data[this.props.rowKey])
+    let draggedRows = isDraggedRowSelected ? selectedRows : [e.rowSource.data];
+    let orderedRows = this.state.rows.filter(function (r) {
+      return draggedRows.indexOf(r) === -1;
+    });
+    let args = [e.rowTarget.idx, 0].concat(draggedRows);
+    Array.prototype.splice.apply(orderedRows, args);
     // this.setState({ rows: orderedRows });
-
-    // this.props.onRowReorder && this.props.onRowReorder(draggedRows, e.rowTarget, orderedRows);
-
-
-
-    // let selectedRows = Selectors.getSelectedRowsByKey({ rowKey: this.props.rowKey, selectedKeys: this.state.selectedIds, rows: this.state.rows });
-    // let draggedRows = this.isDraggedRowSelected(selectedRows, e.rowSource) ? selectedRows : [e.rowSource.data];
-    // let undraggedRows = this.state.rows.filter(function (r) {
-    //   return draggedRows.indexOf(r) === -1;
-    // });
-    // let args = [e.rowTarget.idx, 0].concat(draggedRows);
-    // Array.prototype.splice.apply(undraggedRows, args);
-    // this.setState({ rows: undraggedRows });
+    this.props.onRowReorder && this.props.onRowReorder(draggedRows, e.rowTarget, orderedRows);
 
   }
 

@@ -22,6 +22,7 @@ class BaseDocument extends Component {
     this.ensureDocHeaderExists = this.ensureDocHeaderExists.bind(this);
     this.handleHeaderFieldChange = this.handleHeaderFieldChange.bind(this)
     this.handleDetailRowChange = this.handleDetailRowChange.bind(this)
+    this.handleDetailRowReorder = this.handleDetailRowReorder.bind(this)
     this.handleDetailRowSelect = this.handleDetailRowSelect.bind(this)
     this.handleFooterSearchResult = this.handleFooterSearchResult.bind(this)
     this.handleToggleShowTotals = this.handleToggleShowTotals.bind(this)
@@ -302,10 +303,19 @@ class BaseDocument extends Component {
   }
 
   handleDetailRowReorder(draggedRows, rowTarget, orderedRows) {
-    console.log(draggedRows, rowTarget, orderedRows)
+    let that = this
 
-
-
+    let LINENUMS = orderedRows.map(line => line.LINENUM);
+    that.serverRequest =
+      axios
+        .post(`${that.props.apiDocsNew}/${that.state.docData.ID}/reorderlines`, {
+          Lines: LINENUMS
+        })
+        .then(result => {
+          let docData = { ...that.state.docData, ...result.data };
+          that.setState({ hasSelectedRows: false, docData })
+        })
+        .catch(error => byUs.showError(error, "Não foi possível reordernar as linhas"));
 
   }
 

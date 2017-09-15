@@ -20,7 +20,7 @@ class ModPagModal extends Component {
 
     this.state = {
       activeTab: "tab1",
-      cheques: [{ data: "." }],
+      cheques: [{ data: byUs.unformat.date(".") }],
       showValidations: false
     }
   }
@@ -232,7 +232,7 @@ class ModPagModal extends Component {
     state.cheques.forEach((cheque, ix) => {
       if (byUs.getNum(cheque.valor)) {
         if (!cheque.data) alerts["cheques#" + ix + "data"] = "danger|Data em falta"
-        if (!cheque.banco) alerts["cheques#" + ix + "banco"] = "warning|Deve preencher o banco"
+        if (!cheque.banco) alerts["cheques#" + ix + "banco"] = "danger|Deve preencher o banco"
         if (!cheque.numero) alerts["cheques#" + ix + "numero"] = "danger|Numero em falta"
       }
     })
