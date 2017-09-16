@@ -79,7 +79,7 @@ class CaixaCentral extends Component {
                   <div className="list-group faq-list" role="tablist">
                     <a className="list-group-item list-group-item-action active" data-toggle="tab" role="tab"
                       id="tabClassificacao" onClick={this.handleOnTabClick}>Classificação </a>
-                    <a className="list-group-item" data-toggle="tab" role="tab"
+                    {/* <a className="list-group-item" data-toggle="tab" role="tab"
                       id="tabPendentes" onClick={this.handleOnTabClick}>Pendentes</a>
                     <a className="list-group-item" data-toggle="tab" role="tab"
                       id="tabDistribuicao" onClick={this.handleOnTabClick}>Distribuição</a>
@@ -88,7 +88,7 @@ class CaixaCentral extends Component {
                     <a className="list-group-item" data-toggle="tab" role="tab"
                       id="tabDepositos" onClick={this.handleOnTabClick}>Depósitos</a>
                     <a className="list-group-item" data-toggle="tab" role="tab"
-                      id="tabResumo" onClick={this.handleOnTabClick}>Resumo</a>
+                      id="tabResumo" onClick={this.handleOnTabClick}>Resumo</a> */}
                   </div>
                 </div>
               </div>
@@ -106,32 +106,32 @@ class CaixaCentral extends Component {
                       </CmpClassificacao>
                     </div>
                   }
-                  {/* {this.state.activeTab === "tabPendentes" &&
+                  {this.state.activeTab === "tabPendentes" &&
                     <div className=" animaDISABELDtion-fade">
                       <CmpUnderConstruction ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
                     </div>
-                  } */}
-                  {/* {this.state.activeTab === "tabDistribuicao" &&
+                  }
+                  {this.state.activeTab === "tabDistribuicao" &&
                     <div className=" animatDISABELDion-fade">
                       <CmpUnderConstruction ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
                     </div>
-                  } */}
-                  {/* {this.state.activeTab === "tabDespesas" &&
+                  }
+                  {this.state.activeTab === "tabDespesas" &&
                     <div className=" animaDISABELDtion-fade" >
                       <CmpUnderConstruction ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
                     </div>
-                  } */}
-                  {/* {this.state.activeTab === "tabDepositos" &&
+                  }
+                  {this.state.activeTab === "tabDepositos" &&
                     <div className=" animatDISABELDion-fade" >
                       <CmpUnderConstruction ItemCode={this.props.params.itemcode} ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
                     </div>
-                  } */}
+                  }
 
-                  {/* {this.state.activeTab === "tabResumo" &&
+                  {this.state.activeTab === "tabResumo" &&
                     <div className=" animatDISABELDion-fade" >
                       <CmpUnderConstruction ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
                     </div>
-                  } */}
+                  }
 
                 </div>
               </div>
