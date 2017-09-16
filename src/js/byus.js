@@ -187,6 +187,37 @@ import moment from 'moment';
     return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
   }
 
+
+  byUs.evaluateNumericExpression = (value) => {
+    if (typeof value !== "string") return value
+
+    let chars = value.split('');
+    let hasOperators = false;
+    let hasInvalidChars = false;
+
+    chars.forEach(c => {
+      if ('., %€'.indexOf(c) > -1) return;//ignore this
+      if ('+-*/^()'.indexOf(c) > -1) return hasOperators = true;
+      let charCode = c.charCodeAt(0);
+      if (charCode < 48 || charCode > 57) return hasInvalidChars = true;
+    });
+
+    if (hasInvalidChars) return byUs.showError({ message: "'" + value + "' não é uma expressão válida" }, "Erro na expressão")
+    if (hasOperators) {
+      try {
+        value = byUs.replaceAll(value, ',', '.'); //tratar virgulas como separadores decimais
+        value = byUs.replaceAll(value, '€', ''); //ignorar estes simbolos
+        value = byUs.replaceAll(value, '%', '');//ignorar estes simbolos
+        // eslint-disable-next-line
+        return eval(value)
+      } catch (error) {
+        return byUs.showError(error, "Erro na expressão")
+      }
+    } else {
+      return byUs.getNum(value)
+    }
+  }
+
   byUs.getNum = value => {
     let ret = 0;
     if (typeof value === "number") return value;
@@ -318,6 +349,8 @@ import moment from 'moment';
       }
     }
   };
+
+
 
   byUs.CrystalReports = {
     DefaultValueSortMethod: { BasedOnValue: 0, BasedOnDescription: 1 },

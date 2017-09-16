@@ -44,15 +44,16 @@ class ByUsTextBoxNumeric extends Component {
 
   getFormatedValue(valueType, value) {
     if (value === null || value === undefined) return ""
-    if (typeof value === "string") {
-      if (value === "") return ""
-      if (byUs.sessionInfo.company.oadm.DecSep === "," && value.indexOf(".") > -1 && value.indexOf(",") === -1) {
-        value = value.replace(".", ",");
-      }
-    }
+    // if (typeof value === "string") {
+    //   if (value === "") return ""
+    //   if (byUs.sessionInfo.company.oadm.DecSep === "," && value.indexOf(".") > -1 && value.indexOf(",") === -1) {
+    //     value = value.replace(".", ",");
+    //   }
+    // }
 
 
-    let rawValue = byUs.unformat.number(value)
+    // let rawValue = byUs.unformat.number(value)
+    let rawValue = byUs.evaluateNumericExpression(value)
     let formatedValue;
     if (valueType === "price") formatedValue = byUs.format.price(rawValue)
     if (valueType === "amount") formatedValue = byUs.format.amount(rawValue)

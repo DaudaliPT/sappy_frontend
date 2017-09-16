@@ -290,30 +290,8 @@ class ByUsDataGrid extends Component {
 
     if ("quantity,price,amount".indexOf(col.type) > -1) {
       let newValue = updated[colUpdated];
-      if (newValue.replace) newValue = newValue.replace(',', '.');
 
-      let chars = newValue.split('');
-      let hasOperators = false;
-      let hasInvalidChars = false;
-
-      chars.forEach(c => {
-        if ('.'.indexOf(c) > -1) return;
-        if ('+-*/^'.indexOf(c) > -1) return hasOperators = true;
-        let charCode = c.charCodeAt(0);
-        if (charCode < 48 || charCode > 57) return hasInvalidChars = true;
-      });
-
-
-      if (hasInvalidChars) return byUs.showError({ message: "'" + newValue + "' não é uma expressão válida" }, "Erro na expressão")
-      if (hasOperators) {
-        try {
-          // eslint-disable-next-line
-          newValue = eval(newValue)
-        } catch (error) {
-          return byUs.showError(error, "Erro na expressão")
-        }
-      }
-      updated[colUpdated] = newValue
+      updated[colUpdated] = byUs.evaluateNumericExpression(newValue)
     }
 
     for (var index = fromRow; index <= toRow; index++) {
