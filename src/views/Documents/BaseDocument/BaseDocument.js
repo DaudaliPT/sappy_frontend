@@ -313,7 +313,7 @@ class BaseDocument extends Component {
         })
         .then(result => {
           let docData = { ...that.state.docData, ...result.data };
-          that.setState({ hasSelectedRows: false, docData })
+          that.setState({ selectedLineNums: false, docData })
         })
         .catch(error => byUs.showError(error, "Não foi possível reordernar as linhas"));
 

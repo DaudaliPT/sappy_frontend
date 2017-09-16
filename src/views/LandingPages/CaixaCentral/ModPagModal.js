@@ -587,7 +587,7 @@ class ModPagModal extends Component {
                       </div>
                     </div>
 
-                    <div className="row">
+                    {/* <div className="row">
                       <div className="col-12   ">
                         <ByUsCheckHr
                           label="Enviar por email para... (ainda em desenvolvimento...)"
@@ -596,7 +596,7 @@ class ModPagModal extends Component {
                           onChange={this.onFieldChange}
                         />
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>

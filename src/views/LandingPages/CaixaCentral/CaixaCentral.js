@@ -106,32 +106,32 @@ class CaixaCentral extends Component {
                       </CmpClassificacao>
                     </div>
                   }
-                  {this.state.activeTab === "tabPendentes" &&
+                  {/* {this.state.activeTab === "tabPendentes" &&
                     <div className=" animaDISABELDtion-fade">
                       <CmpUnderConstruction ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
                     </div>
-                  }
-                  {this.state.activeTab === "tabDistribuicao" &&
+                  } */}
+                  {/* {this.state.activeTab === "tabDistribuicao" &&
                     <div className=" animatDISABELDion-fade">
                       <CmpUnderConstruction ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
                     </div>
-                  }
-                  {this.state.activeTab === "tabDespesas" &&
+                  } */}
+                  {/* {this.state.activeTab === "tabDespesas" &&
                     <div className=" animaDISABELDtion-fade" >
                       <CmpUnderConstruction ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
                     </div>
-                  }
-                  {this.state.activeTab === "tabDepositos" &&
+                  } */}
+                  {/* {this.state.activeTab === "tabDepositos" &&
                     <div className=" animatDISABELDion-fade" >
                       <CmpUnderConstruction ItemCode={this.props.params.itemcode} ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
                     </div>
-                  }
+                  } */}
 
-                  {this.state.activeTab === "tabResumo" &&
+                  {/* {this.state.activeTab === "tabResumo" &&
                     <div className=" animatDISABELDion-fade" >
                       <CmpUnderConstruction ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
                     </div>
-                  }
+                  } */}
 
                 </div>
               </div>
