@@ -125,7 +125,7 @@ class ModPagModal extends Component {
 
 
     let totalMeiosPag = ValorNumerario + ValorMultibanco + ValorTransferencia + ValorCheques
-    let troco = totalMeiosPag - totalReceber;
+    let troco = byUs.round(totalMeiosPag - totalReceber, 2);
 
 
     if (troco > ValorNumerario) {
@@ -293,12 +293,14 @@ class ModPagModal extends Component {
 
       data.PaymentChecks = [];
       this.state.cheques.forEach(cheque => {
-        data.PaymentChecks.push({
-          DueDate: byUs.format.YYYY_MM_DD(cheque.data),
-          CheckNumber: cheque.numero,
-          BankCode: cheque.banco,
-          CheckSum: byUs.getNum(cheque.valor)
-        })
+        if (byUs.getNum(cheque.valor) > 0) {
+          data.PaymentChecks.push({
+            DueDate: byUs.format.YYYY_MM_DD(cheque.data),
+            CheckNumber: cheque.numero,
+            BankCode: cheque.banco,
+            CheckSum: byUs.getNum(cheque.valor)
+          })
+        }
       });
 
       this.props.selectedDocs.forEach(docId => {

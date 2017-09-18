@@ -131,7 +131,7 @@ class CmpTransStock extends Component {
                     <div className="container vertical-align-middle">
                         <div className="row">
                             <div className="col-3 text-nowrap firstcol">
-                                {row.ABREV + ' ' + row.DOCNUM}
+                                {byUs.LinkTo(row.TransType, row.CreatedBy)}     {row.ABREV + ' ' + row.DOCNUM}
                             </div>
                             <div className="col-5 text-nowrap">
                                 {byUs.format.date(row.REFDATE)}
@@ -163,9 +163,9 @@ class CmpTransStock extends Component {
             let docId = doc.TransId + '#' + doc.Line_ID;
             if (selectedDocs.indexOf(docId) > -1) {
                 totalOfSelectedDocs += byUs.getNum(doc.BALANCE)
-                showClassNone = (doc.TransType === '13' && selectedDocs.length === 1 && !(doc.U_apyCLASS === 'N' || !doc.U_apyCLASS));
-                showClassC = (doc.TransType === '13' && selectedDocs.length === 1 && doc.U_apyCLASS !== 'C');
-                showClassD = (doc.TransType === '13' && selectedDocs.length === 1 && doc.U_apyCLASS !== 'D');
+                showClassNone = (selectedDocs.length === 1 && !(doc.U_apyCLASS === 'N' || !doc.U_apyCLASS));
+                showClassC = (selectedDocs.length === 1 && doc.U_apyCLASS !== 'C');
+                showClassD = (selectedDocs.length === 1 && doc.U_apyCLASS !== 'D');
             }
         })
         // }

@@ -288,7 +288,7 @@ class ByUsDataGrid extends Component {
     let colUpdated = Object.keys(updated)[0];
     let col = this.state.columns.find(col => col.key === colUpdated)
 
-    if ("quantity,price,amount".indexOf(col.type) > -1) {
+    if ("quantity,price,amount,bonus".indexOf(col.type) > -1) {
       let newValue = updated[colUpdated];
 
       updated[colUpdated] = byUs.evaluateNumericExpression(newValue)
