@@ -108,7 +108,7 @@ exports.prepareDocType = function ({ tableName }) {
   // detailFields.push({ name: 'ITEMCODE', label: 'Artigo', type: "text", width: 220, editable: false, dragable: false, onLinkClick: this.handleItemcodeLinkClick })
   detailFields.push({
     name: 'CATNUM_OR_ITEMCODE', label: 'Catálogo', type: "text", width: 100, editable: false, dragable: false,
-    onLinkClick: props => byUs.showModal(<EditModal modal={true} toggleModal={byUs.hideModal} itemcode={props.dependentValues.ITEMCODE} />)
+    onLinkClick: props => byUs.showModal(<EditModal toggleModal={byUs.hideModal} itemcode={props.dependentValues.ITEMCODE} />)
   })
   detailFields.push({ name: 'ITEMNAME', label: 'Descrição', type: "tags", width: 400, editable: true })
   detailFields.push({ name: 'QTCX', label: 'Cx', type: "quantity", width: 60, editable: true })

@@ -64,7 +64,7 @@ class ModalOitm extends Component {
 
   handleAddNew(e) {
     this.setState({
-      currentModal: <EditNewModal modal={true} toggleModal={this.toggleModal} onNewItemCreated={this.handleNewItemCreated} />
+      currentModal: <EditNewModal toggleModal={this.toggleModal} onNewItemCreated={this.handleNewItemCreated} />
     });
     // this.props.toggleModal(this.state.selectedItems);
   }

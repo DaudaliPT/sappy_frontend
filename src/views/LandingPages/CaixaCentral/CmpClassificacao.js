@@ -7,7 +7,8 @@ import uuid from "uuid/v4";
 const byUs = window.byUs;
 const $ = window.$;
 import CmpClassificacaoFooter from "./CmpClassificacaoFooter";
-import ModPagModal from "./ModPagModal";
+import MeiosPagRecebimentoModal from "./MeiosPagRecebimentoModal";
+import MeiosPagPagamentoModal from "./MeiosPagPagamentoModal";
 
 class CmpTransStock extends Component {
     constructor(props) {
@@ -18,7 +19,7 @@ class CmpTransStock extends Component {
         this.handleDocRefresh = this.handleDocRefresh.bind(this);
         this.setClass = this.setClass.bind(this);
 
-        this.state = { selectedPN: '', selectedDocs: [], shiftKey: false, ctrlKey: false }
+        this.state = { selectedPN: '', selectedPNname: '', selectedDocs: [], shiftKey: false, ctrlKey: false }
 
 
     }
@@ -44,14 +45,20 @@ class CmpTransStock extends Component {
     }
 
 
-    handlePNselection(e) {
+    handlePNselection(e, row) {
         var rowDiv = $(e.target).closest(".byusVirtualRow")[0];
 
         let cardCode = rowDiv.id.split("_")[1];
-        let { selectedPN } = this.state;
-        if (selectedPN === cardCode) selectedPN = ''; else selectedPN = cardCode;
+        let { selectedPN, selectedPNname } = this.state;
+        if (selectedPN === cardCode) {
+            selectedPN = '';
+            selectedPNname = "";
+        } else {
+            selectedPN = cardCode;
+            selectedPNname = row.CARDNAME
+        }
 
-        this.setState({ selectedPN, selectedDocs: [] });
+        this.setState({ selectedPN, selectedPNname, selectedDocs: [] });
     }
 
     handleDocSelection(e) {
@@ -78,24 +85,36 @@ class CmpTransStock extends Component {
 
     setClass(docClass) {
         let that = this;
+
+        let docs = [];
+
         this.state.selectedDocs.forEach(docId => {
             let transId = docId.split('#')[0]
             let lineId = docId.split('#')[1]
-            axios
-                .post(`/api/caixa/class/update?transid=${transId}&line=${lineId}&class=${docClass}`)
-                .then(result => {
-                    //forçar refresh
-                    let selectedPN = that.state.selectedPN;
-                    that.setState({ selectedPN: '', selectedDocs: [] },
-                        () => setTimeout(that.setState({ selectedPN }), 1)
-                    );
-                })
-                .catch(error => byUs.showError(error, "Não foi possivel atualizar classificação"));
+
+            docs.push({
+                transId: docId.split('#')[0],
+                lineId: docId.split('#')[1]
+            })
+
         })
+
+        byUs.showWaitProgress("A classificar documentos...")
+        axios
+            .post(`/api/caixa/class/update?class=${docClass}`, docs)
+            .then(result => {
+                byUs.hideWaitProgress();
+                //forçar refresh
+                let selectedPN = that.state.selectedPN;
+                that.setState({ selectedPN: '', selectedDocs: [] },
+                    () => setTimeout(that.setState({ selectedPN }), 1)
+                );
+            })
+            .catch(error => byUs.showError(error, "Não foi possivel atualizar classificação"));
     }
 
     render() {
-        let { selectedPN, selectedDocs } = this.state;
+        let { selectedPN, selectedPNname, selectedDocs } = this.state;
         let docsList = [];
         if (this.docsComponent) docsList = this.docsComponent.state.listItems
 
@@ -104,9 +123,10 @@ class CmpTransStock extends Component {
             const selected = row.CARDCODE === selectedPN;
 
             let rowStyleClass = "";
+            let r = { ...row }
             if (selected) rowStyleClass += " byus-selected-row";
             return (
-                <div id={'PN_' + row.CARDCODE} className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={this.handlePNselection}>
+                <div id={'PN_' + row.CARDCODE} className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={e => this.handlePNselection(e, r)}>
                     <div className="container vertical-align-middle">
                         <div className="row">
                             <div className="col-10 text-nowrap firstcol"> {row.CARDNAME + ' (' + row.CARDCODE + ")"} </div>
@@ -154,45 +174,65 @@ class CmpTransStock extends Component {
 
         let totalOfDocs = 0
         let totalOfSelectedDocs = 0
-        let showClassNone = false;
-        let showClassC = false;
-        let showClassD = false;
-        // if (this.docsComponent) {
+        let countC = 0
+        let countD = 0
         docsList.forEach(doc => {
             totalOfDocs += byUs.getNum(doc.BALANCE)
             let docId = doc.TransId + '#' + doc.Line_ID;
             if (selectedDocs.indexOf(docId) > -1) {
                 totalOfSelectedDocs += byUs.getNum(doc.BALANCE)
-                showClassNone = (selectedDocs.length === 1 && !(doc.U_apyCLASS === 'N' || !doc.U_apyCLASS));
-                showClassC = (selectedDocs.length === 1 && doc.U_apyCLASS !== 'C');
-                showClassD = (selectedDocs.length === 1 && doc.U_apyCLASS !== 'D');
+                countC += doc.U_apyCLASS === 'C' ? 1 : 0;
+                countD += doc.U_apyCLASS === 'D' ? 1 : 0;
             }
         })
-        // }
 
         let footerProps = {
             actions: [
-                { name: "Nenhuma", color: "default", icon: "icon fa-close", visible: showClassNone, onClick: e => this.setClass('N') },
-                { name: "Crédito", color: "warning", icon: "icon fa-warning", visible: showClassC, onClick: e => this.setClass('C') },
-                { name: "Distribuição", color: "primary", icon: "icon fa-truck", visible: showClassD, onClick: e => this.setClass('D') },
+                { name: "Nenhuma", color: "default", icon: "icon fa-close", visible: countC || countD, onClick: e => this.setClass('N') },
+                { name: "Crédito", color: "warning", icon: "icon fa-warning", visible: countC !== selectedDocs.length, onClick: e => this.setClass('C') },
+                { name: "Distribuição", color: "primary", icon: "icon fa-truck", visible: countD !== selectedDocs.length, onClick: e => this.setClass('D') },
                 {
-                    name: "Receber",
-                    content: <span>Receber <strong>{byUs.format.amount(totalOfSelectedDocs)}</strong></span>,
-                    color: "success", icon: "icon fa-check", visible: totalOfSelectedDocs > 0, onClick: e => {
-                        byUs.showModal(<ModPagModal modal={true}
-                            toggleModal={sucess => {
-                                //force refresh
-                                let selectedPN = this.state.selectedPN;
-                                this.setState({ selectedPN: '', selectedDocs: [] },
-                                    () => setTimeout(this.setState({ selectedPN }), 1)
-                                );
+                    name: "ReceberOuPagar",
+                    content: <span>{totalOfSelectedDocs > 0 ? "Receber " : "Pagar "}<strong>{byUs.format.amount(totalOfSelectedDocs)}</strong></span>,
+                    color: totalOfSelectedDocs > 0 ? "success" : "danger",
+                    icon: "icon fa-check",
+                    visible: totalOfSelectedDocs !== 0,
+                    onClick: e => {
+                        if (totalOfSelectedDocs > 0)
+                            return byUs.showModal(<MeiosPagRecebimentoModal
+                                toggleModal={sucess => {
+                                    //force refresh
+                                    let selectedPN = this.state.selectedPN;
+                                    this.setState({ selectedPN: '', selectedDocs: [] },
+                                        () => setTimeout(this.setState({ selectedPN }), 1)
+                                    );
 
-                                byUs.hideModal()
-                            }}
-                            selectedPN={selectedPN}
-                            selectedDocs={selectedDocs}
-                            docsList={docsList}
-                            totalReceber={totalOfSelectedDocs} />)
+                                    byUs.hideModal()
+                                }}
+                                selectedPN={selectedPN}
+                                selectedPNname={selectedPNname}
+                                selectedDocs={selectedDocs}
+                                docsList={docsList}
+                                totalReceber={totalOfSelectedDocs}
+                            />)
+
+                        if (totalOfSelectedDocs < 0)
+                            return byUs.showModal(<MeiosPagPagamentoModal
+                                toggleModal={sucess => {
+                                    //force refresh
+                                    let selectedPN = this.state.selectedPN;
+                                    this.setState({ selectedPN: '', selectedDocs: [] },
+                                        () => setTimeout(this.setState({ selectedPN }), 1)
+                                    );
+
+                                    byUs.hideModal()
+                                }}
+                                selectedPN={selectedPN}
+                                selectedPNname={selectedPNname}
+                                selectedDocs={selectedDocs}
+                                docsList={docsList}
+                                totalPagar={totalOfSelectedDocs * -1}
+                            />)
                     }
                 },
                 {

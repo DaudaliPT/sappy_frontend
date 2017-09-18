@@ -49,7 +49,7 @@ class Produtos extends Component {
 
     if (itemCode.indexOf("DRAFT") > -1) {
       this.setState({
-        currentModal: <EditNewModal modal={true} toggleModal={this.toggleModal} changeItemCode={itemCode} />
+        currentModal: <EditNewModal toggleModal={this.toggleModal} changeItemCode={itemCode} />
       });
     } else {
       hashHistory.push("/inv/oitm/" + itemCode);
@@ -212,7 +212,7 @@ class Produtos extends Component {
             icon: "icon wb-plus",
             onClick: e => {
               this.setState({
-                currentModal: <EditNewModal modal={true} toggleModal={this.toggleModal} />
+                currentModal: <EditNewModal toggleModal={this.toggleModal} />
               });
             }
           }

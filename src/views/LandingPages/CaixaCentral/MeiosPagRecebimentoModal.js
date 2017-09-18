@@ -6,7 +6,7 @@ var byUs = window.byUs;
 
 import { ByUsTextBox, ByUsTextBoxNumeric, ByUsDate, ByUsComboBox, ByUsCheckHr } from "../../../Inputs";
 
-class ModPagModal extends Component {
+class MeiosPagRecebimentoModal extends Component {
   constructor(props) {
     super(props);
 
@@ -271,9 +271,7 @@ class ModPagModal extends Component {
         DocType: "rCustomer",
         CardCode: this.props.selectedPN,
         CashAccount: "111",
-        CheckAccount: "119",
         CashSum: byUs.getNum(this.state.ValorNumerario) - byUs.getNum(this.state.troco),
-        // TransferDate: "2016-06-09", 
         Remarks: this.state.Observacoes,
         PaymentInvoices: [
 
@@ -292,16 +290,17 @@ class ModPagModal extends Component {
       }
 
       data.PaymentChecks = [];
-      this.state.cheques.forEach(cheque => {
-        if (byUs.getNum(cheque.valor) > 0) {
-          data.PaymentChecks.push({
-            DueDate: byUs.format.YYYY_MM_DD(cheque.data),
-            CheckNumber: cheque.numero,
-            BankCode: cheque.banco,
-            CheckSum: byUs.getNum(cheque.valor)
-          })
-        }
-      });
+      data.CheckAccount = "119",
+        this.state.cheques.forEach(cheque => {
+          if (byUs.getNum(cheque.valor) > 0) {
+            data.PaymentChecks.push({
+              DueDate: byUs.format.YYYY_MM_DD(cheque.data),
+              CheckNumber: cheque.numero,
+              BankCode: cheque.banco,
+              CheckSum: byUs.getNum(cheque.valor)
+            })
+          }
+        });
 
       this.props.selectedDocs.forEach(docId => {
 
@@ -544,9 +543,9 @@ class ModPagModal extends Component {
 
 
     return (
-      <Modal isOpen={this.props.modal} className={"modal-md modal-success"}>
+      <Modal isOpen={true} className={"modal-md modal-success"}>
         <ModalHeader toggle={this.props.toggleModal}  >
-          Meio de pagamento
+          {"Meio de recebimento de " + this.props.selectedPNname + " (" + this.props.selectedPN + ")"}
         </ModalHeader>
         <ModalBody >
 
@@ -618,4 +617,4 @@ class ModPagModal extends Component {
   }
 }
 
-export default ModPagModal;
+export default MeiosPagRecebimentoModal;

@@ -147,7 +147,7 @@ class EditModal extends Component {
     let newItem = this.state.newItem || {}
 
     return (
-      <Modal isOpen={this.props.modal} className={"modal-lg modal-success"}>
+      <Modal isOpen={true} className={"modal-lg modal-success"}>
         <ModalHeader toggle={this.props.toggleModal}  >
           {this.state.loading ? '...' : (newItem.ItemName + ' (' + newItem.ItemCode + ')')}
 

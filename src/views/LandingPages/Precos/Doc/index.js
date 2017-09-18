@@ -278,7 +278,7 @@ class ItemCodeFormater extends Component {
     return <div     >
       <i className="icon fa-arrow-circle-right" aria-hidden="true" onClick={e => {
         that.setState({
-          currentModal: <EditModal modal={true} toggleModal={toggleModal} itemcode={itemCode} />
+          currentModal: <EditModal toggleModal={toggleModal} itemcode={itemCode} />
         });
       }} />
       {" "}

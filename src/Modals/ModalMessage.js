@@ -9,7 +9,7 @@ class ModalMessage extends Component {
 
   render() {
     return (
-      <Modal isOpen={this.props.modal} className={"modal-m modal-danger"}>
+      <Modal isOpen={true} className={"modal-m modal-danger"}>
         <ModalHeader toggle={this.props.toggleModal}>{this.props.title}</ModalHeader>
         <ModalBody>
           <h4>{this.props.text}</h4>

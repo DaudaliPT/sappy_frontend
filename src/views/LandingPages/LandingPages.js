@@ -5,7 +5,6 @@ let LandingPages = {
   Documentos: require("./Documentos").default,
   Precos: require("./Precos").default,
   Produtos: require("./Produtos").default,
-  Recebimentos: require("./Recebimentos").default,
   Reports: require("./Reports").default
 
 };

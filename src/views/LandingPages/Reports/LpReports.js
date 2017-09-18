@@ -74,7 +74,6 @@ class LpReports extends Component {
         } else {
           that.setState({
             currentModal: <ModalReportParams
-              modal={true}
               DocCode={DocCode}
               DocName={DocName}
               reportParameters={reportParameters}

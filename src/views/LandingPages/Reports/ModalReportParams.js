@@ -211,7 +211,7 @@ class ModalReportParams extends Component {
     };
 
     return (
-      <Modal isOpen={this.props.modal} className={"modal-md"}>
+      <Modal isOpen={true} className={"modal-md"}>
         <ModalHeader toggle={this.props.toggleModal}>{this.props.DocName} </ModalHeader>
         <ModalBody>
 
