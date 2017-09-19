@@ -133,7 +133,7 @@ exports.prepareDocType = function ({ tableName }) {
   return {
     priceHover,
     DESCDEBOP_options,
-    propsToBaseDocument: {
+    propsToDocBase: {
       tableName,
       objType,
       title,

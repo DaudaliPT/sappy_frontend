@@ -1,15 +1,15 @@
 let Documentos = {
   //Vendas
-  odln: require("./Vendas/odln.js").default,
-  oinv: require("./Vendas/oinv.js").default,
-  ordn: require("./Vendas/ordn.js").default,
-  ordr: require("./Vendas/ordr.js").default,
-  orin: require("./Vendas/orin.js").default,
+  odln: require("./LpVendas/odln.js").default,
+  oinv: require("./LpVendas/oinv.js").default,
+  ordn: require("./LpVendas/ordn.js").default,
+  ordr: require("./LpVendas/ordr.js").default,
+  orin: require("./LpVendas/orin.js").default,
   //Compras
-  opor: require("./Compras/opor.js").default,
-  opdn: require("./Compras/opdn.js").default,
-  orpd: require("./Compras/orpd.js").default,
-  opch: require("./Compras/opch.js").default,
-  orpc: require("./Compras/orpc.js").default
+  opor: require("./LpCompras/opor.js").default,
+  opdn: require("./LpCompras/opdn.js").default,
+  orpd: require("./LpCompras/orpd.js").default,
+  opch: require("./LpCompras/opch.js").default,
+  orpc: require("./LpCompras/orpc.js").default
 };
 export default Documentos;

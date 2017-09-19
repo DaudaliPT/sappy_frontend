@@ -4,13 +4,13 @@ import DocHeader from "./DocHeader";
 import DocDetail from "./DocDetail";
 import DocFooter from "./DocFooter";
 import DocTotal from "./DocTotal";
-import actionFunc from './BaseDocumentActions'
+import actionFunc from './DocBaseActions'
 import axios from "axios";
-import "./BaseDocument.css";
+import "./DocBase.css";
 const $ = window.$;
 const sappy = window.sappy;
 
-class BaseDocument extends Component {
+class DocBase extends Component {
   constructor(props) {
     super(props)
 
@@ -18,7 +18,7 @@ class BaseDocument extends Component {
     this.toggleHeader = this.toggleHeader.bind(this)
     this.toggleEditable = this.toggleEditable.bind(this)
     this.loadDoc = this.loadDoc.bind(this)
-
+ 
     this.ensureDocHeaderExists = this.ensureDocHeaderExists.bind(this);
     this.handleHeaderFieldChange = this.handleHeaderFieldChange.bind(this)
     this.handleDetailRowChange = this.handleDetailRowChange.bind(this)
@@ -417,7 +417,7 @@ class BaseDocument extends Component {
       onFieldChange: this.handleHeaderFieldChange
     }
 
-    // console.log("BaseDocument", this.state)
+    // console.log("DocBase", this.state)
     return (
       <div id="doc">
         {/* <DocTitle></DocTitle> */}
@@ -432,7 +432,7 @@ class BaseDocument extends Component {
   }
 }
 
-BaseDocument.defaultProps = {
+DocBase.defaultProps = {
   title: "title...",
   apiDocsNew: '',//  /api/docs/ordr/doc
   headerFields: {},
@@ -444,4 +444,4 @@ BaseDocument.defaultProps = {
   onHeaderChange: null, //  onHeaderChange(docData, updated) => allows to react to user change on header
 }
 
-export default BaseDocument;
+export default DocBase;
