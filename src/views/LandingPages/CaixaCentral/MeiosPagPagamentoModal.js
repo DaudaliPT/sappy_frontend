@@ -302,7 +302,7 @@ class ModPagModal extends Component {
           }
         });
 
-      this.props.selectedDocs.forEach(docId => {
+      this.props.selectedDocKeys.forEach(docId => {
 
         let doc = this.props.docsList.find(doc => docId === (doc.TransId + "#" + doc.Line_ID))
 
