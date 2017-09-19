@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from 'axios';
+import ByUsSearchPage from "../../../components/ByUsSearchPage";
 import ByUsSearchPage2 from "../../../components/ByUsSearchPage2";
 
 import { Badge } from "reactstrap";

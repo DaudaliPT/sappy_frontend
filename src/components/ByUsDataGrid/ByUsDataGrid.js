@@ -305,7 +305,12 @@ class ByUsDataGrid extends Component {
     if ("quantity,price,amount,bonus".indexOf(col.type) > -1) {
       let newValue = updated[colUpdated];
 
-      updated[colUpdated] = byUs.evaluateNumericExpression(newValue)
+      newValue = byUs.evaluateNumericExpression(newValue)
+
+      if (col.type === "price" && byUs.getNum(newValue) < 0) {
+        return byUs.showToastr({ color: "warning", msg: "Os preços não podem ser negativos, use a quantidade para obter um valor negativo." })
+      }
+      updated[colUpdated] = newValue;
     }
 
     for (var index = fromRow; index <= toRow; index++) {
