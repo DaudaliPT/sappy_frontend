@@ -358,7 +358,7 @@ class ByUsDataGrid extends Component {
         <ReactDataGrid
           ref={node => this.thisComponent = node}
           columns={this.state.columns}
-          minHeight={this.props.height}
+          minHeight={this.props.height || 0}
           enableDragAndDrop={true}
           enableCellSelect={true}
           onRowExpandToggle={this.onRowExpandToggle}

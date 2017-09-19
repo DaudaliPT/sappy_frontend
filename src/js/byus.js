@@ -183,8 +183,17 @@ import moment from 'moment';
     }
   }
 
+  function addDecimals(value, decimals) {
+    let num = value.toString().split('e')[0]
+    let exp = byUs.getNum(value.toString().split('e')[1])
+    return Number(num + 'e' + (exp + decimals));
+  }
+
   byUs.round = (value, decimals) => {
-    return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
+    // return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
+    let ret = addDecimals(Math.round(addDecimals(value, decimals)), -1 * decimals);
+    if (isNaN(ret)) console.log(`byUs.round = (${value}, ${decimals}) returned NaN`)
+    return ret;
   }
 
 
