@@ -98,41 +98,12 @@ class CaixaCentral extends Component {
               {/* <!-- Panel --> */}
               <div className="panel form-panel">
                 <div className="panel-body main-body">
-                  {/* <div className="tab-content"> */}
-                  {this.state.activeTab === "tabClassificacao" &&
-                    <div className=" tab-pane animaDISABELDtion-fade active" >
-                      <CmpClassificacao
-                        ReadOnly={this.state.ReadOnly}>
-                      </CmpClassificacao>
-                    </div>
-                  }
-                  {this.state.activeTab === "tabPendentes" &&
-                    <div className=" animaDISABELDtion-fade">
-                      <CmpUnderConstruction ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
-                    </div>
-                  }
-                  {this.state.activeTab === "tabDistribuicao" &&
-                    <div className=" animatDISABELDion-fade">
-                      <CmpUnderConstruction ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
-                    </div>
-                  }
-                  {this.state.activeTab === "tabDespesas" &&
-                    <div className=" animaDISABELDtion-fade" >
-                      <CmpUnderConstruction ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
-                    </div>
-                  }
-                  {this.state.activeTab === "tabDepositos" &&
-                    <div className=" animatDISABELDion-fade" >
-                      <CmpUnderConstruction ItemCode={this.props.params.itemcode} ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
-                    </div>
-                  }
-
-                  {this.state.activeTab === "tabResumo" &&
-                    <div className=" animatDISABELDion-fade" >
-                      <CmpUnderConstruction ReadOnly={this.state.ReadOnly}></CmpUnderConstruction>
-                    </div>
-                  }
-
+                  {this.state.activeTab === "tabClassificacao" && < CmpClassificacao ReadOnly={this.state.ReadOnly} />}
+                  {this.state.activeTab === "tabPendentes" && <CmpUnderConstruction ReadOnly={this.state.ReadOnly} />}
+                  {this.state.activeTab === "tabDistribuicao" && <CmpUnderConstruction ReadOnly={this.state.ReadOnly} />}
+                  {this.state.activeTab === "tabDespesas" && <CmpUnderConstruction ReadOnly={this.state.ReadOnly} />}
+                  {this.state.activeTab === "tabDepositos" && <CmpUnderConstruction ReadOnly={this.state.ReadOnly} />}
+                  {this.state.activeTab === "tabResumo" && <CmpUnderConstruction ReadOnly={this.state.ReadOnly} />}
                 </div>
               </div>
               {/* <!-- End Panel --> */}

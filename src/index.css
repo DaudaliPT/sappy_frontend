@@ -165,7 +165,7 @@ body.site-navbar-small {
 }
 
 .react-grid-Header {
-  background: rgba(255,255,255,1); 
+  background: rgb(255,255,255); 
   color:rgba(0,0,0,.8); 
   border-radius: 4px; 
   }
@@ -177,7 +177,8 @@ body.site-navbar-small {
     }
 
 .react-grid-HeaderCell{
-  background: transparent!important;}
+  background: rgb(255,255,255); 
+}
 
 /* .react-grid-HeaderCell.editable-col,  */
 .react-grid-Cell.editable-col{ 

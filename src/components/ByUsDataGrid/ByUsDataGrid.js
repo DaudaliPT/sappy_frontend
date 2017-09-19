@@ -12,6 +12,8 @@ const {
 
 const RowRenderer = Draggable.DropTargetRowContainer(ReactDataGrid.Row);
 
+
+
 class ByUsDataGrid extends Component {
   constructor(props) {
     super(props);
@@ -27,6 +29,8 @@ class ByUsDataGrid extends Component {
     this.onRowExpandToggle = this.onRowExpandToggle.bind(this);
     this.handleGridRowsUpdated = this.handleGridRowsUpdated.bind(this);
     this.getState = this.getState.bind(this);
+    this.getSelectedKeys = this.getSelectedKeys.bind(this);
+    this.getSelectedRows = this.getSelectedRows.bind(this);
     this.scrollToRow = this.scrollToRow.bind(this);
 
     this.state = this.createStateFromProps(props);
@@ -40,12 +44,11 @@ class ByUsDataGrid extends Component {
     return {
       gridHeight: 300,
       columns: this.buildColumnList(props),
-      groupBy: [],
+      groupBy: props.groupBy || [],
       rows: JSON.parse(JSON.stringify(props.rows)),
       // rows: props.rows,
       expandedRows: {},
-      selectedIndexes: [],
-      selectedIds: []
+      selectedKeys: []
     };
   }
 
@@ -53,35 +56,46 @@ class ByUsDataGrid extends Component {
     return this.state;
   }
 
-
-  // onRowsSelected(rows) {
-  //   let selectedIndexes = this.state.selectedIndexes.concat(rows.map(r => r.rowIdx))
-
-  //   this.setState({ selectedIndexes });
-  //   this.props.onRowSelect && this.props.onRowSelect(selectedIndexes);
-  // }
-  onRowsSelected(rows) {
-    let selectedIds = this.state.selectedIds.concat(rows.map(r => r.row[this.props.rowKey]))
-    this.setState({ selectedIds });
-    this.props.onRowSelect && this.props.onRowSelect(selectedIds);
+  getSelectedKeys() {
+    if (this.props.onRowSelectionChange) return this.props.selectedKeys || []
+    return this.state.selectedKeys;
   }
 
-  // onRowsDeselected(rows) {
-  //   let rowIndexes = rows.map(r => r.rowIdx);
-  //   let selectedIndexes = this.state.selectedIndexes.filter(i => rowIndexes.indexOf(i) === -1);
+  getSelectedRows() {
+    let selectedKeys = this.getSelectedKeys()
 
-  //   this.setState({ selectedIndexes });
-  //   this.props.onRowSelect && this.props.onRowSelect(selectedIndexes);
-  // }
+    // let rows = this.state.rows.filter(row => selectedKeys.indexOf(row[this.props.rowKey]))
+    let selectedRows = Selectors.getSelectedRowsByKey({ rowKey: this.props.rowKey, selectedKeys: selectedKeys, rows: this.state.rows });
+    return selectedRows
+  }
+
+  onRowsSelected(rows) {
+    let selectedKeys = this.getSelectedKeys()
+    rows.forEach(r => {
+      if (r.row && r.row.__metaData && r.row.__metaData.isGroup) return
+      selectedKeys.push(r.row[this.props.rowKey])
+    })
+
+    if (this.props.onRowSelectionChange) {
+      this.props.onRowSelectionChange(selectedKeys)
+    } else {
+      this.setState({ selectedKeys });
+    }
+  }
+
   onRowsDeselected(rows) {
     let rowIds = rows.map(r => r.row[this.props.rowKey]);
-    let selectedIds = this.state.selectedIds.filter(i => rowIds.indexOf(i) === -1);
-    this.setState({ selectedIds });
-    this.props.onRowSelect && this.props.onRowSelect(selectedIds);
+    let selectedKeys = this.getSelectedKeys().filter(key => rowIds.indexOf(key) === -1);
+
+    if (this.props.onRowSelectionChange) {
+      this.props.onRowSelectionChange(selectedKeys)
+    } else {
+      this.setState({ selectedKeys });
+    }
   }
 
   onRowReorder(e) {
-    let selectedRows = Selectors.getSelectedRowsByKey({ rowKey: this.props.rowKey, selectedKeys: this.state.selectedIds, rows: this.state.rows });
+    let selectedRows = this.getSelectedRows();
     let isDraggedRowSelected = selectedRows.find(row => row[this.props.rowKey] === e.rowSource.data[this.props.rowKey])
     let draggedRows = isDraggedRowSelected ? selectedRows : [e.rowSource.data];
     let orderedRows = this.state.rows.filter(function (r) {
@@ -349,13 +363,38 @@ class ByUsDataGrid extends Component {
           rowActionsCell={Draggable.RowActionsCell}
           rowRenderer={<RowRenderer onRowDrop={this.onRowReorder} />}
           rowsCount={this.getSize()}
+          rowGroupRenderer={(props) => {
+            let treeDepth = props.treeDepth || 0;
+            let marginLeft = treeDepth * 20;
+
+            let style = {
+              height: '50px',
+              border: '1px solid #dddddd',
+              paddingTop: '15px',
+              paddingLeft: '5px'
+            };
+
+            let onKeyDown = (e) => {
+              if (e.key === 'ArrowLeft') return props.onRowExpandToggle(false);
+              if (e.key === 'ArrowRight') return props.onRowExpandToggle(true);
+              if (e.key === 'Enter') return props.onRowExpandToggle(!props.isExpanded);
+            }
+            return (
+              <div style={style} onKeyDown={onKeyDown} tabIndex={0}>
+                <span className="row-expand-icon"
+                  style={{ float: 'left', marginLeft: marginLeft, cursor: 'pointer' }}
+                  onClick={props.onRowExpandClick} >{props.isExpanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}</span>
+                <strong>     {props.name}</strong>
+              </div>
+            );
+          }}
           rowSelection={{
             showCheckbox: true,
             enableShiftSelect: true,
             onRowsSelected: this.onRowsSelected,
             onRowsDeselected: this.onRowsDeselected,
             selectBy: {
-              keys: { rowKey: this.props.rowKey, values: this.state.selectedIds }
+              keys: { rowKey: this.props.rowKey, values: this.getSelectedKeys() }
             }
           }}
           toolbar={
@@ -383,8 +422,9 @@ ByUsDataGrid.defaultProps = {
   ],
   hideToolbar: true,
   height: 300,
+  // selectedKeys: [],
+  // onRowSelectionChange: (selectedKeys) => { },
   onRowUpdate: (currentRow, updated) => { },
-  onRowSelect: (selectedIndexes) => { },
   onRowReorder: (draggedRows, rowTarget, orderedRows) => { },
 }
 

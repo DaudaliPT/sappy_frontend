@@ -27,6 +27,7 @@ class Full extends Component {
     byUs.showModal = this.showModal.bind(this);
     byUs.hideModal = this.hideModal.bind(this);
 
+    byUs.GetLinkTo = this.GetLinkTo.bind(this);
     byUs.LinkTo = this.LinkTo.bind(this);
 
     byUs.showSuccess = this.showSuccess.bind(this);
@@ -50,11 +51,9 @@ class Full extends Component {
     }
   }
 
-
-
-  LinkTo(objType, docEntry) {
-    if (!objType) return
-    if (!docEntry) return
+  GetLinkUrl(objType, docEntry) {
+    if (!objType) return ""
+    if (!docEntry) return ""
     let url = "";
     if (objType.toString() === '13') url = 'vnd/oinv/doc'
     if (objType.toString() === '14') url = 'vnd/orin/doc'
@@ -68,17 +67,21 @@ class Full extends Component {
     if (objType.toString() === '21') url = 'cmp/orpd/doc'
     if (objType.toString() === '22') url = 'cmp/opor/doc'
 
-    if (!url) return <span><i className="icon fa-arrow-circle-right disabled" aria-hidden="true" />{' '}
-    </span>
+    return url
+  }
+  GetLinkTo(objType, docEntry) {
+    let url = this.GetLinkUrl(objType, docEntry)
+    if (!url) return <span><i className="icon fa-arrow-circle-right disabled" aria-hidden="true" />{' '} </span>
     return <span><i className="icon fa-arrow-circle-right" aria-hidden="true"
-      onClick={e => {
-        byUs.hideModal()
-        hashHistory.push({
-          pathname: url,
-          state: { DocEntry: docEntry }
-        })
-      }} />{' '}
+      onClick={e => byUs.LinkTo(objType, docEntry)} />{' '}
     </span>
+  }
+
+  LinkTo(objType, docEntry) {
+    let url = this.GetLinkUrl(objType, docEntry)
+    if (!url) return
+    byUs.hideModal()
+    hashHistory.push({ pathname: url, state: { DocEntry: docEntry } })
   }
 
   showModal(modal) {

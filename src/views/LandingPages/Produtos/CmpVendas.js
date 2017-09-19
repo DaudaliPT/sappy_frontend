@@ -29,7 +29,7 @@ class CmpVendas extends Component {
 
                             <div className="col-1 text-nowrap firstcol"> {byUs.format.properDisplayDate(row.DOC_DATETIME)} </div>
                             <div className="col-2 text-nowrap">
-                                {byUs.LinkTo(row.ObjType, row.DocEntry)}
+                                {byUs.GetLinkTo(row.ObjType, row.DocEntry)}
                                 {row.DESCDOC + ' ' + row.DocNum} </div>
                             <div className="col-5 text-truncate" title={row.CardCode + ' - ' + row.CardName}> {row.CardCode + ' - ' + row.CardName} </div>
                             <div className="col-2 text-nowrap"> <span className="float-right">{byUs.format.quantity(row.InvQty, 0) + " " + row.InvntryUom + " x " + byUs.format.price(row.Price, 3)}</span> </div>
@@ -47,7 +47,7 @@ class CmpVendas extends Component {
                             <div className="row secondrow">
                                 <div className="col-3 text-nowrap firstcol"> {byUs.format.properDisplayDate(row.DOC_DATETIME)} </div>
                                 <div className="col-4 text-nowrap">
-                                    {byUs.LinkTo(row.ObjType, row.DocEntry)}
+                                    {byUs.GetLinkTo(row.ObjType, row.DocEntry)}
                                     {row.DESCDOC + ' ' + row.DocNum} </div>
                                 <div className="col-5 text-nowrap lastcol">  <span className="float-right">{byUs.format.quantity(row.InvQty, 0) + " x " + byUs.format.price(row.Price, 3)}</span> </div>
                             </div>

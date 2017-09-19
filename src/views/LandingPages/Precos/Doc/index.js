@@ -1097,7 +1097,7 @@ class DocAtualizacaoPrecos extends Component {
                     return (
                       <div style={style} onKeyDown={onKeyDown} tabIndex={0}>
                         <span className="row-expand-icon" style={{ float: 'left', marginLeft: marginLeft, cursor: 'pointer' }} onClick={props.onRowExpandClick} >{props.isExpanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}</span>
-                        <strong>{props.columnGroupName}:                                {byUs.LinkTo(linkType, linkEntry)}                          {props.name}</strong>
+                        <strong>{props.columnGroupName}:                                {byUs.GetLinkTo(linkType, linkEntry)}                          {props.name}</strong>
                       </div>
                     );
                   }}

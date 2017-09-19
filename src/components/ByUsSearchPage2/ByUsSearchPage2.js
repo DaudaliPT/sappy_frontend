@@ -1,6 +1,7 @@
 import React, { PureComponent } from "react";
 import axios from "axios";
 import VirtualizedInfiniteLoader from "../VirtualizedInfiniteLoader";
+import ByUsDataGrid from "../ByUsDataGrid";
 import ByUsSearchBar from "../ByUsSearchBar";
 import ByUsTabsBar from "../ByUsTabsBar";
 import ByUsNoContent from "../ByUsNoContent";
@@ -8,7 +9,7 @@ import uuid from 'uuid';
 const byUs = window.byUs;
 const $ = window.$;
 
-class ByUsSearchPage extends PureComponent {
+class ByUsSearchPage2 extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -18,6 +19,7 @@ class ByUsSearchPage extends PureComponent {
     this.handleOnChange_txtSearch = this.handleOnChange_txtSearch.bind(this);
     this.calcPageHeight = this.calcPageHeight.bind(this);
     this.handleToogleLimitSearch = this.handleToogleLimitSearch.bind(this)
+    this.getGrid = this.getGrid.bind(this)
 
     this.byusModalInfiniteListID = 'byusModalInfiniteList' + uuid();
     this.byusModalTabsBarID = 'byusModalTabsBar' + uuid();
@@ -69,7 +71,7 @@ class ByUsSearchPage extends PureComponent {
       setTimeout(() => {
         this.findAndGetFirstRows()
         if (this.resfreshInterval) clearInterval(this.resfreshInterval);
-        if (this.props.autoRefreshTime) this.resfreshInterval = setInterval(() => this.findAndGetFirstRows({ isAutoRefresh: true }), this.props.autoRefreshTime)
+        if (this.props.autoRefreshTime) this.resfreshInterval = setInterval(this.findAndGetFirstRows, this.props.autoRefreshTime)
       }, 1);
 
     }
@@ -83,7 +85,7 @@ class ByUsSearchPage extends PureComponent {
     setTimeout(() => {
       this.findAndGetFirstRows()
       if (this.resfreshInterval) clearInterval(this.resfreshInterval);
-      if (this.props.autoRefreshTime) this.resfreshInterval = setInterval(() => this.findAndGetFirstRows({ isAutoRefresh: true }), this.props.autoRefreshTime)
+      if (this.props.autoRefreshTime) this.resfreshInterval = setInterval(this.findAndGetFirstRows, this.props.autoRefreshTime)
     }, 1);
 
   }
@@ -149,6 +151,9 @@ class ByUsSearchPage extends PureComponent {
     let that = this;
     this.setState({ limitSearch: !that.state.limitSearch }, that.findAndGetFirstRows);
   }
+  getGrid() {
+    return this.grid || {};
+  }
 
   handleOnChange_txtSearch(values) {
     var that = this;
@@ -163,7 +168,7 @@ class ByUsSearchPage extends PureComponent {
     );
   }
 
-  findAndGetFirstRows({ isAutoRefresh } = {}) {
+  findAndGetFirstRows() {
     var that = this;
     if (this.props.searchApiUrl) {
       let { searchTags, activeTab, activeSidebarItems } = this.state;
@@ -224,7 +229,6 @@ class ByUsSearchPage extends PureComponent {
           );
         })
         .catch(function (error) {
-          if (isAutoRefresh) return console.log(error)
           if (!error.__CANCEL__) byUs.showError(error, "Api error")
         });
     }
@@ -303,26 +307,16 @@ class ByUsSearchPage extends PureComponent {
           </div>
         }
         {hasContent &&
-          <div className="byusModalInfiniteList" id={this.byusModalInfiniteListID}>
-            {VirtualizedInfiniteLoader({
-              /** Are there more items to load? */
-              hasNextPage: this.state.rvHasNextPage,
-
-              /** Are we currently loading a page of items? */
-              isNextPageLoading: this.state.rvIsLoading,
-
-              /** List of items loaded so far */
-              list: this.state.listItems,
-
-              /** Callback function responsible for loading the next page of items */
-              loadNextPage: this.loadNextPage,
-
-              /** callback to function responsible for rendering the row */
-              renderRow: this.props.renderRow,
-              rowHeight: this.props.renderRowHeight,
-
-            })}
-          </div>
+          <ByUsDataGrid
+            ref={node => this.grid = node}
+            height={400}
+            fields={this.props.fields}
+            rowKey={this.props.rowKey}
+            groupBy={this.props.groupBy}
+            onRowSelectionChange={this.props.onRowSelectionChange}
+            selectedKeys={this.props.selectedKeys}
+            rows={this.state.listItems}
+          ></ByUsDataGrid>
         }
         {currentModal}
       </div>
@@ -330,7 +324,7 @@ class ByUsSearchPage extends PureComponent {
   }
 }
 
-ByUsSearchPage.defaultProps = {
+ByUsSearchPage2.defaultProps = {
   searchPlaceholder: "Procurar...",
   searchApiUrl: "",
   renderHeaders: () => { },
@@ -342,4 +336,4 @@ ByUsSearchPage.defaultProps = {
   limitSearchCondition: "",
 };
 
-export default ByUsSearchPage;
+export default ByUsSearchPage2;

@@ -31,10 +31,11 @@ class DefaultFormater extends Component {
 
         let formatedValue;
 
-        if (type === "quantity") formatedValue = byUs.format.quantity(byUs.getNum(value))
-        else if (type === "price") formatedValue = byUs.format.price(byUs.getNum(value))
-        else if (type === "amount") formatedValue = byUs.format.amount(byUs.getNum(value))
-        else if (type === "integer") formatedValue = byUs.format.integer(byUs.getNum(value))
+        if (type === "quantity") formatedValue = value === null ? null : byUs.format.quantity(byUs.getNum(value))
+        else if (type === "price") formatedValue = value === null ? null : byUs.format.price(byUs.getNum(value))
+        else if (type === "amount") formatedValue = value === null ? null : byUs.format.amount(byUs.getNum(value))
+        else if (type === "integer") formatedValue = value === null ? null : byUs.format.integer(byUs.getNum(value))
+        else if (type === "date") formatedValue = value === null ? null : byUs.format.date(byUs.unformat.date(value))
         else formatedValue = value;
         let style = {};
         if ("quantity,price,amount,integer".indexOf(type) > -1) style.textAlign = "right";

@@ -13,7 +13,7 @@ class DocDetail extends PureComponent {
 
   getSelectedRows() {
     // return this.refs.grid.getState().selectedIndexes.map(i => this.refs.grid.getRowAt(i).LINENUM)
-    return this.refs.grid.getState().selectedIds;
+    return this.refs.grid.getState().selectedKeys;
   }
 
   scrollToLastLine() {
@@ -103,7 +103,8 @@ class DocDetail extends PureComponent {
             disabled={this.props.docData.DOCNUM > 0 ? true : false}
             rows={this.props.docData.LINES}
             onRowUpdate={this.props.onRowUpdate}
-            onRowSelect={this.props.onRowSelect}
+            onRowSelectionChange={this.props.onRowSelectionChange}
+            selectedKeys={this.props.selectedKeys}
             onRowReorder={this.props.onRowReorder}
           ></ByUsDataGrid>
         </div >
@@ -122,7 +123,7 @@ DocDetail.defaultProps = {
   sidebarFields: [],
   rows: [],
   onRowUpdate: (currentRow, updated) => { },
-  onRowSelect: (selectedIndexes) => { },
+  onRowSelectionChange: (selectedIndexes) => { },
   onRowReorder: (draggedRows, rowTarget, orderedRows) => { },
   onSideBarFieldChange: changeInfo => { }
 }

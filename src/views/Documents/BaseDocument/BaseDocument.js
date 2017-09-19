@@ -375,7 +375,8 @@ class BaseDocument extends Component {
       onSideBarFieldChange: this.handleHeaderFieldChange,
       docData,
       onRowUpdate: this.handleDetailRowChange,
-      onRowSelect: this.handleDetailRowSelect,
+      onRowSelectionChange: this.handleDetailRowSelect,
+      selectedKeys: this.state.selectedLineNums,
       onRowReorder: this.handleDetailRowReorder
     }
 
