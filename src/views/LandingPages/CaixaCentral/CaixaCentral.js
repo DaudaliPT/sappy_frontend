@@ -11,6 +11,7 @@ class CaixaCentral extends Component {
 
     this.toggleModalMessage = this.toggleModalMessage.bind(this);
     this.handleOnTabClick = this.handleOnTabClick.bind(this);
+    this.calcPageHeight = this.calcPageHeight.bind(this);
 
     this.state = {
       ReadOnly: true,
@@ -25,19 +26,21 @@ class CaixaCentral extends Component {
     this.calcPageHeight();
   }
 
+  componentWillUnmount() {
+    if (this.serverRequest && this.serverRequest.abort) this.serverRequest.abort();
+    window.removeEventListener("resize", this.calcPageHeight);
+  }
+
   calcPageHeight() {
     let $el = $(".main-body");
 
     let $scrollAbleparent = $("body");
-    if ($scrollAbleparent && $el) {
+    if ($scrollAbleparent && $el && $el.position) {
       let minH = $scrollAbleparent.height() - $el.position().top - 130;
       $el.css("height", minH.toString() + "px");
-    }
-  }
 
-  componentWillUnmount() {
-    if (this.serverRequest && this.serverRequest.abort) this.serverRequest.abort();
-    window.removeEventListener("resize", this.calcPageHeight);
+      this.setState({ height: minH })
+    }
   }
 
   toggleModalMessage(refresh) {
@@ -98,12 +101,12 @@ class CaixaCentral extends Component {
               {/* <!-- Panel --> */}
               <div className="panel form-panel">
                 <div className="panel-body main-body">
-                  {this.state.activeTab === "tabClassificacao" && < CmpClassificacao ReadOnly={this.state.ReadOnly} />}
-                  {this.state.activeTab === "tabPendentes" && <CmpUnderConstruction ReadOnly={this.state.ReadOnly} />}
-                  {this.state.activeTab === "tabDistribuicao" && <CmpUnderConstruction ReadOnly={this.state.ReadOnly} />}
-                  {this.state.activeTab === "tabDespesas" && <CmpUnderConstruction ReadOnly={this.state.ReadOnly} />}
-                  {this.state.activeTab === "tabDepositos" && <CmpUnderConstruction ReadOnly={this.state.ReadOnly} />}
-                  {this.state.activeTab === "tabResumo" && <CmpUnderConstruction ReadOnly={this.state.ReadOnly} />}
+                  {this.state.activeTab === "tabClassificacao" && < CmpClassificacao height={this.state.height} />}
+                  {this.state.activeTab === "tabPendentes" && <CmpUnderConstruction height={this.state.height} />}
+                  {this.state.activeTab === "tabDistribuicao" && <CmpUnderConstruction height={this.state.height} />}
+                  {this.state.activeTab === "tabDespesas" && <CmpUnderConstruction height={this.state.height} />}
+                  {this.state.activeTab === "tabDepositos" && <CmpUnderConstruction height={this.state.height} />}
+                  {this.state.activeTab === "tabResumo" && <CmpUnderConstruction height={this.state.height} />}
                 </div>
               </div>
               {/* <!-- End Panel --> */}

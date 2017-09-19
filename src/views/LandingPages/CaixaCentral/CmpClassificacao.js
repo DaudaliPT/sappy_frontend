@@ -11,7 +11,7 @@ import CmpClassificacaoFooter from "./CmpClassificacaoFooter";
 import MeiosPagRecebimentoModal from "./MeiosPagRecebimentoModal";
 import MeiosPagPagamentoModal from "./MeiosPagPagamentoModal";
 
-class CmpTransStock extends Component {
+class CmpClassificacao extends Component {
     constructor(props) {
         super(props);
 
@@ -23,25 +23,25 @@ class CmpTransStock extends Component {
         this.state = { selectedPN: '', selectedPNname: '', selectedDocKeys: [], shiftKey: false, ctrlKey: false }
     }
 
-    componentDidMount() {
-        let that = this;
-        $(window.document).on("keydown", function (e) {
-            console.log(e)
-            that.setState({
-                shiftKey: e.shiftKey, ctrlKey: e.ctrlKey
-            });
-        });
-        $(window.document).on("keyup", function (e) {
-            that.setState({
-                shiftKey: e.shiftKey, ctrlKey: e.ctrlKey
-            });
-        });
-    }
+    // componentDidMount() {
+    //     let that = this;
+    //     $(window.document).on("keydown", function (e) {
+    //         console.log(e)
+    //         that.setState({
+    //             shiftKey: e.shiftKey, ctrlKey: e.ctrlKey
+    //         });
+    //     });
+    //     $(window.document).on("keyup", function (e) {
+    //         that.setState({
+    //             shiftKey: e.shiftKey, ctrlKey: e.ctrlKey
+    //         });
+    //     });
+    // }
 
-    componentWillUnmount() {
-        $(window.document).off("keydown");
-        $(window.document).off("keyup");
-    }
+    // componentWillUnmount() {
+    //     $(window.document).off("keydown");
+    //     $(window.document).off("keyup");
+    // }
 
 
     handlePNselection(e, row) {
@@ -231,6 +231,7 @@ class CmpTransStock extends Component {
                             rowKey="TRANSID_AND_LINEID"
                             onRowSelectionChange={this.handleDetailRowSelect}
                             selectedKeys={selectedDocKeys}
+                            height={this.props.height}
                             fields={[
                                 { name: 'REFDATE', label: 'Data', type: "date", width: 80, editable: false },
                                 {
@@ -252,4 +253,4 @@ class CmpTransStock extends Component {
     }
 }
 
-export default CmpTransStock;
+export default CmpClassificacao;

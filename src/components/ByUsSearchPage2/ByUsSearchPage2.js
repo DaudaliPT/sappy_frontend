@@ -17,42 +17,20 @@ class ByUsSearchPage2 extends PureComponent {
     this.loadNextPage = this.loadNextPage.bind(this);
     this.handleOnTabSelect = this.handleOnTabSelect.bind(this);
     this.handleOnChange_txtSearch = this.handleOnChange_txtSearch.bind(this);
-    this.calcPageHeight = this.calcPageHeight.bind(this);
+    // this.calcPageHeight = this.calcPageHeight.bind(this);
     this.handleToogleLimitSearch = this.handleToogleLimitSearch.bind(this)
     this.getGrid = this.getGrid.bind(this)
 
-    this.byusModalInfiniteListID = 'byusModalInfiniteList' + uuid();
+    this.gridUuid = 'grid' + uuid();
     this.byusModalTabsBarID = 'byusModalTabsBar' + uuid();
     this.state = {
-
       /** holds the text typed by the user */
       searchTags: (props.searchText && [{ value: props.searchText, label: props.searchText }]) || [],
 
       limitSearch: props.limitSearch || false,
-
-      /*********/
-      /** contains the items to put on sidebar, organized by groups */
-      hierarquyItems: {},
-      /** contains the ids of sidebar items selected to filter data */
-      activeSidebarItems: [],
-
-      /*********/
-      /** list of items to put on tabs bar */
       tabItems: {},
-
-      /** contains the active selected tab id */
       activeTab: "",
-
-      /*********/
-      /** contains the loaded rows for virtalized-list */
       listItems: [],
-
-      rvIsLoading: true,
-      /** set when loading first or next rows, so that no more requests are made */
-      rvHasNextPage: false,
-
-      /*********/
-      /** contains info about loading status, to display on search bar */
       totalInfo: {
         Total: 0,
         Loaded: 0,
@@ -78,10 +56,6 @@ class ByUsSearchPage2 extends PureComponent {
   }
 
   componentDidMount() {
-    window.addEventListener("resize", this.calcPageHeight);
-
-    this.calcPageHeight();
-
     setTimeout(() => {
       this.findAndGetFirstRows()
       if (this.resfreshInterval) clearInterval(this.resfreshInterval);
@@ -90,55 +64,10 @@ class ByUsSearchPage2 extends PureComponent {
 
   }
 
-  calcPageHeight() {
-    function getScrollParent(element, includeHidden) {
-      var style = getComputedStyle(element);
-      var excludeStaticParent = style.position === "absolute";
-      var overflowRegex = includeHidden ? /(auto|scroll|hidden)/ : /(auto|scroll)/;
-
-      if (style.position === "fixed") return document.body;
-      // eslint-disable-next-line 
-      for (var parent = element; (parent = parent.parentElement);) {
-        style = getComputedStyle(parent);
-        if (excludeStaticParent && style.position === "static") {
-          continue;
-        }
-        if (overflowRegex.test(style.overflow + style.overflowY + style.overflowX)) return parent;
-      }
-
-      return document.body;
-    }
-
-    let $elTab = $("#" + this.byusModalTabsBarID);
-    let $elList = $("#" + this.byusModalInfiniteListID);
-    if ($elList[0] && $elTab[0]) {
-
-      let $body = $("body");
-      let scrollAbleparent = getScrollParent($elList[0], false);
-      let $scrollAbleparent = $(scrollAbleparent);
-
-      if ($scrollAbleparent && $body) {
-
-
-        let bodyHeight = $body.height();
-        let parentHeight = $scrollAbleparent.height();
-        let useHeight = 0;
-        if (parentHeight > bodyHeight)
-          useHeight = bodyHeight
-        else
-          useHeight = parentHeight
-
-        let minH = useHeight - ($elList.position().top - $elTab[0].clientHeight) * 2 - 100 - $elTab[0].clientHeight;
-        if (minH < 350) { minH = 350; }
-        $elList.css("height", minH.toString() + "px");
-      }
-    }
-  }
 
 
   componentWillUnmount() {
     if (this.serverRequest && this.serverRequest.abort) this.serverRequest.abort();
-    window.removeEventListener("resize", this.calcPageHeight);
     if (this.resfreshInterval) clearInterval(this.resfreshInterval);
   }
 
@@ -159,8 +88,7 @@ class ByUsSearchPage2 extends PureComponent {
     var that = this;
     this.setState(
       {
-        searchTags: values,
-        // rvIsLoading: true
+        searchTags: values
       },
       function () {
         that.findAndGetFirstRows();
@@ -171,11 +99,9 @@ class ByUsSearchPage2 extends PureComponent {
   findAndGetFirstRows() {
     var that = this;
     if (this.props.searchApiUrl) {
-      let { searchTags, activeTab, activeSidebarItems } = this.state;
+      let { searchTags, activeTab } = this.state;
 
       that.setState({
-        rvIsLoading: true,
-        rvHasNextPage: false,
         totalInfo: {
           Total: 0,
           Loaded: 0,
@@ -194,8 +120,7 @@ class ByUsSearchPage2 extends PureComponent {
           params: {
             searchTags,
             limitSearchCondition,
-            activeTab,
-            activeSidebarItems: JSON.stringify(activeSidebarItems)
+            activeTab
           },
           cancelToken: new CancelToken(function executor(c) {
             // An executor function receives a cancel function as a parameter
@@ -206,8 +131,6 @@ class ByUsSearchPage2 extends PureComponent {
           var { activeTab } = that.state;
           var tabItems = result.data.tabItems;
           var listItems = result.data.firstRows;
-          var hierarquyItems = result.data.hierarquyItems;
-          var rvHasNextPage = listItems.length < result.data.totalRowCount;
           let totalInfo = {
             Total: listItems.length > 0 ? listItems[0].TOTAL_ROWS : 0,
             Loaded: listItems.length
@@ -221,9 +144,9 @@ class ByUsSearchPage2 extends PureComponent {
           }
 
           that.setState(
-            { listItems, tabItems, activeTab, rvHasNextPage, hierarquyItems, totalInfo, rvIsLoading: false },
+            { listItems, tabItems, activeTab, totalInfo },
             e => {
-              that.calcPageHeight()
+              // that.calcPageHeight()
               that.props.onRefresh && that.props.onRefresh()
             }
           );
@@ -237,8 +160,7 @@ class ByUsSearchPage2 extends PureComponent {
   loadNextPage = () => {
     var that = this;
     if (that.props.searchApiUrl) {
-      let { searchTags, activeTab, activeSidebarItems, listItems } = this.state;
-      that.setState({ rvIsLoading: true });
+      let { searchTags, activeTab, listItems } = this.state;
 
       let limitSearchCondition = "";
       if (this.state.limitSearch && this.props.limitSearchCondition) limitSearchCondition = this.props.limitSearchCondition;
@@ -247,7 +169,6 @@ class ByUsSearchPage2 extends PureComponent {
         searchTags,
         limitSearchCondition,
         activeTab,
-        activeSidebarItems: JSON.stringify(activeSidebarItems),
         startIndex: listItems.length,
         maxRecords: 100
       };
@@ -257,17 +178,15 @@ class ByUsSearchPage2 extends PureComponent {
         .then(function (result) {
           var nextRows = result.data;
           var listItems = that.state.listItems.concat(nextRows);
-          var rvHasNextPage = nextRows.length > 0 && listItems.length < nextRows[0].TOTAL_ROWS;
           let totalInfo = {
             Total: nextRows.length > 0 ? nextRows[0].TOTAL_ROWS : listItems.length,
             Loaded: listItems.length
           };
-          that.setState({ listItems, rvHasNextPage, totalInfo, rvIsLoading: false });
+          that.setState({ listItems, totalInfo });
         })
         .catch(function (error) {
           if (!error.__CANCEL__) byUs.showError(error, "Api error")
 
-          that.setState({ rvIsLoading: false });
         });
     }
   };
@@ -276,8 +195,7 @@ class ByUsSearchPage2 extends PureComponent {
     var { activeTab, tabItems, totalInfo } = this.state;
     var { currentModal } = this.props;
 
-    let hasNoContent = (this.state.rvIsLoading === false &&
-      this.state.listItems.length === 0 &&
+    let hasNoContent = (this.state.listItems.length === 0 &&
       this.state.searchTags.length === 0 &&
       this.state.activeTab === Object.keys(tabItems)[0])
 
@@ -308,8 +226,9 @@ class ByUsSearchPage2 extends PureComponent {
         }
         {hasContent &&
           <ByUsDataGrid
+            id={this.gridUuid}
             ref={node => this.grid = node}
-            height={400}
+            height={this.props.height - 100}
             fields={this.props.fields}
             rowKey={this.props.rowKey}
             groupBy={this.props.groupBy}

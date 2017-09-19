@@ -365,7 +365,7 @@ class ByUsDataGrid extends Component {
           onGridRowsUpdated={this.handleGridRowsUpdated}
           onCellClick={this.handleOnCellClick}
           rowGetter={this.getRowAt}
-          rowActionsCell={Draggable.RowActionsCell}
+          rowActionsCell={this.state.groupBy.length !== 0 ? null : Draggable.RowActionsCell}
           rowRenderer={<RowRenderer onRowDrop={this.onRowReorder} />}
           rowsCount={this.getSize()}
           rowGroupRenderer={(props) => {
@@ -386,10 +386,14 @@ class ByUsDataGrid extends Component {
             }
             return (
               <div style={style} onKeyDown={onKeyDown} tabIndex={0}>
-                <span className="row-expand-icon"
+                <span className="row-expand-icon pl-5 pr-5"
                   style={{ float: 'left', marginLeft: marginLeft, cursor: 'pointer' }}
-                  onClick={props.onRowExpandClick} >{props.isExpanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}</span>
-                <strong>     {props.name}</strong>
+                  onClick={props.onRowExpandClick} >
+                  {props.isExpanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}
+                </span>
+                <span className="pl-5">
+                  <strong> {props.name}</strong>
+                </span>
               </div>
             );
           }}
