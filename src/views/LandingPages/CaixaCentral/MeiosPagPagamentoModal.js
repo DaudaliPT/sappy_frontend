@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { Button, Modal, ModalHeader, ModalBody } from "reactstrap";
 import axios from "axios";
 var $ = window.$;
-var byUs = window.byUs;
+var sappy = window.sappy;
 
-import { ByUsTextBox, ByUsTextBoxNumeric, ByUsDate, ByUsComboBox } from "../../../Inputs";
+import { TextBox, TextBoxNumeric, Date, ComboBox } from "../../../Inputs";
 
 class ModPagModal extends Component {
   constructor(props) {
@@ -20,7 +20,7 @@ class ModPagModal extends Component {
 
     this.state = {
       activeTab: "tab1",
-      cheques: [{ data: byUs.unformat.date(".") }],
+      cheques: [{ data: sappy.unformat.date(".") }],
       showValidations: false
     }
   }
@@ -29,8 +29,8 @@ class ModPagModal extends Component {
     window.addEventListener("resize", this.calcPageHeight);
     this.onFieldChange({
       fieldName: "totalPagar",
-      formatedValue: byUs.format.amount(this.props.totalPagar),
-      rawValue: byUs.getNum(this.props.totalPagar)
+      formatedValue: sappy.format.amount(this.props.totalPagar),
+      rawValue: sappy.getNum(this.props.totalPagar)
     })
     this.calcPageHeight();
   }
@@ -53,12 +53,12 @@ class ModPagModal extends Component {
 
   updateTotalCheques(cheques) {
 
-    let v = cheques.reduce((sum, fld) => sum + byUs.getNum(fld.valor), 0);
+    let v = cheques.reduce((sum, fld) => sum + sappy.getNum(fld.valor), 0);
     // Alterar apenas o valor total de cheques
     return this.onFieldChange({
       fieldName: "ValorCheques",
       rawValue: v,
-      formatedValue: byUs.format.amount(v)
+      formatedValue: sappy.format.amount(v)
     })
   }
 
@@ -74,7 +74,7 @@ class ModPagModal extends Component {
     let newStateValues = {};
 
     if (fieldName.indexOf("cheques#") > -1) {
-      let ix = byUs.getNum(fieldName.split("#")[1]);
+      let ix = sappy.getNum(fieldName.split("#")[1]);
       let prop = fieldName.split("#")[2];
 
       let cheques = [...this.state.cheques]
@@ -102,43 +102,43 @@ class ModPagModal extends Component {
     // if (this.state[fieldName + "_VALIDATEMSG"]) newStateValues[fieldName + "_VALIDATEMSG"] = ""
 
 
-    let totalPagar = byUs.getNum(fieldName === "totalPagar" ? formatedValue : this.state.totalPagar)
-    let ValorNumerario = byUs.getNum(fieldName === "ValorNumerario" ? formatedValue : this.state.ValorNumerario)
-    let ValorMultibanco = byUs.getNum(fieldName === "ValorMultibanco" ? formatedValue : this.state.ValorMultibanco)
-    let ValorTransferencia = byUs.getNum(fieldName === "ValorTransferencia" ? formatedValue : this.state.ValorTransferencia)
-    let ValorCheques = byUs.getNum(fieldName === "ValorCheques" ? formatedValue : this.state.ValorCheques)
+    let totalPagar = sappy.getNum(fieldName === "totalPagar" ? formatedValue : this.state.totalPagar)
+    let ValorNumerario = sappy.getNum(fieldName === "ValorNumerario" ? formatedValue : this.state.ValorNumerario)
+    let ValorMultibanco = sappy.getNum(fieldName === "ValorMultibanco" ? formatedValue : this.state.ValorMultibanco)
+    let ValorTransferencia = sappy.getNum(fieldName === "ValorTransferencia" ? formatedValue : this.state.ValorTransferencia)
+    let ValorCheques = sappy.getNum(fieldName === "ValorCheques" ? formatedValue : this.state.ValorCheques)
     let continuarColor;
     let continuarContent;
 
     //Não pode ter transferência e multibanco
     if (fieldName.indexOf("ValorTransferencia") > -1 && ValorMultibanco) {
-      byUs.showToastr({ color: "warning", msg: "Não pode ter Transferência e Multibanco em simultaneo." })
+      sappy.showToastr({ color: "warning", msg: "Não pode ter Transferência e Multibanco em simultaneo." })
       newStateValues.ValorMultibanco = "";
       ValorMultibanco = 0;
     } else if (fieldName.indexOf("ValorMultibanco") > -1 && ValorTransferencia) {
-      byUs.showToastr({ color: "warning", msg: "Não pode ter Multibanco e Transferência em simultaneo." })
+      sappy.showToastr({ color: "warning", msg: "Não pode ter Multibanco e Transferência em simultaneo." })
       newStateValues.ValorTransferencia = "";
       ValorTransferencia = 0;
     }
 
 
     let totalMeiosPag = ValorNumerario + ValorMultibanco + ValorTransferencia + ValorCheques
-    let troco = byUs.round(totalMeiosPag - totalPagar, 2);
+    let troco = sappy.round(totalMeiosPag - totalPagar, 2);
 
 
     if (troco > ValorNumerario) {
-      byUs.showToastr({ color: "danger", msg: "O troco não pode ser superior ao valor em numerário" })
+      sappy.showToastr({ color: "danger", msg: "O troco não pode ser superior ao valor em numerário" })
       continuarColor = "danger";
-      continuarContent = <span> <i className="icon wb-warning" /> Troco {byUs.format.amount(troco)}</span>;
+      continuarContent = <span> <i className="icon wb-warning" /> Troco {sappy.format.amount(troco)}</span>;
     } else if (troco < 0) {
       continuarColor = "danger";
-      continuarContent = <span> <i className="icon wb-warning" />  Em falta {byUs.format.amount(-1 * troco)}</span>
+      continuarContent = <span> <i className="icon wb-warning" />  Em falta {sappy.format.amount(-1 * troco)}</span>
     } else if (troco > 0) {
       continuarColor = "warning";
-      continuarContent = <span> <i className="icon wb-check" /> Concluir (Troco {byUs.format.amount(troco)})</span>
+      continuarContent = <span> <i className="icon wb-check" /> Concluir (Troco {sappy.format.amount(troco)})</span>
     } else {
       continuarColor = "success";
-      continuarContent = <span> <i className="icon wb-check" /> Concluir {byUs.format.amount(troco)}</span>
+      continuarContent = <span> <i className="icon wb-check" /> Concluir {sappy.format.amount(troco)}</span>
     }
 
     newStateValues.continuarColor = continuarColor;
@@ -156,11 +156,11 @@ class ModPagModal extends Component {
 
     let that = this
     // let fieldName = cmpThis.props.name.split("#")[0];
-    let ix = byUs.getNum(cmpThis.props.name.split("#")[1]);
+    let ix = sappy.getNum(cmpThis.props.name.split("#")[1]);
     let cheques = [...this.state.cheques]
-    let currVal = byUs.getNum(cheques[ix].valor);
-    let totalPagar = byUs.getNum(this.state.totalPagar);
-    let totalMeiosPag = byUs.getNum(this.state.totalMeiosPag);
+    let currVal = sappy.getNum(cheques[ix].valor);
+    let totalPagar = sappy.getNum(this.state.totalPagar);
+    let totalMeiosPag = sappy.getNum(this.state.totalMeiosPag);
     let emFalta = 0
     if (totalPagar > totalMeiosPag) emFalta = totalPagar - totalMeiosPag
 
@@ -175,8 +175,8 @@ class ModPagModal extends Component {
         //Assumir dados co cheque atual +1
         cheques.push({
           banco: cheque.banco,
-          numero: cheque.numero ? (byUs.getNum(cheque.numero) + 1).toString() : "",
-          valor: byUs.format.amount(currVal < emFalta ? currVal : emFalta)
+          numero: cheque.numero ? (sappy.getNum(cheque.numero) + 1).toString() : "",
+          valor: sappy.format.amount(currVal < emFalta ? currVal : emFalta)
         })
       }
 
@@ -189,21 +189,21 @@ class ModPagModal extends Component {
       that.onFieldChange({
         fieldName: "cheques#" + ix + "#valor",
         rawValue: emFalta,
-        formatedValue: byUs.format.amount(totalPagar - totalMeiosPag)
+        formatedValue: sappy.format.amount(totalPagar - totalMeiosPag)
       })
     }
   }
 
   onClick_GetRemaingValue(cmpThis) {
     let fieldName = cmpThis.props.name;
-    let currVal = byUs.getNum(this.state[fieldName]);
-    let totalPagar = byUs.getNum(this.state.totalPagar);
-    let totalMeiosPag = byUs.getNum(this.state.totalMeiosPag);
+    let currVal = sappy.getNum(this.state[fieldName]);
+    let totalPagar = sappy.getNum(this.state.totalPagar);
+    let totalMeiosPag = sappy.getNum(this.state.totalMeiosPag);
 
 
     if (fieldName.indexOf("ValorTransferencia") > -1 || fieldName.indexOf("ValorMultibanco") > -1) {
-      totalMeiosPag -= byUs.getNum(this.state.ValorTransferencia)
-      totalMeiosPag -= byUs.getNum(this.state.ValorMultibanco)
+      totalMeiosPag -= sappy.getNum(this.state.ValorTransferencia)
+      totalMeiosPag -= sappy.getNum(this.state.ValorMultibanco)
     } else {
       totalMeiosPag -= currVal
     }
@@ -214,7 +214,7 @@ class ModPagModal extends Component {
     if (currVal !== rawValue)
       this.onFieldChange({
         fieldName,
-        formatedValue: rawValue ? byUs.format.amount(rawValue) : "",
+        formatedValue: rawValue ? sappy.format.amount(rawValue) : "",
         rawValue
       })
   }
@@ -228,7 +228,7 @@ class ModPagModal extends Component {
     }
 
     state.cheques.forEach((cheque, ix) => {
-      if (byUs.getNum(cheque.valor)) {
+      if (sappy.getNum(cheque.valor)) {
         if (!cheque.data) alerts["cheques#" + ix + "data"] = "danger|Data em falta"
         if (!cheque.banco) alerts["cheques#" + ix + "banco"] = "danger|Deve preencher o banco"
         if (!cheque.numero) alerts["cheques#" + ix + "numero"] = "danger|Numero em falta"
@@ -250,14 +250,14 @@ class ModPagModal extends Component {
 
     let { alerts, toastrMsg } = this.getvalidationResults(newState);
 
-    toastrMsg.forEach(toastrData => byUs.showToastr(toastrData));
+    toastrMsg.forEach(toastrData => sappy.showToastr(toastrData));
 
     if (Object.keys(alerts).length > 0) this.setState({ showValidations: true })
     //Validar se há erros ativos
     let hasDanger = Object.keys(alerts).find(f => alerts[f].startsWith("danger"))
     if (hasDanger) {
       if (toastrMsg.length > 0) return // já deu mensagens
-      return byUs.showToastr({ color: "danger", msg: "Há campos com erros. Verifique se preencheu todos os campos obrigatórios..." })
+      return sappy.showToastr({ color: "danger", msg: "Há campos com erros. Verifique se preencheu todos os campos obrigatórios..." })
     }
 
     //Validar se há avisos ativos
@@ -269,21 +269,21 @@ class ModPagModal extends Component {
         DocType: "rCustomer",
         CardCode: this.props.selectedPN,
         CashAccount: "111",
-        CashSum: byUs.getNum(this.state.ValorNumerario) - byUs.getNum(this.state.troco),
+        CashSum: sappy.getNum(this.state.ValorNumerario) - sappy.getNum(this.state.troco),
         Remarks: this.state.Observacoes,
         PaymentInvoices: [
 
         ]
       }
-      if (byUs.getNum(this.state.ValorMultibanco)) {
+      if (sappy.getNum(this.state.ValorMultibanco)) {
         data.TransferAccount = "118"
-        data.TransferSum = byUs.getNum(this.state.ValorMultibanco)
+        data.TransferSum = sappy.getNum(this.state.ValorMultibanco)
         data.TransferReference = 'MB'
       };
 
-      if (byUs.getNum(this.state.ValorTransferencia)) {
+      if (sappy.getNum(this.state.ValorTransferencia)) {
         data.TransferAccount = this.state.ContaTransferencia
-        data.TransferSum = byUs.getNum(this.state.ValorTransferencia)
+        data.TransferSum = sappy.getNum(this.state.ValorTransferencia)
         data.TransferReference = this.state.RefTransferencia
       }
 
@@ -291,12 +291,12 @@ class ModPagModal extends Component {
       data.CheckAccount = "119";
 
       this.state.cheques.forEach(cheque => {
-        if (byUs.getNum(cheque.valor) > 0) {
+        if (sappy.getNum(cheque.valor) > 0) {
           data.PaymentChecks.push({
-            DueDate: byUs.format.YYYY_MM_DD(cheque.data),
+            DueDate: sappy.format.YYYY_MM_DD(cheque.data),
             CheckNumber: cheque.numero,
             BankCode: cheque.banco,
-            CheckSum: byUs.getNum(cheque.valor)
+            CheckSum: sappy.getNum(cheque.valor)
           })
         }
       });
@@ -306,35 +306,35 @@ class ModPagModal extends Component {
         let doc = this.props.docsList.find(doc => docId === (doc.TransId + "#" + doc.Line_ID))
 
         let InvoiceType = ""
-        if (byUs.getNum(doc.TransType) === -3) InvoiceType = "it_ClosingBalance";
-        else if (byUs.getNum(doc.TransType) === -1) InvoiceType = "it_AllTransactions";
-        else if (byUs.getNum(doc.TransType) === -2) InvoiceType = "it_OpeningBalance";
-        else if (byUs.getNum(doc.TransType) === 13) InvoiceType = "it_Invoice";
-        else if (byUs.getNum(doc.TransType) === 14) InvoiceType = "it_CredItnote";
-        else if (byUs.getNum(doc.TransType) === 15) InvoiceType = "it_TaxInvoice"
-        else if (byUs.getNum(doc.TransType) === 16) InvoiceType = "it_Return";
-        else if (byUs.getNum(doc.TransType) === 18) InvoiceType = "it_PurchaseInvoice";
-        else if (byUs.getNum(doc.TransType) === 19) InvoiceType = "it_PurchaseCreditNote";
-        else if (byUs.getNum(doc.TransType) === 20) InvoiceType = "it_PurchaseDeliveryNote";
-        else if (byUs.getNum(doc.TransType) === 21) InvoiceType = "it_PurchaseReturn";
-        else if (byUs.getNum(doc.TransType) === 24) InvoiceType = "it_Receipt";
-        else if (byUs.getNum(doc.TransType) === 25) InvoiceType = "it_Deposit";
-        else if (byUs.getNum(doc.TransType) === 30) InvoiceType = "it_JournalEntry";
-        else if (byUs.getNum(doc.TransType) === 46) InvoiceType = "it_PaymentAdvice";
-        else if (byUs.getNum(doc.TransType) === 57) InvoiceType = "it_ChequesForPayment";
-        else if (byUs.getNum(doc.TransType) === 58) InvoiceType = "it_StockReconciliations";
-        else if (byUs.getNum(doc.TransType) === 59) InvoiceType = "it_GeneralReceiptToStock";
-        else if (byUs.getNum(doc.TransType) === 60) InvoiceType = "it_GeneralReleaseFromStock";
-        else if (byUs.getNum(doc.TransType) === 67) InvoiceType = "it_TransferBetweenWarehouses";
-        else if (byUs.getNum(doc.TransType) === 68) InvoiceType = "it_WorkInstructions";
-        else if (byUs.getNum(doc.TransType) === 76) InvoiceType = "it_DeferredDeposit";
-        else if (byUs.getNum(doc.TransType) === 132) InvoiceType = "it_CorrectionInvoice ";
-        else if (byUs.getNum(doc.TransType) === 163) InvoiceType = "it_APCorrectionInvoice ";
-        else if (byUs.getNum(doc.TransType) === 165) InvoiceType = "it_ARCorrectionInvoice ";
-        else if (byUs.getNum(doc.TransType) === 203) InvoiceType = "it_DownPayment ";
-        else if (byUs.getNum(doc.TransType) === 204) InvoiceType = "it_PurchaseDownPayment ";
+        if (sappy.getNum(doc.TransType) === -3) InvoiceType = "it_ClosingBalance";
+        else if (sappy.getNum(doc.TransType) === -1) InvoiceType = "it_AllTransactions";
+        else if (sappy.getNum(doc.TransType) === -2) InvoiceType = "it_OpeningBalance";
+        else if (sappy.getNum(doc.TransType) === 13) InvoiceType = "it_Invoice";
+        else if (sappy.getNum(doc.TransType) === 14) InvoiceType = "it_CredItnote";
+        else if (sappy.getNum(doc.TransType) === 15) InvoiceType = "it_TaxInvoice"
+        else if (sappy.getNum(doc.TransType) === 16) InvoiceType = "it_Return";
+        else if (sappy.getNum(doc.TransType) === 18) InvoiceType = "it_PurchaseInvoice";
+        else if (sappy.getNum(doc.TransType) === 19) InvoiceType = "it_PurchaseCreditNote";
+        else if (sappy.getNum(doc.TransType) === 20) InvoiceType = "it_PurchaseDeliveryNote";
+        else if (sappy.getNum(doc.TransType) === 21) InvoiceType = "it_PurchaseReturn";
+        else if (sappy.getNum(doc.TransType) === 24) InvoiceType = "it_Receipt";
+        else if (sappy.getNum(doc.TransType) === 25) InvoiceType = "it_Deposit";
+        else if (sappy.getNum(doc.TransType) === 30) InvoiceType = "it_JournalEntry";
+        else if (sappy.getNum(doc.TransType) === 46) InvoiceType = "it_PaymentAdvice";
+        else if (sappy.getNum(doc.TransType) === 57) InvoiceType = "it_ChequesForPayment";
+        else if (sappy.getNum(doc.TransType) === 58) InvoiceType = "it_StockReconciliations";
+        else if (sappy.getNum(doc.TransType) === 59) InvoiceType = "it_GeneralReceiptToStock";
+        else if (sappy.getNum(doc.TransType) === 60) InvoiceType = "it_GeneralReleaseFromStock";
+        else if (sappy.getNum(doc.TransType) === 67) InvoiceType = "it_TransferBetweenWarehouses";
+        else if (sappy.getNum(doc.TransType) === 68) InvoiceType = "it_WorkInstructions";
+        else if (sappy.getNum(doc.TransType) === 76) InvoiceType = "it_DeferredDeposit";
+        else if (sappy.getNum(doc.TransType) === 132) InvoiceType = "it_CorrectionInvoice ";
+        else if (sappy.getNum(doc.TransType) === 163) InvoiceType = "it_APCorrectionInvoice ";
+        else if (sappy.getNum(doc.TransType) === 165) InvoiceType = "it_ARCorrectionInvoice ";
+        else if (sappy.getNum(doc.TransType) === 203) InvoiceType = "it_DownPayment ";
+        else if (sappy.getNum(doc.TransType) === 204) InvoiceType = "it_PurchaseDownPayment ";
 
-        if (byUs.getNum(doc.TransType) !== 24 && byUs.getNum(doc.TransType) !== 46) {
+        if (sappy.getNum(doc.TransType) !== 24 && sappy.getNum(doc.TransType) !== 46) {
           data.PaymentInvoices.push({
             DocEntry: doc.CreatedBy,
             InvoiceType,
@@ -356,17 +356,17 @@ class ModPagModal extends Component {
         .then(result => {
 
           that.props.toggleModal(result.data.DocNum);
-          byUs.showSuccess({
+          sappy.showSuccess({
             msg: "Documento criado",
             moreInfo: `Criou com sucesso o documento ${result.data.DocNum}!`,
             confirmText: "Concluido"
           })
         })
-        .catch(error => byUs.showError(error, "Não foi possivel adicionar o pagamento"));
+        .catch(error => sappy.showError(error, "Não foi possivel adicionar o pagamento"));
     }
 
     if (!hasWarning)
-      return byUs.showQuestion({
+      return sappy.showQuestion({
         title: "Deseja Continuar?",
         msg: "Se continuar irá criar este documento.",
         onConfirm: invokeAddDocAPI,
@@ -374,7 +374,7 @@ class ModPagModal extends Component {
         onCancel: () => { }
       })
     else
-      return byUs.showWarning({
+      return sappy.showWarning({
         title: "Atenção!",
         msg: "Ainda há campos com avisos!",
         moreInfo: "Deseja mesmo assim criar este documento?",
@@ -394,7 +394,7 @@ class ModPagModal extends Component {
       <div>
         <div className="row">
           <div className="col-4 pr-1">
-            <ByUsTextBoxNumeric
+            <TextBoxNumeric
               valueType="amount"
               label="Valor em numerário:"
               name="ValorNumerario"
@@ -413,7 +413,7 @@ class ModPagModal extends Component {
       <div  >
         <div className="row">
           <div className="col-4 pr-1">
-            <ByUsTextBoxNumeric
+            <TextBoxNumeric
               valueType="amount"
               label="Valor do pagamento:"
               name="ValorMultibanco"
@@ -432,7 +432,7 @@ class ModPagModal extends Component {
       <div  >
         <div className="row">
           <div className="col-4 pr-1">
-            <ByUsTextBoxNumeric
+            <TextBoxNumeric
               valueType="amount"
               label="Valor da transferência:"
               name="ValorTransferencia"
@@ -446,7 +446,7 @@ class ModPagModal extends Component {
         </div>
         <div className="row">
           <div className="col-4 pr-1">
-            <ByUsTextBox
+            <TextBox
               label="Referência:"
               name="RefTransferencia"
               state={alerts.RefTransferencia}
@@ -455,7 +455,7 @@ class ModPagModal extends Component {
             />
           </div>
           <div className="col-4 pl-1">
-            <ByUsComboBox
+            <ComboBox
               name="ContaTransferencia"
               label="Destino"
               value={this.state.ContaTransferencia}
@@ -480,13 +480,13 @@ class ModPagModal extends Component {
 
         return <div key={"cheques#" + ix} className="row">
           <div className="col-3 pr-1">
-            <ByUsDate label="Data" name={"cheques#" + ix + "#data"}
+            <Date label="Data" name={"cheques#" + ix + "#data"}
               value={cheque.data}
               state={alerts["cheques#" + ix + "data"]}
               onChange={this.onFieldChange} />
           </div>
           <div className="col-4 pl-1 pr-1">
-            <ByUsComboBox label="Banco"
+            <ComboBox label="Banco"
               name={"cheques#" + ix + "#banco"}
               value={cheque.banco}
               state={alerts["cheques#" + ix + "banco"]}
@@ -494,7 +494,7 @@ class ModPagModal extends Component {
               onChange={this.onFieldChange} />
           </div>
           <div className="col-2 pl-1 pr-1">
-            <ByUsTextBox
+            <TextBox
               label="Numero"
               name={"cheques#" + ix + "#numero"}
               value={cheque.numero}
@@ -502,7 +502,7 @@ class ModPagModal extends Component {
               onChange={this.onFieldChange} />
           </div>
           <div className="col-3 pl-1">
-            <ByUsTextBoxNumeric
+            <TextBoxNumeric
               valueType="amount"
               label="Valor"
               name={"cheques#" + ix + "#valor"}
@@ -524,7 +524,7 @@ class ModPagModal extends Component {
         {chequeElemts}
         <div className="row">
           <div className="col-3 offset-9 pl-1">
-            <ByUsTextBoxNumeric
+            <TextBoxNumeric
               valueType="amount"
               label="Total de cheques:"
               name="ValorCheques"
@@ -575,7 +575,7 @@ class ModPagModal extends Component {
                   <div className="painel-modopag-bottom" >
                     <div className="row">
                       <div className="col-12   ">
-                        <ByUsTextBox
+                        <TextBox
                           label="Observações"
                           name="Observacoes"
                           value={this.state.Observacoes}
@@ -586,7 +586,7 @@ class ModPagModal extends Component {
 
                     {/* <div className="row">
                       <div className="col-12   ">
-                        <ByUsCheckHr
+                        <CheckHr
                           label="Enviar por email para... (ainda em desenvolvimento...)"
                           name="apyByMail"
                           value={this.state.apyByMail}
@@ -600,7 +600,7 @@ class ModPagModal extends Component {
             </div>
           </div>
 
-          <div className="byus-action-bar animation-slide-left">
+          <div className="sappy-action-bar animation-slide-left">
 
 
             <Button color={this.state.continuarColor} disabled={this.state.continuarColor === "danger"} onClick={this.onCreatePayment}>

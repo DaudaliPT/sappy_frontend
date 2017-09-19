@@ -13,14 +13,14 @@ import ReactDataGrid from 'react-data-grid/packages/react-data-grid/dist/react-d
 import axios from "axios";
 import uuid from "uuid/v4";
 import SearchBar from "./SearchBar.js";
-import { ByUsTextBox } from "../../../../Inputs";
+import { TextBox } from "../../../../Inputs";
 
 import { ModalMessageConfirm } from "../../../../Modals";
 import ModalConfirmPrint from "../ModalConfirmPrint";
 import ModalSearchOitm from "./ModalSearchOitm";
 import EditModal from "../../Produtos/EditModal";
 
-const byUs = window.byUs;
+const sappy = window.sappy;
 const $ = window.$;
 const CustomToolbar = React.createClass({
   propTypes: {
@@ -42,7 +42,7 @@ const CustomToolbar = React.createClass({
 
 class IntFormatter extends Component {
   render() {
-    const formatedValue = byUs.format.integer(this.props.value);
+    const formatedValue = sappy.format.integer(this.props.value);
     return (
       <div style={{ textAlign: "right" }}>
         {formatedValue}
@@ -53,7 +53,7 @@ class IntFormatter extends Component {
 
 class PriceFormatter extends Component {
   render() {
-    const formatedValue = byUs.format.price(this.props.value);
+    const formatedValue = sappy.format.price(this.props.value);
     return (
       <div style={{ textAlign: "right" }}>
         {formatedValue}
@@ -80,7 +80,7 @@ class SimpleFormatter extends Component {
 
 class DateFormatter extends Component {
   render() {
-    return <div> {this.props.value ? byUs.format.properDisplayDate(this.props.value) : ''}</div>;
+    return <div> {this.props.value ? sappy.format.properDisplayDate(this.props.value) : ''}</div>;
   }
 }
 class DescritptionFormatter extends Component {
@@ -231,7 +231,7 @@ class DocAtualizacaoPrecos extends Component {
         if (result.data)
           hashHistory.push("/inv/etiq/doc/" + result.data);
       })
-      .catch(error => byUs.showError(error, "Erro ao obter dados"));
+      .catch(error => sappy.showError(error, "Erro ao obter dados"));
   }
 
   componentDidMount() {
@@ -244,7 +244,7 @@ class DocAtualizacaoPrecos extends Component {
         });
       })
       .catch(function (error) {
-        if (!error.__CANCEL__) byUs.showError(error, "Api error")
+        if (!error.__CANCEL__) sappy.showError(error, "Api error")
       });
 
 
@@ -300,7 +300,7 @@ class DocAtualizacaoPrecos extends Component {
           }
             , that.calcSearchGridH);
         })
-        .catch(error => byUs.showError(error, "Erro ao obter dados"));
+        .catch(error => sappy.showError(error, "Erro ao obter dados"));
     }
   }
 
@@ -371,7 +371,7 @@ class DocAtualizacaoPrecos extends Component {
         }
       })
       .catch(function (error) {
-        if (!error.__CANCEL__) byUs.showError(error, "Api error")
+        if (!error.__CANCEL__) sappy.showError(error, "Api error")
         that.setState({ searchText: "" })
       });
   }
@@ -398,7 +398,7 @@ class DocAtualizacaoPrecos extends Component {
 
           next && next();
         })
-        .catch(error => byUs.showError(error, "Erro ao gravar dados"));
+        .catch(error => sappy.showError(error, "Erro ao gravar dados"));
     }
   }
 
@@ -413,7 +413,7 @@ class DocAtualizacaoPrecos extends Component {
           totalInfo: { Total: 0 }
         });
       })
-      .catch(error => byUs.showError(error, "Erro ao adicionar linhas"));
+      .catch(error => sappy.showError(error, "Erro ao adicionar linhas"));
   }
 
   handleOnCellClick() {
@@ -550,7 +550,7 @@ class DocAtualizacaoPrecos extends Component {
                         .then(function (result) {
                           hashHistory.goBack();
                         })
-                        .catch(error => byUs.showError(error, "Erro ao apagar dados"));
+                        .catch(error => sappy.showError(error, "Erro ao apagar dados"));
                     }
                   }}
                   title="Confirmar ação"
@@ -593,7 +593,7 @@ class DocAtualizacaoPrecos extends Component {
 
                           that.setState({ rows, selectedIndexes: [] })
                         })
-                        .catch(error => byUs.showError(error, "Erro ao apagar linhas"));
+                        .catch(error => sappy.showError(error, "Erro ao apagar linhas"));
                     }
                   }}
                   title="Confirmar ação"
@@ -650,7 +650,7 @@ class DocAtualizacaoPrecos extends Component {
                           });
 
                         })
-                        .catch(error => byUs.showError(error, "Erro ao confirmar documento"));
+                        .catch(error => sappy.showError(error, "Erro ao confirmar documento"));
                     }
                   }}
                   title="Confirmar ação"
@@ -671,7 +671,7 @@ class DocAtualizacaoPrecos extends Component {
       let searchBar = () => {
         if (!baseadoEmDocumentos && !documentoBloqueado && this.state.loading === false) {
           return (
-            <div className="byus-search-bar float-left">
+            <div className="sappy-search-bar float-left">
               <SearchBar
                 totalInfo={this.state.totalInfo}
                 inputProps={{
@@ -696,7 +696,7 @@ class DocAtualizacaoPrecos extends Component {
       return (
         <div key={"action-bar"}>
           {searchBar()}
-          <div className="byus-action-bar animation-slide-left">
+          <div className="sappy-action-bar animation-slide-left">
             {actions.map(action => {
               if (!action.visible || this.state.loading === true) return null;
               let btClassName = "btn btn-" + action.color;
@@ -719,21 +719,21 @@ class DocAtualizacaoPrecos extends Component {
     let header = <div>
       <div className="row">
         <div className="col-lg-8">
-          <ByUsTextBox name="Tipo" label="Tipo:" disabled={true} value={this.state.docData.OBSERVACOES} />
+          <TextBox name="Tipo" label="Tipo:" disabled={true} value={this.state.docData.OBSERVACOES} />
         </div>
         <div className="col-lg-4">
 
           <div className="row">
             <div className="col-6">
-              <ByUsTextBox
+              <TextBox
                 name="Data"
                 label="Data:"
                 disabled={true}
-                value={byUs.format.properDisplayDateTime(this.state.docData.CONFIRMED || this.state.docData.DATA)}
+                value={sappy.format.properDisplayDateTime(this.state.docData.CONFIRMED || this.state.docData.DATA)}
               />
             </div>
             <div className="col-6">
-              <ByUsTextBox
+              <TextBox
                 name="Numero"
                 label="Numero:"
                 disabled={true}
@@ -756,7 +756,7 @@ class DocAtualizacaoPrecos extends Component {
                 <h5 className="page-title">Impressão de etiquetas {this.state.docData.DOCNUM && this.state.docData.DOCNUM} </h5>
               </div>
               <div className="col-xl-4 col-md-8">
-                <div className="byus-action-bar animation-slide-left">
+                <div className="sappy-action-bar animation-slide-left">
                   <Button outline className="btn-md btn-flat" onClick={e => {
                     this.setState({
                       currentModal: (
@@ -770,7 +770,7 @@ class DocAtualizacaoPrecos extends Component {
 
                                   hashHistory.push("/inv/etiq/doc/" + result.data.newID);
                                 })
-                                .catch(error => byUs.showError(error, "Erro ao duplicar dados"));
+                                .catch(error => sappy.showError(error, "Erro ao duplicar dados"));
                             }
                           }}
                           title="Confirmar ação"

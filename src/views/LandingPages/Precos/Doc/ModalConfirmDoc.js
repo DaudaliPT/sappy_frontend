@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import { ByUsDate } from "../../../../Inputs";
+import { Date } from "../../../../Inputs";
 
 class ModalConfirmDoc extends Component {
   constructor(props) {
@@ -57,7 +57,7 @@ class ModalConfirmDoc extends Component {
               </div>
               <div className="col-5 ">
                 <div className=" ">
-                  <ByUsDate label="Data" name="data" disabled={that.state.imediatamente} value={that.state.data} onChange={this.onFieldChange} />
+                  <Date label="Data" name="data" disabled={that.state.imediatamente} value={that.state.data} onChange={this.onFieldChange} />
                 </div>
               </div>
             </div>

@@ -2,10 +2,10 @@ import React, { Component } from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import axios from "axios";
 var $ = window.$;
-var byUs = window.byUs;
+var sappy = window.sappy;
 
-import { ByUsTextBox, ByUsTextBoxNumeric, ByUsComboBox } from "../../../Inputs";
-import { ByUsModalMessage } from "../../../Modals";
+import { TextBox, TextBoxNumeric, ComboBox } from "../../../Inputs";
+import { ModalMessage } from "../../../Modals";
 
 
 const getInitialState = function (props) {
@@ -107,7 +107,7 @@ class ModalCreateArtigo extends Component {
           })
         })
         .catch(error => {
-          this.setState({ saving: false }, byUs.showError(error, "Erro ao obter dados"));
+          this.setState({ saving: false }, sappy.showError(error, "Erro ao obter dados"));
         })
     }
   }
@@ -177,7 +177,7 @@ class ModalCreateArtigo extends Component {
               that.setState({ validationMessages })
             }
           })
-          .catch(error => byUs.showError(error, "Erro ao validar dados"));
+          .catch(error => sappy.showError(error, "Erro ao validar dados"));
       }
 
       let bc = ItemBarCodeCollection.filter(item => {
@@ -235,7 +235,7 @@ class ModalCreateArtigo extends Component {
           }
           that.setState({ validationMessages })
         })
-        .catch(error => byUs.showError(error, "Erro ao validar dados"));
+        .catch(error => sappy.showError(error, "Erro ao validar dados"));
 
       Object.assign(item, { [slField]: val });
 
@@ -280,7 +280,7 @@ class ModalCreateArtigo extends Component {
             that.props.toggleModal("refresh");
           })
           .catch(error => {
-            this.setState({ saving: false }, byUs.showError(error, "Erro ao apagar"));
+            this.setState({ saving: false }, sappy.showError(error, "Erro ao apagar"));
           });
       });
     }
@@ -290,7 +290,7 @@ class ModalCreateArtigo extends Component {
         saving: false
       },
       () => {
-        byUs.showWarning({
+        sappy.showWarning({
           title: "Apagar rascunho?",
           moreInfo: `Se confirmar a remoção deste rascunho, ele será removido do sistema.`,
           cancelText: "Cancelar",
@@ -368,7 +368,7 @@ class ModalCreateArtigo extends Component {
               }
               else {
 
-                byUs.showSuccess({
+                sappy.showSuccess({
                   title: "Successo!",
                   moreInfo: `Criou o artigo ${result.data.ItemCode}!`,
                   cancelText: "Adicionar outro",
@@ -385,7 +385,7 @@ class ModalCreateArtigo extends Component {
               }
             })
             .catch(error => {
-              this.setState({ saving: false }, byUs.showError(error, "Erro ao gravar"));
+              this.setState({ saving: false }, sappy.showError(error, "Erro ao gravar"));
             });
         });
       };
@@ -398,7 +398,7 @@ class ModalCreateArtigo extends Component {
           if (saveDraft) {
             criarArtigo();
           } else {
-            byUs.showQuestion({
+            sappy.showQuestion({
               title: "Confirma?",
               moreInfo: `Se confirmar, será criado este novo artigo em sistema.`,
               cancelText: "Cancelar",
@@ -464,7 +464,7 @@ class ModalCreateArtigo extends Component {
         ret.push(
           <div key={"div1" + supplier_field} className="row">
             <div className="col-7" style={{ paddingRight: "0" }}>
-              <ByUsComboBox
+              <ComboBox
                 key={supplier_field}
                 name={supplier_field}
                 label={label + ":"}
@@ -477,7 +477,7 @@ class ModalCreateArtigo extends Component {
             </div>
 
             <div className="col" style={{ paddingLeft: "0" }}>
-              <ByUsTextBox
+              <TextBox
                 label={label2 + ":"}
                 placeholder="Código de catálogo..."
                 name={catalogNo_field}
@@ -495,7 +495,7 @@ class ModalCreateArtigo extends Component {
           ret.push(
             <div key={"div_fabricante"} className="row">
               <div className="col-7" style={{ paddingRight: "0" }}>
-                <ByUsComboBox
+                <ComboBox
                   key="Manufacturer"
                   name="Manufacturer"
                   label={"Fabricante:"}
@@ -524,7 +524,7 @@ class ModalCreateArtigo extends Component {
         ret.push(
           <div key={"div1" + barcode_field} className="row">
             <div className="col-7" style={{ paddingRight: "0" }}>
-              <ByUsTextBox
+              <TextBox
                 key={barcode_field}
                 label="Código de barras:"
                 placeholder="Código de barras..."
@@ -535,7 +535,7 @@ class ModalCreateArtigo extends Component {
               />
             </div>
             <div className="col" style={{ paddingLeft: "0" }}>
-              <ByUsTextBoxNumeric
+              <TextBoxNumeric
                 valueType="integer"
                 label="Grupagem:"
                 placeholder="Grupagem..."
@@ -557,7 +557,7 @@ class ModalCreateArtigo extends Component {
 
     let renderModalMessage = () => {
       if (this.state.modalMessage && this.state.modalMessage.message) {
-        return <ByUsModalMessage {...this.state.modalMessage} />;
+        return <ModalMessage {...this.state.modalMessage} />;
       }
     };
 
@@ -576,7 +576,7 @@ class ModalCreateArtigo extends Component {
         <div className={"row " + hideClass}>
           <div className="col-lg-6">
             <h5 className="section-title">Info Geral</h5>
-            <ByUsComboBox
+            <ComboBox
               label="Família:"
               placeholder="Selecione a família..."
               name="U_SubFamilia1"
@@ -586,7 +586,7 @@ class ModalCreateArtigo extends Component {
               onChange={this.onFieldChange}
             />
 
-            <ByUsTextBox
+            <TextBox
               name="ItemName"
               label="Descrição:"
               placeholder="Introduza a descrição..."
@@ -597,7 +597,7 @@ class ModalCreateArtigo extends Component {
 
             {renderBarcodes()}
 
-            <ByUsComboBox
+            <ComboBox
               label="Propriedades:"
               placeholder="Propriedades..."
               name="Propriedades"
@@ -607,7 +607,7 @@ class ModalCreateArtigo extends Component {
               onChange={this.onFieldChange}
             />
 
-            <ByUsTextBox
+            <TextBox
               type="textarea"
               name="User_Text"
               label="Observações:"
@@ -620,7 +620,7 @@ class ModalCreateArtigo extends Component {
           <div className="col-lg-6">
 
             <h5 className="section-title">Compra</h5>
-            <ByUsComboBox
+            <ComboBox
               name="PurchaseVATGroup"
               label="IVA para compras:"
               placeholder="Selecione o IVA para compras..."
@@ -633,7 +633,7 @@ class ModalCreateArtigo extends Component {
             {renderSuppliers()}
 
             <h5 className="section-title">Venda</h5>
-            <ByUsComboBox
+            <ComboBox
               name="SalesVATGroup"
               label="IVA para vendas:"
               placeholder="Selecione o IVA para vendas..."
@@ -644,7 +644,7 @@ class ModalCreateArtigo extends Component {
             />
             <div className="row">
               <div className="col-6">
-                <ByUsTextBoxNumeric
+                <TextBoxNumeric
                   valueType="price"
                   label="Preço Cash:"
                   placeholder="Introduza o preço Cash..."
@@ -655,7 +655,7 @@ class ModalCreateArtigo extends Component {
                 />
               </div>
               <div className="col-6">
-                <ByUsTextBoxNumeric
+                <TextBoxNumeric
                   valueType="percent"
                   label="Margem Indicativa:"
                   placeholder="margem Indicativa..."

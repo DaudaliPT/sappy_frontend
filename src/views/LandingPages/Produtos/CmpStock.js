@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import ByUsSearchPage from "../../../components/ByUsSearchPage";
-const byUs = window.byUs;
+import SearchPage from "../../../components/SearchPage";
+const sappy = window.sappy;
 
 class CmpStock extends Component {
     constructor(props) {
@@ -18,8 +18,8 @@ class CmpStock extends Component {
                         <div className="row">
 
                             <div className="col-4 text-nowrap firstcol"> {row.WhsCode + ' - ' + row.WhsName} </div>
-                            <div className="col-2 text-nowrap "> <span className="float-right">{byUs.format.quantity(row.OnHand, 0) + " " + row.InvntryUom}</span> </div>
-                            <div className="col-2 text-nowrap lastcol"> <span className="float-right">{byUs.format.price(row.AvgPrice)}</span> </div>
+                            <div className="col-2 text-nowrap "> <span className="float-right">{sappy.format.quantity(row.OnHand, 0) + " " + row.InvntryUom}</span> </div>
+                            <div className="col-2 text-nowrap lastcol"> <span className="float-right">{sappy.format.price(row.AvgPrice)}</span> </div>
 
                         </div>
 
@@ -29,7 +29,7 @@ class CmpStock extends Component {
         };
 
         return (
-            <ByUsSearchPage
+            <SearchPage
                 searchPlaceholder="Procurar..."
                 searchApiUrl={`/api/prod/stock/${this.props.ItemCode}`}
                 renderRow={renderRow}

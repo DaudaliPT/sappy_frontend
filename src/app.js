@@ -14,10 +14,10 @@ import ForgotPassword from "./views/Auth/ForgotPassword/";
 import Documents from "./views/Documents/";
 
 
-var byUs = window.byUs;
+var sappy = window.sappy;
 
 // const NotFound = () => <h1>404.. This page is not found!</h1>;
-byUs.app = {
+sappy.app = {
   menus: [
     { name: "home", text: "", icon: "icon fa-home", component: Inicio },
     // 2\. Vendas (2.1 Encomendas, 2.2 Entrega, 2.3 Devolução, 2.4 Fatura de cliente, 2.5 NC de cliente, 2.6 Promoções)
@@ -124,7 +124,7 @@ var processMenuFullName = (fathername, menus) => {
     }
   });
 };
-processMenuFullName(null, byUs.app.menus);
+processMenuFullName(null, sappy.app.menus);
 
 
 
@@ -145,12 +145,12 @@ class App extends Component {
         }
       });
     };
-    processMenuLevel(byUs.app.menus);
+    processMenuLevel(sappy.app.menus);
 
   }
 
   requireAuth(nextState, replace, callback) {
-    var user = byUs.sessionInfo.user || {};
+    var user = sappy.sessionInfo.user || {};
     if (user.NAME) {
       callback();
     } else {

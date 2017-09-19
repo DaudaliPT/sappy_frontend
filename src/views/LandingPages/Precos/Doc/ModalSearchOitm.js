@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 var $ = window.$;
-const byUs = window.byUs;
-import ByUsSearchPage from "../../../../components/ByUsSearchPage";
+const sappy = window.sappy;
+import SearchPage from "../../../../components/SearchPage";
 
 import { Badge } from "reactstrap";
 import uuid from "uuid/v4";
@@ -69,7 +69,7 @@ class ModalSearchOitm extends Component {
       let rowStyleClass = "";
       if (row.OnHand < 0) rowStyleClass = "vlist-row-danger";
       if (row.frozenFor === "Y") rowStyleClass = "vlist-row-default";
-      if (selected) rowStyleClass += " byus-selected-row";
+      if (selected) rowStyleClass += " sappy-selected-row";
       return (
         <div className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={this.handleRowSelection}>
           <div className="container vertical-align-middle">
@@ -86,7 +86,7 @@ class ModalSearchOitm extends Component {
               <div className="col-5 "> {row.ItemName} <span> {renderBadges()} </span> </div>
               <div className="col-2"> <span className="float-right">{row.FORMATED_PRICE}</span> </div>
               <div className="col-2 lastcol">
-                <span className="float-right">{byUs.format.quantity(row.OnHand, 0) + " " + row.InvntryUom}</span>
+                <span className="float-right">{sappy.format.quantity(row.OnHand, 0) + " " + row.InvntryUom}</span>
               </div>
             </div>
             {/*mobile*/}
@@ -98,7 +98,7 @@ class ModalSearchOitm extends Component {
                 <div className="col-6 text-nowrap firstcol"> {row.ItemCode} <span> {renderBadges()} </span> </div>
                 <div className="col-3 text-nowrap"> <span className="float-right">{row.FORMATED_PRICE}</span> </div>
                 <div className="col-3 text-nowrap lastcol">
-                  {" "}<span className="float-right">{byUs.format.quantity(row.OnHand, 0)} Un</span>{" "}
+                  {" "}<span className="float-right">{sappy.format.quantity(row.OnHand, 0)} Un</span>{" "}
                 </div>
               </div>
             </div>
@@ -111,7 +111,7 @@ class ModalSearchOitm extends Component {
         <ModalHeader toggle={this.handleToggleModal}>Selecione o artigo</ModalHeader>
         <ModalBody>
 
-          <ByUsSearchPage
+          <SearchPage
             searchPlaceholder="Procurar..."
             searchApiUrl="/api/precos/searchOitm/"
             renderRow={renderRow}

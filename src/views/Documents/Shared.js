@@ -1,12 +1,12 @@
 
 import React from "react";
 import EditModal from "../LandingPages/Produtos/EditModal";
-const byUs = window.byUs;
+const sappy = window.sappy;
 
 
 exports.prepareDocType = function ({ tableName }) {
 
-  let objInfo = byUs.sapObjectInfo({ tableName });
+  let objInfo = sappy.sapObjectInfo({ tableName });
   tableName = objInfo.tableName.toLowerCase();
   let objType = objInfo.objectCode.toString()
   let title = objInfo.description;
@@ -48,10 +48,10 @@ exports.prepareDocType = function ({ tableName }) {
           </tr>)
           result.data.forEach(popuprow => {
             content.push(<tr >
-              <td>{byUs.format.properDisplayDate(popuprow.DocDate)}</td>
+              <td>{sappy.format.properDisplayDate(popuprow.DocDate)}</td>
               <td style={{ maxWidth: "130px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{popuprow.CardName}</td>
-              <td>{byUs.format.price(popuprow.PUR_PRICE, 3)}</td>
-              <td>{byUs.format.price(popuprow.PRCNET, 3)}</td>
+              <td>{sappy.format.price(popuprow.PUR_PRICE, 3)}</td>
+              <td>{sappy.format.price(popuprow.PRCNET, 3)}</td>
             </tr>)
           });
         }
@@ -108,7 +108,7 @@ exports.prepareDocType = function ({ tableName }) {
   // detailFields.push({ name: 'ITEMCODE', label: 'Artigo', type: "text", width: 220, editable: false, dragable: false, onLinkClick: this.handleItemcodeLinkClick })
   detailFields.push({
     name: 'CATNUM_OR_ITEMCODE', label: 'Catálogo', type: "text", width: 100, editable: false, dragable: false,
-    onLinkClick: props => byUs.showModal(<EditModal toggleModal={byUs.hideModal} itemcode={props.dependentValues.ITEMCODE} />)
+    onLinkClick: props => sappy.showModal(<EditModal toggleModal={sappy.hideModal} itemcode={props.dependentValues.ITEMCODE} />)
   })
   detailFields.push({ name: 'ITEMNAME', label: 'Descrição', type: "tags", width: 400, editable: true })
   detailFields.push({ name: 'QTCX', label: 'Cx', type: "quantity", width: 60, editable: true })

@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import axios from 'axios';
-import ByUsSearchPage from "../../../components/ByUsSearchPage";
-import ByUsSearchPage2 from "../../../components/ByUsSearchPage2";
+import SearchPage from "../../../components/SearchPage";
+import SearchPage2 from "../../../components/SearchPage2";
 
 // import { Badge } from "reactstrap";
 // import uuid from "uuid/v4";
-const byUs = window.byUs;
+const sappy = window.sappy;
 const $ = window.$;
 import CmpClassificacaoFooter from "./CmpClassificacaoFooter";
 import MeiosPagRecebimentoModal from "./MeiosPagRecebimentoModal";
@@ -84,18 +84,18 @@ class CmpClassificacao extends Component {
 
         })
 
-        byUs.showWaitProgress("A classificar documentos...")
+        sappy.showWaitProgress("A classificar documentos...")
         axios
             .post(`/api/caixa/class/update?class=${docClass}`, docs)
             .then(result => {
-                byUs.hideWaitProgress();
+                sappy.hideWaitProgress();
                 //forçar refresh
                 let selectedPN = that.state.selectedPN;
                 that.setState({ selectedPN: '', selectedDocKeys: [] },
                     () => setTimeout(that.setState({ selectedPN }), 1)
                 );
             })
-            .catch(error => byUs.showError(error, "Não foi possivel atualizar classificação"));
+            .catch(error => sappy.showError(error, "Não foi possivel atualizar classificação"));
     }
 
     render() {
@@ -111,14 +111,14 @@ class CmpClassificacao extends Component {
 
             let rowStyleClass = "";
             let r = { ...row }
-            if (selected) rowStyleClass += " byus-selected-row";
+            if (selected) rowStyleClass += " sappy-selected-row";
 
 
             let descDocs
-            if (byUs.getNum(row.BALANCE) === byUs.getNum(row.TOTAL_BALANCE)) {
+            if (sappy.getNum(row.BALANCE) === sappy.getNum(row.TOTAL_BALANCE)) {
                 descDocs = row.NUMDOCS + " " + (row.NUMDOCS === 1 ? " documento " : " documentos ");
             }
-            else descDocs = byUs.format.amount(row.BALANCE) + ", " + row.NUMDOCS + " " + (row.NUMDOCS === 1 ? " documento " : " documentos ");
+            else descDocs = sappy.format.amount(row.BALANCE) + ", " + row.NUMDOCS + " " + (row.NUMDOCS === 1 ? " documento " : " documentos ");
 
             return (
                 <div id={'PN_' + row.CARDCODE} className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={e => this.handlePNselection(e, r)}>
@@ -128,7 +128,7 @@ class CmpClassificacao extends Component {
                         </div>
                         <div className="row secondrow">
                             <div className="col-6 text-nowrap firstcol"> {descDocs}  </div>
-                            <div className="col-6 text-nowrap lastcol">  <span className="float-right">{byUs.format.amount(row.TOTAL_BALANCE)}</span> </div>
+                            <div className="col-6 text-nowrap lastcol">  <span className="float-right">{sappy.format.amount(row.TOTAL_BALANCE)}</span> </div>
                         </div>
                     </div>
                 </div>
@@ -141,10 +141,10 @@ class CmpClassificacao extends Component {
         let countD = 0
         if (this.docsComponent) {
             docsList.forEach(doc => {
-                // totalOfDocs += byUs.getNum(doc.BALANCE)
+                // totalOfDocs += sappy.getNum(doc.BALANCE)
                 let docId = doc.TRANSID_AND_LINEID;
                 if (selectedDocKeys.indexOf(docId) > -1) {
-                    totalOfSelectedDocs += byUs.getNum(doc.BALANCE)
+                    totalOfSelectedDocs += sappy.getNum(doc.BALANCE)
                     countC += doc.U_apyCLASS === 'C' ? 1 : 0;
                     countD += doc.U_apyCLASS === 'D' ? 1 : 0;
                 }
@@ -158,13 +158,13 @@ class CmpClassificacao extends Component {
                 { name: "Distribuição", color: "primary", icon: "icon fa-truck", visible: countD !== selectedDocKeys.length, onClick: e => this.setClass('D') },
                 {
                     name: "ReceberOuPagar",
-                    content: <span>{totalOfSelectedDocs > 0 ? "Receber " : "Pagar "}<strong>{byUs.format.amount(totalOfSelectedDocs)}</strong></span>,
+                    content: <span>{totalOfSelectedDocs > 0 ? "Receber " : "Pagar "}<strong>{sappy.format.amount(totalOfSelectedDocs)}</strong></span>,
                     color: totalOfSelectedDocs > 0 ? "success" : "danger",
                     icon: "icon fa-check",
                     visible: totalOfSelectedDocs !== 0,
                     onClick: e => {
                         if (totalOfSelectedDocs > 0)
-                            return byUs.showModal(<MeiosPagRecebimentoModal
+                            return sappy.showModal(<MeiosPagRecebimentoModal
                                 toggleModal={sucess => {
                                     //force refresh
                                     let selectedPN = this.state.selectedPN;
@@ -172,7 +172,7 @@ class CmpClassificacao extends Component {
                                         () => setTimeout(this.setState({ selectedPN }), 1)
                                     );
 
-                                    byUs.hideModal()
+                                    sappy.hideModal()
                                 }}
                                 selectedPN={selectedPN}
                                 selectedPNname={selectedPNname}
@@ -182,7 +182,7 @@ class CmpClassificacao extends Component {
                             />)
 
                         if (totalOfSelectedDocs < 0)
-                            return byUs.showModal(<MeiosPagPagamentoModal
+                            return sappy.showModal(<MeiosPagPagamentoModal
                                 toggleModal={sucess => {
                                     //force refresh
                                     let selectedPN = this.state.selectedPN;
@@ -190,7 +190,7 @@ class CmpClassificacao extends Component {
                                         () => setTimeout(this.setState({ selectedPN }), 1)
                                     );
 
-                                    byUs.hideModal()
+                                    sappy.hideModal()
                                 }}
                                 selectedPN={selectedPN}
                                 selectedPNname={selectedPNname}
@@ -208,7 +208,7 @@ class CmpClassificacao extends Component {
             <div>
                 <div className="row">
                     <div className="col-6">
-                        <ByUsSearchPage
+                        <SearchPage
                             ref={node => this.pnComponent = node}
                             searchPlaceholder="Procurar..."
                             searchApiUrl={`/api/caixa/class/pn`}
@@ -219,7 +219,7 @@ class CmpClassificacao extends Component {
                         />
                     </div>
                     <div className="col-6">
-                        <ByUsSearchPage2
+                        <SearchPage2
                             ref={node => this.docsComponent = node}
                             searchApiUrl={`/api/caixa/class/docs?cardcode=${selectedPN}`}
                             noRecordsMessage="Selecione primeiro um cliente"
@@ -233,7 +233,7 @@ class CmpClassificacao extends Component {
                                 { name: 'REFDATE', label: 'Data', type: "date", width: 80, editable: false },
                                 {
                                     name: 'DOCUMENTO', label: 'Documento', type: "text", width: 120, editable: false,
-                                    onLinkClick: (props) => byUs.LinkTo(props.dependentValues.TransType, props.dependentValues.CreatedBy)
+                                    onLinkClick: (props) => sappy.LinkTo(props.dependentValues.TransType, props.dependentValues.CreatedBy)
                                 },
                                 { name: 'DOCTOTAL', label: 'Total', type: "amount", width: 60, editable: false },
                                 { name: 'BALANCE', label: 'Em aberto', type: "amount", width: 80, editable: false }

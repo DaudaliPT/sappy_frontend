@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { Popover, PopoverContent } from 'reactstrap';
-const byUs = window.byUs;
+const sappy = window.sappy;
 const $ = window.$;
 
 import { Badge } from "reactstrap";
@@ -108,8 +108,8 @@ class Produtos extends Component {
                         result.data.forEach(row => {
                           content.push(<tr >
                             <td>{row.ListName}</td>
-                            <td>{byUs.format.price(row.Price)}</td>
-                            <td>{byUs.format.properDisplayDate(row.U_apyUPDATED)}</td>
+                            <td>{sappy.format.price(row.Price)}</td>
+                            <td>{sappy.format.properDisplayDate(row.U_apyUPDATED)}</td>
                           </tr>)
                         });
 
@@ -126,7 +126,7 @@ class Produtos extends Component {
 
 
                       })
-                      .catch(error => byUs.showError(error, "Erro ao obter dados"));
+                      .catch(error => sappy.showError(error, "Erro ao obter dados"));
 
 
                   }, 300);
@@ -154,7 +154,7 @@ class Produtos extends Component {
                         result.data.forEach(popuprow => {
                           content.push(<tr >
                             <td>{popuprow.WhsName}</td>
-                            <td>{byUs.format.quantity(popuprow.OnHand, 0) + " " + row.InvntryUom}</td>
+                            <td>{sappy.format.quantity(popuprow.OnHand, 0) + " " + row.InvntryUom}</td>
                           </tr>)
                         });
 
@@ -170,11 +170,11 @@ class Produtos extends Component {
                         })
 
                       })
-                      .catch(error => byUs.showError(error, "Erro ao obter dados"));
+                      .catch(error => sappy.showError(error, "Erro ao obter dados"));
                   }, 300);
                 }} >
                 {/* <span><Badge key={uuid()} color="info" className="badge-outline"> i </Badge></span> */}
-                <span className="float-right">{byUs.format.quantity(row.OnHand, 0) + " " + row.InvntryUom}</span>
+                <span className="float-right">{sappy.format.quantity(row.OnHand, 0) + " " + row.InvntryUom}</span>
               </div>
             </div>
             {/*mobile*/}
@@ -186,7 +186,7 @@ class Produtos extends Component {
                 <div className="col-6 text-nowrap firstcol"> {row.ItemCode} <span> {renderBadges()} </span> </div>
                 <div className="col-3 text-nowrap"> <span className="float-right">{row.FORMATED_PRICE}</span> </div>
                 <div className="col-3 text-nowrap lastcol">
-                  {" "}<span className="float-right">{byUs.format.quantity(row.OnHand, 0)} Un</span>{" "}
+                  {" "}<span className="float-right">{sappy.format.quantity(row.OnHand, 0)} Un</span>{" "}
                 </div>
               </div>
             </div>

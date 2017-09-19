@@ -1,6 +1,6 @@
 
 import React, { Component } from "react";
-import { ByUsTextBox, ByUsTextBoxNumeric, ByUsComboBox, ByUsDate, ByUsToggle, ByUsFlag } from "../../../Inputs";
+import { TextBox, TextBoxNumeric, ComboBox, Date, Toggle, Flag } from "../../../Inputs";
 import { Button } from "reactstrap";
 
 class DocHeader extends Component {
@@ -42,15 +42,15 @@ class DocHeader extends Component {
       };
 
       let input = null;
-      if (headerField.type === "text") input = <ByUsTextBox {...commonProps} />
-      else if (headerField.type === "textarea") input = <ByUsTextBox {...commonProps} type="textarea" />
-      else if (headerField.type === "integer") input = <ByUsTextBoxNumeric {...commonProps} valueType="integer" />
-      else if (headerField.type === "combo") input = <ByUsComboBox {...commonProps } />
-      else if (headerField.type === "date") input = <ByUsDate {...commonProps} />
-      else if (headerField.type === "bool") input = <ByUsToggle {...commonProps} />
+      if (headerField.type === "text") input = <TextBox {...commonProps} />
+      else if (headerField.type === "textarea") input = <TextBox {...commonProps} type="textarea" />
+      else if (headerField.type === "integer") input = <TextBoxNumeric {...commonProps} valueType="integer" />
+      else if (headerField.type === "combo") input = <ComboBox {...commonProps } />
+      else if (headerField.type === "date") input = <Date {...commonProps} />
+      else if (headerField.type === "bool") input = <Toggle {...commonProps} />
       else if (headerField.type.startsWith('flag')) {
         let color = headerField.type.split('|')[1];
-        input = <ByUsFlag {...commonProps} color={color} />
+        input = <Flag {...commonProps} color={color} />
       }
 
       return <div key={"headerfield_" + headerField.name} className={classNames}> {input} </div>;

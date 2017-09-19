@@ -1,10 +1,10 @@
 
 import React, { Component } from "react";
 import { Button } from "reactstrap";
-import ByUsSearchAndChoose from '../../../components/ByUsSearchAndChoose';
-const byUs = window.byUs;
+import SearchAndChoose from '../../../components/SearchAndChoose';
+const sappy = window.sappy;
 
-class DocFooter extends Component { 
+class DocFooter extends Component {
   render() {
     let docData = this.props.docData || {}
     let allowAddLines = docData.DOCNUM > 0 ? false : true;
@@ -33,7 +33,7 @@ class DocFooter extends Component {
             <span className="hidden-sm-down">Total</span>
             <span id="total-btn-text">
               <strong>
-                {"   " + byUs.format.amount(this.props.totals.totalAmount)}
+                {"   " + sappy.format.amount(this.props.totals.totalAmount)}
               </strong>
             </span>
             {!this.props.showTotals && <i className="icon wb-dropup" />}
@@ -46,8 +46,8 @@ class DocFooter extends Component {
     return (
       <nav id="docFooter" className="site-navbar navbar navbar-default navbar-fixed-bottom" >
         {allowAddLines && loaded &&
-          <div className="byus-search-bar float-left">
-            <ByUsSearchAndChoose
+          <div className="sappy-search-bar float-left">
+            <SearchAndChoose
               searchType={this.props.footerSearchType}
               limitSearch={this.props.footerLimitSearch}
               limitSearchCondition={this.props.footerLimitSearchCondition}

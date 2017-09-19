@@ -1,0 +1,6 @@
+{
+  "name": "DataGrid",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./DataGrid.js"
+}

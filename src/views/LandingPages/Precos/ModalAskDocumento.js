@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 var $ = window.$;
-const byUs = window.byUs;
-import ByUsSearchPage from "../../../components/ByUsSearchPage";
+const sappy = window.sappy;
+import SearchPage from "../../../components/SearchPage";
 
 import { Badge } from "reactstrap";
 import uuid from "uuid/v4";
@@ -74,7 +74,7 @@ class ModalAskDocumento extends Component {
 
       let rowId = "row_" + row.ObjType + "#" + row.DocEntry + "#" + row.DocNum;
       let rowStyleClass = "";
-      if (selected) rowStyleClass += " byus-selected-row";
+      if (selected) rowStyleClass += " sappy-selected-row";
       return (
         <div className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={this.handleRowSelection}>
           <div className="container vertical-align-middle">
@@ -88,7 +88,7 @@ class ModalAskDocumento extends Component {
                 </span>
                 <span className="ml-10"> {row.ABREV + " " + row.DocNum}</span>
               </div>
-              <div className="col-2"> {byUs.format.properDisplayDate(row.TaxDate)}</div>
+              <div className="col-2"> {sappy.format.properDisplayDate(row.TaxDate)}</div>
               <div className="col-5">
                 {row.CardCode + " - " + row.CardName}
                 {/* {renderBadges()} */}
@@ -107,7 +107,7 @@ class ModalAskDocumento extends Component {
               <div className="row secondrow">
                 <div className="col-4 text-nowrap firstcol"> {row.ABREV + " " + row.DocNum} </div>
                 <div className="col-5 text-nowrap firstcol">
-                  {" "}{byUs.format.properDisplayDate(row.TaxDate)} <span className="hidden-lg-down"> {renderBadges()} </span>{" "}
+                  {" "}{sappy.format.properDisplayDate(row.TaxDate)} <span className="hidden-lg-down"> {renderBadges()} </span>{" "}
                 </div>
                 <div className="col-3 text-nowrap lastcol">
                   <span className="float-right">{row.FORMATED_DOCTOTAL}</span>
@@ -124,7 +124,7 @@ class ModalAskDocumento extends Component {
         <ModalHeader toggle={this.handleToggleModal}>Selecione o documento</ModalHeader>
         <ModalBody>
 
-          <ByUsSearchPage
+          <SearchPage
             searchPlaceholder="Procurar..."
             searchApiUrl="/api/precos/searchBaseDocs/"
             renderRow={renderRow}

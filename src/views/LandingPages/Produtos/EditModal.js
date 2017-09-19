@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Button, Modal, ModalHeader, ModalBody } from "reactstrap";
 import axios from "axios";
 var $ = window.$;
-var byUs = window.byUs;
+var sappy = window.sappy;
 
 import CmpGeral from "./CmpGeral";
 import CmpStock from "./CmpStock";
@@ -111,7 +111,7 @@ class EditModal extends Component {
           })
         })
         .catch(error => {
-          this.setState({ saving: false }, byUs.showError(error, "Erro ao obter dados"));
+          this.setState({ saving: false }, sappy.showError(error, "Erro ao obter dados"));
         })
 
   }
@@ -127,7 +127,7 @@ class EditModal extends Component {
         if (result.data)
           that.setState({ ReadOnly: true }, hashHistory.push("/inv/oitm/" + result.data));
       })
-      .catch(error => byUs.showError(error, "Erro ao obter dados"));
+      .catch(error => sappy.showError(error, "Erro ao obter dados"));
   }
 
 

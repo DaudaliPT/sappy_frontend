@@ -17,32 +17,32 @@ var ReactToastr = require("react-toastr");
 var { ToastContainer, ToastMessage } = ReactToastr;
 const ToastMessageFactory = React.createFactory(ToastMessage.animation);
 
-var byUs = window.byUs;
+var sappy = window.sappy;
 var $ = window.$;
 
 class Full extends Component {
 
   constructor(props) {
     super(props);
-    byUs.showModal = this.showModal.bind(this);
-    byUs.hideModal = this.hideModal.bind(this);
+    sappy.showModal = this.showModal.bind(this);
+    sappy.hideModal = this.hideModal.bind(this);
 
-    byUs.GetLinkTo = this.GetLinkTo.bind(this);
-    byUs.LinkTo = this.LinkTo.bind(this);
+    sappy.GetLinkTo = this.GetLinkTo.bind(this);
+    sappy.LinkTo = this.LinkTo.bind(this);
 
-    byUs.showSuccess = this.showSuccess.bind(this);
-    byUs.showQuestion = this.showQuestion.bind(this);
-    byUs.showWarning = this.showWarning.bind(this);
-    byUs.showDanger = this.showDanger.bind(this);
-    byUs.showError = this.showError.bind(this);
+    sappy.showSuccess = this.showSuccess.bind(this);
+    sappy.showQuestion = this.showQuestion.bind(this);
+    sappy.showWarning = this.showWarning.bind(this);
+    sappy.showDanger = this.showDanger.bind(this);
+    sappy.showError = this.showError.bind(this);
 
-    byUs.showPopover = this.showPopover.bind(this);
-    byUs.hidePopover = this.hidePopover.bind(this);
+    sappy.showPopover = this.showPopover.bind(this);
+    sappy.hidePopover = this.hidePopover.bind(this);
 
-    byUs.showToastr = this.showToastr.bind(this);
-    byUs.clearToastr = this.clearToastr.bind(this);
-    byUs.showWaitProgress = this.showWaitProgress.bind(this);
-    byUs.hideWaitProgress = this.hideWaitProgress.bind(this);
+    sappy.showToastr = this.showToastr.bind(this);
+    sappy.clearToastr = this.clearToastr.bind(this);
+    sappy.showWaitProgress = this.showWaitProgress.bind(this);
+    sappy.hideWaitProgress = this.hideWaitProgress.bind(this);
 
     this.state = {
       currentAppModal: null,
@@ -73,14 +73,14 @@ class Full extends Component {
     let url = this.GetLinkUrl(objType, docEntry)
     if (!url) return <span><i className="icon fa-arrow-circle-right disabled" aria-hidden="true" />{' '} </span>
     return <span><i className="icon fa-arrow-circle-right" aria-hidden="true"
-      onClick={e => byUs.LinkTo(objType, docEntry)} />{' '}
+      onClick={e => sappy.LinkTo(objType, docEntry)} />{' '}
     </span>
   }
 
   LinkTo(objType, docEntry) {
     let url = this.GetLinkUrl(objType, docEntry)
     if (!url) return
-    byUs.hideModal()
+    sappy.hideModal()
     hashHistory.push({ pathname: url, state: { DocEntry: docEntry } })
   }
 
@@ -98,7 +98,7 @@ class Full extends Component {
 
   showPopover({ target, api, render, renderContext, placement }) {
     let that = this;
-    byUs.hidePopover();
+    sappy.hidePopover();
 
     this.hoverTimeOutHandle = setTimeout(function () {
       if (that.hoverServerRequest && that.hoverServerRequest.abort) that.hoverServerRequest.abort();
@@ -112,13 +112,13 @@ class Full extends Component {
 
           that.setState({
             currentPopover:
-            <Popover isOpen={true} target={target} toggle={this.togglePopover} placement={placement || "left"} onMouseLeave={byUs.hidePopover} >
+            <Popover isOpen={true} target={target} toggle={this.togglePopover} placement={placement || "left"} onMouseLeave={sappy.hidePopover} >
               <PopoverContent>{content}</PopoverContent>
             </Popover >
           })
 
         })
-        .catch(error => byUs.showError(error, "Erro ao obter dados"));
+        .catch(error => sappy.showError(error, "Erro ao obter dados"));
     }, 300);
   }
 

@@ -14,8 +14,8 @@ import { Popover, PopoverContent } from 'reactstrap';
 import axios from "axios";
 import uuid from "uuid/v4";
 import SearchBar from "./SearchBar.js";
-// import Formatters from "../../../../components/ByUsDataGrid/Formatters";
-import { ByUsTextBox } from "../../../../Inputs";
+// import Formatters from "../../../../components/DataGrid/Formatters";
+import { TextBox } from "../../../../Inputs";
 import { ModalMessageConfirm } from "../../../../Modals";
 
 import ModalConfirmDoc from "./ModalConfirmDoc";
@@ -23,7 +23,7 @@ import ModalConfirmPrint from "../ModalConfirmPrint";
 import ModalSearchOitm from "./ModalSearchOitm";
 import EditModal from "../../Produtos/EditModal";
 
-const byUs = window.byUs;
+const sappy = window.sappy;
 const $ = window.$;
 const CustomToolbar = React.createClass({
   propTypes: {
@@ -62,7 +62,7 @@ class CheckboxFormatter extends Component {
 
 class IntFormatter extends Component {
   render() {
-    const formatedValue = byUs.format.integer(this.props.value);
+    const formatedValue = sappy.format.integer(this.props.value);
     return (
       <div style={{ textAlign: "right" }}>
         {formatedValue}
@@ -87,8 +87,8 @@ class UPCPriceFormatter extends Component {
     let PREV_PRECO = 0;
     let LAST_PRECO = 0;
 
-    if (row.PREV_PRECO) PREV_PRECO = byUs.getNum(byUs.format.price(row.PREV_PRECO));
-    if (row.LAST_PRECO) LAST_PRECO = byUs.getNum(byUs.format.price(row.LAST_PRECO))
+    if (row.PREV_PRECO) PREV_PRECO = sappy.getNum(sappy.format.price(row.PREV_PRECO));
+    if (row.LAST_PRECO) LAST_PRECO = sappy.getNum(sappy.format.price(row.LAST_PRECO))
 
     if (PREV_PRECO > LAST_PRECO)
       classes = <span className="float-left" style={{ color: "green" }}><i className="icon wb-graph-down" /></span>;
@@ -96,7 +96,7 @@ class UPCPriceFormatter extends Component {
       classes = <span className="float-left" style={{ color: "lightgrey" }}><i className="icon wb-arrow-right" /></span>;
     if (PREV_PRECO < LAST_PRECO) classes = <span className="float-left" style={{ color: "red" }}><i className="icon wb-graph-up" /></span>;
 
-    const formatedValue = byUs.format.price(this.props.value);
+    const formatedValue = sappy.format.price(this.props.value);
     return (
       <div style={{ textAlign: "right" }} id={"upc" + row.LINENUM}
         onMouseLeave={e => {
@@ -123,14 +123,14 @@ class UPCPriceFormatter extends Component {
                   </tr>)
                   result.data.forEach(popuprow => {
                     let preco = "";
-                    if (byUs.getNum(popuprow.PRCNET) !== 0) {
-                      preco = byUs.format.price(popuprow.PRCNET, 3) + " N";
+                    if (sappy.getNum(popuprow.PRCNET) !== 0) {
+                      preco = sappy.format.price(popuprow.PRCNET, 3) + " N";
                     } else {
-                      preco = byUs.format.price(popuprow.PRCLIQ, 3);
+                      preco = sappy.format.price(popuprow.PRCLIQ, 3);
                     }
 
                     content.push(<tr >
-                      <td>{byUs.format.properDisplayDate(popuprow.DocDate)}</td>
+                      <td>{sappy.format.properDisplayDate(popuprow.DocDate)}</td>
                       <td style={{ maxWidth: "130px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{popuprow.CardName}</td>
                       <td>{preco}</td>
                     </tr>)
@@ -149,7 +149,7 @@ class UPCPriceFormatter extends Component {
                 })
 
               })
-              .catch(error => byUs.showError(error, "Erro ao obter dados"));
+              .catch(error => sappy.showError(error, "Erro ao obter dados"));
           }, 300);
         }} >
 
@@ -168,8 +168,8 @@ class NEW_PRICE_Formatter extends Component {
     let CURRENT_PRICE = 0;
     let NEW_PRICE = 0;
 
-    if (this.props.dependentValues.CURRENT_PRICE) CURRENT_PRICE = byUs.getNum(byUs.format.price(this.props.dependentValues.CURRENT_PRICE));
-    if (this.props.dependentValues.NEW_PRICE) NEW_PRICE = byUs.getNum(byUs.format.price(this.props.dependentValues.NEW_PRICE));
+    if (this.props.dependentValues.CURRENT_PRICE) CURRENT_PRICE = sappy.getNum(sappy.format.price(this.props.dependentValues.CURRENT_PRICE));
+    if (this.props.dependentValues.NEW_PRICE) NEW_PRICE = sappy.getNum(sappy.format.price(this.props.dependentValues.NEW_PRICE));
 
     if (CURRENT_PRICE > NEW_PRICE)
       classes = <span className="float-left" style={{ color: "green" }}><i className="icon wb-graph-down" /></span>;
@@ -178,7 +178,7 @@ class NEW_PRICE_Formatter extends Component {
     if (CURRENT_PRICE < NEW_PRICE)
       classes = <span className="float-left" style={{ color: "red" }}><i className="icon wb-graph-up" /></span>;
 
-    const formatedValue = byUs.format.price(this.props.value);
+    const formatedValue = sappy.format.price(this.props.value);
     return (
       <div style={{ textAlign: "right" }}>
         {classes}
@@ -190,7 +190,7 @@ class NEW_PRICE_Formatter extends Component {
 
 class PriceFormatter extends Component {
   render() {
-    const formatedValue = byUs.format.price(this.props.value);
+    const formatedValue = sappy.format.price(this.props.value);
     return (
       <div style={{ textAlign: "right" }}>
         {formatedValue}
@@ -209,7 +209,7 @@ const HeaderAlignRight = ({ column }) => {
 
 class PercentFormatter extends Component {
   render() {
-    const formatedValue = byUs.format.percent(this.props.value);
+    const formatedValue = sappy.format.percent(this.props.value);
     return (
       <div style={{ textAlign: "right" }}>
         {formatedValue}
@@ -226,7 +226,7 @@ class SimpleFormatter extends Component {
 
 class DateFormatter extends Component {
   render() {
-    return <div> {this.props.value ? byUs.format.properDisplayDate(this.props.value) : ''}</div>;
+    return <div> {this.props.value ? sappy.format.properDisplayDate(this.props.value) : ''}</div>;
   }
 }
 class DescritptionFormatter extends Component {
@@ -467,7 +467,7 @@ class DocAtualizacaoPrecos extends Component {
         if (result.data)
           hashHistory.push({ pathname: "/inv/prices/doc", state: { id: result.data } });
       })
-      .catch(error => byUs.showError(error, "Erro ao obter dados"));
+      .catch(error => sappy.showError(error, "Erro ao obter dados"));
   }
 
   componentDidMount() {
@@ -480,7 +480,7 @@ class DocAtualizacaoPrecos extends Component {
         });
       })
       .catch(function (error) {
-        if (!error.__CANCEL__) byUs.showError(error, "Api error")
+        if (!error.__CANCEL__) sappy.showError(error, "Api error")
       });
 
 
@@ -538,7 +538,7 @@ class DocAtualizacaoPrecos extends Component {
           }
             , that.calcSearchGridH);
         })
-        .catch(error => byUs.showError(error, "Erro ao obter dados"));
+        .catch(error => sappy.showError(error, "Erro ao obter dados"));
     }
   }
 
@@ -609,7 +609,7 @@ class DocAtualizacaoPrecos extends Component {
         }
       })
       .catch(function (error) {
-        if (!error.__CANCEL__) byUs.showError(error, "Api error")
+        if (!error.__CANCEL__) sappy.showError(error, "Api error")
         that.setState({ searchText: "" })
       });
   }
@@ -636,7 +636,7 @@ class DocAtualizacaoPrecos extends Component {
 
           next && next();
         })
-        .catch(error => byUs.showError(error, "Erro ao gravar dados"));
+        .catch(error => sappy.showError(error, "Erro ao gravar dados"));
     }
   }
 
@@ -651,7 +651,7 @@ class DocAtualizacaoPrecos extends Component {
           totalInfo: { Total: 0 }
         });
       })
-      .catch(error => byUs.showError(error, "Erro ao adicionar linhas"));
+      .catch(error => sappy.showError(error, "Erro ao adicionar linhas"));
   }
 
   handleOnCellClick() {
@@ -684,7 +684,7 @@ class DocAtualizacaoPrecos extends Component {
           Object.assign(row_orig, result.data);// = result.data;
           that.setState({ rows_orig });
         })
-        .catch(error => byUs.showError(error, "Erro ao gravar linha"));
+        .catch(error => sappy.showError(error, "Erro ao gravar linha"));
     }
   }
 
@@ -817,7 +817,7 @@ class DocAtualizacaoPrecos extends Component {
                         .then(function (result) {
                           hashHistory.goBack();
                         })
-                        .catch(error => byUs.showError(error, "Erro ao apagar dados"));
+                        .catch(error => sappy.showError(error, "Erro ao apagar dados"));
                     }
                   }}
                   title="Confirmar ação"
@@ -860,7 +860,7 @@ class DocAtualizacaoPrecos extends Component {
 
                           that.setState({ rows, selectedIndexes: [] })
                         })
-                        .catch(error => byUs.showError(error, "Erro ao apagar linhas"));
+                        .catch(error => sappy.showError(error, "Erro ao apagar linhas"));
                     }
                   }}
                   title="Confirmar ação"
@@ -910,7 +910,7 @@ class DocAtualizacaoPrecos extends Component {
                         .then(function (result) {
                           hashHistory.goBack();
                         })
-                        .catch(error => byUs.showError(error, "Erro ao confirmar documento"));
+                        .catch(error => sappy.showError(error, "Erro ao confirmar documento"));
                     }
                   }}
                 />
@@ -923,7 +923,7 @@ class DocAtualizacaoPrecos extends Component {
       let searchBar = () => {
         if (!baseadoEmDocumentos && !documentoBloqueado && this.state.loading === false) {
           return (
-            <div className="byus-search-bar float-left">
+            <div className="sappy-search-bar float-left">
               <SearchBar
                 totalInfo={this.state.totalInfo}
                 inputProps={{
@@ -948,7 +948,7 @@ class DocAtualizacaoPrecos extends Component {
       return (
         <div key={"action-bar"}>
           {searchBar()}
-          <div className="byus-action-bar animation-slide-left">
+          <div className="sappy-action-bar animation-slide-left">
             {actions.map(action => {
               if (!action.visible || this.state.loading === true) return null;
               let btClassName = "btn btn-" + action.color;
@@ -971,21 +971,21 @@ class DocAtualizacaoPrecos extends Component {
     let header = <div>
       <div className="row">
         <div className="col-lg-8">
-          <ByUsTextBox name="Tipo" label="Tipo:" disabled={true} value={this.state.docData.OBSERVACOES} />
+          <TextBox name="Tipo" label="Tipo:" disabled={true} value={this.state.docData.OBSERVACOES} />
         </div>
         <div className="col-lg-4">
 
           <div className="row">
             <div className="col-6">
-              <ByUsTextBox
+              <TextBox
                 name="Data"
                 label="Data:"
                 disabled={true}
-                value={byUs.format.properDisplayDateTime(this.state.docData.CONFIRMED || this.state.docData.DATA)}
+                value={sappy.format.properDisplayDateTime(this.state.docData.CONFIRMED || this.state.docData.DATA)}
               />
             </div>
             <div className="col-6">
-              <ByUsTextBox
+              <TextBox
                 name="Numero"
                 label="Numero:"
                 disabled={true}
@@ -1008,7 +1008,7 @@ class DocAtualizacaoPrecos extends Component {
                 <h5 className="page-title">Atualização de preços {this.state.docData.DOCNUM && this.state.docData.DOCNUM} </h5>
               </div>
               <div className="col-xl-4 col-md-8">
-                <div className="byus-action-bar animation-slide-left">
+                <div className="sappy-action-bar animation-slide-left">
                   <Button outline className="btn-md btn-flat" onClick={e => {
                     this.setState({
                       currentModal: (
@@ -1021,7 +1021,7 @@ class DocAtualizacaoPrecos extends Component {
                                 .then(function (result) {
                                   hashHistory.push({ pathname: "/inv/prices/doc", state: { id: result.data.newID } });
                                 })
-                                .catch(error => byUs.showError(error, "Erro ao duplicar dados"));
+                                .catch(error => sappy.showError(error, "Erro ao duplicar dados"));
                             }
                           }}
                           title="Confirmar ação"
@@ -1097,7 +1097,7 @@ class DocAtualizacaoPrecos extends Component {
                     return (
                       <div style={style} onKeyDown={onKeyDown} tabIndex={0}>
                         <span className="row-expand-icon" style={{ float: 'left', marginLeft: marginLeft, cursor: 'pointer' }} onClick={props.onRowExpandClick} >{props.isExpanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}</span>
-                        <strong>{props.columnGroupName}:                                {byUs.GetLinkTo(linkType, linkEntry)}                          {props.name}</strong>
+                        <strong>{props.columnGroupName}:                                {sappy.GetLinkTo(linkType, linkEntry)}                          {props.name}</strong>
                       </div>
                     );
                   }}

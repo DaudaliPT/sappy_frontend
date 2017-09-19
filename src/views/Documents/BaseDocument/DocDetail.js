@@ -1,7 +1,7 @@
 
 import React, { PureComponent } from "react";
-import ByUsDataGrid from "../../../components/ByUsDataGrid";
-import { ByUsTextBox, ByUsTextBoxNumeric, ByUsComboBox, ByUsDate, ByUsToggle, ByUsFlag, ByUsCheck } from "../../../Inputs";
+import DataGrid from "../../../components/DataGrid";
+import { TextBox, TextBoxNumeric, ComboBox, Date, Toggle, Flag, Check } from "../../../Inputs";
 
 class DocDetail extends PureComponent {
   constructor(props) {
@@ -49,20 +49,20 @@ class DocDetail extends PureComponent {
       };
 
       let input = null;
-      if (sidebarField.type === "text") input = <ByUsTextBox {...commonProps} />
-      else if (sidebarField.type === "textarea") input = <ByUsTextBox {...commonProps} type="textarea" />
-      else if (sidebarField.type === "integer") input = <ByUsTextBoxNumeric {...commonProps} valueType="integer" />
-      else if (sidebarField.type === "percent") input = <ByUsTextBoxNumeric {...commonProps} valueType="percent" />
-      else if (sidebarField.type === "combo") input = <ByUsComboBox {...commonProps } />
-      else if (sidebarField.type === "date") input = <ByUsDate {...commonProps} />
-      else if (sidebarField.type === "bool") input = <ByUsToggle {...commonProps} />
+      if (sidebarField.type === "text") input = <TextBox {...commonProps} />
+      else if (sidebarField.type === "textarea") input = <TextBox {...commonProps} type="textarea" />
+      else if (sidebarField.type === "integer") input = <TextBoxNumeric {...commonProps} valueType="integer" />
+      else if (sidebarField.type === "percent") input = <TextBoxNumeric {...commonProps} valueType="percent" />
+      else if (sidebarField.type === "combo") input = <ComboBox {...commonProps } />
+      else if (sidebarField.type === "date") input = <Date {...commonProps} />
+      else if (sidebarField.type === "bool") input = <Toggle {...commonProps} />
       else if (sidebarField.type.startsWith('flag')) {
         let color = sidebarField.type.split('|')[1];
-        input = <ByUsFlag {...commonProps} color={color} />
+        input = <Flag {...commonProps} color={color} />
       }
       else if (sidebarField.type.startsWith('check')) {
         let color = sidebarField.type.split('|')[1];
-        input = <ByUsCheck {...commonProps} color={color} />
+        input = <Check {...commonProps} color={color} />
       }
 
       return <div key={"sidebarField_" + sidebarField.name} className={classNames} style={style}> {input} </div>;
@@ -96,7 +96,7 @@ class DocDetail extends PureComponent {
     return (
       <div id="docDetail">
         <div id="docDetailGrid" style={docDetailGridStyle}  >
-          <ByUsDataGrid
+          <DataGrid
             ref="grid"
             height={this.props.height}
             fields={this.props.fields}
@@ -106,7 +106,7 @@ class DocDetail extends PureComponent {
             onRowSelectionChange={this.props.onRowSelectionChange}
             selectedKeys={this.props.selectedKeys}
             onRowReorder={this.props.onRowReorder}
-          ></ByUsDataGrid>
+          ></DataGrid>
         </div >
         {hasSidebar &&
           <div id="docDetailSidebar" style={docDetailSidebarStyle} >

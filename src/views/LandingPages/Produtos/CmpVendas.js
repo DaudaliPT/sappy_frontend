@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 
 import { Badge } from "reactstrap";
-import ByUsSearchPage from "../../../components/ByUsSearchPage";
-const byUs = window.byUs;
+import SearchPage from "../../../components/SearchPage";
+const sappy = window.sappy;
 
 
 
@@ -27,14 +27,14 @@ class CmpVendas extends Component {
                         {/*large displays*/}
                         <div className="row hidden-lg-down">
 
-                            <div className="col-1 text-nowrap firstcol"> {byUs.format.properDisplayDate(row.DOC_DATETIME)} </div>
+                            <div className="col-1 text-nowrap firstcol"> {sappy.format.properDisplayDate(row.DOC_DATETIME)} </div>
                             <div className="col-2 text-nowrap">
-                                {byUs.GetLinkTo(row.ObjType, row.DocEntry)}
+                                {sappy.GetLinkTo(row.ObjType, row.DocEntry)}
                                 {row.DESCDOC + ' ' + row.DocNum} </div>
                             <div className="col-5 text-truncate" title={row.CardCode + ' - ' + row.CardName}> {row.CardCode + ' - ' + row.CardName} </div>
-                            <div className="col-2 text-nowrap"> <span className="float-right">{byUs.format.quantity(row.InvQty, 0) + " " + row.InvntryUom + " x " + byUs.format.price(row.Price, 3)}</span> </div>
+                            <div className="col-2 text-nowrap"> <span className="float-right">{sappy.format.quantity(row.InvQty, 0) + " " + row.InvntryUom + " x " + sappy.format.price(row.Price, 3)}</span> </div>
                             <div className="col-2 text-nowrap lastcol">
-                                <span className="float-left"> <Badge color="success" pill>{byUs.format.percent(row.MARGEM, 2)} </Badge> </span>
+                                <span className="float-left"> <Badge color="success" pill>{sappy.format.percent(row.MARGEM, 2)} </Badge> </span>
                                 <span className="float-right"> {row.FORMATED_LINETOTAL} </span>
                             </div>
                         </div>
@@ -45,11 +45,11 @@ class CmpVendas extends Component {
                                 <div className="col text-nowrap">  {row.CardCode + ' - ' + row.CardName} </div>
                             </div>
                             <div className="row secondrow">
-                                <div className="col-3 text-nowrap firstcol"> {byUs.format.properDisplayDate(row.DOC_DATETIME)} </div>
+                                <div className="col-3 text-nowrap firstcol"> {sappy.format.properDisplayDate(row.DOC_DATETIME)} </div>
                                 <div className="col-4 text-nowrap">
-                                    {byUs.GetLinkTo(row.ObjType, row.DocEntry)}
+                                    {sappy.GetLinkTo(row.ObjType, row.DocEntry)}
                                     {row.DESCDOC + ' ' + row.DocNum} </div>
-                                <div className="col-5 text-nowrap lastcol">  <span className="float-right">{byUs.format.quantity(row.InvQty, 0) + " x " + byUs.format.price(row.Price, 3)}</span> </div>
+                                <div className="col-5 text-nowrap lastcol">  <span className="float-right">{sappy.format.quantity(row.InvQty, 0) + " x " + sappy.format.price(row.Price, 3)}</span> </div>
                             </div>
                         </div>
                     </div>
@@ -58,7 +58,7 @@ class CmpVendas extends Component {
         };
 
         return (
-            <ByUsSearchPage
+            <SearchPage
                 searchPlaceholder="Procurar..."
                 searchApiUrl={`/api/prod/vendas/${this.props.ItemCode}`}
                 noRecordsMessage="Não há vendas deste artigo"

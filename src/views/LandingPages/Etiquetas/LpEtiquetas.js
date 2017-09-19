@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-const byUs = window.byUs;
+const sappy = window.sappy;
 const $ = window.$;
 import axios from "axios";
 import { Badge } from "reactstrap";
@@ -34,7 +34,7 @@ class LpEtiquetas extends Component {
         });
       })
       .catch(function (error) {
-        if (!error.__CANCEL__) byUs.showError(error, "Api error")
+        if (!error.__CANCEL__) sappy.showError(error, "Api error")
       });
   }
 
@@ -82,7 +82,7 @@ class LpEtiquetas extends Component {
         .then(function (result) {
           hashHistory.push("/inv/etiq/doc/" + result.data.ID);
         })
-        .catch(error => byUs.showError(error, "Erro ao adicionar linhas"));
+        .catch(error => sappy.showError(error, "Erro ao adicionar linhas"));
     }
   }
   render() {
@@ -111,7 +111,7 @@ class LpEtiquetas extends Component {
 
       let rowId = "row_" + row.ID + "#" + (row.DOCNUM || 0);
       let rowStyleClass = "";
-      if (selected) rowStyleClass += " byus-selected-row";
+      if (selected) rowStyleClass += " sappy-selected-row";
       if (!row.DOCNUM) rowStyleClass += " vlist-row-warning";
 
       return (
@@ -119,14 +119,14 @@ class LpEtiquetas extends Component {
           {/*large displays*/}
           <div className="container vertical-align-middle hidden-lg-down">
             <div className="row">
-              <div className="col-1 byus-select-col-container" onClick={this.handleRowSelection}>
+              <div className="col-1 sappy-select-col-container" onClick={this.handleRowSelection}>
                 <span className="checkbox-custom checkbox-primary checkbox-lg">
                   <input type="checkbox" className="contacts-checkbox selectable-item" value={selected} id={rowId} />
                   <label htmlFor={rowId} />
                 </span>
               </div>
               <div className="col-1"> {row.DOCNUM || ("#" + row.ID)} </div>
-              <div className="col-2"> {byUs.format.properDisplayDate(row.CONFIRMED || row.DATA)} </div>
+              <div className="col-2"> {sappy.format.properDisplayDate(row.CONFIRMED || row.DATA)} </div>
               <div className="col-7" style={{ maxHeight: "50px", overflow: "hidden" }}> <span> {renderBadges1()}{renderBadges()} </span> {row.OBSERVACOES} </div>
               <div className="col-1 lastcol">
                 <span className="float-right">{row.CREATED_BY_NAME}</span>
@@ -136,18 +136,18 @@ class LpEtiquetas extends Component {
 
           {/*mobile*/}
           <div className="vertical-align-middle hidden-xl-up">
-            <div className="byus-select-col" onClick={this.handleRowSelection}>
+            <div className="sappy-select-col" onClick={this.handleRowSelection}>
               <span className="checkbox-custom checkbox-primary checkbox-lg">
                 <input type="checkbox" className="contacts-checkbox selectable-item" value={selected} id={rowId} />
                 <label htmlFor={rowId} />
               </span>
             </div>
-            <div className="byus-nonselect-col">
+            <div className="sappy-nonselect-col">
               <div className="container">
                 <div className="row">
                   <div className="col-1"> {row.DOCNUM || ("#" + row.ID)} </div>
                   <div className="col text-nowrap lastcol">
-                    {byUs.format.properDisplayDate(row.CONFIRMED || row.DATA)}
+                    {sappy.format.properDisplayDate(row.CONFIRMED || row.DATA)}
                     <span> {renderBadges1()} </span>
                   </div>
                 </div>

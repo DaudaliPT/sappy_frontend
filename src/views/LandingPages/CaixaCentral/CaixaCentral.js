@@ -66,7 +66,7 @@ class CaixaCentral extends Component {
               </p>
             </div>
             <div className="col-md-3    px-md-15 px-0">
-              <div className="byus-action-bar animaDISABELDtion-slide-left">
+              <div className="sappy-action-bar animaDISABELDtion-slide-left">
 
               </div>
             </div>

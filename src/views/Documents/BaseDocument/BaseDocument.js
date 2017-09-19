@@ -8,7 +8,7 @@ import actionFunc from './BaseDocumentActions'
 import axios from "axios";
 import "./BaseDocument.css";
 const $ = window.$;
-const byUs = window.byUs;
+const sappy = window.sappy;
 
 class BaseDocument extends Component {
   constructor(props) {
@@ -112,7 +112,7 @@ class BaseDocument extends Component {
         let changes = result.data || [];
         if (changes.length === 0) return that.setState({ editable: !editable }, that.loadDoc)
 
-        byUs.showQuestion({
+        sappy.showQuestion({
           title: "Continuar edição?",
           msg: "Há alterações não confirmadas neste documento.",
           moreInfo: "Pode continuar a editar ou ignorar as alterações registadas e recomeçar do zero.",
@@ -125,11 +125,11 @@ class BaseDocument extends Component {
               .then(function (result) {
                 that.setState({ editable: !editable }, that.loadDoc)
               })
-              .catch(error => byUs.showError(error, "Erro ao obter dados"));
+              .catch(error => sappy.showError(error, "Erro ao obter dados"));
           }
         })
       })
-      .catch(error => byUs.showError(error, "Erro ao obter dados"));
+      .catch(error => sappy.showError(error, "Erro ao obter dados"));
   }
 
   forceReload() {
@@ -152,7 +152,7 @@ class BaseDocument extends Component {
           that.setNewDataAndDisplayAlerts(newDocData);
 
         })
-        .catch(error => byUs.showError(error, "Erro ao obter dados"));
+        .catch(error => sappy.showError(error, "Erro ao obter dados"));
       return
     }
 
@@ -168,7 +168,7 @@ class BaseDocument extends Component {
           that.setNewDataAndDisplayAlerts(newDocData);
 
         })
-        .catch(error => byUs.showError(error, "Erro ao obter dados"));
+        .catch(error => sappy.showError(error, "Erro ao obter dados"));
     }
     else {
       that.setState({
@@ -183,7 +183,7 @@ class BaseDocument extends Component {
           docData = { ...docData, DOCSERIES: result.data.Series };
           that.setState({ docData });
         })
-        .catch(error => byUs.showError(error, "Erro ao obter dados"))
+        .catch(error => sappy.showError(error, "Erro ao obter dados"))
 
     }
   }
@@ -207,7 +207,7 @@ class BaseDocument extends Component {
 
           next && next();
         })
-        .catch(error => byUs.showError(error, "Erro ao gravar cabeçalho"));
+        .catch(error => sappy.showError(error, "Erro ao gravar cabeçalho"));
     }
   }
 
@@ -215,7 +215,7 @@ class BaseDocument extends Component {
     let that = this;
 
     if (docData.ReturnMessage) {
-      byUs.showToastr(docData.ReturnMessage);
+      sappy.showToastr(docData.ReturnMessage);
       delete docData.ReturnMessage
     }
 
@@ -238,7 +238,7 @@ class BaseDocument extends Component {
     if (that.props.onHeaderChange) updated = that.props.onHeaderChange(this.state.docData, updated);
 
     // // check if really changed
-    // if (byUs.isEqual(oldVal, val)) return console.log("skip update");
+    // if (sappy.isEqual(oldVal, val)) return console.log("skip update");
     // console.log(fieldName, oldVal, val)
     if ('EXTRADISC,EXTRADISCPERC,DOCTOTAL'.indexOf(fieldName) > -1) this.setState({ changingTotals: true })
 
@@ -251,7 +251,7 @@ class BaseDocument extends Component {
           delete docData[changeInfo.fieldName + "_LOGICMSG"]
           that.setNewDataAndDisplayAlerts(docData);
         })
-        .catch(error => byUs.showError(error, "Erro ao gravar cabeçalho"));
+        .catch(error => sappy.showError(error, "Erro ao gravar cabeçalho"));
     }
     else {
 
@@ -264,7 +264,7 @@ class BaseDocument extends Component {
             delete docData[changeInfo.fieldName + "_LOGICMSG"]
             that.setNewDataAndDisplayAlerts(docData);
           })
-          .catch(error => byUs.showError(error, "Erro ao gravar cabeçalho"));
+          .catch(error => sappy.showError(error, "Erro ao gravar cabeçalho"));
       });
 
     }
@@ -295,7 +295,7 @@ class BaseDocument extends Component {
         delete newDocData.UPDATED_LINE;
         that.setNewDataAndDisplayAlerts(newDocData)
       })
-      .catch(error => byUs.showError(error, "Erro ao gravar linha"));
+      .catch(error => sappy.showError(error, "Erro ao gravar linha"));
   }
 
   handleDetailRowSelect(selectedLineNums) {
@@ -315,7 +315,7 @@ class BaseDocument extends Component {
           let docData = { ...that.state.docData, ...result.data };
           that.setState({ selectedLineNums: false, docData })
         })
-        .catch(error => byUs.showError(error, "Não foi possível reordernar as linhas"));
+        .catch(error => sappy.showError(error, "Não foi possível reordernar as linhas"));
 
   }
 
@@ -343,7 +343,7 @@ class BaseDocument extends Component {
             that.refs.DocDetail.scrollToLastLine();
           });
         })
-        .catch(error => byUs.showError(error, "Erro ao adicionar linhas"));
+        .catch(error => sappy.showError(error, "Erro ao adicionar linhas"));
     }
 
     if (selectedItems && selectedItems.length > 0) {
@@ -382,7 +382,7 @@ class BaseDocument extends Component {
 
     let footerLimitSearchCondition = this.props.footerLimitSearchCondition || '';
     Object.keys(docData).forEach(
-      field => footerLimitSearchCondition = byUs.replaceAll(footerLimitSearchCondition, "<" + field + ">", docData[field])
+      field => footerLimitSearchCondition = sappy.replaceAll(footerLimitSearchCondition, "<" + field + ">", docData[field])
     )
 
     let canConfirmar = (this.state.docData.ID > 0 || (this.state.docData.DOCNUM > 0 && editable));

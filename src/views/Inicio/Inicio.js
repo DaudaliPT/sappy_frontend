@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 var $ = window.$;
-var byUs = window.byUs;
+var sappy = window.sappy;
 
 class Inicio extends Component {
   constructor(props) {
@@ -8,7 +8,7 @@ class Inicio extends Component {
     this.handleLogoImageError = this.handleLogoImageError.bind(this);
 
     this.state = {
-      companyLogo: "img/" + byUs.sessionInfo.company.dbName + "/logo.png"
+      companyLogo: "img/" + sappy.sessionInfo.company.dbName + "/logo.png"
     };
   }
 
@@ -30,7 +30,7 @@ class Inicio extends Component {
   }
 
   render() {
-    var { user, company } = byUs.sessionInfo;
+    var { user, company } = sappy.sessionInfo;
     var { companyLogo } = this.state;
 
     return (

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 const $ = window.$;
-const byUs = window.byUs;
+const sappy = window.sappy;
 
 import BaseLandingPage from "../BaseLandingPage";
 import ModalReportParams from "./ModalReportParams";
@@ -35,9 +35,9 @@ class LpReports extends Component {
     let DocName = id.split("|")[2];
 
 
-    // byUs.showProgress
+    // sappy.showProgress
 
-    byUs.showWaitProgress("A processar, aguarde por favor...");
+    sappy.showWaitProgress("A processar, aguarde por favor...");
 
     if (this.cancelPreviousAxiosRequest) this.cancelPreviousAxiosRequest();
     var CancelToken = axios.CancelToken;
@@ -49,7 +49,7 @@ class LpReports extends Component {
         })
       })
       .then(function (result) {
-        byUs.hideWaitProgress();
+        sappy.hideWaitProgress();
 
         let reportParameters = result.data;
         if (typeof reportParameters === "string") {
@@ -83,7 +83,7 @@ class LpReports extends Component {
         }
       })
       .catch(function (error) {
-        if (!error.__CANCEL__) byUs.showError(error, "Api error")
+        if (!error.__CANCEL__) sappy.showError(error, "Api error")
       });
   }
 
@@ -111,7 +111,7 @@ class LpReports extends Component {
                 {/* <span className="float-right">
                   <button
                     type="button"
-                    className="byus-execute btn btn-round btn-outline btn-default"
+                    className="sappy-execute btn btn-round btn-outline btn-default"
                     id={row.DocCode}
                     name={row.DocName}
                     onClick={this.handleOnClick_report}

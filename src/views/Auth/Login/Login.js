@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { ModalMessage } from "../../../Modals";
 var $ = window.$;
 import axios from "axios";
-var byUs = window.byUs;
+var sappy = window.sappy;
 
 class Login extends Component {
   constructor(props) {
@@ -33,7 +33,7 @@ class Login extends Component {
         that.setState({ companys: result.data });
       })
       .catch(error => {
-        byUs.parseBackendError("Não foi possível obter a informação do utilizador:", error);
+        sappy.parseBackendError("Não foi possível obter a informação do utilizador:", error);
       });
   }
 

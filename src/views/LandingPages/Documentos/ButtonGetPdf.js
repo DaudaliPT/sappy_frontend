@@ -1,15 +1,15 @@
 import React, { Component } from "react";
-const byUs = window.byUs;
+const sappy = window.sappy;
 
 class ButtonGetPdf extends Component {
 
   handleOnClick_GetPdf(e) {
     // Quando entra na landing page, é feito um pedido que procura o defaultLayoutCode para o documento
-    // e o guarda em byUs.defaultLayoutCode
-    let defaultLayoutCode = byUs.defaultLayoutCode;
+    // e o guarda em sappy.defaultLayoutCode
+    let defaultLayoutCode = sappy.defaultLayoutCode;
 
     if (!defaultLayoutCode) {
-      return byUs.showError(null, "Não foi possível obter layout predefinido para impressão.");
+      return sappy.showError(null, "Não foi possível obter layout predefinido para impressão.");
     }
 
     // Executar o mapa
@@ -26,7 +26,7 @@ class ButtonGetPdf extends Component {
     return (
       <button
         type="button"
-        className="btn btn-round btn-outline btn-default byus-execute"
+        className="btn btn-round btn-outline btn-default sappy-execute"
         onClick={this.handleOnClick_GetPdf.bind(this)}
       >
         <i className="icon fa-file-pdf-o" />

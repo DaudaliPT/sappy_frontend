@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { Button } from "reactstrap";
 import axios from "axios";
 // var $ = window.$;
-var byUs = window.byUs;
-import { ByUsTextBox, ByUsTextBoxNumeric, ByUsComboBox, ByUsToggle } from "../../../Inputs";
-import { ByUsModalMessage } from "../../../Modals";
+var sappy = window.sappy;
+import { TextBox, TextBoxNumeric, ComboBox, Toggle } from "../../../Inputs";
+import { ModalMessage } from "../../../Modals";
 import { hashHistory } from "react-router";
 
 const getInitialState = function (props) {
@@ -123,7 +123,7 @@ class CmpGeral extends Component {
               that.setState({ validationMessages })
             }
           })
-          .catch(error => byUs.showError(error, "Erro ao validar dados"));
+          .catch(error => sappy.showError(error, "Erro ao validar dados"));
       }
 
       let bc = ItemBarCodeCollection.filter((item, pos) => {
@@ -181,7 +181,7 @@ class CmpGeral extends Component {
           }
           that.setState({ validationMessages })
         })
-        .catch(error => byUs.showError(error, "Erro ao validar dados"));
+        .catch(error => sappy.showError(error, "Erro ao validar dados"));
 
       Object.assign(item, { [slField]: val });
 
@@ -229,7 +229,7 @@ class CmpGeral extends Component {
             hashHistory.push("/inv/oitm");
           })
           .catch(error => {
-            this.setState({ saving: false }, byUs.showError(error, "Erro ao apagar"));
+            this.setState({ saving: false }, sappy.showError(error, "Erro ao apagar"));
           });
       });
     }
@@ -239,7 +239,7 @@ class CmpGeral extends Component {
         saving: false
       },
       () => {
-        byUs.showDanger({
+        sappy.showDanger({
           title: "Apagar artigo?",
           moreInfo: `Se confirmar a remoção deste artigo, ele será removido do sistema.`,
           cancelText: "Cancelar",
@@ -306,13 +306,13 @@ class CmpGeral extends Component {
               that.props.onItemSaved(); //notify parent
 
 
-              byUs.showSuccess({
+              sappy.showSuccess({
                 title: "Alterações gravadas",
                 moreInfo: `O artigo ${result.data.ItemCode} foi alterado!`
               })
             })
             .catch(error => {
-              this.setState({ saving: false }, byUs.showError(error, "Erro ao gravar"));
+              this.setState({ saving: false }, sappy.showError(error, "Erro ao gravar"));
             });
         });
       };
@@ -322,7 +322,7 @@ class CmpGeral extends Component {
           saving: false
         },
         () => {
-          byUs.showQuestion({
+          sappy.showQuestion({
             title: "Confirma?",
             moreInfo: `Se confirmar, as alterações ao artigo serão gravadas no sistema.`,
             cancelText: "Cancelar",
@@ -373,7 +373,7 @@ class CmpGeral extends Component {
 
     let renderModalMessage = () => {
       if (this.state.modalMessage && this.state.modalMessage.message) {
-        return <ByUsModalMessage {...this.state.modalMessage} />;
+        return <ModalMessage {...this.state.modalMessage} />;
       }
     };
 
@@ -396,7 +396,7 @@ class CmpGeral extends Component {
         ret.push(
           <div key={"div1" + supplier_field} className="row">
             <div className="col-7" style={{ paddingRight: "0" }}>
-              <ByUsComboBox
+              <ComboBox
                 key={supplier_field}
                 name={supplier_field}
                 label={label + ":"}
@@ -410,7 +410,7 @@ class CmpGeral extends Component {
             </div>
 
             <div className="col" style={{ paddingLeft: "0" }}>
-              <ByUsTextBox
+              <TextBox
                 label="Código de catálogo:"
                 placeholder={"Código de catálogo..."}
                 name={catalogNo_field}
@@ -429,7 +429,7 @@ class CmpGeral extends Component {
           ret.push(
             <div key={"div_fabricante"} className="row">
               <div className="col-7" style={{ paddingRight: "0" }}>
-                <ByUsComboBox
+                <ComboBox
                   key="Manufacturer"
                   name="Manufacturer"
                   label={"Fabricante:"}
@@ -459,7 +459,7 @@ class CmpGeral extends Component {
         ret.push(
           <div key={"div1" + barcode_field} className="row">
             <div className="col-7" style={{ paddingRight: "0" }}>
-              <ByUsTextBox
+              <TextBox
                 key={barcode_field}
                 label="Código de barras:"
                 disabled={this.state.ReadOnly}
@@ -471,7 +471,7 @@ class CmpGeral extends Component {
               />
             </div>
             <div className="col" style={{ paddingLeft: "0" }}>
-              <ByUsTextBoxNumeric
+              <TextBoxNumeric
                 valueType="integer"
                 label="Grupagem:"
                 placeholder="Grupagem..."
@@ -507,7 +507,7 @@ class CmpGeral extends Component {
         <div className="col-lg-6">
           <h5 className="section-title">Info Geral</h5>
 
-          <ByUsTextBox
+          <TextBox
             name="ItemName"
             label="Descrição:"
             disabled={this.state.ReadOnly}
@@ -517,7 +517,7 @@ class CmpGeral extends Component {
             onChange={this.onFieldChange}
           />
 
-          <ByUsComboBox
+          <ComboBox
             label="Sub-Família:"
             placeholder="Selecione a família..."
             name="U_SubFamilia1"
@@ -529,7 +529,7 @@ class CmpGeral extends Component {
           />
           {renderBarcodes()}
 
-          <ByUsComboBox
+          <ComboBox
             label="Propriedades:"
             placeholder="Propriedades..."
             name="Propriedades"
@@ -540,7 +540,7 @@ class CmpGeral extends Component {
             onChange={this.onFieldChange}
           />
 
-          <ByUsTextBox
+          <TextBox
             type="textarea"
             name="User_Text"
             label="Observações:"
@@ -554,7 +554,7 @@ class CmpGeral extends Component {
         <div className="col-lg-6">
 
           <h5 className="section-title">Compra</h5>
-          <ByUsComboBox
+          <ComboBox
             name="PurchaseVATGroup"
             disabled={this.state.ReadOnly}
             label="IVA para compras:"
@@ -568,7 +568,7 @@ class CmpGeral extends Component {
           {renderSuppliers()}
 
           <h5 className="section-title">Venda</h5>
-          <ByUsComboBox
+          <ComboBox
             name="SalesVATGroup"
             disabled={this.state.ReadOnly}
             label="IVA para vendas:"
@@ -580,7 +580,7 @@ class CmpGeral extends Component {
           />
           <div className="row">
             <div className="col-6">
-              <ByUsTextBoxNumeric
+              <TextBoxNumeric
                 valueType="price"
                 disabled={this.state.ReadOnly}
                 label="Preço Cash:"
@@ -592,7 +592,7 @@ class CmpGeral extends Component {
               />
             </div>
             <div className="col-6">
-              <ByUsTextBoxNumeric
+              <TextBoxNumeric
                 valueType="percent"
                 disabled={this.state.ReadOnly}
                 label="Margem Indicativa:"
@@ -605,7 +605,7 @@ class CmpGeral extends Component {
           </div>
           <div className="row">
             <div className="col-6">
-              <ByUsToggle
+              <Toggle
                 disabled={this.state.ReadOnly}
                 label=""
                 name="Frozen"
@@ -628,7 +628,7 @@ class CmpGeral extends Component {
         {renderLoading()}
         {renderContent()}
 
-        <div className="byus-action-bar animation-slide-left">
+        <div className="sappy-action-bar animation-slide-left">
 
           {!this.state.ReadOnly &&
             <Button color="danger" disabled={this.state.saving || this.state.loading} onClick={this.onDeleteArtigo}>

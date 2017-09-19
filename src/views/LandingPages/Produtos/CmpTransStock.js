@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import ByUsSearchPage from "../../../components/ByUsSearchPage";
-const byUs = window.byUs;
+import SearchPage from "../../../components/SearchPage";
+const sappy = window.sappy;
 
 class CmpTransStock extends Component {
     constructor(props) {
@@ -23,13 +23,13 @@ class CmpTransStock extends Component {
                         {/*large displays*/}
                         <div className="row hidden-lg-down">
 
-                            <div className="col-1 text-nowrap firstcol"> {byUs.format.properDisplayDate(row.DOC_DATETIME)} </div>
+                            <div className="col-1 text-nowrap firstcol"> {sappy.format.properDisplayDate(row.DOC_DATETIME)} </div>
                             <div className="col-2 text-nowrap">
-                                {byUs.GetLinkTo(row.ObjType, row.DocEntry)}
+                                {sappy.GetLinkTo(row.ObjType, row.DocEntry)}
                                 {row.DESCDOC + ' ' + row.DocNum} </div>
                             <div className="col-4 text-nowrap"> {row.WhsCode + ' - ' + row.WhsName} </div>
-                            <div className="col-2 text-nowrap">{seta} <span className="float-right">{byUs.format.quantity(row.InvQty, 0) + " " + row.InvntryUom}</span> </div>
-                            <div className="col-2 text-nowrap"><span className="float-right">{byUs.format.price(row.Price, 3)}</span> </div>
+                            <div className="col-2 text-nowrap">{seta} <span className="float-right">{sappy.format.quantity(row.InvQty, 0) + " " + row.InvntryUom}</span> </div>
+                            <div className="col-2 text-nowrap"><span className="float-right">{sappy.format.price(row.Price, 3)}</span> </div>
                             <div className="col-1 text-nowrap lastcol"> <span className="float-right"> {row.FORMATED_LINETOTAL} </span> </div>
 
                         </div>
@@ -39,11 +39,11 @@ class CmpTransStock extends Component {
                                 {/* <div className="col text-nowrap">  {row.CardCode + ' - ' + row.CardName} </div> */}
                             </div>
                             <div className="row secondrow">
-                                <div className="col-3 text-nowrap firstcol"> {byUs.format.properDisplayDate(row.DOC_DATETIME)} </div>
+                                <div className="col-3 text-nowrap firstcol"> {sappy.format.properDisplayDate(row.DOC_DATETIME)} </div>
                                 <div className="col-4 text-nowrap">
-                                    {byUs.GetLinkTo(row.ObjType, row.DocEntry)}
+                                    {sappy.GetLinkTo(row.ObjType, row.DocEntry)}
                                     {row.DocNum} </div>
-                                <div className="col-5 text-nowrap lastcol">  <span className="float-right">{byUs.format.quantity(row.InvQty, 0)}</span> </div>
+                                <div className="col-5 text-nowrap lastcol">  <span className="float-right">{sappy.format.quantity(row.InvQty, 0)}</span> </div>
                             </div>
                         </div>
                     </div>
@@ -52,7 +52,7 @@ class CmpTransStock extends Component {
         };
 
         return (
-            <ByUsSearchPage
+            <SearchPage
                 searchPlaceholder="Procurar..."
                 searchApiUrl={`/api/prod/transstock/${this.props.ItemCode}`}
                 noRecordsMessage="Não há movimentos deste artigo"

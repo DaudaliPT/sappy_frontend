@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import axios from "axios";
 import { ModalWaitProgress } from "../../../Modals";
-const byUs = window.byUs;
+const sappy = window.sappy;
 
 
 class ModalConfirmPrint extends Component {
@@ -40,12 +40,12 @@ class ModalConfirmPrint extends Component {
               location.reload();
             })
             .catch(function (error) {
-              if (!error.__CANCEL__) byUs.showError(error, "Api error")
+              if (!error.__CANCEL__) sappy.showError(error, "Api error")
             });
         })
         .catch(function (error) {
           that.props.setCurrentModal({ currentModal: null });
-          if (!error.__CANCEL__) byUs.showError(error, "Api error")
+          if (!error.__CANCEL__) sappy.showError(error, "Api error")
         });
     } else if (result === "PDF") {
       // Executar o mapa
@@ -62,7 +62,7 @@ class ModalConfirmPrint extends Component {
         .then(function (result) {
         })
         .catch(function (error) {
-          if (!error.__CANCEL__) byUs.showError(error, "Api error")
+          if (!error.__CANCEL__) sappy.showError(error, "Api error")
         });
     }
   }

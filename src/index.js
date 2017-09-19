@@ -3,22 +3,22 @@ import React from "react";
 import ReactDOM from "react-dom";
 import axios from "axios";
 
-import "./js/byus.js";
+import "./js/sappy.js";
 import App from "./app";
 import "./index.css";
 import "./modified_site.css";
 import 'react-select/dist/react-select.css'
 import "react-toggle/style.css"
-var byUs = window.byUs;
+var sappy = window.sappy;
 
 axios
   .get("auth/sessioninfo")
   .then(result => {
-    byUs.sessionInfo = result.data;
+    sappy.sessionInfo = result.data;
 
     //check if session is  valid
-    if (byUs.sessionInfo && byUs.sessionInfo.company && byUs.sessionInfo.company.oadm) {
-      byUs.applySapDeformats();
+    if (sappy.sessionInfo && sappy.sessionInfo.company && sappy.sessionInfo.company.oadm) {
+      sappy.applySapDeformats();
     } else {
       axios
         .get("auth/logout")
@@ -28,11 +28,11 @@ axios
     try {
       ReactDOM.render(<App />, document.getElementById("root"));
     } catch (error) {
-      byUs.parseBackendError("Não foi possível fazer render da página: ", error);
+      sappy.parseBackendError("Não foi possível fazer render da página: ", error);
       alert("Não foi possível fazer render da página: " + error.message);
     }
   })
   .catch(error => {
-    byUs.parseBackendError("Não foi possível obter a informação do utilizador: ", error);
+    sappy.parseBackendError("Não foi possível obter a informação do utilizador: ", error);
     alert("Não foi possível obter a informação do utilizador: " + error.message);
   });

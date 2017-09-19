@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import axios from "axios";
 import VirtualizedInfiniteLoader from "../../../components/VirtualizedInfiniteLoader";
 
-import ByUsSearchBar from "../../../components/ByUsSearchBar";
+import SearchBar from "../../../components/SearchBar";
 import SideBar from "./SideBar";
-import ByUsTabsBar from "../../../components/ByUsTabsBar";
+import TabsBar from "../../../components/TabsBar";
 
-const byUs = window.byUs;
+const sappy = window.sappy;
 const $ = window.$;
 
 class BaseLandingPage extends Component {
@@ -166,7 +166,7 @@ class BaseLandingPage extends Component {
           );
         })
         .catch(function (error) {
-          if (!error.__CANCEL__) byUs.showError(error, "Api error")
+          if (!error.__CANCEL__) sappy.showError(error, "Api error")
         });
     }
   }
@@ -198,7 +198,7 @@ class BaseLandingPage extends Component {
           that.setState({ listItems, rvHasNextPage, totalInfo, rvIsLoading: false });
         })
         .catch(function (error) {
-          if (!error.__CANCEL__) byUs.showError(error, "Api error")
+          if (!error.__CANCEL__) sappy.showError(error, "Api error")
 
           that.setState({ rvIsLoading: false });
         });
@@ -218,7 +218,7 @@ class BaseLandingPage extends Component {
       var renderSubActions = () => {
         if (actions.length > 0) {
           return (
-            <div key={"action-buttons"} className="byus-action-buttons animation-scale-up">
+            <div key={"action-buttons"} className="sappy-action-buttons animation-scale-up">
               {actions.map(action => {
                 let btClassName = "btn btn-floating btn-" + action.color;
 
@@ -228,7 +228,7 @@ class BaseLandingPage extends Component {
                       <i className={"animation-scale " + action.icon} aria-hidden="true" />
                     </button>
 
-                    <span className="byus-action-fab-tip">{action.name}</span>
+                    <span className="sappy-action-fab-tip">{action.name}</span>
                   </div>
                 );
               })}
@@ -237,9 +237,9 @@ class BaseLandingPage extends Component {
         }
       };
 
-      let btClassName = "byus-action-button btn btn-floating btn-" + mainAction.color;
+      let btClassName = "sappy-action-button btn btn-floating btn-" + mainAction.color;
       return (
-        <div key={"action_" + mainAction.name} className="byus-action">
+        <div key={"action_" + mainAction.name} className="sappy-action">
           <button type="button" onClick={mainAction.onClick} className={btClassName}>
             <i className={mainAction.icon} aria-hidden="true" />
           </button>
@@ -268,7 +268,7 @@ class BaseLandingPage extends Component {
             <div className="page-header">
               <h1 className="page-title">{this.props.pageTitle}</h1>
 
-              <ByUsSearchBar
+              <SearchBar
                 totalInfo={totalInfo}
                 onChange={this.handleOnChange_txtSearch}
                 searchTags={this.state.searchTags}
@@ -279,7 +279,7 @@ class BaseLandingPage extends Component {
             </div>
 
             {/*<!-- Forum Nav -->*/}
-            <ByUsTabsBar items={tabItems} activeItem={activeTab} onSelect={this.handleOnTabSelect} />
+            <TabsBar items={tabItems} activeItem={activeTab} onSelect={this.handleOnTabSelect} />
 
             {/*<!-- Forum Content -->*/}
 

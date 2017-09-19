@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 var $ = window.$;
-var byUs = window.byUs;
-import { ByUsTextBox, ByUsComboBox, ByUsDate } from "../../../Inputs";
+var sappy = window.sappy;
+import { TextBox, ComboBox, Date } from "../../../Inputs";
 import { ModalMessage } from "../../../Modals";
 
 class ModalReportParams extends Component {
@@ -110,14 +110,14 @@ class ModalReportParams extends Component {
         .filter(par => {
           // Bitwise compare
           let isShowOnPanel =
-            (par.ParameterFieldUsage2 & byUs.CrystalReports.ParameterFieldUsage2.ShowOnPanel) ===
-            byUs.CrystalReports.ParameterFieldUsage2.ShowOnPanel;
+            (par.ParameterFieldUsage2 & sappy.CrystalReports.ParameterFieldUsage2.ShowOnPanel) ===
+            sappy.CrystalReports.ParameterFieldUsage2.ShowOnPanel;
           let isEditableOnPanel =
-            (par.ParameterFieldUsage2 & byUs.CrystalReports.ParameterFieldUsage2.EditableOnPanel) ===
-            byUs.CrystalReports.ParameterFieldUsage2.EditableOnPanel;
+            (par.ParameterFieldUsage2 & sappy.CrystalReports.ParameterFieldUsage2.EditableOnPanel) ===
+            sappy.CrystalReports.ParameterFieldUsage2.EditableOnPanel;
           let isDataFetching =
-            (par.ParameterFieldUsage2 & byUs.CrystalReports.ParameterFieldUsage2.DataFetching) ===
-            byUs.CrystalReports.ParameterFieldUsage2.DataFetching;
+            (par.ParameterFieldUsage2 & sappy.CrystalReports.ParameterFieldUsage2.DataFetching) ===
+            sappy.CrystalReports.ParameterFieldUsage2.DataFetching;
 
           return par.ReportName === "" && (isShowOnPanel || isEditableOnPanel || isDataFetching);
         })
@@ -126,8 +126,8 @@ class ModalReportParams extends Component {
           let parComponentTo;
 
           let hasSelect = par.Name.toUpperCase().indexOf("@SELECT") >= 0;
-          let isRange = par.DiscreteOrRangeKind === byUs.CrystalReports.DiscreteOrRangeKind.RangeValue;
-          let isDiscreteAndRange = par.DiscreteOrRangeKind === byUs.CrystalReports.DiscreteOrRangeKind.DiscreteAndRangeValue;
+          let isRange = par.DiscreteOrRangeKind === sappy.CrystalReports.DiscreteOrRangeKind.RangeValue;
+          let isDiscreteAndRange = par.DiscreteOrRangeKind === sappy.CrystalReports.DiscreteOrRangeKind.DiscreteAndRangeValue;
           let value = this.state.parValues[par.Name] || {};
 
           if (isDiscreteAndRange) {
@@ -144,7 +144,7 @@ class ModalReportParams extends Component {
 
               if (isOCRD || isOITM) {
                 parComponent = (
-                  <ByUsComboBox
+                  <ComboBox
                     key={par.Name}
                     label={par.PromptText}
                     name={par.Name}
@@ -154,7 +154,7 @@ class ModalReportParams extends Component {
                   />
                 );
                 parComponentTo = (
-                  <ByUsComboBox
+                  <ComboBox
                     key={"EndValueOf_" + par.Name}
                     label=""
                     name={"EndValueOf_" + par.Name}
@@ -167,7 +167,7 @@ class ModalReportParams extends Component {
             }
           } else if (hasSelect) {
             parComponent = (
-              <ByUsComboBox
+              <ComboBox
                 key={par.Name}
                 label={par.PromptText}
                 name={par.Name}
@@ -178,7 +178,7 @@ class ModalReportParams extends Component {
             );
             if (isRange) {
               parComponentTo = (
-                <ByUsComboBox
+                <ComboBox
                   key={"EndValueOf_" + par.Name}
                   label=""
                   name={"EndValueOf_" + par.Name}
@@ -190,15 +190,15 @@ class ModalReportParams extends Component {
             }
           } else {
             if (
-              par.ParameterValueKind === byUs.CrystalReports.ParameterValueKind.DateParameter ||
-              par.ParameterValueKind === byUs.CrystalReports.ParameterValueKind.DateTimeParameter
+              par.ParameterValueKind === sappy.CrystalReports.ParameterValueKind.DateParameter ||
+              par.ParameterValueKind === sappy.CrystalReports.ParameterValueKind.DateTimeParameter
             ) {
               parComponent = (
-                <ByUsDate key={par.Name} label={par.PromptText} name={par.Name} value={value.Value} onChange={this.onFieldChange} />
+                <Date key={par.Name} label={par.PromptText} name={par.Name} value={value.Value} onChange={this.onFieldChange} />
               );
             } else {
               parComponent = (
-                <ByUsTextBox key={par.Name} label={par.PromptText} name={par.Name} value={value.Value} onChange={this.onFieldChange} />
+                <TextBox key={par.Name} label={par.PromptText} name={par.Name} value={value.Value} onChange={this.onFieldChange} />
               );
             }
           }

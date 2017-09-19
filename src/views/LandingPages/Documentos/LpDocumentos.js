@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { hashHistory } from "react-router";
 import axios from "axios";
-const byUs = window.byUs;
+const sappy = window.sappy;
 import BaseLandingPage from "../BaseLandingPage";
 
 class LpDocumentos extends Component {
@@ -17,10 +17,10 @@ class LpDocumentos extends Component {
     axios
       .get(`/api/docs/${this.props.docTableName}/report`)
       .then(function (result) {
-        byUs.defaultLayoutCode = result.data.LayoutCode;
+        sappy.defaultLayoutCode = result.data.LayoutCode;
       })
       .catch(function (error) {
-        if (!error.__CANCEL__) byUs.showError(error, "Api error")
+        if (!error.__CANCEL__) sappy.showError(error, "Api error")
       });
   }
 
@@ -32,7 +32,7 @@ class LpDocumentos extends Component {
       });
     } else if (row.DRAFT === 'Y') {
 
-      byUs.showWarning({ msg: "Ainda não implementada a visualização/edição de rascunhos nativos SAP" })
+      sappy.showWarning({ msg: "Ainda não implementada a visualização/edição de rascunhos nativos SAP" })
     } else {
       hashHistory.push({
         pathname: hashHistory.getCurrentLocation().pathname + "/doc",

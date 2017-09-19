@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Button } from "reactstrap";
 import axios from "axios";
 var $ = window.$;
-var byUs = window.byUs;
+var sappy = window.sappy;
 
 import CmpGeral from "./CmpGeral";
 import CmpStock from "./CmpStock";
@@ -138,7 +138,7 @@ class EditPage extends Component {
         })
       })
       .catch(error => {
-        this.setState({ saving: false }, () => byUs.showError(error, "Não foi possível carregar produto"));
+        this.setState({ saving: false }, () => sappy.showError(error, "Não foi possível carregar produto"));
       })
 
   }
@@ -153,7 +153,7 @@ class EditPage extends Component {
         if (result.data)
           that.setState({ ReadOnly: true }, hashHistory.push("/inv/oitm/" + result.data));
       })
-      .catch(error => byUs.showError(error, "Não foi possível navegar"));
+      .catch(error => sappy.showError(error, "Não foi possível navegar"));
   }
 
   handleOnTabClick(e) {
@@ -178,7 +178,7 @@ class EditPage extends Component {
             </div>
 
             <div className="col-md-3    px-md-15 px-0">
-              <div className="byus-action-bar animation-slide-left">
+              <div className="sappy-action-bar animation-slide-left">
 
                 {this.state.ReadOnly && this.state.activeTab === "tabGeral" &&
                   <Button outline className="btn-md btn-flat" onClick={this.onTogleAllowEdit}>

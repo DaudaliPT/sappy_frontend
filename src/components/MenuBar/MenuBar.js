@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import RootMenu from "./ByUsMenus";
+import RootMenu from "./Menus";
 import { hashHistory } from "react-router";
 import axios from "axios";
 var $ = window.$;
-var byUs = window.byUs;
+var sappy = window.sappy;
 
 class MenuBar extends Component {
   constructor(props) {
@@ -13,7 +13,7 @@ class MenuBar extends Component {
     this.handleLogoImageError = this.handleLogoImageError.bind(this);
 
     this.state = {
-      menus: byUs.app.menus
+      menus: sappy.app.menus
     };
   }
 
@@ -24,7 +24,7 @@ class MenuBar extends Component {
       .then(result => {
         hashHistory.push("/login");
       })
-      .catch(error => byUs.showError(error, "Não foi possível fazer logout"));
+      .catch(error => sappy.showError(error, "Não foi possível fazer logout"));
   }
 
   componentDidMount() {
@@ -68,7 +68,7 @@ class MenuBar extends Component {
   }
 
   render() {
-    var user = byUs.sessionInfo.user;
+    var user = sappy.sessionInfo.user;
 
     var renderTopMenus = () => {
       if (user && user.NAME) {
@@ -160,14 +160,14 @@ class MenuBar extends Component {
           </button>
 
           <div className="navbar-brand navbar-brand-center site-gridmenu-toggle" data-toggle="gridmenu">
-            <p id="nologotext" style={{ display: "none", wordBreak: "break-word" }}>{byUs.sessionInfo.company.dbName} </p>
+            <p id="nologotext" style={{ display: "none", wordBreak: "break-word" }}>{sappy.sessionInfo.company.dbName} </p>
             <img
               className="navbar-brand-logo"
               style={{ height: "3rem" }}
               onError={this.handleLogoImageError}
-              src={"./img/" + byUs.sessionInfo.company.dbName + "/logo_white.png"}
+              src={"./img/" + sappy.sessionInfo.company.dbName + "/logo_white.png"}
               title="Rachidas"
-              alt={byUs.sessionInfo.company.dbName}
+              alt={sappy.sessionInfo.company.dbName}
             />
           </div>
           <button type="button" className="navbar-toggler collapsed" data-target="#site-navbar-search" data-toggle="collapse">
