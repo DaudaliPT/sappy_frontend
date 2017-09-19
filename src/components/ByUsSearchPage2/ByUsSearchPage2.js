@@ -1,13 +1,13 @@
 import React, { PureComponent } from "react";
 import axios from "axios";
-import VirtualizedInfiniteLoader from "../VirtualizedInfiniteLoader";
+// import VirtualizedInfiniteLoader from "../VirtualizedInfiniteLoader";
 import ByUsDataGrid from "../ByUsDataGrid";
 import ByUsSearchBar from "../ByUsSearchBar";
 import ByUsTabsBar from "../ByUsTabsBar";
 import ByUsNoContent from "../ByUsNoContent";
 import uuid from 'uuid';
 const byUs = window.byUs;
-const $ = window.$;
+// const $ = window.$;
 
 class ByUsSearchPage2 extends PureComponent {
   constructor(props) {

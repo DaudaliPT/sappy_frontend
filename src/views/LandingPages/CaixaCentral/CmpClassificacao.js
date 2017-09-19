@@ -3,8 +3,8 @@ import axios from 'axios';
 import ByUsSearchPage from "../../../components/ByUsSearchPage";
 import ByUsSearchPage2 from "../../../components/ByUsSearchPage2";
 
-import { Badge } from "reactstrap";
-import uuid from "uuid/v4";
+// import { Badge } from "reactstrap";
+// import uuid from "uuid/v4";
 const byUs = window.byUs;
 const $ = window.$;
 import CmpClassificacaoFooter from "./CmpClassificacaoFooter";
@@ -77,9 +77,6 @@ class CmpClassificacao extends Component {
         let docs = [];
 
         this.state.selectedDocKeys.forEach(docId => {
-            let transId = docId.split('#')[0]
-            let lineId = docId.split('#')[1]
-
             docs.push({
                 transId: docId.split('#')[0],
                 lineId: docId.split('#')[1]
@@ -138,13 +135,13 @@ class CmpClassificacao extends Component {
             );
         };
 
-        let totalOfDocs = 0
+        // let totalOfDocs = 0
         let totalOfSelectedDocs = 0
         let countC = 0
         let countD = 0
         if (this.docsComponent) {
             docsList.forEach(doc => {
-                totalOfDocs += byUs.getNum(doc.BALANCE)
+                // totalOfDocs += byUs.getNum(doc.BALANCE)
                 let docId = doc.TRANSID_AND_LINEID;
                 if (selectedDocKeys.indexOf(docId) > -1) {
                     totalOfSelectedDocs += byUs.getNum(doc.BALANCE)

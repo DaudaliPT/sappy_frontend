@@ -4,7 +4,7 @@ import axios from "axios";
 var $ = window.$;
 var byUs = window.byUs;
 
-import { ByUsTextBox, ByUsTextBoxNumeric, ByUsDate, ByUsComboBox, ByUsCheckHr } from "../../../Inputs";
+import { ByUsTextBox, ByUsTextBoxNumeric, ByUsDate, ByUsComboBox } from "../../../Inputs";
 
 class ModPagModal extends Component {
   constructor(props) {
@@ -81,8 +81,6 @@ class ModPagModal extends Component {
 
       if (prop === "valor") {
         cheques[ix] = Object.assign({}, cheques[ix], { [prop]: formatedValue });
-
-        let v = cheques.reduce((sum, fld) => sum + byUs.getNum(fld.valor), 0);
         if (changeInfo.realtime) {
           // Alterar apenas o valor total de cheques
           return that.updateTotalCheques(cheques);
@@ -157,7 +155,7 @@ class ModPagModal extends Component {
   onClick_AddRemoveCheque(cmpThis) {
 
     let that = this
-    let fieldName = cmpThis.props.name.split("#")[0];
+    // let fieldName = cmpThis.props.name.split("#")[0];
     let ix = byUs.getNum(cmpThis.props.name.split("#")[1]);
     let cheques = [...this.state.cheques]
     let currVal = byUs.getNum(cheques[ix].valor);
@@ -247,8 +245,8 @@ class ModPagModal extends Component {
     // perform checks
     //Validar campos de preenchimento obrigatório
     let newState = { ...that.state };
-    let fieldsRequired = []
-    let hasChangesToState = false;
+    // let fieldsRequired = []
+    // let hasChangesToState = false;
 
     let { alerts, toastrMsg } = this.getvalidationResults(newState);
 
@@ -290,17 +288,18 @@ class ModPagModal extends Component {
       }
 
       data.PaymentChecks = [];
-      data.CheckAccount = "119",
-        this.state.cheques.forEach(cheque => {
-          if (byUs.getNum(cheque.valor) > 0) {
-            data.PaymentChecks.push({
-              DueDate: byUs.format.YYYY_MM_DD(cheque.data),
-              CheckNumber: cheque.numero,
-              BankCode: cheque.banco,
-              CheckSum: byUs.getNum(cheque.valor)
-            })
-          }
-        });
+      data.CheckAccount = "119";
+
+      this.state.cheques.forEach(cheque => {
+        if (byUs.getNum(cheque.valor) > 0) {
+          data.PaymentChecks.push({
+            DueDate: byUs.format.YYYY_MM_DD(cheque.data),
+            CheckNumber: cheque.numero,
+            BankCode: cheque.banco,
+            CheckSum: byUs.getNum(cheque.valor)
+          })
+        }
+      });
 
       this.props.selectedDocKeys.forEach(docId => {
 
@@ -392,7 +391,7 @@ class ModPagModal extends Component {
     let getRightButton = (valor) => !valor ? <i className="icon wb-arrow-left" /> : <i className="icon wb-close" />
 
     let renderNumerario = () => (
-      <div   >
+      <div>
         <div className="row">
           <div className="col-4 pr-1">
             <ByUsTextBoxNumeric
