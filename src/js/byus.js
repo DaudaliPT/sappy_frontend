@@ -211,7 +211,7 @@ import moment from 'moment';
       if (charCode < 48 || charCode > 57) return hasInvalidChars = true;
     });
 
-    if (hasInvalidChars) return byUs.showError({ message: "'" + value + "' não é uma expressão válida" }, "Erro na expressão")
+    if (hasInvalidChars) return byUs.showToastr({ color: "danger", msg: "'" + value + "' não é uma expressão válida" })
     if (hasOperators) {
       try {
         value = byUs.replaceAll(value, ',', '.'); //tratar virgulas como separadores decimais
@@ -220,7 +220,7 @@ import moment from 'moment';
         // eslint-disable-next-line
         return eval(value)
       } catch (error) {
-        return byUs.showError(error, "Erro na expressão")
+        return byUs.showToastr({ color: "danger", msg: "'" + value + "' não é uma expressão válida: " + error.message })
       }
     } else {
       return byUs.getNum(value)

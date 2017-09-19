@@ -305,6 +305,16 @@ class ByUsDataGrid extends Component {
     if ("quantity,price,amount,bonus".indexOf(col.type) > -1) {
       let newValue = updated[colUpdated];
 
+      if (col.type === "price" && (newValue.toString().indexOf("p") > -1)) {
+        let pk = byUs.getNum(this.getRowAt(fromRow).QTPK)
+        if (pk) {
+          newValue = newValue.toString().replace("/pk", "/" + pk)
+          newValue = newValue.toString().replace("pk", "/" + pk)
+          newValue = newValue.toString().replace("p", "/" + pk)
+          newValue = newValue.toString().replace("/p", "/" + pk)
+        }
+      }
+
       newValue = byUs.evaluateNumericExpression(newValue)
 
       if (col.type === "price" && byUs.getNum(newValue) < 0) {
