@@ -171,7 +171,12 @@ class CmpClassificacao extends Component {
                         moreInfo: `Criou com sucesso o ${docDesc} ${result.data.DocNum} no valor de ${sappy.format.amount(totalOfSelectedDocs)}, de ${this.state.selectedPNname}!`,
                         confirmText: "Concluido"
                     })
-                    that.setState({ selectedPN: '' }, e => that.setState({ selectedPN }));
+
+                    //forçar refresh
+                    let selectedPN = that.state.selectedPN;
+                    that.setState({ selectedPN: '', selectedDocKeys: [] },
+                        () => setTimeout(that.setState({ selectedPN }), 1)
+                    );
                 })
                 .catch(error => sappy.showError(error, "Não foi possivel adicionar o documento"));
         }
@@ -234,6 +239,7 @@ class CmpClassificacao extends Component {
         let totalOfSelectedDocs = 0
         let countC = 0
         let countD = 0
+        debugger
         let selectedDocs = docsList.filter(doc => selectedDocKeys.indexOf(doc.TRANSID_AND_LINEID) > -1)
         selectedDocs.forEach(doc => {
             totalOfSelectedDocs += sappy.getNum(doc.BALANCE)

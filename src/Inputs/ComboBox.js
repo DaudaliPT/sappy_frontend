@@ -105,8 +105,6 @@ class ComboBox extends Component {
       stateMsg = this.props.state.split('|')[1];
     }
 
-
-
     return (
       <FormGroup color={stateColor} data-tip={this.props.label} title={stateMsg}>
         {/*{renderLabel()}*/}
