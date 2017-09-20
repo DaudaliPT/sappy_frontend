@@ -63,7 +63,10 @@ class CmpClassificacao extends Component {
 
 
     handleDetailRowSelect(selectedDocKeys) {
-        this.setState({ selectedDocKeys })
+        this.setState({
+            selectedDocKeys,
+            showActions: false
+        })
     }
 
     handleDocRefresh(e) {
@@ -74,9 +77,12 @@ class CmpClassificacao extends Component {
     createReceiptOrPayment(meioPag) {
         let that = this
 
-        alert("hit")
-
         let invokeAddDocAPI = () => {
+
+
+            sappy.showWaitProgress("A criar documento...")
+
+            let selectedPN = this.state.selectedPN;
             let docsList = [];
             if (this.docsComponent) docsList = this.docsComponent.state.listItems
             let totalOfSelectedDocs = 0
@@ -86,7 +92,7 @@ class CmpClassificacao extends Component {
 
             let data = {
                 DocType: "rCustomer",
-                CardCode: this.state.selectedPN,
+                CardCode: selectedPN,
                 PaymentInvoices: []
             }
             selectedDocs.forEach(doc => {
@@ -138,8 +144,10 @@ class CmpClassificacao extends Component {
                 }
             })
 
+            let docDesc = "recebimento"
             let url = `/api/caixa/class/receipt`
             if (totalOfSelectedDocs < 0) {
+                docDesc = "pagamento"
                 totalOfSelectedDocs *= -1;
                 url = `/api/caixa/class/payment`;
             }
@@ -158,12 +166,12 @@ class CmpClassificacao extends Component {
             axios
                 .post(url, data)
                 .then(result => {
-                    that.props.toggleModal(result.data.DocNum);
                     sappy.showSuccess({
-                        msg: "Documento criado",
-                        moreInfo: `Criou com sucesso o documento ${result.data.DocNum}!`,
+                        title: "Documento criado",
+                        moreInfo: `Criou com sucesso o ${docDesc} ${result.data.DocNum} no valor de ${sappy.format.amount(totalOfSelectedDocs)}, de ${this.state.selectedPNname}!`,
                         confirmText: "Concluido"
                     })
+                    that.setState({ selectedPN: '' }, e => that.setState({ selectedPN }));
                 })
                 .catch(error => sappy.showError(error, "Não foi possivel adicionar o documento"));
         }
@@ -260,7 +268,42 @@ class CmpClassificacao extends Component {
             );
         };
 
+
+        let getfixedActions = () => {
+            let currentShowActions = this.state.showActions;
+            let fixedActions = [];
+
+            if (totalOfSelectedDocs > 0) {
+                fixedActions.push({
+                    name: "main", color: "primary",
+                    icon: currentShowActions ? "icon wb-close animation-fade" : "icon fa-flash",
+                    onClick: e => this.setState({ showActions: !this.state.showActions })
+                })
+
+                if (currentShowActions) {
+                    fixedActions.push({
+                        name: "Númerario",
+                        color: "success",
+                        icon: "icon fa-money",
+                        onClick: e => this.createReceiptOrPayment("Numerario")
+                    })
+                    fixedActions.push({
+                        name: "Multibanco",
+                        color: "success",
+                        icon: "icon fa-credit-card",
+                        onClick: e => this.createReceiptOrPayment("Multibanco")
+                    })
+                }
+            }
+
+
+            return fixedActions;
+        };
+
+
         let footerProps = {
+            fixedActions: getfixedActions(),
+
             actions: [
                 // { name: "Multibanco", color: "primary", icon: "icon fa-flash", visible: true, onClick: e => alert("teste"), showAtLeft: true },
                 // { name: "Numerário", color: "primary", icon: "icon fa-flash", visible: true, onClick: e => alert("teste"), showAtLeft: true },
@@ -310,21 +353,7 @@ class CmpClassificacao extends Component {
                                 totalPagar={totalOfSelectedDocs * -1}
                             />)
                     }
-                },
-                //  {
-                //     name: "flash",
-                //     title: "Pagamento rápido",
-                //     content: <span></span>,
-                //     toolbarOptions: <div id="flash-toolbar-options" className="hidden">
-                //         <a href="#" title="Multibanco" toolbarItemClick={that.createReceiptOrPayment}><i className="fa fa-credit-card" ></i></a>
-                //         <a href="#" title="Numerário" toolbarItemClick={that.createReceiptOrPayment}><i className="fa fa-money"></i></a>
-
-                //     </div>,
-                //     color: "primary",
-                //     icon: "icon fa-flash",
-                //     visible: totalOfSelectedDocs !== 0
-                // }
-
+                }
             ]
         }
 

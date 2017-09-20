@@ -367,6 +367,11 @@ body.site-navbar-small {
   z-index: 1049;
 }
 
+
+#docFooter>.sappy-action {
+  bottom: 5rem !important;
+}
+
 .sappy-action .btn {
   -webkit-box-shadow: 0 10px 10px 0 rgba(60, 60, 60, .1);
   box-shadow: 0 10px 10px 0 rgba(60, 60, 60, .1);

@@ -2,31 +2,45 @@ import React, { Component } from "react";
 const $ = window.$;
 const sappy = window.sappy;
 class CmpClassificacaoFooter extends Component {
-  constructor(props) {
-    super(props)
-
-    this.state = { currentModal: null }
-  }
-
-  componentDidUpdate() {
-    let $el = $('#flash')
-    if ($el.length > 0 && $el[0]) {
-      $el.toolbar({
-        content: '#flash-toolbar-options',
-        style: 'dark',
-        event: 'click',
-        hideOnClick: true,
-        adjustment: 20
-      });
-    }
-  }
-
 
   render() {
-    // let docData = this.props.docData || {}
-    // let editable = docData.DOCNUM > 0 ? false : true;
-    // let loaded = !this.props.loading;
+    let renderFixedActions = () => {
+      let fixedActions = [...this.props.fixedActions];
+      let mainAction = fixedActions.shift(1);
+      if (!mainAction) return;
 
+      var renderSubActions = () => {
+        if (fixedActions.length > 0) {
+          return (
+            <div key={"action-buttons"} className="sappy-action-buttons animation-scale-up">
+              {fixedActions.map(action => {
+                let btClassName = "btn btn-floating btn-" + action.color;
+
+                return (
+                  <div key={"action_" + action.name}>
+                    <button type="button" onClick={action.onClick} className={btClassName}>
+                      <i className={"animation-scale " + action.icon} aria-hidden="true" />
+                    </button>
+
+                    <span className="sappy-action-fab-tip">{action.name}</span>
+                  </div>
+                );
+              })}
+            </div>
+          );
+        }
+      };
+
+      let btClassName = "sappy-action-button btn btn-floating btn-" + mainAction.color;
+      return (
+        <div key={"action_" + mainAction.name} className="sappy-action">
+          <button type="button" onClick={mainAction.onClick} className={btClassName}>
+            <i className={mainAction.icon} aria-hidden="true" />
+          </button>
+          {renderSubActions()}
+        </div>
+      );
+    };
     let renderActions = () => {
       let actions = this.props.actions;
 
@@ -34,7 +48,9 @@ class CmpClassificacaoFooter extends Component {
         let btClassName = "btn btn-" + a.color;
         if (a.name === "flash") btClassName += " btn-round btn-outline btn-icon"
         return (
-          <button id={a.name} key={a.name} type="button" onClick={a.onClick} className={btClassName} title={a.title}>
+          <button id={a.name} key={a.name} type="button"
+            onClick={a.onClick}
+            className={btClassName} title={a.title}>
             <span>
               <i className={a.icon} aria-hidden="true" />
               <span className="hidden-sm-down">  {a.content ? a.content : a.name}</span>
@@ -44,7 +60,6 @@ class CmpClassificacaoFooter extends Component {
 
         );
       }
-
       return (
 
         <div id="docFooter-actions">
@@ -61,15 +76,10 @@ class CmpClassificacaoFooter extends Component {
     return (
       <nav id="docFooter" className="site-navbar navbar navbar-default navbar-fixed-bottom" >
         {renderActions()}
+        {renderFixedActions()}
       </nav >
     );
   }
 }
-
-CmpClassificacaoFooter.defaultProps = {
-  actions: [],
-  selectedPN: ""
-}
-
 export default CmpClassificacaoFooter;
 
