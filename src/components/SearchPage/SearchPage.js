@@ -28,17 +28,10 @@ class SearchPage extends PureComponent {
 
       limitSearch: props.limitSearch || false,
 
-      /*********/
-      /** contains the items to put on sidebar, organized by groups */
-      hierarquyItems: {},
-      /** contains the ids of sidebar items selected to filter data */
-      activeSidebarItems: [],
 
       /*********/
       /** list of items to put on tabs bar */
       tabItems: {},
-
-      /** contains the active selected tab id */
       activeTab: "",
 
       /*********/
@@ -63,7 +56,6 @@ class SearchPage extends PureComponent {
   componentWillReceiveProps(nextProps) {
     if (nextProps.searchText !== this.props.searchText
       || nextProps.searchApiUrl !== this.props.searchApiUrl
-      || nextProps.currentModal !== this.props.currentModal
     ) {
 
       setTimeout(() => {
@@ -166,7 +158,7 @@ class SearchPage extends PureComponent {
   findAndGetFirstRows({ isAutoRefresh } = {}) {
     var that = this;
     if (this.props.searchApiUrl) {
-      let { searchTags, activeTab, activeSidebarItems } = this.state;
+      let { searchTags, activeTab } = this.state;
 
       that.setState({
         rvIsLoading: true,
@@ -189,8 +181,7 @@ class SearchPage extends PureComponent {
           params: {
             searchTags,
             limitSearchCondition,
-            activeTab,
-            activeSidebarItems: JSON.stringify(activeSidebarItems)
+            activeTab
           },
           cancelToken: new CancelToken(function executor(c) {
             // An executor function receives a cancel function as a parameter
@@ -201,7 +192,6 @@ class SearchPage extends PureComponent {
           var { activeTab } = that.state;
           var tabItems = result.data.tabItems;
           var listItems = result.data.firstRows;
-          var hierarquyItems = result.data.hierarquyItems;
           var rvHasNextPage = listItems.length < result.data.totalRowCount;
           let totalInfo = {
             Total: listItems.length > 0 ? listItems[0].TOTAL_ROWS : 0,
@@ -210,22 +200,22 @@ class SearchPage extends PureComponent {
           if (!(activeTab in tabItems)) activeTab = Object.keys(tabItems)[0];
 
           if (!that.props.autoRefreshTime) {
-
             let ReactVirtualized__List = document.getElementsByClassName("ReactVirtualized__List")[0];
             if (ReactVirtualized__List) ReactVirtualized__List.scrollTop = 0;
           }
 
           that.setState(
-            { listItems, tabItems, activeTab, rvHasNextPage, hierarquyItems, totalInfo, rvIsLoading: false },
+            { listItems, tabItems, activeTab, rvHasNextPage, totalInfo, rvIsLoading: false },
             e => {
-              that.calcPageHeight()
+              // that.calcPageHeight()
               that.props.onRefresh && that.props.onRefresh()
             }
           );
         })
         .catch(function (error) {
+          if (error.__CANCEL__) return
           if (isAutoRefresh) return console.log(error)
-          if (!error.__CANCEL__) sappy.showError(error, "Api error")
+          sappy.showError(error, "Api error")
         });
     }
   }
@@ -233,7 +223,7 @@ class SearchPage extends PureComponent {
   loadNextPage = () => {
     var that = this;
     if (that.props.searchApiUrl) {
-      let { searchTags, activeTab, activeSidebarItems, listItems } = this.state;
+      let { searchTags, activeTab, listItems } = this.state;
       that.setState({ rvIsLoading: true });
 
       let limitSearchCondition = "";
@@ -243,7 +233,6 @@ class SearchPage extends PureComponent {
         searchTags,
         limitSearchCondition,
         activeTab,
-        activeSidebarItems: JSON.stringify(activeSidebarItems),
         startIndex: listItems.length,
         maxRecords: 100
       };
@@ -270,7 +259,6 @@ class SearchPage extends PureComponent {
 
   render() {
     var { activeTab, tabItems, totalInfo } = this.state;
-    var { currentModal } = this.props;
 
     let hasNoContent = (this.state.rvIsLoading === false &&
       this.state.listItems.length === 0 &&
@@ -324,7 +312,6 @@ class SearchPage extends PureComponent {
             })}
           </div>
         }
-        {currentModal}
       </div>
     )
   }
@@ -334,7 +321,6 @@ SearchPage.defaultProps = {
   searchPlaceholder: "Procurar...",
   searchApiUrl: "",
   renderHeaders: () => { },
-  currentModal: null,
   renderRow: ({ row, index }) => { },
   autoRefreshTime: 0,
   renderRowHeight: 20,

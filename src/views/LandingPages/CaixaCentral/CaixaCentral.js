@@ -81,7 +81,7 @@ class CaixaCentral extends Component {
                 <div className="panel-body ">
                   <div className="list-group faq-list" role="tablist">
                     <a className="list-group-item list-group-item-action active" data-toggle="tab" role="tab"
-                      id="tabClassificacao" onClick={this.handleOnTabClick}>Classificação </a>
+                      id="tabClassificacao" onClick={this.handleOnTabClick}>A Receber </a>
                     {/* <a className="list-group-item" data-toggle="tab" role="tab"
                       id="tabPendentes" onClick={this.handleOnTabClick}>Pendentes</a>
                     <a className="list-group-item" data-toggle="tab" role="tab"

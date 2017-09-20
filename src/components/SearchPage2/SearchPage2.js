@@ -137,12 +137,6 @@ class SearchPage2 extends PureComponent {
           };
           if (!(activeTab in tabItems)) activeTab = Object.keys(tabItems)[0];
 
-          if (!that.props.autoRefreshTime) {
-
-            let ReactVirtualized__List = document.getElementsByClassName("ReactVirtualized__List")[0];
-            if (ReactVirtualized__List) ReactVirtualized__List.scrollTop = 0;
-          }
-
           that.setState(
             { listItems, tabItems, activeTab, totalInfo },
             e => {
