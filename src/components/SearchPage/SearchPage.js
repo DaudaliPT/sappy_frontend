@@ -108,17 +108,15 @@ class SearchPage extends PureComponent {
       let $scrollAbleparent = $(scrollAbleparent);
 
       if ($scrollAbleparent && $body) {
-
-
         let bodyHeight = $body.height();
         let parentHeight = $scrollAbleparent.height();
         let useHeight = 0;
-        if (parentHeight > bodyHeight)
+        if (parentHeight < bodyHeight)
           useHeight = bodyHeight
         else
           useHeight = parentHeight
 
-        let minH = useHeight - ($elList.position().top - $elTab[0].clientHeight) * 2 - 100 - $elTab[0].clientHeight;
+        let minH = useHeight - ($elList.position().top - $elTab.height()) * 2 - (120 + $elTab.height());
         if (minH < 350) { minH = 350; }
         $elList.css("height", minH.toString() + "px");
       }
@@ -207,7 +205,7 @@ class SearchPage extends PureComponent {
           that.setState(
             { listItems, tabItems, activeTab, rvHasNextPage, totalInfo, rvIsLoading: false },
             e => {
-              // that.calcPageHeight()
+              that.calcPageHeight()
               that.props.onRefresh && that.props.onRefresh()
             }
           );

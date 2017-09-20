@@ -239,7 +239,7 @@ class CmpClassificacao extends Component {
         let totalOfSelectedDocs = 0
         let countC = 0
         let countD = 0
-        debugger
+
         let selectedDocs = docsList.filter(doc => selectedDocKeys.indexOf(doc.TRANSID_AND_LINEID) > -1)
         selectedDocs.forEach(doc => {
             totalOfSelectedDocs += sappy.getNum(doc.BALANCE)
