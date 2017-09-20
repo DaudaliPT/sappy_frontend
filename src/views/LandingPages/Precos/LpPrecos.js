@@ -128,7 +128,7 @@ class LpPrecos extends Component {
                 </span>
               </div>
               <div className="col-1"> {row.DOCNUM || ("#" + row.ID)} </div>
-              <div className="col-2"> {sappy.format.properDisplayDate(row.CONFIRMED || row.DATA)} </div>
+              <div className="col-2"> {sappy.format.date(row.CONFIRMED || row.DATA)} </div>
               <div className="col-7" style={{ maxHeight: "50px", overflow: "hidden" }}> <span> {renderBadges1()}{renderBadges()} </span> {row.ESTADO + " " + row.OBSERVACOES} </div>
               <div className="col-1 lastcol">
                 <span className="float-right">{row.CREATED_BY_NAME}</span>
@@ -149,7 +149,7 @@ class LpPrecos extends Component {
                 <div className="row">
                   <div className="col-1"> {row.DOCNUM || ("#" + row.ID)} </div>
                   <div className="col text-nowrap lastcol">
-                    {sappy.format.properDisplayDate(row.CONFIRMED || row.DATA)}
+                    {sappy.format.date(row.CONFIRMED || row.DATA)}
                     <span> {renderBadges1()} </span>
                   </div>
                 </div>

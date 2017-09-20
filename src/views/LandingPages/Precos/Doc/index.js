@@ -130,7 +130,7 @@ class UPCPriceFormatter extends Component {
                     }
 
                     content.push(<tr >
-                      <td>{sappy.format.properDisplayDate(popuprow.DocDate)}</td>
+                      <td>{sappy.format.date(popuprow.DocDate)}</td>
                       <td style={{ maxWidth: "130px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{popuprow.CardName}</td>
                       <td>{preco}</td>
                     </tr>)
@@ -226,7 +226,7 @@ class SimpleFormatter extends Component {
 
 class DateFormatter extends Component {
   render() {
-    return <div> {this.props.value ? sappy.format.properDisplayDate(this.props.value) : ''}</div>;
+    return <div> {this.props.value ? sappy.format.date(this.props.value) : ''}</div>;
   }
 }
 class DescritptionFormatter extends Component {
@@ -981,7 +981,7 @@ class DocAtualizacaoPrecos extends Component {
                 name="Data"
                 label="Data:"
                 disabled={true}
-                value={sappy.format.properDisplayDateTime(this.state.docData.CONFIRMED || this.state.docData.DATA)}
+                value={sappy.format.datetime2(this.state.docData.CONFIRMED || this.state.docData.DATA)}
               />
             </div>
             <div className="col-6">

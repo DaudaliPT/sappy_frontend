@@ -4,12 +4,20 @@ import ReactDOM from "react-dom";
 import axios from "axios";
 
 import "./js/sappy.js";
+import AppBase from "./appBase";
 import App from "./app";
 import "./index.css";
 import "./modified_site.css";
 import 'react-select/dist/react-select.css'
 import "react-toggle/style.css"
 var sappy = window.sappy;
+
+try {
+  ReactDOM.render(<AppBase />, document.getElementById("shared"));
+} catch (error) {
+  // alert("Render error");
+  console.error(error)
+}
 
 axios
   .get("auth/sessioninfo")
@@ -28,11 +36,9 @@ axios
     try {
       ReactDOM.render(<App />, document.getElementById("root"));
     } catch (error) {
-      sappy.parseBackendError("Não foi possível fazer render da página: ", error);
-      alert("Não foi possível fazer render da página: " + error.message);
+      sappy.showError(error, "Render error");
     }
   })
   .catch(error => {
-    sappy.parseBackendError("Não foi possível obter a informação do utilizador: ", error);
-    alert("Não foi possível obter a informação do utilizador: " + error.message);
+    sappy.showError(error, "Sappy backend unavailable!");
   });

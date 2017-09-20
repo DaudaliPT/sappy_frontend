@@ -27,7 +27,7 @@ class CmpVendas extends Component {
                         {/*large displays*/}
                         <div className="row hidden-lg-down">
 
-                            <div className="col-1 text-nowrap firstcol"> {sappy.format.properDisplayDate(row.DOC_DATETIME)} </div>
+                            <div className="col-1 text-nowrap firstcol"> {sappy.format.date(row.DOC_DATETIME)} </div>
                             <div className="col-2 text-nowrap">
                                 {sappy.GetLinkTo(row.ObjType, row.DocEntry)}
                                 {row.DESCDOC + ' ' + row.DocNum} </div>
@@ -45,7 +45,7 @@ class CmpVendas extends Component {
                                 <div className="col text-nowrap">  {row.CardCode + ' - ' + row.CardName} </div>
                             </div>
                             <div className="row secondrow">
-                                <div className="col-3 text-nowrap firstcol"> {sappy.format.properDisplayDate(row.DOC_DATETIME)} </div>
+                                <div className="col-3 text-nowrap firstcol"> {sappy.format.date(row.DOC_DATETIME)} </div>
                                 <div className="col-4 text-nowrap">
                                     {sappy.GetLinkTo(row.ObjType, row.DocEntry)}
                                     {row.DESCDOC + ' ' + row.DocNum} </div>

@@ -88,7 +88,7 @@ class ModalAskDocumento extends Component {
                 </span>
                 <span className="ml-10"> {row.ABREV + " " + row.DocNum}</span>
               </div>
-              <div className="col-2"> {sappy.format.properDisplayDate(row.TaxDate)}</div>
+              <div className="col-2"> {sappy.format.date(row.TaxDate)}</div>
               <div className="col-5">
                 {row.CardCode + " - " + row.CardName}
                 {/* {renderBadges()} */}
@@ -107,7 +107,7 @@ class ModalAskDocumento extends Component {
               <div className="row secondrow">
                 <div className="col-4 text-nowrap firstcol"> {row.ABREV + " " + row.DocNum} </div>
                 <div className="col-5 text-nowrap firstcol">
-                  {" "}{sappy.format.properDisplayDate(row.TaxDate)} <span className="hidden-lg-down"> {renderBadges()} </span>{" "}
+                  {" "}{sappy.format.date(row.TaxDate)} <span className="hidden-lg-down"> {renderBadges()} </span>{" "}
                 </div>
                 <div className="col-3 text-nowrap lastcol">
                   <span className="float-right">{row.FORMATED_DOCTOTAL}</span>

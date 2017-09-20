@@ -44,7 +44,6 @@ class TextBoxNumeric extends Component {
 
   getFormatedValue(valueType, value) {
     if (value === null || value === undefined) return ""
-
     let rawValue = sappy.evaluateNumericExpression(value)
     let formatedValue;
     if (valueType === "price") formatedValue = sappy.format.price(rawValue)

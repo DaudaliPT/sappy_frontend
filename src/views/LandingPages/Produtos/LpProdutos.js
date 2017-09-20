@@ -109,7 +109,7 @@ class Produtos extends Component {
                           content.push(<tr >
                             <td>{row.ListName}</td>
                             <td>{sappy.format.price(row.Price)}</td>
-                            <td>{sappy.format.properDisplayDate(row.U_apyUPDATED)}</td>
+                            <td>{sappy.format.date(row.U_apyUPDATED)}</td>
                           </tr>)
                         });
 

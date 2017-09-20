@@ -68,7 +68,9 @@ class MenuBar extends Component {
   }
 
   render() {
-    var user = sappy.sessionInfo.user;
+    let sessionInfo = sappy.sessionInfo || {}
+    var user = sessionInfo.user || {}
+    var company = sessionInfo.company || {}
 
     var renderTopMenus = () => {
       if (user && user.NAME) {
@@ -160,14 +162,14 @@ class MenuBar extends Component {
           </button>
 
           <div className="navbar-brand navbar-brand-center site-gridmenu-toggle" data-toggle="gridmenu">
-            <p id="nologotext" style={{ display: "none", wordBreak: "break-word" }}>{sappy.sessionInfo.company.dbName} </p>
+            <p id="nologotext" style={{ display: "none", wordBreak: "break-word" }}>{company.dbName} </p>
             <img
               className="navbar-brand-logo"
               style={{ height: "3rem" }}
               onError={this.handleLogoImageError}
-              src={"./img/" + sappy.sessionInfo.company.dbName + "/logo_white.png"}
+              src={"./img/" + company.dbName + "/logo_white.png"}
               title="Rachidas"
-              alt={sappy.sessionInfo.company.dbName}
+              alt={sessionInfo.company.dbName}
             />
           </div>
           <button type="button" className="navbar-toggler collapsed" data-target="#site-navbar-search" data-toggle="collapse">

@@ -183,16 +183,18 @@ import moment from 'moment';
     }
   }
 
+
   function addDecimals(value, decimals) {
     let num = value.toString().split('e')[0]
     let exp = sappy.getNum(value.toString().split('e')[1])
     return Number(num + 'e' + (exp + decimals));
   }
-
   sappy.round = (value, decimals) => {
-    // return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
-    let ret = addDecimals(Math.round(addDecimals(value, decimals)), -1 * decimals);
-    if (isNaN(ret)) console.log(`sappy.round = (${value}, ${decimals}) returned NaN`)
+    let sign = value >= 0 ? 1 : -1;
+    let val = value * sign; //passar valores negativos a positivos, para que o round funcione bem nos negativos
+
+    let ret = sign * addDecimals(Math.round(addDecimals(val, decimals)), -1 * decimals);
+    if (isNaN(ret)) console.log(`sappy.round = (${val}, ${decimals}) returned NaN`)
     return ret;
   }
 
@@ -276,6 +278,7 @@ import moment from 'moment';
       if (typeof value === 'string') value = parseFloat(value);
       let ret = accounting.formatNumber(value, decimals);
 
+      //remover os separador decimal e as decimas quando não são relevantes
       ret = ret.replace(
         sappy.sessionInfo.company.oadm.DecSep + '000000'.substring(0, sappy.sessionInfo.company.oadm.QtyDec)
         , '')
@@ -289,7 +292,20 @@ import moment from 'moment';
       if (d.isValid()) return d.format(sapFormat);
       return "";
     },
-
+    datetime: value => {
+      if (!value) return ""
+      let sapFormat = getDateFormat();
+      let d = moment(value)
+      if (d.isValid()) return d.format(sapFormat + " HH:mm:ss");
+      return "";
+    },
+    datetime2: value => {
+      if (!value) return ""
+      let sapFormat = getDateFormat();
+      let d = moment(value)
+      if (d.isValid()) return d.format(sapFormat + " HH:mm");
+      return "";
+    },
     YYYY_MM_DD: value => {
       let parsedDate;
 
@@ -307,55 +323,6 @@ import moment from 'moment';
       if (month.toString().length === 1) month = "0" + month;
 
       return year + "-" + month + "-" + day;
-    },
-
-    properDisplayDate: value => {
-      let parsedDate;
-
-      if (!value) return '';
-      if (value instanceof Date) {
-        parsedDate = value;
-      } else {
-        parsedDate = new Date(value);
-      }
-      let day = parsedDate.getDate();
-      let month = parsedDate.getMonth() + 1; //Months are zero based
-      let year = parsedDate.getFullYear();
-
-      if (day.toString().length === 1) day = "0" + day;
-      if (month.toString().length === 1) month = "0" + month;
-
-      return day + "-" + month + "-" + year;
-    },
-
-    properDisplayDateTime: value => {
-      let parsedDate;
-
-      if (!value) return '';
-
-      if (value instanceof Date) {
-        parsedDate = value;
-      } else {
-        parsedDate = new Date(value);
-      }
-
-      let y = parsedDate.getFullYear();
-      let M = parsedDate.getMonth() + 1; //Months are zero based
-      let d = parsedDate.getDate();
-      let h = parsedDate.getHours();
-      let m = parsedDate.getMinutes();
-      let s = parsedDate.getSeconds();
-
-      if (d.toString().length === 1) d = "0" + d;
-      if (M.toString().length === 1) M = "0" + M;
-      if (h.toString().length === 1) h = "0" + h;
-      if (m.toString().length === 1) m = "0" + m;
-      if (s) {
-        if (s.toString().length === 1) s = "0" + s;
-        return d + "-" + M + "-" + y + " " + h + ":" + m + ":" + s;
-      } else {
-        return d + "-" + M + "-" + y + " " + h + ":" + m;
-      }
     }
   };
 

@@ -13,8 +13,8 @@ class CmpTransStock extends Component {
             // let rowId = "row_" + index;
             let rowStyleClass = "";
             let seta = null;
-            if (row.InvQty > 0) seta = <span className="float-left" style={{ color: "green" }}><i className="icon wb-upload" /></span>;
-            if (row.InvQty < 0) seta = <span className="float-left" style={{ color: "red" }}><i className="icon wb-download" /></span>;
+            if (row.InvQty < 0) seta = <span className="float-left" style={{ color: "red" }}><i className="icon wb-upload" /></span>;
+            if (row.InvQty > 0) seta = <span className="float-left" style={{ color: "green" }}><i className="icon wb-download" /></span>;
             return (
                 <div className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={this.handleRowSelection}>
                     <div className="container vertical-align-middle">
@@ -23,7 +23,7 @@ class CmpTransStock extends Component {
                         {/*large displays*/}
                         <div className="row hidden-lg-down">
 
-                            <div className="col-1 text-nowrap firstcol"> {sappy.format.properDisplayDate(row.DOC_DATETIME)} </div>
+                            <div className="col-1 text-nowrap firstcol"> {sappy.format.date(row.DOC_DATETIME)} </div>
                             <div className="col-2 text-nowrap">
                                 {sappy.GetLinkTo(row.ObjType, row.DocEntry)}
                                 {row.DESCDOC + ' ' + row.DocNum} </div>
@@ -39,7 +39,7 @@ class CmpTransStock extends Component {
                                 {/* <div className="col text-nowrap">  {row.CardCode + ' - ' + row.CardName} </div> */}
                             </div>
                             <div className="row secondrow">
-                                <div className="col-3 text-nowrap firstcol"> {sappy.format.properDisplayDate(row.DOC_DATETIME)} </div>
+                                <div className="col-3 text-nowrap firstcol"> {sappy.format.date(row.DOC_DATETIME)} </div>
                                 <div className="col-4 text-nowrap">
                                     {sappy.GetLinkTo(row.ObjType, row.DocEntry)}
                                     {row.DocNum} </div>

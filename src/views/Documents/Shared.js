@@ -48,7 +48,7 @@ exports.prepareDocType = function ({ tableName }) {
           </tr>)
           result.data.forEach(popuprow => {
             content.push(<tr >
-              <td>{sappy.format.properDisplayDate(popuprow.DocDate)}</td>
+              <td>{sappy.format.date(popuprow.DocDate)}</td>
               <td style={{ maxWidth: "130px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{popuprow.CardName}</td>
               <td>{sappy.format.price(popuprow.PUR_PRICE, 3)}</td>
               <td>{sappy.format.price(popuprow.PRCNET, 3)}</td>
