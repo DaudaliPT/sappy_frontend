@@ -1,10 +1,26 @@
-
 import React, { Component } from "react";
+const $ = window.$;
+const sappy = window.sappy;
 class CmpClassificacaoFooter extends Component {
   constructor(props) {
     super(props)
+
     this.state = { currentModal: null }
   }
+
+  componentDidUpdate() {
+    let $el = $('#flash')
+    if ($el.length > 0 && $el[0]) {
+      $el.toolbar({
+        content: '#flash-toolbar-options',
+        style: 'dark',
+        event: 'click',
+        hideOnClick: true,
+        adjustment: 20
+      });
+    }
+  }
+
 
   render() {
     // let docData = this.props.docData || {}
@@ -14,21 +30,30 @@ class CmpClassificacaoFooter extends Component {
     let renderActions = () => {
       let actions = this.props.actions;
 
+      let renderActionButton = (a) => {
+        let btClassName = "btn btn-" + a.color;
+        if (a.name === "flash") btClassName += " btn-round btn-outline btn-icon"
+        return (
+          <button id={a.name} key={a.name} type="button" onClick={a.onClick} className={btClassName} title={a.title}>
+            <span>
+              <i className={a.icon} aria-hidden="true" />
+              <span className="hidden-sm-down">  {a.content ? a.content : a.name}</span>
+            </span>
+            {a.toolbarOptions}
+          </button>
+
+        );
+      }
+
       return (
 
-        <div id="docFooter-actions" className="animation-DESATIVADA-slide-left"        >
-          {actions.map(action => {
-            if (!action.visible) return null;
-            let btClassName = "btn btn-" + action.color;
-            return (
-              <button key={"action_" + action.name} type="button" onClick={action.onClick} className={btClassName}>
-                <span>
-                  <i className={action.icon} aria-hidden="true" />
-                  <span className="hidden-sm-down">  {action.content ? action.content : action.name}</span>
-                </span>
-              </button>
-            );
-          })}
+        <div id="docFooter-actions">
+          <div className="left">
+            {actions.filter(a => a.visible && a.showAtLeft).map(renderActionButton)}
+          </div>
+          <div className="right">
+            {actions.filter(a => a.visible && !a.showAtLeft).map(renderActionButton)}
+          </div>
         </div>
 
       );
@@ -42,7 +67,8 @@ class CmpClassificacaoFooter extends Component {
 }
 
 CmpClassificacaoFooter.defaultProps = {
-  actions: []
+  actions: [],
+  selectedPN: ""
 }
 
 export default CmpClassificacaoFooter;

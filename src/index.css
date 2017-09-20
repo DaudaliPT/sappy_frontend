@@ -999,3 +999,9 @@ div.flag>i.icon:hover{
 
 .lastcol {  
   padding-right: 0px; }
+
+.toolbar-dark .tool-item:hover {
+  background: rgb(97, 165, 229);
+  color: white;
+}
+ 

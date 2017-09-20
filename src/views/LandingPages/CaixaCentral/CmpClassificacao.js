@@ -18,6 +18,7 @@ class CmpClassificacao extends Component {
         this.handlePNselection = this.handlePNselection.bind(this);
         this.handleDetailRowSelect = this.handleDetailRowSelect.bind(this);
         this.handleDocRefresh = this.handleDocRefresh.bind(this);
+        this.createReceiptOrPayment = this.createReceiptOrPayment.bind(this);
         this.setClass = this.setClass.bind(this);
 
         this.state = { selectedPN: '', selectedPNname: '', selectedDocKeys: [], shiftKey: false, ctrlKey: false }
@@ -70,6 +71,122 @@ class CmpClassificacao extends Component {
         this.setState({ selectedDocKeys: [...selectedDocKeys] });
     }
 
+    createReceiptOrPayment(meioPag) {
+        let that = this
+
+        alert("hit")
+
+        let invokeAddDocAPI = () => {
+            let docsList = [];
+            if (this.docsComponent) docsList = this.docsComponent.state.listItems
+            let totalOfSelectedDocs = 0
+            let selectedDocs = docsList.filter(
+                doc => this.state.selectedDocKeys.indexOf(doc.TRANSID_AND_LINEID) > -1)
+
+
+            let data = {
+                DocType: "rCustomer",
+                CardCode: this.state.selectedPN,
+                PaymentInvoices: []
+            }
+            selectedDocs.forEach(doc => {
+                let InvoiceType = ""
+                if (sappy.getNum(doc.TransType) === -3) InvoiceType = "it_ClosingBalance";
+                else if (sappy.getNum(doc.TransType) === -1) InvoiceType = "it_AllTransactions";
+                else if (sappy.getNum(doc.TransType) === -2) InvoiceType = "it_OpeningBalance";
+                else if (sappy.getNum(doc.TransType) === 13) InvoiceType = "it_Invoice";
+                else if (sappy.getNum(doc.TransType) === 14) InvoiceType = "it_CredItnote";
+                else if (sappy.getNum(doc.TransType) === 15) InvoiceType = "it_TaxInvoice"
+                else if (sappy.getNum(doc.TransType) === 16) InvoiceType = "it_Return";
+                else if (sappy.getNum(doc.TransType) === 18) InvoiceType = "it_PurchaseInvoice";
+                else if (sappy.getNum(doc.TransType) === 19) InvoiceType = "it_PurchaseCreditNote";
+                else if (sappy.getNum(doc.TransType) === 20) InvoiceType = "it_PurchaseDeliveryNote";
+                else if (sappy.getNum(doc.TransType) === 21) InvoiceType = "it_PurchaseReturn";
+                else if (sappy.getNum(doc.TransType) === 24) InvoiceType = "it_Receipt";
+                else if (sappy.getNum(doc.TransType) === 25) InvoiceType = "it_Deposit";
+                else if (sappy.getNum(doc.TransType) === 30) InvoiceType = "it_JournalEntry";
+                else if (sappy.getNum(doc.TransType) === 46) InvoiceType = "it_PaymentAdvice";
+                else if (sappy.getNum(doc.TransType) === 57) InvoiceType = "it_ChequesForPayment";
+                else if (sappy.getNum(doc.TransType) === 58) InvoiceType = "it_StockReconciliations";
+                else if (sappy.getNum(doc.TransType) === 59) InvoiceType = "it_GeneralReceiptToStock";
+                else if (sappy.getNum(doc.TransType) === 60) InvoiceType = "it_GeneralReleaseFromStock";
+                else if (sappy.getNum(doc.TransType) === 67) InvoiceType = "it_TransferBetweenWarehouses";
+                else if (sappy.getNum(doc.TransType) === 68) InvoiceType = "it_WorkInstructions";
+                else if (sappy.getNum(doc.TransType) === 76) InvoiceType = "it_DeferredDeposit";
+                else if (sappy.getNum(doc.TransType) === 132) InvoiceType = "it_CorrectionInvoice ";
+                else if (sappy.getNum(doc.TransType) === 163) InvoiceType = "it_APCorrectionInvoice ";
+                else if (sappy.getNum(doc.TransType) === 165) InvoiceType = "it_ARCorrectionInvoice ";
+                else if (sappy.getNum(doc.TransType) === 203) InvoiceType = "it_DownPayment ";
+                else if (sappy.getNum(doc.TransType) === 204) InvoiceType = "it_PurchaseDownPayment ";
+
+                totalOfSelectedDocs += sappy.getNum(doc.BALANCE)
+
+                if (sappy.getNum(doc.TransType) !== 24 && sappy.getNum(doc.TransType) !== 46) {
+                    data.PaymentInvoices.push({
+                        DocEntry: doc.CreatedBy,
+                        InvoiceType,
+                        PaidSum: doc.BALANCE
+                    })
+                }
+                else {
+                    data.PaymentInvoices.push({
+                        DocEntry: doc.TransId,
+                        DocLine: doc.Line_ID,
+                        InvoiceType,
+                        PaidSum: doc.BALANCE
+                    })
+                }
+            })
+
+            let url = `/api/caixa/class/receipt`
+            if (totalOfSelectedDocs < 0) {
+                totalOfSelectedDocs *= -1;
+                url = `/api/caixa/class/payment`;
+            }
+
+            if (meioPag === "Numerario") {
+                data.CashSum = totalOfSelectedDocs;
+                data.CashAccount = "111";
+            } else if (meioPag === "Multibanco") {
+                data.TransferSum = totalOfSelectedDocs
+                data.TransferAccount = "118"
+                data.TransferReference = 'MB'
+            } else {
+                return sappy.showError({ message: meioPag + " não reconhecido!" })
+            }
+
+            axios
+                .post(url, data)
+                .then(result => {
+                    that.props.toggleModal(result.data.DocNum);
+                    sappy.showSuccess({
+                        msg: "Documento criado",
+                        moreInfo: `Criou com sucesso o documento ${result.data.DocNum}!`,
+                        confirmText: "Concluido"
+                    })
+                })
+                .catch(error => sappy.showError(error, "Não foi possivel adicionar o documento"));
+        }
+
+        invokeAddDocAPI()
+        // if (!hasWarning)
+        //   return sappy.showQuestion({
+        //     title: "Deseja Continuar?",
+        //     msg: "Se continuar irá criar este documento.",
+        //     onConfirm: invokeAddDocAPI,
+        //     confirmText: "Criar documento",
+        //     onCancel: () => { }
+        //   })
+        // else
+        //   return sappy.showWarning({
+        //     title: "Atenção!",
+        //     msg: "Ainda há campos com avisos!",
+        //     moreInfo: "Deseja mesmo assim criar este documento?",
+        //     onConfirm: invokeAddDocAPI,
+        //     confirmText: "Ignorar e criar documento",
+        //     onCancel: () => { }
+        //   })
+    }
 
     setClass(docClass) {
         let that = this;
@@ -81,7 +198,6 @@ class CmpClassificacao extends Component {
                 transId: docId.split('#')[0],
                 lineId: docId.split('#')[1]
             })
-
         })
 
         sappy.showWaitProgress("A classificar documentos...")
@@ -98,21 +214,30 @@ class CmpClassificacao extends Component {
             .catch(error => sappy.showError(error, "Não foi possivel atualizar classificação"));
     }
 
+
     render() {
+        let that = this;
         let { selectedPN, selectedPNname, selectedDocKeys } = this.state;
         let docsList = [];
         if (this.docsComponent) {
             docsList = this.docsComponent.state.listItems
         }
 
-        const renderRowPN = ({ row, index }) => {
+        let totalOfSelectedDocs = 0
+        let countC = 0
+        let countD = 0
+        let selectedDocs = docsList.filter(doc => selectedDocKeys.indexOf(doc.TRANSID_AND_LINEID) > -1)
+        selectedDocs.forEach(doc => {
+            totalOfSelectedDocs += sappy.getNum(doc.BALANCE)
+            countC += doc.U_apyCLASS === 'C' ? 1 : 0;
+            countD += doc.U_apyCLASS === 'D' ? 1 : 0;
+        })
 
+        let renderRowPN = ({ row, index }) => {
             const selected = row.CARDCODE === selectedPN;
-
             let rowStyleClass = "";
             let r = { ...row }
             if (selected) rowStyleClass += " sappy-selected-row";
-
 
             let descDocs
             if (sappy.getNum(row.BALANCE) === sappy.getNum(row.TOTAL_BALANCE)) {
@@ -135,24 +260,10 @@ class CmpClassificacao extends Component {
             );
         };
 
-        // let totalOfDocs = 0
-        let totalOfSelectedDocs = 0
-        let countC = 0
-        let countD = 0
-        if (this.docsComponent) {
-            docsList.forEach(doc => {
-                // totalOfDocs += sappy.getNum(doc.BALANCE)
-                let docId = doc.TRANSID_AND_LINEID;
-                if (selectedDocKeys.indexOf(docId) > -1) {
-                    totalOfSelectedDocs += sappy.getNum(doc.BALANCE)
-                    countC += doc.U_apyCLASS === 'C' ? 1 : 0;
-                    countD += doc.U_apyCLASS === 'D' ? 1 : 0;
-                }
-            })
-        }
-
         let footerProps = {
             actions: [
+                // { name: "Multibanco", color: "primary", icon: "icon fa-flash", visible: true, onClick: e => alert("teste"), showAtLeft: true },
+                // { name: "Numerário", color: "primary", icon: "icon fa-flash", visible: true, onClick: e => alert("teste"), showAtLeft: true },
                 { name: "Nenhuma", color: "default", icon: "icon fa-close", visible: countC || countD, onClick: e => this.setClass('N') },
                 { name: "Crédito", color: "warning", icon: "icon fa-warning", visible: countC !== selectedDocKeys.length, onClick: e => this.setClass('C') },
                 { name: "Distribuição", color: "primary", icon: "icon fa-truck", visible: countD !== selectedDocKeys.length, onClick: e => this.setClass('D') },
@@ -199,7 +310,21 @@ class CmpClassificacao extends Component {
                                 totalPagar={totalOfSelectedDocs * -1}
                             />)
                     }
-                }
+                },
+                //  {
+                //     name: "flash",
+                //     title: "Pagamento rápido",
+                //     content: <span></span>,
+                //     toolbarOptions: <div id="flash-toolbar-options" className="hidden">
+                //         <a href="#" title="Multibanco" toolbarItemClick={that.createReceiptOrPayment}><i className="fa fa-credit-card" ></i></a>
+                //         <a href="#" title="Numerário" toolbarItemClick={that.createReceiptOrPayment}><i className="fa fa-money"></i></a>
+
+                //     </div>,
+                //     color: "primary",
+                //     icon: "icon fa-flash",
+                //     visible: totalOfSelectedDocs !== 0
+                // }
+
             ]
         }
 
