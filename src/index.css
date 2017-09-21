@@ -276,8 +276,7 @@ body.site-navbar-small {
 } 
 
 .byusVirtualRowContainer>.sappy-selected-row:hover  {
-  background-color: #dbecfa!important;
-  color: rgb( 0, 0, 0) !important;
+  background-color: #dbecfa!important; 
   /* background-color: rgba( 98, 168, 234,0.7)  !important; */
 } 
 
