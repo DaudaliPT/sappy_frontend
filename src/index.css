@@ -270,25 +270,28 @@ body.site-navbar-small {
     position: absolute;
 }
 
-.byusVirtualRowContainer> div:hover  {
+.byusVirtualRowContainer:hover  {
   /* background-color: rgba(98,168,234,0.2) !important; */
   background-color: #f9f9f9!important;
 } 
 
-.byusVirtualRowContainer.sappy-selected-row> div:hover  {
-  background-color:initial!important;
+.byusVirtualRowContainer>.sappy-selected-row:hover  {
+  background-color: #dbecfa!important;
+  color: rgb( 0, 0, 0) !important;
+  /* background-color: rgba( 98, 168, 234,0.7)  !important; */
 } 
 
-.byusVirtualRowContainer .sappy-selected-row{ 
+.byusVirtualRowContainer>.sappy-selected-row{ 
     /* background-color: rgba(98,168,234,0.3)   ; */
-    background-color: rgba( 98, 168, 234,0.7)  ;
-    /* color: rgb( 255, 255, 255) ; */
+    background-color: #dbecfa ;
+    color: rgb( 0, 0, 0) !important;
     font-weight: 400!important;
-} 
-/* .byusVirtualRowContainer .sappy-selected-row .secondrow{  
-  color: rgb( 255, 255, 255) !important;
-  font-weight: normal!important;
-} */
+  } 
+  .byusVirtualRowContainer>.sappy-selected-row .secondrow{  
+    /* color: rgb( 255, 255, 255) !important; */
+    color: rgb( 0, 0, 0) !important;
+  /* font-weight: normal!important; */
+}
 
 .vlist-row-danger{    
     color: rgb(249, 104, 104) ; 
@@ -493,13 +496,13 @@ body.site-navbar-small {
 
 .byusVirtualRowContainer div  {
   width: 100%;
+
 }
 
-.byusVirtualRowContainer> div:hover {
-  background-color: rgba(98,168,234,0.2);/* #f3f7f9*/
-}
 
 .byusVirtualRow {
+  padding-left: 5px;
+  padding-right: 5px;
   height: 100%;
   width: 100%;
   cursor: pointer; 

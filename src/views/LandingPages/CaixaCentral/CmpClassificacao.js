@@ -314,7 +314,7 @@ class CmpClassificacao extends Component {
                 // { name: "Multibanco", color: "primary", icon: "icon fa-flash", visible: true, onClick: e => alert("teste"), showAtLeft: true },
                 // { name: "Numerário", color: "primary", icon: "icon fa-flash", visible: true, onClick: e => alert("teste"), showAtLeft: true },
                 { name: "Nenhuma", color: "default", icon: "icon fa-close", visible: countC || countD, onClick: e => this.setClass('N') },
-                { name: "Crédito", color: "warning", icon: "icon fa-warning", visible: countC !== selectedDocKeys.length, onClick: e => this.setClass('C') },
+                { name: "Conta Corrente", color: "warning", icon: "icon fa-warning", visible: countC !== selectedDocKeys.length, onClick: e => this.setClass('C') },
                 { name: "Distribuição", color: "primary", icon: "icon fa-truck", visible: countD !== selectedDocKeys.length, onClick: e => this.setClass('D') },
                 {
                     name: "ReceberOuPagar",
