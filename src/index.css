@@ -173,11 +173,8 @@ body.site-navbar-small {
 .react-grid-HeaderCell {
     font-weight: initial !important;
     border-right: none !important; 
-    /* border-bottom: none !important;  */
-    }
-
-.react-grid-HeaderCell{
-  background: rgb(255,255,255); 
+    /* border-bottom: none !important;  */ 
+  background: rgb(255,255,255)!important; 
 }
 
 /* .react-grid-HeaderCell.editable-col,  */
