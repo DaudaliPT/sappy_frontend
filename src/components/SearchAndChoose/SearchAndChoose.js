@@ -36,6 +36,7 @@ class SearchAndChoose extends Component {
     }
   }
 
+
   openSearchModal() {
     let currentModal = null;
     if (this.props.searchType === "oitm")
@@ -101,7 +102,7 @@ class SearchAndChoose extends Component {
   render() {
     let that = this
     return (
-      <form action="#" role="search" onSubmit={e => e.preventDefault()} >
+      <form action="#" role="search" onSubmit={e => e.preventDefault()}      >
         {this.state.currentModal}
         <div className="input-search input-search-dark">
           <i className="input-search-icon wb-plus" aria-hidden="true" />

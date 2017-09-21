@@ -127,6 +127,7 @@ class DataGrid extends Component {
   }
 
   buildColumnList(props) {
+    let that = this
     let gridWidth = this.thisComponent ? this.thisComponent.DOMMetrics.gridWidth() : 0;
     let totalWidth = this.props.fields.reduce((sum, field) => sum + sappy.getNum(field.width || 100), 0);
     totalWidth += 60; //Levar em conta a coluna de select
@@ -176,7 +177,7 @@ class DataGrid extends Component {
               ev.stopPropagation();
 
               let currentRow = this.getRowAt(args.rowIdx);
-              this.handleGridRowsUpdated({
+              that.handleGridRowsUpdated({
                 fromRow: args.rowIdx,
                 toRow: args.rowIdx,
                 updated: { [args.column.key]: !currentRow[args.column.key] }
@@ -188,7 +189,7 @@ class DataGrid extends Component {
                 ev.stopPropagation();
 
                 let currentRow = this.getRowAt(args.rowIdx);
-                this.handleGridRowsUpdated({
+                that.handleGridRowsUpdated({
                   fromRow: args.rowIdx,
                   toRow: args.rowIdx,
                   updated: { [args.column.key]: !currentRow[args.column.key] }
@@ -214,7 +215,7 @@ class DataGrid extends Component {
 
                 let currentValue = currentRow["BONUS_NAP"];
                 currentValue = currentValue === 1 ? 0 : 1;
-                this.handleGridRowsUpdated({
+                that.handleGridRowsUpdated({
                   fromRow: args.rowIdx,
                   toRow: args.rowIdx,
                   updated: { BONUS_NAP: currentValue }
@@ -230,7 +231,7 @@ class DataGrid extends Component {
                 let currentRow = this.getRowAt(args.rowIdx);
                 let currentValue = currentRow["BONUS_NAP"];
                 currentValue = currentValue === 1 ? 0 : 1;
-                this.handleGridRowsUpdated({
+                that.handleGridRowsUpdated({
                   fromRow: args.rowIdx,
                   toRow: args.rowIdx,
                   updated: { BONUS_NAP: currentValue }
@@ -256,7 +257,7 @@ class DataGrid extends Component {
 
                 let currentValue = currentRow["BONUS_NAP"];
                 currentValue = currentValue === 1 ? 0 : 1;
-                this.handleGridRowsUpdated({
+                that.handleGridRowsUpdated({
                   fromRow: args.rowIdx,
                   toRow: args.rowIdx,
                   updated: { BONUS_NAP: currentValue }
@@ -272,7 +273,7 @@ class DataGrid extends Component {
                 let currentRow = this.getRowAt(args.rowIdx);
                 let currentValue = currentRow["BONUS_NAP"];
                 currentValue = currentValue === 1 ? 0 : 1;
-                this.handleGridRowsUpdated({
+                that.handleGridRowsUpdated({
                   fromRow: args.rowIdx,
                   toRow: args.rowIdx,
                   updated: { BONUS_NAP: currentValue }
@@ -300,12 +301,17 @@ class DataGrid extends Component {
 
   handleGridRowsUpdated({ fromRow, toRow, updated }) {
     let colUpdated = Object.keys(updated)[0];
-    let col = this.state.columns.find(col => col.key === colUpdated)
 
-    if ("quantity,price,amount,bonus".indexOf(col.type) > -1) {
+    let colType = "string"
+    if (true) { // make sure col is not available because it can not exist
+      let col = this.state.columns.find(col => col.key === colUpdated)
+      if (col) colType = col.type;
+    }
+
+    if ("quantity,price,amount,bonus".indexOf(colType) > -1) {
       let newValue = updated[colUpdated];
 
-      if (col.type === "price" && (newValue.toString().indexOf("p") > -1)) {
+      if (colType === "price" && (newValue.toString().indexOf("p") > -1)) {
         let pk = sappy.getNum(this.getRowAt(fromRow).QTPK)
         if (pk) {
           newValue = newValue.toString().replace("/pk", "/" + pk)
@@ -317,11 +323,13 @@ class DataGrid extends Component {
 
       newValue = sappy.evaluateNumericExpression(newValue)
 
-      if (col.type === "price" && sappy.getNum(newValue) < 0) {
+      if (colType === "price" && sappy.getNum(newValue) < 0) {
         return sappy.showToastr({ color: "warning", msg: "Os preços não podem ser negativos, use a quantidade para obter um valor negativo." })
       }
       updated[colUpdated] = newValue;
     }
+
+
 
     for (var index = fromRow; index <= toRow; index++) {
       let ix = index;

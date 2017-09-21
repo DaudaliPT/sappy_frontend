@@ -255,6 +255,8 @@ class SearchPage extends PureComponent {
     }
   };
 
+
+
   render() {
     var { activeTab, tabItems, totalInfo } = this.state;
 
@@ -266,7 +268,7 @@ class SearchPage extends PureComponent {
     let hasContent = !hasNoContent || !this.props.noRecordsMessage
 
     return (
-      <div >
+      <div  >
         {!hasContent &&
           <NoContent message={this.props.noRecordsMessage}></NoContent>
         }

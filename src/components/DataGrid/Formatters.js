@@ -76,7 +76,6 @@ class BonusFormatter extends Component {
         let showAPswitch = value !== 0;//value.indexOf('BONUS') > -1;
         if (!showAPswitch) return null
 
-
         let checkedAPswitch = this.props.dependentValues["BONUS_NAP"];
         let color = checkedAPswitch ? "warning" : "success";
         let ON = value + " NAP";

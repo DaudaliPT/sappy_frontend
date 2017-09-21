@@ -98,7 +98,7 @@ exports.prepareDocType = function ({ tableName }) {
     sidebarFields.line3.push({ name: 'DESCDEB', label: 'Desc. em Débito', type: "text", width: "calc(100% - 35px)" })
     sidebarFields.line3.push({ name: 'DESCDEBAC', label: '', type: "check|success", width: "35px" })
     sidebarFields.line4 = [];
-    sidebarFields.line4.push({ name: 'DESCDEBPER', label: 'Tipo débito:', type: "combo", width: "100%", options: exports.DESCDEBOP_options })
+    sidebarFields.line4.push({ name: 'DESCDEBPER', label: 'Tipo débito:', type: "combo", width: "100%", options: DESCDEBOP_options })
     sidebarFields.line5 = [];
     sidebarFields.line5.push({ name: 'DESCNET', label: 'Total Desc. NET', type: "percent", width: "100%", disabled: true })
   }
@@ -116,7 +116,7 @@ exports.prepareDocType = function ({ tableName }) {
   detailFields.push({ name: 'QTSTK', label: 'Qtd', type: "quantity", width: 60, editable: true })
   detailFields.push({ name: 'QTBONUS', label: 'Qt.Bónus', type: "bonus", width: 120, editable: true })
   // detailFields.push({ name: 'BONUS_NAP', label: 'NAP', type: "check", width: 40, editable: true })
-  detailFields.push({ name: 'PRICE', label: 'Preço', type: "price", width: 70, editable: true, hover: exports.priceHover })
+  detailFields.push({ name: 'PRICE', label: 'Preço', type: "price", width: 70, editable: true, hover: priceHover })
   detailFields.push({ name: 'USER_DISC', label: 'Descontos', type: "text", width: 120, editable: true })
   detailFields.push({ name: 'LINETOTAL', label: 'Total', width: 90, type: "amount", editable: true })
   // detailFields.push({ name: 'LINETOTALBONUS', label: 'TotalB', width: 90, type: "amount", editable: true })

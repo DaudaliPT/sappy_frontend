@@ -77,10 +77,6 @@ class CmpClassificacao extends Component {
         let that = this
 
         let invokeAddDocAPI = () => {
-
-
-            sappy.showWaitProgress("A criar documento...")
-
             let selectedPN = this.state.selectedPN;
             let docsList = [];
             if (this.docsComponent) docsList = this.docsComponent.state.listItems
@@ -96,33 +92,34 @@ class CmpClassificacao extends Component {
             }
             selectedDocs.forEach(doc => {
                 let InvoiceType = ""
-                if (sappy.getNum(doc.TransType) === -3) InvoiceType = "it_ClosingBalance";
-                else if (sappy.getNum(doc.TransType) === -1) InvoiceType = "it_AllTransactions";
-                else if (sappy.getNum(doc.TransType) === -2) InvoiceType = "it_OpeningBalance";
-                else if (sappy.getNum(doc.TransType) === 13) InvoiceType = "it_Invoice";
-                else if (sappy.getNum(doc.TransType) === 14) InvoiceType = "it_CredItnote";
-                else if (sappy.getNum(doc.TransType) === 15) InvoiceType = "it_TaxInvoice"
-                else if (sappy.getNum(doc.TransType) === 16) InvoiceType = "it_Return";
-                else if (sappy.getNum(doc.TransType) === 18) InvoiceType = "it_PurchaseInvoice";
-                else if (sappy.getNum(doc.TransType) === 19) InvoiceType = "it_PurchaseCreditNote";
-                else if (sappy.getNum(doc.TransType) === 20) InvoiceType = "it_PurchaseDeliveryNote";
-                else if (sappy.getNum(doc.TransType) === 21) InvoiceType = "it_PurchaseReturn";
-                else if (sappy.getNum(doc.TransType) === 24) InvoiceType = "it_Receipt";
-                else if (sappy.getNum(doc.TransType) === 25) InvoiceType = "it_Deposit";
-                else if (sappy.getNum(doc.TransType) === 30) InvoiceType = "it_JournalEntry";
-                else if (sappy.getNum(doc.TransType) === 46) InvoiceType = "it_PaymentAdvice";
-                else if (sappy.getNum(doc.TransType) === 57) InvoiceType = "it_ChequesForPayment";
-                else if (sappy.getNum(doc.TransType) === 58) InvoiceType = "it_StockReconciliations";
-                else if (sappy.getNum(doc.TransType) === 59) InvoiceType = "it_GeneralReceiptToStock";
-                else if (sappy.getNum(doc.TransType) === 60) InvoiceType = "it_GeneralReleaseFromStock";
-                else if (sappy.getNum(doc.TransType) === 67) InvoiceType = "it_TransferBetweenWarehouses";
-                else if (sappy.getNum(doc.TransType) === 68) InvoiceType = "it_WorkInstructions";
-                else if (sappy.getNum(doc.TransType) === 76) InvoiceType = "it_DeferredDeposit";
-                else if (sappy.getNum(doc.TransType) === 132) InvoiceType = "it_CorrectionInvoice ";
-                else if (sappy.getNum(doc.TransType) === 163) InvoiceType = "it_APCorrectionInvoice ";
-                else if (sappy.getNum(doc.TransType) === 165) InvoiceType = "it_ARCorrectionInvoice ";
-                else if (sappy.getNum(doc.TransType) === 203) InvoiceType = "it_DownPayment ";
-                else if (sappy.getNum(doc.TransType) === 204) InvoiceType = "it_PurchaseDownPayment ";
+                let transType = sappy.getNum(doc.TransType);
+                if (transType === -3) InvoiceType = "it_ClosingBalance";
+                else if (transType === -1) InvoiceType = "it_AllTransactions";
+                else if (transType === -2) InvoiceType = "it_OpeningBalance";
+                else if (transType === 13) InvoiceType = "it_Invoice";
+                else if (transType === 14) InvoiceType = "it_CredItnote";
+                else if (transType === 15) InvoiceType = "it_TaxInvoice"
+                else if (transType === 16) InvoiceType = "it_Return";
+                else if (transType === 18) InvoiceType = "it_PurchaseInvoice";
+                else if (transType === 19) InvoiceType = "it_PurchaseCreditNote";
+                else if (transType === 20) InvoiceType = "it_PurchaseDeliveryNote";
+                else if (transType === 21) InvoiceType = "it_PurchaseReturn";
+                else if (transType === 24) InvoiceType = "it_Receipt";
+                else if (transType === 25) InvoiceType = "it_Deposit";
+                else if (transType === 30) InvoiceType = "it_JournalEntry";
+                else if (transType === 46) InvoiceType = "it_PaymentAdvice";
+                else if (transType === 57) InvoiceType = "it_ChequesForPayment";
+                else if (transType === 58) InvoiceType = "it_StockReconciliations";
+                else if (transType === 59) InvoiceType = "it_GeneralReceiptToStock";
+                else if (transType === 60) InvoiceType = "it_GeneralReleaseFromStock";
+                else if (transType === 67) InvoiceType = "it_TransferBetweenWarehouses";
+                else if (transType === 68) InvoiceType = "it_WorkInstructions";
+                else if (transType === 76) InvoiceType = "it_DeferredDeposit";
+                else if (transType === 132) InvoiceType = "it_CorrectionInvoice ";
+                else if (transType === 163) InvoiceType = "it_APCorrectionInvoice ";
+                else if (transType === 165) InvoiceType = "it_ARCorrectionInvoice ";
+                else if (transType === 203) InvoiceType = "it_DownPayment ";
+                else if (transType === 204) InvoiceType = "it_PurchaseDownPayment ";
 
                 totalOfSelectedDocs += sappy.getNum(doc.BALANCE)
 
@@ -143,10 +140,10 @@ class CmpClassificacao extends Component {
                 }
             })
 
-            let docDesc = "recebimento"
+            let strDocDesc = "recebimento"
             let url = `/api/caixa/class/receipt`
             if (totalOfSelectedDocs < 0) {
-                docDesc = "pagamento"
+                strDocDesc = "pagamento"
                 totalOfSelectedDocs *= -1;
                 url = `/api/caixa/class/payment`;
             }
@@ -162,14 +159,12 @@ class CmpClassificacao extends Component {
                 return sappy.showError({ message: meioPag + " não reconhecido!" })
             }
 
+            sappy.showWaitProgress("A criar documento...")
             axios
                 .post(url, data)
                 .then(result => {
-                    sappy.showSuccess({
-                        title: "Documento criado",
-                        moreInfo: `Criou com sucesso o ${docDesc} ${result.data.DocNum} no valor de ${sappy.format.amount(totalOfSelectedDocs)}, de ${this.state.selectedPNname}!`,
-                        confirmText: "Concluido"
-                    })
+                    sappy.hideWaitProgress()
+                    sappy.showToastr({ color: "success", msg: `Criou com sucesso o ${strDocDesc} ${result.data.DocNum} no valor de ${sappy.format.amount(totalOfSelectedDocs)}, de ${this.state.selectedPNname}!` })
 
                     //forçar refresh
                     let selectedPN = that.state.selectedPN;

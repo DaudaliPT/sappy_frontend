@@ -13,8 +13,12 @@ class Flag extends Component {
 
   handleToggle() {
     if (this.props.disabled) return
+
     let value = this.props.value;
-    let changeInfo = { fieldName: this.props.name, rawValue: !value, formatedValue: !value };
+    value = (value === 1 || value === '1' || value === 'Y') ? 0 : 1;
+
+    let changeInfo = { fieldName: this.props.name, rawValue: value, formatedValue: value };
+
     this.props.onChange(changeInfo);
   }
 
@@ -25,8 +29,10 @@ class Flag extends Component {
       stateMsg = this.props.state.split('|')[1];
     }
 
+    let value = this.props.value;
+    value = (value === 1 || value === '1' || value === 'Y') ? 1 : 0;
 
-    let checked = this.props.value != null ? this.props.value : false;
+    let checked = value ? true : false;
     let ON = "icon ion-ios-flag";
     let OFF = "icon ion-ios-flag-outline";
     let color = this.props.color || "success";

@@ -18,7 +18,7 @@ class DocBase extends Component {
     this.toggleHeader = this.toggleHeader.bind(this)
     this.toggleEditable = this.toggleEditable.bind(this)
     this.loadDoc = this.loadDoc.bind(this)
- 
+
     this.ensureDocHeaderExists = this.ensureDocHeaderExists.bind(this);
     this.handleHeaderFieldChange = this.handleHeaderFieldChange.bind(this)
     this.handleDetailRowChange = this.handleDetailRowChange.bind(this)
@@ -234,7 +234,7 @@ class DocBase extends Component {
     // let oldVal = this.state.docData[fieldName];
     let val = changeInfo.rawValue;
 
-    let updated = { [fieldName]: val || null }
+    let updated = { [fieldName]: val }
     if (that.props.onHeaderChange) updated = that.props.onHeaderChange(this.state.docData, updated);
 
     // // check if really changed

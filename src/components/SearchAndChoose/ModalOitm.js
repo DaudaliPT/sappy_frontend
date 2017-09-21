@@ -17,11 +17,19 @@ class ModalOitm extends Component {
     this.toggleModal = this.toggleModal.bind(this);
     this.handleAddNew = this.handleAddNew.bind(this);
     this.handleNewItemCreated = this.handleNewItemCreated.bind(this);
+    this.handleOnKeyDown_popup = this.handleOnKeyDown_popup.bind(this);
 
     this.state = {
       selectedItems: [],
       currentModal: null
     };
+  }
+
+  handleOnKeyDown_popup(e) {
+    if (e.keyCode === 13) {
+      //Tentar adicionar
+      this.handleOnClickContinuar(e);
+    }
   }
 
   handleRowSelection(e) {
@@ -137,7 +145,7 @@ class ModalOitm extends Component {
 
     return (
       <div>
-        <Modal isOpen={true} toggle={this.handleToggleModal} className={"modal-lg modal-success"}>
+        <Modal isOpen={true} toggle={this.handleToggleModal} className={"modal-lg modal-success"} onKeyDown={this.handleOnKeyDown_popup}>
           <ModalHeader toggle={this.handleToggleModal}>Selecione o artigo</ModalHeader>
           <ModalBody>
 
