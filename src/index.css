@@ -628,6 +628,10 @@ input, optgroup,select,textarea {
      margin-top: 1.9rem!important;
      margin-bottom: 0rem !important; 
 }  
+.form-group.notas{
+  margin-top: 0.1rem!important;
+  margin-bottom: 0rem !important;
+}
 .page-content {
     padding-bottom: 0px !important;
 }
@@ -679,14 +683,32 @@ font-weight: bold;
 
 }
 
+.caption-button {
+  width: 60px; 
+  height: 100%;
+  margin-right: 0px !important;    
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  align-content:center !important;
+ }
+ 
+.left-button {
+  width: 30px; 
+  height: 100%;
+  margin-right: 0px !important;    
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  align-content:center !important;
+ }
+ 
  .right-button {
-     width: 30px; 
-     height: 100%;
-     margin-left: 0px !important;    
-     padding-left: 0px !important;
-     padding-right: 0px !important;
-     align-content:center !important;
-    }
+  width: 30px; 
+  height: 100%;
+  margin-left: 0px !important;    
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  align-content:center !important;
+ }
  
  
 /* --------------------------------------------------------------------------- */

@@ -4,7 +4,7 @@ import axios from "axios";
 var $ = window.$;
 var sappy = window.sappy;
 
-import { TextBox, TextBoxNumeric, Date, ComboBox } from "../../../Inputs";
+import { TextBox, TextBoxNumeric, Date, ComboBox, Notas } from "../../../Inputs";
 
 class ModPagModal extends Component {
   constructor(props) {
@@ -113,13 +113,35 @@ class ModPagModal extends Component {
 
     // if (this.state[fieldName + "_VALIDATEMSG"]) newStateValues[fieldName + "_VALIDATEMSG"] = ""
 
-
-
     let totalPagar = sappy.getNum(newStateValues.totalPagar ? newStateValues.totalPagar : this.state.totalPagar)
     let ValorNumerario = sappy.getNum(fieldName === "ValorNumerario" ? formatedValue : this.state.ValorNumerario)
     let ValorMultibanco = sappy.getNum(fieldName === "ValorMultibanco" ? formatedValue : this.state.ValorMultibanco)
     let ValorTransferencia = sappy.getNum(fieldName === "ValorTransferencia" ? formatedValue : this.state.ValorTransferencia)
     let ValorCheques = sappy.getNum(fieldName === "ValorCheques" ? formatedValue : this.state.ValorCheques)
+
+    let NrNotas5 = sappy.getNum(fieldName === "NrNotas5" ? formatedValue : this.state.NrNotas5)
+    let NrNotas10 = sappy.getNum(fieldName === "NrNotas10" ? formatedValue : this.state.NrNotas10)
+    let NrNotas20 = sappy.getNum(fieldName === "NrNotas20" ? formatedValue : this.state.NrNotas20)
+    let NrNotas50 = sappy.getNum(fieldName === "NrNotas50" ? formatedValue : this.state.NrNotas50)
+    let NrNotas100 = sappy.getNum(fieldName === "NrNotas100" ? formatedValue : this.state.NrNotas100)
+    let NrNotas200 = sappy.getNum(fieldName === "NrNotas200" ? formatedValue : this.state.NrNotas200)
+    let NrNotas500 = sappy.getNum(fieldName === "NrNotas500" ? formatedValue : this.state.NrNotas500)
+    let ValorNotas = (NrNotas5 * 5) + (NrNotas10 * 10) + (NrNotas20 * 20) + (NrNotas50 * 50) + (NrNotas100 * 100) + (NrNotas200 * 200) + (NrNotas500 * 500)
+    Object.assign(newStateValues, { ValorNotas: sappy.format.amount(ValorNotas) })
+
+
+    let ValorMoedas = sappy.getNum(fieldName === "ValorMoedas" ? formatedValue : this.state.ValorMoedas)
+    let ValorVales = sappy.getNum(fieldName === "ValorVales" ? formatedValue : this.state.ValorVales)
+    let ValorTickets = sappy.getNum(fieldName === "ValorTickets" ? formatedValue : this.state.ValorTickets)
+
+    let TotalNumerarioCalculado = ValorNotas + ValorMoedas + ValorVales + ValorTickets
+    Object.assign(newStateValues, { TotalNumerarioCalculado: sappy.format.amount(TotalNumerarioCalculado) })
+    if (TotalNumerarioCalculado) {
+      ValorNumerario = TotalNumerarioCalculado
+      Object.assign(newStateValues, { ValorNumerario: sappy.format.amount(ValorNumerario) })
+    }
+
+
     let continuarColor;
     let continuarContent;
 
@@ -285,10 +307,22 @@ class ModPagModal extends Component {
         CashAccount: "111",
         CashSum: sappy.getNum(this.state.ValorNumerario) - sappy.getNum(this.state.troco),
         Remarks: this.state.Observacoes,
-        PaymentInvoices: [
+        PaymentInvoices: [],
 
-        ]
+        U_apyNotas5: sappy.getNum(this.state.NrNotas5),
+        U_apyNotas10: sappy.getNum(this.state.NrNotas10),
+        U_apyNotas20: sappy.getNum(this.state.NrNotas20),
+        U_apyNotas50: sappy.getNum(this.state.NrNotas50),
+        U_apyNotas100: sappy.getNum(this.state.NrNotas100),
+        U_apyNotas200: sappy.getNum(this.state.NrNotas200),
+        U_apyNotas500: sappy.getNum(this.state.NrNotas500),
+        U_apyNotas: sappy.getNum(this.state.ValorNotas),
+        U_apyVales: sappy.getNum(this.state.ValorVales),
+        U_apyTickets: sappy.getNum(this.state.ValorTickets),
+        U_apyTroco: sappy.getNum(this.state.troco)
       }
+
+
       if (sappy.getNum(this.state.ValorMultibanco)) {
         data.TransferAccount = "118"
         data.TransferSum = sappy.getNum(this.state.ValorMultibanco)
@@ -314,7 +348,6 @@ class ModPagModal extends Component {
           })
         }
       });
-
 
 
       let pendingValue = sappy.getNum(this.state.totalPagar);
@@ -385,12 +418,12 @@ class ModPagModal extends Component {
         .then(result => {
 
           sappy.hideWaitProgress()
-          that.props.toggleModal({ success: result.data.DocNum });
           sappy.showToastr({
             color: "success",
-            msg: `Criou com sucesso o ${strDocDesc} ${result.data.DocNum} no valor de ${sappy.format.amount(this.state.totalPagar)}, de ${result.data.CardName}!`
+            msg: `Criou com sucesso o ${strDocDesc} ${result.data.DocNum} no valor de ${sappy.format.amount(sappy.getNum(that.state.totalPagar))}, de ${result.data.CardName}!`
           })
 
+          that.props.toggleModal({ success: result.data.DocNum });
         })
         .catch(error => sappy.showError(error, "Não foi possivel adicionar o " + strDocDesc));
     }
@@ -422,21 +455,47 @@ class ModPagModal extends Component {
 
     let renderNumerario = () => (
       <div>
+
         <div className="row">
-          <div className="col-4 pr-1">
+          <div className="col-4">
+            <div className="row"> <div className="col pr-1"> <Notas valueType="amount" label="5 €" name="NrNotas5" value={this.state.NrNotas5} onChange={this.onFieldChange} realTimeChange={true} /></div></div>
+            <div className="row"> <div className="col pr-1"> <Notas valueType="amount" label="10 €" name="NrNotas10" value={this.state.NrNotas10} onChange={this.onFieldChange} realTimeChange={true} /></div></div>
+            <div className="row"> <div className="col pr-1"> <Notas valueType="amount" label="20 €" name="NrNotas20" value={this.state.NrNotas20} onChange={this.onFieldChange} realTimeChange={true} /></div></div>
+            <div className="row"> <div className="col pr-1"> <Notas valueType="amount" label="50 €" name="NrNotas50" value={this.state.NrNotas50} onChange={this.onFieldChange} realTimeChange={true} /></div></div>
+            <div className="row"> <div className="col pr-1"> <Notas valueType="amount" label="100 €" name="NrNotas100" value={this.state.NrNotas100} onChange={this.onFieldChange} realTimeChange={true} /></div></div>
+            <div className="row"> <div className="col pr-1"> <Notas valueType="amount" label="200 €" name="NrNotas200" value={this.state.NrNotas200} onChange={this.onFieldChange} realTimeChange={true} /></div></div>
+            <div className="row"> <div className="col pr-1"> <Notas valueType="amount" label="500 €" name="NrNotas500" value={this.state.NrNotas500} onChange={this.onFieldChange} realTimeChange={true} /></div></div>
+          </div>
+          <div className="col-3">
+
+            <div className="row">
+              <div className="col"> <TextBoxNumeric valueType="amount" label="Moedas:" name="ValorMoedas" value={this.state.ValorMoedas} onChange={this.onFieldChange} realTimeChange={true} /></div>
+            </div>
+            <div className="row">
+              <div className="col"> <TextBoxNumeric valueType="amount" label="Vales:" name="ValorVales" value={this.state.ValorVales} onChange={this.onFieldChange} realTimeChange={true} /></div>
+            </div>
+            <div className="row">
+              <div className="col"> <TextBoxNumeric valueType="amount" label="Tickets:" name="ValorTickets" value={this.state.ValorTickets} onChange={this.onFieldChange} realTimeChange={true} /></div>
+            </div>
+            {/* <div className="row">
+              <div className="col"> <TextBoxNumeric valueType="amount" label="Notas:" name="ValorNotas" value={this.state.ValorNotas} disabled={true} /></div>
+            </div> */}
+          </div>
+          <div className="col-4 offset-1">
             <TextBoxNumeric
               valueType="amount"
               label="Valor em numerário:"
               name="ValorNumerario"
               value={this.state.ValorNumerario}
               onChange={this.onFieldChange}
+              disabled={sappy.getNum(this.state.TotalNumerarioCalculado) > 0}
               realTimeChange={true}
               rightButton={getRightButton(this.state.ValorNumerario)}
               onRightButtonClick={this.onClick_GetRemaingValue}
             />
           </div>
         </div>
-      </div>)
+      </div >)
 
 
     let renderMultibanco = () => (

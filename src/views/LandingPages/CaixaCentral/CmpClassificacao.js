@@ -313,7 +313,7 @@ class CmpClassificacao extends Component {
                 { name: "Distribuição", color: "primary", icon: "icon fa-truck", visible: countD !== selectedDocKeys.length, onClick: e => this.setClass('D') },
                 {
                     name: "ReceberOuPagar",
-                    content: <span>{totalOfSelectedDocs > 0 ? "Receber " : "Pagar "}<strong>{sappy.format.amount(totalOfSelectedDocs)}</strong></span>,
+                    content: <span>{totalOfSelectedDocs > 0 ? "Receber " : "Pagar "}<strong>{sappy.format.amount(Math.abs(totalOfSelectedDocs))}</strong></span>,
                     color: totalOfSelectedDocs > 0 ? "success" : "danger",
                     icon: "icon fa-check",
                     visible: totalOfSelectedDocs !== 0,

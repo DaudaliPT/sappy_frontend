@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { FormGroup, FormFeedback, Button, InputGroup, Input } from "reactstrap";
+import { FormGroup, FormFeedback, Button, InputGroup, Input, Label } from "reactstrap";
 var sappy = window.sappy;
 // var $ = window.$;
 
@@ -10,6 +10,7 @@ class TextBoxNumeric extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
     this.getFormatedValue = this.getFormatedValue.bind(this);
+    this.onIncreaseOrDecrease_click = this.onIncreaseOrDecrease_click.bind(this);
 
     this.state = this.createStateFromProps(props);
   }
@@ -44,12 +45,9 @@ class TextBoxNumeric extends Component {
 
   getFormatedValue(valueType, value) {
     if (value === null || value === undefined) return ""
+
     let rawValue = sappy.evaluateNumericExpression(value)
-    let formatedValue;
-    if (valueType === "price") formatedValue = sappy.format.price(rawValue)
-    if (valueType === "amount") formatedValue = sappy.format.amount(rawValue)
-    if (valueType === "percent") formatedValue = sappy.format.percent(rawValue)
-    if (valueType === "integer") formatedValue = sappy.format.integer(rawValue)
+    let formatedValue = sappy.format.integer(rawValue)
 
     return formatedValue;
   }
@@ -63,28 +61,27 @@ class TextBoxNumeric extends Component {
     }
   }
 
+  onIncreaseOrDecrease_click(e) {
+    let that = this
+    let value = sappy.getNum(this.state.value)
+
+    if (e.target.innerText === "-") value--
+    if (e.target.innerText === "+") value++
+    if (value < 0) value = 0;
+    this.setState({ value }, () => {
+      let changeInfo = {
+        fieldName: that.props.name,
+        rawValue: sappy.getNum(value),
+        formatedValue: value
+      };
+      that.props.onChange(changeInfo);
+    })
+  }
+
+
   render() {
     let that = this
-    var renderRightButton = () => {
-      if (this.props.rightButton) {
-        let color = "success";
-        if (this.props.rightButton === "-") {
-          color = " warning";
-        }
-        return (
-          <span className="input-group-btn">
-            <Button color={color} outline id={this.props.name + "_rbtn"} className="right-button"
 
-              disabled={this.props.disabled || false}
-              onClick={() => {
-                that.props.onRightButtonClick(that)
-              }}>
-              {this.props.rightButton}
-            </Button>
-          </span >
-        );
-      }
-    };
 
 
     let stateColor, stateMsg;
@@ -95,21 +92,41 @@ class TextBoxNumeric extends Component {
 
 
     return (
-      <FormGroup color={stateColor} data-tip={this.props.label} title={stateMsg}>
-        {/*{renderLabel()}*/}
-        <InputGroup>
+      <FormGroup color={stateColor} title={stateMsg} className="notas">
+
+        <InputGroup >
+          <span className="input-group-btn">
+            <Button color="dark" outline id={this.props.name + "_cbtn"} className="caption-button" tabIndex={-1} >
+              {this.props.label}
+            </Button>
+          </span>
+          <span className="input-group-btn">
+            <Button color="secondary" outline id={this.props.name + "_lbtn"} className="left-button" tabIndex={-1}
+              disabled={this.props.disabled || false}
+              onClick={this.onIncreaseOrDecrease_click}>
+              -
+            </Button>
+          </span>
+
           <Input
             type="text"
             ref={this.props.name}
             id={this.props.name}
-            className="text-right"
+            className="text-center"
             value={this.state.value}
             placeholder={this.props.placeholder}
             disabled={this.props.disabled}
             onChange={e => this.handleChange(e)}
             onBlur={e => this.handleBlur(e)}
+            size="sm"
           />
-          {renderRightButton()}
+          <span className="input-group-btn">
+            <Button color="secondary" outline id={this.props.name + "_rbtn"} className="right-button" tabIndex={-1}
+              disabled={this.props.disabled || false}
+              onClick={this.onIncreaseOrDecrease_click}>
+              +
+            </Button>
+          </span>
         </InputGroup>
 
         {stateMsg && <FormFeedback>{stateMsg}</FormFeedback>}
