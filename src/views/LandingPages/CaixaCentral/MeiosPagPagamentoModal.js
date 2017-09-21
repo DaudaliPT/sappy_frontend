@@ -28,7 +28,7 @@ class ModPagModal extends Component {
   componentDidMount() {
     window.addEventListener("resize", this.calcPageHeight);
     this.onFieldChange({
-      fieldName: "totalPagar",
+      fieldName: "originalTotalPagar",
       formatedValue: sappy.format.amount(this.props.totalPagar),
       rawValue: sappy.getNum(this.props.totalPagar)
     })
@@ -94,6 +94,15 @@ class ModPagModal extends Component {
         cheques[ix][prop] = val;
         newStateValues.cheques = cheques
       }
+    } else if (fieldName === "originalTotalPagar") {
+      Object.assign(newStateValues, { originalTotalPagar: formatedValue })
+      if (val < 0) {
+        Object.assign(newStateValues, { totalPagar: sappy.format.amount(val * -1) })
+        Object.assign(newStateValues, { isPayment: true })
+      } else {
+        Object.assign(newStateValues, { totalPagar: sappy.format.amount(val) })
+        Object.assign(newStateValues, { isPayment: false })
+      }
     } else {
       //Correctly save to ServiceLayer properties
       Object.assign(newStateValues, { [fieldName]: (fieldName.indexOf("Valor") > -1 ? formatedValue : val) })
@@ -102,7 +111,8 @@ class ModPagModal extends Component {
     // if (this.state[fieldName + "_VALIDATEMSG"]) newStateValues[fieldName + "_VALIDATEMSG"] = ""
 
 
-    let totalPagar = sappy.getNum(fieldName === "totalPagar" ? formatedValue : this.state.totalPagar)
+
+    let totalPagar = sappy.getNum(newStateValues.totalPagar ? newStateValues.totalPagar : this.state.totalPagar)
     let ValorNumerario = sappy.getNum(fieldName === "ValorNumerario" ? formatedValue : this.state.ValorNumerario)
     let ValorMultibanco = sappy.getNum(fieldName === "ValorMultibanco" ? formatedValue : this.state.ValorMultibanco)
     let ValorTransferencia = sappy.getNum(fieldName === "ValorTransferencia" ? formatedValue : this.state.ValorTransferencia)
@@ -198,6 +208,12 @@ class ModPagModal extends Component {
     let fieldName = cmpThis.props.name;
     let currVal = sappy.getNum(this.state[fieldName]);
     let totalPagar = sappy.getNum(this.state.totalPagar);
+    let isPayment = false;
+    if (totalPagar < 0) {
+      isPayment = true
+      totalPagar *= -1
+    }
+
     let totalMeiosPag = sappy.getNum(this.state.totalMeiosPag);
 
 
@@ -263,6 +279,7 @@ class ModPagModal extends Component {
     //Validar se há avisos ativos
     let hasWarning = Object.keys(alerts).find(f => alerts[f].startsWith("warning"))
 
+    let strDocDesc = this.state.isPayment ? "pagamento" : "recebimento"
 
     let invokeAddDocAPI = () => {
       let data = {
@@ -352,34 +369,34 @@ class ModPagModal extends Component {
       })
 
       axios
-        .post(`/api/caixa/class/payment`, data)
+        .post(`/api/caixa/class/${this.state.isPayment ? "payment" : "receipt"}`, data)
         .then(result => {
 
           that.props.toggleModal(result.data.DocNum);
           sappy.showSuccess({
             msg: "Documento criado",
-            moreInfo: `Criou com sucesso o documento ${result.data.DocNum}!`,
+            moreInfo: `Criou com sucesso o ${strDocDesc} ${result.data.DocNum}!`,
             confirmText: "Concluido"
           })
         })
-        .catch(error => sappy.showError(error, "Não foi possivel adicionar o pagamento"));
+        .catch(error => sappy.showError(error, "Não foi possivel adicionar o " + strDocDesc));
     }
 
     if (!hasWarning)
       return sappy.showQuestion({
         title: "Deseja Continuar?",
-        msg: "Se continuar irá criar este documento.",
+        msg: "Se continuar irá criar este " + strDocDesc + ".",
         onConfirm: invokeAddDocAPI,
-        confirmText: "Criar documento",
+        confirmText: "Criar " + strDocDesc,
         onCancel: () => { }
       })
     else
       return sappy.showWarning({
         title: "Atenção!",
         msg: "Ainda há campos com avisos!",
-        moreInfo: "Deseja mesmo assim criar este documento?",
+        moreInfo: "Deseja mesmo assim criar este " + strDocDesc + "?",
         onConfirm: invokeAddDocAPI,
-        confirmText: "Ignorar e criar documento",
+        confirmText: "Ignorar e criar " + strDocDesc,
         onCancel: () => { }
       })
 
@@ -535,13 +552,13 @@ class ModPagModal extends Component {
       </div >
     }
 
-
-
+    let strMeioPagOrRecTo = this.state.isPayment ? "Meio de pagamento a " : "Meio de recebimento de "
+    let className = this.state.isPayment ? "modal-warning" : "modal-success"
 
     return (
-      <Modal isOpen={true} className={"modal-md modal-warning"}>
+      <Modal isOpen={true} className={"modal-md " + className}>
         <ModalHeader toggle={this.props.toggleModal}  >
-          {"Meio de pagamento a " + this.props.selectedPNname + " (" + this.props.selectedPN + ")"}
+          {strMeioPagOrRecTo + this.props.selectedPNname + " (" + this.props.selectedPN + ")"}
         </ModalHeader>
         <ModalBody >
 

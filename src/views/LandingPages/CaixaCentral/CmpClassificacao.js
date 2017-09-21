@@ -8,7 +8,6 @@ import SearchPage2 from "../../../components/SearchPage2";
 const sappy = window.sappy;
 const $ = window.$;
 import CmpClassificacaoFooter from "./CmpClassificacaoFooter";
-import MeiosPagRecebimentoModal from "./MeiosPagRecebimentoModal";
 import MeiosPagPagamentoModal from "./MeiosPagPagamentoModal";
 
 class CmpClassificacao extends Component {
@@ -323,41 +322,22 @@ class CmpClassificacao extends Component {
                     icon: "icon fa-check",
                     visible: totalOfSelectedDocs !== 0,
                     onClick: e => {
-                        if (totalOfSelectedDocs > 0)
-                            return sappy.showModal(<MeiosPagRecebimentoModal
-                                toggleModal={sucess => {
-                                    //force refresh
-                                    let selectedPN = this.state.selectedPN;
-                                    this.setState({ selectedPN: '', selectedDocKeys: [] },
-                                        () => setTimeout(this.setState({ selectedPN }), 1)
-                                    );
+                        return sappy.showModal(<MeiosPagPagamentoModal
+                            toggleModal={sucess => {
+                                //force refresh
+                                let selectedPN = this.state.selectedPN;
+                                this.setState({ selectedPN: '', selectedDocKeys: [] },
+                                    () => setTimeout(this.setState({ selectedPN }), 1)
+                                );
 
-                                    sappy.hideModal()
-                                }}
-                                selectedPN={selectedPN}
-                                selectedPNname={selectedPNname}
-                                selectedDocKeys={selectedDocKeys}
-                                docsList={docsList}
-                                totalReceber={totalOfSelectedDocs}
-                            />)
-
-                        if (totalOfSelectedDocs < 0)
-                            return sappy.showModal(<MeiosPagPagamentoModal
-                                toggleModal={sucess => {
-                                    //force refresh
-                                    let selectedPN = this.state.selectedPN;
-                                    this.setState({ selectedPN: '', selectedDocKeys: [] },
-                                        () => setTimeout(this.setState({ selectedPN }), 1)
-                                    );
-
-                                    sappy.hideModal()
-                                }}
-                                selectedPN={selectedPN}
-                                selectedPNname={selectedPNname}
-                                selectedDocKeys={selectedDocKeys}
-                                docsList={docsList}
-                                totalPagar={totalOfSelectedDocs * -1}
-                            />)
+                                sappy.hideModal()
+                            }}
+                            selectedPN={selectedPN}
+                            selectedPNname={selectedPNname}
+                            selectedDocKeys={selectedDocKeys}
+                            docsList={docsList}
+                            totalPagar={totalOfSelectedDocs}
+                        />)
                     }
                 }
             ]
