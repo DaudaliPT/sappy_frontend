@@ -1,6 +1,4 @@
-import React, { Component } from "react";
-const $ = window.$;
-const sappy = window.sappy;
+import React, { Component } from "react"; 
 class CmpClassificacaoFooter extends Component {
 
   render() {

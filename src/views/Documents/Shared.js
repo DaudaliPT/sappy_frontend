@@ -6,7 +6,7 @@ const sappy = window.sappy;
 
 exports.prepareDocType = function ({ tableName }) {
 
-  let objInfo = sappy.sapObjectInfo({ tableName });
+  let objInfo = sappy.b1.sapObjectInfo({ tableName });
   tableName = objInfo.tableName.toLowerCase();
   let objType = objInfo.objectCode.toString()
   let title = objInfo.description;

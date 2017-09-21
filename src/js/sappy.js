@@ -372,8 +372,41 @@ import moment from 'moment';
   };
 
 
+  sappy.b1 = {};
+  sappy.b1.getBoRcptInvTypes = (transType) => {
+    let t = sappy.getNum(transType);
+    if (t === -3) return "it_ClosingBalance";
+    if (t === -1) return "it_AllTransactions";
+    if (t === -2) return "it_OpeningBalance";
+    if (t === 13) return "it_Invoice";
+    if (t === 14) return "it_CredItnote";
+    if (t === 15) return "it_TaxInvoice"
+    if (t === 16) return "it_Return";
+    if (t === 18) return "it_PurchaseInvoice";
+    if (t === 19) return "it_PurchaseCreditNote";
+    if (t === 20) return "it_PurchaseDeliveryNote";
+    if (t === 21) return "it_PurchaseReturn";
+    if (t === 24) return "it_Receipt";
+    if (t === 25) return "it_Deposit";
+    if (t === 30) return "it_JournalEntry";
+    if (t === 46) return "it_PaymentAdvice";
+    if (t === 57) return "it_ChequesForPayment";
+    if (t === 58) return "it_StockReconciliations";
+    if (t === 59) return "it_GeneralReceiptToStock";
+    if (t === 60) return "it_GeneralReleaseFromStock";
+    if (t === 67) return "it_TransferBetweenWarehouses";
+    if (t === 68) return "it_WorkInstructions";
+    if (t === 76) return "it_DeferredDeposit";
+    if (t === 132) return "it_CorrectionInvoice ";
+    if (t === 163) return "it_APCorrectionInvoice ";
+    if (t === 165) return "it_ARCorrectionInvoice ";
+    if (t === 203) return "it_DownPayment ";
+    if (t === 204) return "it_PurchaseDownPayment ";
+    return ""
+  }
 
-  sappy.sapObjectInfo = ({ tableName, objectCode } = {}) => {
+
+  sappy.b1.sapObjectInfo = ({ tableName, objectCode } = {}) => {
     let objData = [
       { tableName: "OACT", tableSufix: "ACT", objectCode: 1, description: "Chart of Accounts" },
       { tableName: "OCRD", tableSufix: "CRD", objectCode: 2, description: "Business Partner Cards" },

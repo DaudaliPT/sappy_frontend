@@ -223,7 +223,6 @@ class CmpClassificacao extends Component {
 
 
     render() {
-        let that = this;
         let { selectedPN, selectedPNname, selectedDocKeys } = this.state;
         let docsList = [];
         if (this.docsComponent) {
@@ -234,7 +233,9 @@ class CmpClassificacao extends Component {
         let countC = 0
         let countD = 0
 
-        let selectedDocs = docsList.filter(doc => selectedDocKeys.indexOf(doc.TRANSID_AND_LINEID) > -1)
+
+        // É importante preservar a ordem de seleção para o caso de pagamento parciais
+        let selectedDocs = selectedDocKeys.map(docKey => docsList.find(doc => doc.TRANSID_AND_LINEID === docKey))
         selectedDocs.forEach(doc => {
             totalOfSelectedDocs += sappy.getNum(doc.BALANCE)
             countC += doc.U_apyCLASS === 'C' ? 1 : 0;
@@ -318,19 +319,20 @@ class CmpClassificacao extends Component {
                     visible: totalOfSelectedDocs !== 0,
                     onClick: e => {
                         return sappy.showModal(<MeiosPagPagamentoModal
-                            toggleModal={sucess => {
-                                //force refresh
-                                let selectedPN = this.state.selectedPN;
-                                this.setState({ selectedPN: '', selectedDocKeys: [] },
-                                    () => setTimeout(this.setState({ selectedPN }), 1)
-                                );
+                            toggleModal={({ success } = {}) => {
+                                if (success) {
+                                    //force refresh
+                                    let selectedPN = this.state.selectedPN;
+                                    this.setState({ selectedPN: '', selectedDocKeys: [] },
+                                        () => setTimeout(this.setState({ selectedPN }), 1)
+                                    );
+                                }
 
                                 sappy.hideModal()
                             }}
                             selectedPN={selectedPN}
                             selectedPNname={selectedPNname}
-                            selectedDocKeys={selectedDocKeys}
-                            docsList={docsList}
+                            selectedDocs={selectedDocs}
                             totalPagar={totalOfSelectedDocs}
                         />)
                     }

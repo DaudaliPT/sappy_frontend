@@ -39,9 +39,12 @@ class ModPagModal extends Component {
     let $el = $(".modal-content>.main-body");
     // console.log($el)
     let $scrollAbleparent = $("body");
-    if ($scrollAbleparent && $el) {
-      let minH = $scrollAbleparent.height() - $el.position().top - 370;
-      $el.css("height", minH.toString() + "px");
+    if ($scrollAbleparent && $el && $el.position) {
+      let pos = $el.position()
+      if (pos) {
+        let minH = $scrollAbleparent.height() - $el.position().top - 370;
+        $el.css("height", minH.toString() + "px");
+      }
     }
   }
 
@@ -208,15 +211,9 @@ class ModPagModal extends Component {
     let fieldName = cmpThis.props.name;
     let currVal = sappy.getNum(this.state[fieldName]);
     let totalPagar = sappy.getNum(this.state.totalPagar);
-    let isPayment = false;
-    if (totalPagar < 0) {
-      isPayment = true
-      totalPagar *= -1
-    }
+    if (totalPagar < 0) totalPagar *= -1
 
     let totalMeiosPag = sappy.getNum(this.state.totalMeiosPag);
-
-
     if (fieldName.indexOf("ValorTransferencia") > -1 || fieldName.indexOf("ValorMultibanco") > -1) {
       totalMeiosPag -= sappy.getNum(this.state.ValorTransferencia)
       totalMeiosPag -= sappy.getNum(this.state.ValorMultibanco)
@@ -318,62 +315,55 @@ class ModPagModal extends Component {
         }
       });
 
+
+
       let pendingValue = sappy.getNum(this.state.totalPagar);
-      this.props.selectedDocKeys.forEach(docId => {
 
-        let doc = this.props.docsList.find(doc => docId === (doc.TransId + "#" + doc.Line_ID))
+      // nota: os valores a pagar são negativos. 
+      // Num recebimento o total de valores a receber(positivos) é superior aos valores a deduzir(negativos)
+      // Num pagamento o total de valores a pagar(negativos) é superior aos valores a deduzir(positivos)
+      let docsDeducao = this.props.selectedDocs.filter(doc => this.state.isPayment ? sappy.getNum(doc.BALANCE) > 0 : sappy.getNum(doc.BALANCE) < 0)
+      let docsPagar = this.props.selectedDocs.filter(doc => this.state.isPayment ? sappy.getNum(doc.BALANCE) < 0 : sappy.getNum(doc.BALANCE) > 0)
 
-        let InvoiceType = ""
-        let transType = sappy.getNum(doc.TransType);
-        if (transType === -3) InvoiceType = "it_ClosingBalance";
-        else if (transType === -1) InvoiceType = "it_AllTransactions";
-        else if (transType === -2) InvoiceType = "it_OpeningBalance";
-        else if (transType === 13) InvoiceType = "it_Invoice";
-        else if (transType === 14) InvoiceType = "it_CredItnote";
-        else if (transType === 15) InvoiceType = "it_TaxInvoice"
-        else if (transType === 16) InvoiceType = "it_Return";
-        else if (transType === 18) InvoiceType = "it_PurchaseInvoice";
-        else if (transType === 19) InvoiceType = "it_PurchaseCreditNote";
-        else if (transType === 20) InvoiceType = "it_PurchaseDeliveryNote";
-        else if (transType === 21) InvoiceType = "it_PurchaseReturn";
-        else if (transType === 24) InvoiceType = "it_Receipt";
-        else if (transType === 25) InvoiceType = "it_Deposit";
-        else if (transType === 30) InvoiceType = "it_JournalEntry";
-        else if (transType === 46) InvoiceType = "it_PaymentAdvice";
-        else if (transType === 57) InvoiceType = "it_ChequesForPayment";
-        else if (transType === 58) InvoiceType = "it_StockReconciliations";
-        else if (transType === 59) InvoiceType = "it_GeneralReceiptToStock";
-        else if (transType === 60) InvoiceType = "it_GeneralReleaseFromStock";
-        else if (transType === 67) InvoiceType = "it_TransferBetweenWarehouses";
-        else if (transType === 68) InvoiceType = "it_WorkInstructions";
-        else if (transType === 76) InvoiceType = "it_DeferredDeposit";
-        else if (transType === 132) InvoiceType = "it_CorrectionInvoice ";
-        else if (transType === 163) InvoiceType = "it_APCorrectionInvoice ";
-        else if (transType === 165) InvoiceType = "it_ARCorrectionInvoice ";
-        else if (transType === 203) InvoiceType = "it_DownPayment ";
-        else if (transType === 204) InvoiceType = "it_PurchaseDownPayment ";
-
-        let valueToUse = doc.BALANCE;
-        // let docBalance = sappy.getNum(doc.BALANCE);
-        // if (docBalance >= 0) {
-        //   if (pendingValue - docBalance >= 0) {
-        //     valueToUse = docBalance
-        //   } else {
-        //     valueToUse = pendingValue
-        //   }
-        // } else {
-        //   if (pendingValue - docBalance >= 0) {
-        //     valueToUse = docBalance
-        //   } else {
-        //     valueToUse = pendingValue
-        //   }
-        // }
-        // pendingValue -= valueToUse
+      // Para que quando há valores parciais funcione bem, vamos colocar sempre primeiro os valores a deduzir
+      docsDeducao.forEach(doc => {
+        let valueToUse = Math.abs(sappy.getNum(doc.BALANCE));
+        pendingValue += valueToUse
 
         if (sappy.getNum(doc.TransType) !== 24 && sappy.getNum(doc.TransType) !== 46) {
           data.PaymentInvoices.push({
             DocEntry: doc.CreatedBy,
-            InvoiceType,
+            InvoiceType: sappy.b1.getBoRcptInvTypes(doc.TransType),
+            SumApplied: -1 * valueToUse
+          })
+        }
+        else {
+          data.PaymentInvoices.push({
+            DocEntry: doc.TransId,
+            DocLine: doc.Line_ID,
+            InvoiceType: sappy.b1.getBoRcptInvTypes(doc.TransType),
+            SumApplied: -1 * valueToUse
+          })
+        }
+      })
+
+      // Para que quando há valores parciais funcione bem, vamos colocar sempre depois os vaores a Pagar
+      docsPagar.forEach(doc => {
+        let valueToUse = 0;
+        let docBalance = Math.abs(sappy.getNum(doc.BALANCE));
+
+        if (pendingValue - docBalance >= 0) {
+          valueToUse = docBalance
+        } else {
+          valueToUse = pendingValue
+        }
+        pendingValue -= valueToUse
+        if (valueToUse <= 0) return
+
+        if (sappy.getNum(doc.TransType) !== 24 && sappy.getNum(doc.TransType) !== 46) {
+          data.PaymentInvoices.push({
+            DocEntry: doc.CreatedBy,
+            InvoiceType: sappy.b1.getBoRcptInvTypes(doc.TransType),
             SumApplied: valueToUse
           })
         }
@@ -381,11 +371,12 @@ class ModPagModal extends Component {
           data.PaymentInvoices.push({
             DocEntry: doc.TransId,
             DocLine: doc.Line_ID,
-            InvoiceType,
+            InvoiceType: sappy.b1.getBoRcptInvTypes(doc.TransType),
             SumApplied: valueToUse
           })
         }
       })
+
 
 
       sappy.showWaitProgress("A criar documento...")
@@ -394,7 +385,7 @@ class ModPagModal extends Component {
         .then(result => {
 
           sappy.hideWaitProgress()
-          that.props.toggleModal(result.data.DocNum);
+          that.props.toggleModal({ success: result.data.DocNum });
           sappy.showToastr({
             color: "success",
             msg: `Criou com sucesso o ${strDocDesc} ${result.data.DocNum} no valor de ${sappy.format.amount(this.state.totalPagar)}, de ${result.data.CardName}!`
@@ -626,7 +617,6 @@ class ModPagModal extends Component {
                           valueType="amount"
                           label={this.state.isPayment ? "Total a pagar" : "Total a receber"}
                           name="totalPagar"
-                          disabled={true}
                           value={this.state.totalPagar}
                           onChange={this.onFieldChange}
                           realTimeChange={true}
