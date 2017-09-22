@@ -7,7 +7,7 @@ import SearchPage2 from "../../components/SearchPage2";
 // import uuid from "uuid/v4";
 const sappy = window.sappy;
 const $ = window.$;
-import CmpPorReceberFooter from "./CmpPorReceberFooter";
+import CmpFooter from "./CmpFooter";
 import MeiosPagPagamentoModal from "./MeiosPagPagamentoModal";
 
 class CmpPorReceber extends Component {
@@ -141,11 +141,11 @@ class CmpPorReceber extends Component {
             })
 
             let strDocDesc = "recebimento"
-            let url = `/api/caixa/class/receipt`
+            let url = `/api/caixa/receber/receipt`
             if (totalOfSelectedDocs < 0) {
                 strDocDesc = "pagamento"
                 totalOfSelectedDocs *= -1;
-                url = `/api/caixa/class/payment`;
+                url = `/api/caixa/receber/payment`;
             }
 
             if (meioPag === "Numerario") {
@@ -209,7 +209,7 @@ class CmpPorReceber extends Component {
 
         sappy.showWaitProgress("A classificar documentos...")
         axios
-            .post(`/api/caixa/class/update?class=${docClass}`, docs)
+            .post(`/api/caixa/receber/update?class=${docClass}`, docs)
             .then(result => {
                 sappy.hideWaitProgress();
                 //forçar refresh
@@ -347,8 +347,7 @@ class CmpPorReceber extends Component {
                     <div className="col-6">
                         <SearchPage
                             ref={node => this.pnComponent = node}
-                            searchPlaceholder="Procurar..."
-                            searchApiUrl={`/api/caixa/class/pn`}
+                            searchApiUrl={`/api/caixa/receber/pn`}
                             autoRefreshTime={5000}
                             renderRow={renderRowPN}
                             placeholder={"Pesquisar o cliente"}
@@ -358,7 +357,7 @@ class CmpPorReceber extends Component {
                     <div className="col-6">
                         <SearchPage2
                             ref={node => this.docsComponent = node}
-                            searchApiUrl={`/api/caixa/class/docs?cardcode=${selectedPN}`}
+                            searchApiUrl={`/api/caixa/receber/docs?cardcode=${selectedPN}`}
                             noRecordsMessage="Selecione primeiro um cliente"
                             onRefresh={this.handleDocRefresh}
                             renderRowHeight={35}
@@ -380,7 +379,7 @@ class CmpPorReceber extends Component {
                     </div>
                 </div>
                 {/* <p>{this.state.ctrlKey ? "ctrl" : ""} {this.state.shiftKey ? " shift" : ""}</p> */}
-                <CmpPorReceberFooter {...footerProps }></CmpPorReceberFooter>
+                <CmpFooter {...footerProps }></CmpFooter>
 
             </div>)
 

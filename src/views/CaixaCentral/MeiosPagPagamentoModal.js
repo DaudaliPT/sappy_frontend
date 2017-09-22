@@ -6,7 +6,7 @@ var sappy = window.sappy;
 
 import { TextBox, TextBoxNumeric, Date, ComboBox, Notas } from "../../Inputs";
 
-class ModPagModal extends Component {
+class MeiosPagPagamentoModal extends Component {
   constructor(props) {
     super(props);
 
@@ -287,7 +287,8 @@ class ModPagModal extends Component {
 
     toastrMsg.forEach(toastrData => sappy.showToastr(toastrData));
 
-    if (Object.keys(alerts).length > 0) this.setState({ showValidations: true })
+    if (!this.state.showValidations && Object.keys(alerts).length > 0) return this.setState({ showValidations: true })
+
     //Validar se há erros ativos
     let hasDanger = Object.keys(alerts).find(f => alerts[f].startsWith("danger"))
     if (hasDanger) {
@@ -414,7 +415,7 @@ class ModPagModal extends Component {
 
       sappy.showWaitProgress("A criar documento...")
       axios
-        .post(`/api/caixa/class/${this.state.isPayment ? "payment" : "receipt"}`, data)
+        .post(`/api/caixa/receber/${this.state.isPayment ? "payment" : "receipt"}`, data)
         .then(result => {
 
           sappy.hideWaitProgress()
@@ -712,4 +713,4 @@ class ModPagModal extends Component {
   }
 }
 
-export default ModPagModal;
+export default MeiosPagPagamentoModal;

@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import axios from 'axios';
 import SearchPage from "../../components/SearchPage";
 import { Badge } from "reactstrap";
 import uuid from "uuid/v4";
@@ -9,9 +8,9 @@ import uuid from "uuid/v4";
 const sappy = window.sappy;
 const $ = window.$;
 import CmpFooter from "./CmpFooter";
-// import MeiosPagPagamentoModal from "./MeiosPagPagamentoModal";
+import DepositoModal from "./DepositoModal";
 
-class CmpUltRecebimentos extends Component {
+class CmpDepositos extends Component {
     constructor(props) {
         super(props)
         this.state = { selectedRow: '' }
@@ -33,7 +32,7 @@ class CmpUltRecebimentos extends Component {
 
     render() {
         let that = this
-        let { selectedRow, showActions } = this.state;
+        let { selectedRow } = this.state;
 
         let renderRowPN = ({ row, index }) => {
             let rowId = 'row_' + row.DocEntry
@@ -56,11 +55,11 @@ class CmpUltRecebimentos extends Component {
                     <div className="container vertical-align-middle">
                         <div className="row">
                             <div className="col-2 text-nowrap firstcol">       {sappy.format.datetime2(row.DOC_DATETIME)}  </div>
-                            <div className="col-2 text-nowrap "> {row.DocNum}  </div>
-                            <div className="col-6 text-nowrap "> {row.CardName + ' (' + row.CardCode + ")"}
+                            <div className="col-2 text-nowrap "> {row.DeposNum}  </div>
+                            <div className="col-6 text-nowrap "> {row.DpsBank ? (row.BanckAcct + ' - ' + row.DpsBank) : row.Memo}
                                 {renderBadges()}
                             </div>
-                            <div className="col-2 text-nowrap lastcol">  <span className="float-right">{sappy.format.amount(row.DocTotal)}</span> </div>
+                            <div className="col-2 text-nowrap lastcol">  <span className="float-right">{sappy.format.amount(row.LocTotal)}</span> </div>
                         </div>
                     </div>
                 </div>
@@ -71,37 +70,20 @@ class CmpUltRecebimentos extends Component {
         let getfixedActions = () => {
             let fixedActions = [];
 
-            if (selectedRow) {
-                fixedActions.push({
-                    name: "main", color: "primary",
-                    icon: showActions ? "icon wb-close animation-fade" : "icon wb-more-vertical",
-                    onClick: e => { that.setState({ showActions: !showActions }) }
-                })
-                if (showActions) fixedActions.push({
-                    name: "Cancelar documento", color: "danger",
-                    icon: "icon fa-window-close",
-                    onClick: e => {
-                        let docEntry = selectedRow.split('_')[1];
+            fixedActions.push({
+                name: "addnew",
+                color: "success",
+                icon: "icon wb-plus",
+                onClick: e => {
+                    return sappy.showModal(<DepositoModal
+                        toggleModal={({ success } = {}) => {
 
-                        sappy.showWaitProgress("A canelar documento...")
-
-                        axios
-                            .post(`/api/caixa/recebimentos/${docEntry}/cancel`)
-                            .then(result => {
-
-                                sappy.hideWaitProgress()
-                                sappy.showToastr({
-                                    color: "success",
-                                    msg: `Documento ${docEntry} cancelado!`
-                                })
-
-                                that.setState({ selectedRow: "", showActions: false },
-                                    e => that.pnComponent.findAndGetFirstRows())
-                            })
-                            .catch(error => sappy.showError(error, "Não foi possivel cancelar o documento"));
-                    }
-                })
-            }
+                            sappy.hideModal()
+                            that.pnComponent.findAndGetFirstRows()
+                        }}
+                    />)
+                }
+            })
             return fixedActions;
         };
 
@@ -121,7 +103,7 @@ class CmpUltRecebimentos extends Component {
                     <div className="col-12">
                         <SearchPage
                             ref={node => this.pnComponent = node}
-                            searchApiUrl={`/api/caixa/recebimentos`}
+                            searchApiUrl={`/api/caixa/depositos`}
                             renderRow={renderRowPN}
                             renderRowHeight={50}
                         />
@@ -134,4 +116,4 @@ class CmpUltRecebimentos extends Component {
     }
 }
 
-export default CmpUltRecebimentos;
+export default CmpDepositos;

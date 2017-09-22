@@ -44,17 +44,13 @@ class Login extends Component {
     e.preventDefault();
     // get item data
     var { username, password, company } = this.refs;
-    var that = this;
     this.serverRequest = axios({
       method: "post",
       headers: { "Content-Type": "application/json" },
       data: JSON.stringify({ username: username.value, password: password.value, company: company.value }),
       url: "auth/login"
     })
-      .then(result => {
-        console.log(result);
-        window.location.href = "/";
-      })
+      .then(result => window.location.href = "/")
       .catch(error => sappy.showError(error));
   }
   render() {

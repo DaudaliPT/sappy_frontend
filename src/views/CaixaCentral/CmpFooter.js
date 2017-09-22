@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-class CmpPorReceberFooter extends Component {
+class CmpFooter extends Component {
 
   render() {
     let renderFixedActions = () => {
@@ -79,5 +79,5 @@ class CmpPorReceberFooter extends Component {
     );
   }
 }
-export default CmpPorReceberFooter;
+export default CmpFooter;
 
