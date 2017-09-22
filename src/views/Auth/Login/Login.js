@@ -9,15 +9,8 @@ class Login extends Component {
     super(props);
     this.onSubmitLogin = this.onSubmitLogin.bind(this);
     this.onSelectCompany = this.onSelectCompany.bind(this);
-    this.toggleModalMessage = this.toggleModalMessage.bind(this);
 
     this.state = {
-      saving: false,
-      modalShowMessage: false,
-      modalShowMessageColor: "",
-      modalShowMessageTitle: "",
-      modalShowMessageText: "",
-      modalShowMessageMoreInfo: "",
       company: "",
       companys: []
     };
@@ -30,7 +23,10 @@ class Login extends Component {
     this.serverRequest = axios
       .get("auth/companys")
       .then(result => {
-        that.setState({ companys: result.data });
+        let company = "";
+
+        if (result.data && result.data.length === 1) company = result.data[0].dbName
+        that.setState({ companys: result.data, company });
       })
       .catch(error => {
         sappy.parseBackendError("Não foi possível obter a informação do utilizador:", error);
@@ -41,15 +37,10 @@ class Login extends Component {
     $("body").removeClass("page-login-v3").removeClass("layout-full");
   }
 
-  toggleModalMessage(refresh) {
-    this.setState({
-      modalShowMessage: !this.state.modalShowMessage
-    });
-  }
-
   onSelectCompany(e) {
     this.setState({ company: e.target.value });
   }
+
   onSubmitLogin(e) {
     e.preventDefault();
     // get item data
@@ -65,35 +56,11 @@ class Login extends Component {
         console.log(result);
         window.location.href = "/";
       })
-      .catch(error => {
-
-        that.setState({
-          saving: false,
-          modalShowMessage: true,
-          modalShowMessageTitle: "Error!",
-          modalShowMessageColor: "danger",
-          modalShowMessageText: error.response.data.message,
-          modalShowMessageMoreInfo: error.response.data.moreInfo
-        });
-      });
+      .catch(error => sappy.showError(error));
   }
   render() {
     var { companys, company } = this.state;
 
-    let renderModalMessage = () => {
-      if (this.state.modalShowMessage) {
-        return (
-          <ModalMessage
-            modal={this.state.modalShowMessage}
-            toggleModal={this.toggleModalMessage}
-            title={this.state.modalShowMessageTitle}
-            text={this.state.modalShowMessageText}
-            color={this.state.modalShowMessageColor}
-            moreInfo={this.state.modalShowMessageMoreInfo}
-          />
-        );
-      }
-    };
 
     let renderCompanys = () => {
       var options = [
@@ -105,7 +72,7 @@ class Login extends Component {
       ];
 
       return (
-        <select className="form-control" name="company" ref="company" onChange={this.onSelectCompany}>
+        <select className="form-control" name="company" ref="company" onChange={this.onSelectCompany} value={company}>
           {options}
         </select>
       );
@@ -123,7 +90,7 @@ class Login extends Component {
               </div>
               <form onSubmit={this.onSubmitLogin}>
                 <div className="form-group form-material floating" data-plugin="formMaterial">
-                  <input type="username" className="form-control" name="username" ref="username" />
+                  <input type="username" className="form-control" name="username" ref="username" autoFocus />
                   <label className="floating-label">Utilizador</label>
                 </div>
                 <div className="form-group form-material floating" data-plugin="formMaterial">
@@ -139,10 +106,7 @@ class Login extends Component {
               </form>
             </div>
           </div>
-
         </div>
-
-        {renderModalMessage()}
       </div>
     );
   }
