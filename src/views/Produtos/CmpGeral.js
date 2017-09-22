@@ -4,7 +4,6 @@ import axios from "axios";
 // var $ = window.$;
 var sappy = window.sappy;
 import { TextBox, TextBoxNumeric, ComboBox, Toggle } from "../../Inputs";
-import { ModalMessage } from "../../Modals";
 import { hashHistory } from "react-router";
 
 const getInitialState = function (props) {
@@ -218,7 +217,7 @@ class CmpGeral extends Component {
 
     let apagarArtigo = () => {
       //save
-      that.setState({ saving: true, modalMessage: {} }, () => {
+      that.setState({ saving: true }, () => {
         this.serverRequest = axios({
           method: "delete",
           headers: { "Content-Type": "application/json" },
@@ -291,7 +290,7 @@ class CmpGeral extends Component {
     if (!haErros) {
       let gravarArtigo = () => {
         //save
-        that.setState({ saving: true, modalMessage: {} }, () => {
+        that.setState({ saving: true }, () => {
           this.serverRequest = axios({
             method: "post",
             headers: { "Content-Type": "application/json" },
@@ -369,14 +368,6 @@ class CmpGeral extends Component {
   render() {
     let Item = this.state.Item || {};
     let ItemBarCodeCollection = Item.ItemBarCodeCollection || [];
-
-
-    let renderModalMessage = () => {
-      if (this.state.modalMessage && this.state.modalMessage.message) {
-        return <ModalMessage {...this.state.modalMessage} />;
-      }
-    };
-
 
     var renderSuppliers = () => {
       let ret = [];
@@ -643,9 +634,6 @@ class CmpGeral extends Component {
             </Button>
           }
         </div>
-
-        {renderModalMessage()}
-
       </div>
     );
   }

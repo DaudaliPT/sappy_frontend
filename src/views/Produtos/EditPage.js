@@ -16,7 +16,6 @@ class EditPage extends Component {
   constructor(props) {
     super(props);
 
-    this.toggleModalMessage = this.toggleModalMessage.bind(this);
     this.handleOnTabClick = this.handleOnTabClick.bind(this);
     this.handleItemSaved = this.handleItemSaved.bind(this);
     this.onMoveTo = this.onMoveTo.bind(this);
@@ -64,12 +63,6 @@ class EditPage extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.params.itemcode !== nextProps.params.itemcode) this.loadProduto(nextProps.params.itemcode);
-  }
-
-  toggleModalMessage(refresh) {
-    this.setState({
-      modalMessage: {}
-    });
   }
 
   onTogleAllowEdit(e) {

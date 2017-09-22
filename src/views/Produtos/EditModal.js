@@ -15,7 +15,6 @@ class EditModal extends Component {
   constructor(props) {
     super(props);
 
-    this.toggleModalMessage = this.toggleModalMessage.bind(this);
     this.handleOnTabClick = this.handleOnTabClick.bind(this);
     this.onMoveTo = this.onMoveTo.bind(this);
     this.onOpenEditPage = this.onOpenEditPage.bind(this);
@@ -56,11 +55,6 @@ class EditModal extends Component {
     if (this.props.itemcode !== nextProps.itemcode) this.loadProduto(nextProps.itemcode);
   }
 
-  toggleModalMessage(refresh) {
-    this.setState({
-      modalMessage: {}
-    });
-  }
   onTogleAllowEdit(e) {
     this.setState({ ReadOnly: !this.state.ReadOnly })
   }

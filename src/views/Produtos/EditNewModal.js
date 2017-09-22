@@ -5,8 +5,6 @@ var $ = window.$;
 var sappy = window.sappy;
 
 import { TextBox, TextBoxNumeric, ComboBox } from "../../Inputs";
-import { ModalMessage } from "../../Modals";
-
 
 const getInitialState = function (props) {
   return {
@@ -52,7 +50,6 @@ class ModalCreateArtigo extends Component {
     this.onSaveArtigo = this.onSaveArtigo.bind(this);
     this.onSaveDraft = this.onSaveDraft.bind(this);
     this.onSave = this.onSave.bind(this);
-    this.toggleModalMessage = this.toggleModalMessage.bind(this);
 
     this.state = getInitialState(props);
   }
@@ -117,11 +114,6 @@ class ModalCreateArtigo extends Component {
     if (this.serverRequest && this.serverRequest.abort) {
       this.serverRequest.abort();
     }
-  }
-  toggleModalMessage(refresh) {
-    this.setState({
-      modalMessage: {}
-    });
   }
   // Recebe os valores dos campos MY*
   onFieldChange(changeInfo) {
@@ -269,7 +261,7 @@ class ModalCreateArtigo extends Component {
 
     let apagarArtigo = () => {
       //save
-      that.setState({ saving: true, modalMessage: {} }, () => {
+      that.setState({ saving: true }, () => {
         this.serverRequest = axios({
           method: "delete",
           headers: { "Content-Type": "application/json" },
@@ -350,7 +342,7 @@ class ModalCreateArtigo extends Component {
     if (!haErros) {
       let criarArtigo = () => {
         //save
-        that.setState({ saving: true, saveDraft, modalMessage: {} }, () => {
+        that.setState({ saving: true, saveDraft }, () => {
           this.serverRequest = axios({
             method: "post",
             headers: { "Content-Type": "application/json" },
@@ -555,12 +547,6 @@ class ModalCreateArtigo extends Component {
       return ret;
     };
 
-    let renderModalMessage = () => {
-      if (this.state.modalMessage && this.state.modalMessage.message) {
-        return <ModalMessage {...this.state.modalMessage} />;
-      }
-    };
-
     let renderLoading = () => {
       if (!this.state.loading) return null
       return (<div className="example-loading example-well h-150 vertical-align text-center">
@@ -694,7 +680,6 @@ class ModalCreateArtigo extends Component {
             <span className="hidden-sm-down"> Criar Artigo</span>
           </Button>
         </ModalFooter>
-        {renderModalMessage()}
       </Modal>
     );
   }

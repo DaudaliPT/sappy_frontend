@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { ModalMessage } from "../../../Modals";
 var $ = window.$;
 import axios from "axios";
 var sappy = window.sappy;

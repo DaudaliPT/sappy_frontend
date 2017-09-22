@@ -3,7 +3,6 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 var $ = window.$;
 var sappy = window.sappy;
 import { TextBox, ComboBox, Date } from "../../Inputs";
-import { ModalMessage } from "../../Modals";
 
 class ModalReportParams extends Component {
   constructor(props) {
@@ -11,23 +10,12 @@ class ModalReportParams extends Component {
 
     this.onFieldChange = this.onFieldChange.bind(this);
     this.handleClickContinuar = this.handleClickContinuar.bind(this);
-    this.toggleModalMessage = this.toggleModalMessage.bind(this);
 
     this.state = {
       saving: false,
       numberOfBarCodes: 2,
-      modalShowMessage: false,
-      modalShowMessageColor: "",
-      modalShowMessageTitle: "",
-      modalShowMessageText: "",
-      modalShowMessageMoreInfo: "",
       parValues: {}
     };
-  }
-  toggleModalMessage(refresh) {
-    this.setState({
-      modalShowMessage: !this.state.modalShowMessage
-    });
   }
 
   componentWillMount() {
@@ -82,21 +70,6 @@ class ModalReportParams extends Component {
   }
   render() {
     let { reportParameters } = this.props;
-
-    let renderModalMessage = () => {
-      if (this.state.modalShowMessage) {
-        return (
-          <ModalMessage
-            modal={this.state.modalShowMessage}
-            toggleModal={this.toggleModalMessage}
-            title={this.state.modalShowMessageTitle}
-            text={this.state.modalShowMessageText}
-            color={this.state.modalShowMessageColor}
-            moreInfo={this.state.modalShowMessageMoreInfo}
-          />
-        );
-      }
-    };
 
     let renderParameters = () => {
       let parameterComponents = [];
@@ -223,7 +196,6 @@ class ModalReportParams extends Component {
             Continuar
           </Button>
         </ModalFooter>
-        {renderModalMessage()}
       </Modal>
     );
   }

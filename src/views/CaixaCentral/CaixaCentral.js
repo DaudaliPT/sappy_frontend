@@ -8,8 +8,6 @@ import CmpUnderConstruction from "./CmpUnderConstruction";
 class CaixaCentral extends Component {
   constructor(props) {
     super(props);
-
-    this.toggleModalMessage = this.toggleModalMessage.bind(this);
     this.handleOnTabClick = this.handleOnTabClick.bind(this);
     this.calcPageHeight = this.calcPageHeight.bind(this);
 
@@ -41,12 +39,6 @@ class CaixaCentral extends Component {
 
       this.setState({ height: minH })
     }
-  }
-
-  toggleModalMessage(refresh) {
-    this.setState({
-      modalMessage: {}
-    });
   }
 
   handleOnTabClick(e) {
