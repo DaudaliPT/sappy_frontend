@@ -4,7 +4,7 @@ import axios from "axios";
 var $ = window.$;
 var sappy = window.sappy;
 
-import { TextBox, TextBoxNumeric, Date, ComboBox, Notas } from "../../../Inputs";
+import { TextBox, TextBoxNumeric, Date, ComboBox, Notas } from "../../Inputs";
 
 class ModPagModal extends Component {
   constructor(props) {

@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import axios from "axios";
-import VirtualizedInfiniteLoader from "../../../components/VirtualizedInfiniteLoader";
+import VirtualizedInfiniteLoader from "../../components/VirtualizedInfiniteLoader";
 
-import SearchBar from "../../../components/SearchBar";
+import SearchBar from "../../components/SearchBar";
 import SideBar from "./SideBar";
-import TabsBar from "../../../components/TabsBar";
+import TabsBar from "../../components/TabsBar";
 
 const sappy = window.sappy;
 const $ = window.$;

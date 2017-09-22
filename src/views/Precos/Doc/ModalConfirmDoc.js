@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import { Date } from "../../../../Inputs";
+import { Date } from "../../../Inputs";
 
 class ModalConfirmDoc extends Component {
   constructor(props) {

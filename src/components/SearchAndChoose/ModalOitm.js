@@ -3,7 +3,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 var $ = window.$;
 const sappy = window.sappy;
 import SearchPage from "../SearchPage";
-import EditNewModal from "../../views/LandingPages/Produtos/EditNewModal";
+import EditNewModal from "../../views/Produtos/EditNewModal";
 
 import { Badge } from "reactstrap";
 import uuid from "uuid/v4";

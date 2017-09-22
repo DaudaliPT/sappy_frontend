@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import axios from "axios";
+import { ModalWaitProgress } from "../../Modals";
 const sappy = window.sappy;
 
-import axios from "axios";
-import { ModalWaitProgress } from "../../../Modals";
 
 class ModalConfirmPrint extends Component {
   constructor(props) {
@@ -18,7 +18,7 @@ class ModalConfirmPrint extends Component {
     let parValues = {
       DOCNUM: { Value: this.props.docNumArray },
       INCLUDEALL: { Value: this.state.includeAll },
-      SOURCE: { Value: 'EP' }
+      SOURCE: { Value: 'PC' }
     };
     this.props.setCurrentModal({ currentModal: null });
 
@@ -34,7 +34,7 @@ class ModalConfirmPrint extends Component {
         .then(function (result) {
           //Marcar documentos como impressos
           axios
-            .post("/api/etiq/printed", parValues)
+            .post("/api/precos/printed", parValues)
             .then(function (result) {
               that.props.setCurrentModal({ currentModal: null });
               location.reload();
@@ -58,7 +58,7 @@ class ModalConfirmPrint extends Component {
 
       //Marcar documentos como impressos
       axios
-        .post("/api/etiq/printed", parValues)
+        .post("/api/precos/printed", parValues)
         .then(function (result) {
         })
         .catch(function (error) {
@@ -74,6 +74,33 @@ class ModalConfirmPrint extends Component {
         <ModalHeader toggle={() => that.props.setCurrentModal({ currentModal: null })}>Opções</ModalHeader>
         <ModalBody>
           <h4>Deseja visualizar ou imprimir?</h4>
+          <p>Escolha se pretende a impressão de apenas os artigos com preços alterados ou todos os artigos</p>
+          <div className="row" style={{ minHeight: "50px" }}>
+            <div className="col-1"></div>
+            <div className="col">
+              <div className="radio-custom radio-primary" style={{ display: "block" }}>
+                <input type="radio" id="inputRadiosUnchecked" name="inputRadios" checked={!this.state.includeAll} onChange={e => {
+                  that.setState({ includeAll: !e.target.checked });
+                }} />
+                <label htmlFor="inputRadiosUnchecked">Só artigos com preços alterados</label>
+              </div>
+            </div>
+          </div>
+
+          <div className="row " style={{ minHeight: "50px" }}>
+            <div className="col-1"></div>
+            <div className="col">
+
+              <div className="radio-custom radio-primary" style={{ display: "block" }}>
+                <input type="radio" id="inputRadiosChecked" name="inputRadios" checked={this.state.includeAll} onChange={e => {
+                  that.setState({ includeAll: e.target.checked });
+                }} />
+                <label htmlFor="inputRadiosChecked">Todos artigos</label>
+              </div>
+            </div>
+
+          </div>
+
         </ModalBody>
         <ModalFooter>
           <Button color="default" onClick={e => this.processResult("PDF")}>

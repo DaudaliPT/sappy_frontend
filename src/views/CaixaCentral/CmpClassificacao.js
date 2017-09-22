@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from 'axios';
-import SearchPage from "../../../components/SearchPage";
-import SearchPage2 from "../../../components/SearchPage2";
+import SearchPage from "../../components/SearchPage";
+import SearchPage2 from "../../components/SearchPage2";
 
 // import { Badge } from "reactstrap";
 // import uuid from "uuid/v4";

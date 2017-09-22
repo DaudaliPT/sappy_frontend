@@ -1,6 +1,6 @@
 
 import React from "react";
-import EditModal from "../LandingPages/Produtos/EditModal";
+import EditModal from "../Produtos/EditModal";
 const sappy = window.sappy;
 
 

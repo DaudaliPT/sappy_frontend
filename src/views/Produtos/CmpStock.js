@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import SearchPage from "../../../components/SearchPage";
+import SearchPage from "../../components/SearchPage";
 const sappy = window.sappy;
 
 class CmpStock extends Component {

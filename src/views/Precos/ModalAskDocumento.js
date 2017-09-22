@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 var $ = window.$;
 const sappy = window.sappy;
-import SearchPage from "../../../components/SearchPage";
+import SearchPage from "../../components/SearchPage";
 
 import { Badge } from "reactstrap";
 import uuid from "uuid/v4";

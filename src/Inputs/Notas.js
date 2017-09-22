@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { FormGroup, FormFeedback, Button, InputGroup, Input, Label } from "reactstrap";
+import { FormGroup, FormFeedback, Button, InputGroup, Input } from "reactstrap";
 var sappy = window.sappy;
 // var $ = window.$;
 
@@ -80,10 +80,6 @@ class TextBoxNumeric extends Component {
 
 
   render() {
-    let that = this
-
-
-
     let stateColor, stateMsg;
     if (this.props.state) {
       stateColor = this.props.state.split('|')[0];

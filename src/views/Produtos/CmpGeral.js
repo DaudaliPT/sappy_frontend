@@ -3,8 +3,8 @@ import { Button } from "reactstrap";
 import axios from "axios";
 // var $ = window.$;
 var sappy = window.sappy;
-import { TextBox, TextBoxNumeric, ComboBox, Toggle } from "../../../Inputs";
-import { ModalMessage } from "../../../Modals";
+import { TextBox, TextBoxNumeric, ComboBox, Toggle } from "../../Inputs";
+import { ModalMessage } from "../../Modals";
 import { hashHistory } from "react-router";
 
 const getInitialState = function (props) {

@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 var $ = window.$;
 var sappy = window.sappy;
-import { TextBox, ComboBox, Date } from "../../../Inputs";
-import { ModalMessage } from "../../../Modals";
+import { TextBox, ComboBox, Date } from "../../Inputs";
+import { ModalMessage } from "../../Modals";
 
 class ModalReportParams extends Component {
   constructor(props) {

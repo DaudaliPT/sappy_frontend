@@ -4,8 +4,8 @@ import axios from "axios";
 var $ = window.$;
 var sappy = window.sappy;
 
-import { TextBox, TextBoxNumeric, ComboBox } from "../../../Inputs";
-import { ModalMessage } from "../../../Modals";
+import { TextBox, TextBoxNumeric, ComboBox } from "../../Inputs";
+import { ModalMessage } from "../../Modals";
 
 
 const getInitialState = function (props) {

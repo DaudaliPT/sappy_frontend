@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { hashHistory } from "react-router";
 import axios from "axios";
 const sappy = window.sappy;
-import BaseLandingPage from "../BaseLandingPage";
+import BaseLandingPage from "../../BaseLandingPage";
 
 class LpDocumentos extends Component {
   constructor(props) {

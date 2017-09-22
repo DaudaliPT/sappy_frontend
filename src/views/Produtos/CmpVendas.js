@@ -1,16 +1,22 @@
 import React, { Component } from "react";
-import SearchPage from "../../../components/SearchPage";
+
+import { Badge } from "reactstrap";
+import SearchPage from "../../components/SearchPage";
 const sappy = window.sappy;
 
-class CmpCompras extends Component {
+
+
+class CmpVendas extends Component {
     constructor(props) {
         super(props);
         this.state = {}
     }
 
     render() {
+
+
         const renderRow = ({ row, index }) => {
-            // let rowId = "row_" + index;
+
             let rowStyleClass = "";
             if (row.ObjType === "14") rowStyleClass = "vlist-row-danger"
             if (row.ObjType === "16") rowStyleClass = "vlist-row-danger"
@@ -26,10 +32,9 @@ class CmpCompras extends Component {
                                 {sappy.GetLinkTo(row.ObjType, row.DocEntry)}
                                 {row.DESCDOC + ' ' + row.DocNum} </div>
                             <div className="col-5 text-truncate" title={row.CardCode + ' - ' + row.CardName}> {row.CardCode + ' - ' + row.CardName} </div>
-                            <div className="col-2 text-nowrap"> <span className="float-right">{sappy.format.quantity(row.InvQty, 0) + " " + row.InvntryUom + " x " + row.FORMATED_PRICE} </span> </div>
+                            <div className="col-2 text-nowrap"> <span className="float-right">{sappy.format.quantity(row.InvQty, 0) + " " + row.InvntryUom + " x " + sappy.format.price(row.Price, 3)}</span> </div>
                             <div className="col-2 text-nowrap lastcol">
-                                {/* <span className="float-left"> <Badge color="success" pill>{sappy.format.percent(row.MARGEM, 2)} </Badge> </span> */}
-
+                                <span className="float-left"> <Badge color="success" pill>{sappy.format.percent(row.MARGEM, 2)} </Badge> </span>
                                 <span className="float-right"> {row.FORMATED_LINETOTAL} </span>
                             </div>
                         </div>
@@ -44,7 +49,7 @@ class CmpCompras extends Component {
                                 <div className="col-4 text-nowrap">
                                     {sappy.GetLinkTo(row.ObjType, row.DocEntry)}
                                     {row.DESCDOC + ' ' + row.DocNum} </div>
-                                <div className="col-5 text-nowrap lastcol">  <span className="float-right">{sappy.format.quantity(row.InvQty, 0) + " x " + row.FORMATED_PRICE}</span> </div>
+                                <div className="col-5 text-nowrap lastcol">  <span className="float-right">{sappy.format.quantity(row.InvQty, 0) + " x " + sappy.format.price(row.Price, 3)}</span> </div>
                             </div>
                         </div>
                     </div>
@@ -55,8 +60,8 @@ class CmpCompras extends Component {
         return (
             <SearchPage
                 searchPlaceholder="Procurar..."
-                searchApiUrl={`/api/prod/compras/${this.props.ItemCode}`}
-                noRecordsMessage="Não há compras deste artigo"
+                searchApiUrl={`/api/prod/vendas/${this.props.ItemCode}`}
+                noRecordsMessage="Não há vendas deste artigo"
                 renderRow={renderRow}
                 searchText={this.props.searchText} s
                 renderRowHeight={50}
@@ -65,4 +70,4 @@ class CmpCompras extends Component {
     }
 }
 
-export default CmpCompras;
+export default CmpVendas;

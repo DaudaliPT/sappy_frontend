@@ -5,14 +5,13 @@ import Full from "./containers/Full/";
 import Simple from "./containers/Simple/";
 
 import Inicio from "./views/Inicio/";
-// import UnderConstruction from "./views/UnderConstruction/";
-import LandingPages from "./views/LandingPages";
+// import UnderConstruction from "./views/UnderConstruction/"; 
+import Views from "./views";
 import Login from "./views/Auth/Login/";
 import ForgotPassword from "./views/Auth/ForgotPassword/";
-import Documents from "./views/Documents/";
 
 var sappy = window.sappy;
-
+debugger
 sappy.app = {
   menus: [
     { name: "home", text: "", icon: "icon fa-home", component: Inicio },
@@ -22,16 +21,16 @@ sappy.app = {
       text: "Vendas",
       icon: "icon fa-shopping-cart",
       menus: [
-        { name: "ordr", component: LandingPages.Documentos.ordr, text: "Encomendas" },
-        { name: "odln", component: LandingPages.Documentos.odln, text: "Entregas" },
-        { name: "ordn", component: LandingPages.Documentos.ordn, text: "Devoluções" },
-        { name: "oinv", component: LandingPages.Documentos.oinv, text: "Faturas" },
-        { name: "orin", component: LandingPages.Documentos.orin, text: "Notas de Crédito" },
-        { name: "ordr/doc", component: Documents.Ordr, dontCreateMenu: true, text: "Doc" },
-        { name: "odln/doc", component: Documents.Odln, dontCreateMenu: true, text: "Doc" },
-        { name: "ordn/doc", component: Documents.Ordn, dontCreateMenu: true, text: "Doc" },
-        { name: "oinv/doc", component: Documents.Oinv, dontCreateMenu: true, text: "Doc" },
-        { name: "orin/doc", component: Documents.Orin, dontCreateMenu: true, text: "Doc" }
+        { name: "ordr", component: Views.LandingPages.Documentos.ordr, text: "Encomendas" },
+        { name: "odln", component: Views.LandingPages.Documentos.odln, text: "Entregas" },
+        { name: "ordn", component: Views.LandingPages.Documentos.ordn, text: "Devoluções" },
+        { name: "oinv", component: Views.LandingPages.Documentos.oinv, text: "Faturas" },
+        { name: "orin", component: Views.LandingPages.Documentos.orin, text: "Notas de Crédito" },
+        { name: "ordr/doc", component: Views.Documents.Ordr, dontCreateMenu: true, text: "Doc" },
+        { name: "odln/doc", component: Views.Documents.Odln, dontCreateMenu: true, text: "Doc" },
+        { name: "ordn/doc", component: Views.Documents.Ordn, dontCreateMenu: true, text: "Doc" },
+        { name: "oinv/doc", component: Views.Documents.Oinv, dontCreateMenu: true, text: "Doc" },
+        { name: "orin/doc", component: Views.Documents.Orin, dontCreateMenu: true, text: "Doc" }
 
         // { name: "promo", component: UnderConstruction, text: "Promoções" }
       ]
@@ -42,16 +41,16 @@ sappy.app = {
       text: "Compras",
       icon: "icon fa-truck",
       menus: [
-        { name: "opor", component: LandingPages.Documentos.opor, text: "Encomendas" },
-        { name: "opdn", component: LandingPages.Documentos.opdn, text: "Receções" },
-        { name: "orpd", component: LandingPages.Documentos.orpd, text: "Devoluções" },
-        { name: "opch", component: LandingPages.Documentos.opch, text: "Faturas" },
-        { name: "orpc", component: LandingPages.Documentos.orpc, text: "Notas de Crédito" },
-        { name: "opor/doc", component: Documents.Opor, dontCreateMenu: true, text: "Doc" },
-        { name: "opdn/doc", component: Documents.Opdn, dontCreateMenu: true, text: "Doc" },
-        { name: "orpd/doc", component: Documents.Orpd, dontCreateMenu: true, text: "Doc" },
-        { name: "opch/doc", component: Documents.Opch, dontCreateMenu: true, text: "Doc" },
-        { name: "orpc/doc", component: Documents.Orpc, dontCreateMenu: true, text: "Doc" }
+        { name: "opor", component: Views.LandingPages.Documentos.opor, text: "Encomendas" },
+        { name: "opdn", component: Views.LandingPages.Documentos.opdn, text: "Receções" },
+        { name: "orpd", component: Views.LandingPages.Documentos.orpd, text: "Devoluções" },
+        { name: "opch", component: Views.LandingPages.Documentos.opch, text: "Faturas" },
+        { name: "orpc", component: Views.LandingPages.Documentos.orpc, text: "Notas de Crédito" },
+        { name: "opor/doc", component: Views.Documents.Opor, dontCreateMenu: true, text: "Doc" },
+        { name: "opdn/doc", component: Views.Documents.Opdn, dontCreateMenu: true, text: "Doc" },
+        { name: "orpd/doc", component: Views.Documents.Orpd, dontCreateMenu: true, text: "Doc" },
+        { name: "opch/doc", component: Views.Documents.Opch, dontCreateMenu: true, text: "Doc" },
+        { name: "orpc/doc", component: Views.Documents.Orpc, dontCreateMenu: true, text: "Doc" }
 
         // { name: "contratos", component: UnderConstruction, text: "Contratos de compra" }
       ]
@@ -72,14 +71,14 @@ sappy.app = {
       text: "Inventário",
       icon: "icon fa-barcode",
       menus: [
-        { name: "oitm", text: "Artigos", component: LandingPages.Produtos },
-        { name: "prices", text: "Preços", component: LandingPages.Precos },
-        { name: "etiq", text: "Etiquetas", component: LandingPages.Etiquetas },
-        { name: "oitm/:itemcode", text: "Artigos Edit", component: LandingPages.Produtos.EditPage, dontCreateMenu: true },
-        { name: "prices/doc", text: "Route->Abrir new doc atualização preços", component: LandingPages.Precos.Doc, dontCreateMenu: true },
+        { name: "oitm", text: "Artigos", component: Views.Produtos },
+        { name: "prices", text: "Preços", component: Views.Precos },
+        { name: "etiq", text: "Etiquetas", component: Views.Etiquetas },
+        { name: "oitm/:itemcode", text: "Artigos Edit", component: Views.Produtos.EditPage, dontCreateMenu: true },
+        { name: "prices/doc", text: "Route->Abrir new doc atualização preços", component: Views.Precos.Doc, dontCreateMenu: true },
         // { name: "prices/doc/:id", text: "Route->Abrir doc atualização preços", component: LandingPages.Precos.Doc, dontCreateMenu: true },
-        { name: "etiq/doc", text: "Route->Abrir new doc etiq", component: LandingPages.Etiquetas.Doc, dontCreateMenu: true },
-        { name: "etiq/doc/:id", text: "Route->Abrir doc etiq", component: LandingPages.Etiquetas.Doc, dontCreateMenu: true }
+        { name: "etiq/doc", text: "Route->Abrir new doc etiq", component: Views.Etiquetas.Doc, dontCreateMenu: true },
+        { name: "etiq/doc/:id", text: "Route->Abrir doc etiq", component: Views.Etiquetas.Doc, dontCreateMenu: true }
         // { name: "transacoes", text: "Entradas e saídas", component: UnderConstruction },
         // { name: "transfstk", text: "Transferências", component: UnderConstruction },
         // { name: "cntinv", text: "Contagem de inventário", component: UnderConstruction },
@@ -92,7 +91,7 @@ sappy.app = {
       text: "Financeiro",
       icon: "icon fa-money",
       menus: [
-        { name: "caixa", text: "Caixa central", component: LandingPages.CaixaCentral },
+        { name: "caixa", text: "Caixa central", component: Views.CaixaCentral },
         // { name: "rec", text: "Recebimentos", component: LandingPages.Recebimentos },
         // { name: "rec/doc", text: "Recebimentos", component: LandingPages.Recebimentos, dontCreateMenu: true },
         // { name: "pagamentos", text: "Pagamentos", component: UnderConstruction },
@@ -104,7 +103,7 @@ sappy.app = {
       name: "rpt",
       text: "Relatórios",
       icon: "icon fa-print",
-      component: LandingPages.Reports
+      component: Views.Reports
     }
   ]
 };

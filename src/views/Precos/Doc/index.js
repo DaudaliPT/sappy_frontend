@@ -10,12 +10,14 @@ const {
 } = require('react-data-grid/packages/react-data-grid-addons/dist/react-data-grid-addons');
 import ReactDataGrid from 'react-data-grid/packages/react-data-grid/dist/react-data-grid';
 
+import { Popover, PopoverContent } from 'reactstrap';
 import axios from "axios";
 import uuid from "uuid/v4";
 import SearchBar from "./SearchBar.js";
-import { TextBox } from "../../../../Inputs";
+import { TextBox } from "../../../Inputs";
+import { ModalMessageConfirm } from "../../../Modals";
 
-import { ModalMessageConfirm } from "../../../../Modals";
+import ModalConfirmDoc from "./ModalConfirmDoc";
 import ModalConfirmPrint from "../ModalConfirmPrint";
 import ModalSearchOitm from "./ModalSearchOitm";
 import EditModal from "../../Produtos/EditModal";
@@ -31,20 +33,154 @@ const CustomToolbar = React.createClass({
 
   render() {
     return (
-      <Toolbar>
-        <GroupedColumnsPanel groupBy={this.props.groupBy}
-          onColumnGroupAdded={this.props.onColumnGroupAdded}
-          onColumnGroupDeleted={this.props.onColumnGroupDeleted} />
-      </Toolbar>);
+      <div className="hidden-xxl-down">
+        <Toolbar>
+          <GroupedColumnsPanel groupBy={this.props.groupBy}
+            onColumnGroupAdded={this.props.onColumnGroupAdded}
+            onColumnGroupDeleted={this.props.onColumnGroupDeleted} />
+        </Toolbar>
+      </div>);
   }
 });
 
+
+
+class CheckboxFormatter extends Component {
+  render() {
+    let checked = this.props.value != null ? this.props.value : false;
+    let checkboxName = "checkbox" + this.props.rowIdx;
+    let disabled = this.props.column.cellClass === "locked-col"; //por que editable é colocado a false para não permiteir escrever na textbox da coluna
+    return (
+      <div className="react-grid-checkbox-container checkbox-align" >
+        <input className="react-grid-checkbox" type="checkbox" name={checkboxName} checked={checked} disabled={disabled} />
+        <label htmlFor={checkboxName} className="react-grid-checkbox-label" />
+      </div>
+    );
+  }
+}
 
 class IntFormatter extends Component {
   render() {
     const formatedValue = sappy.format.integer(this.props.value);
     return (
       <div style={{ textAlign: "right" }}>
+        {formatedValue}
+      </div>
+    );
+  }
+}
+
+class UPCPriceFormatter extends Component {
+  constructor(props) {
+    super(props)
+
+    this.hoverTimeOutHandle = 0
+    this.state = {
+      currentPopover: null
+    }
+  }
+  render() {
+    let that = this;
+    let row = this.props.dependentValues;
+    let classes = "";
+    let PREV_PRECO = 0;
+    let LAST_PRECO = 0;
+
+    if (row.PREV_PRECO) PREV_PRECO = sappy.getNum(sappy.format.price(row.PREV_PRECO));
+    if (row.LAST_PRECO) LAST_PRECO = sappy.getNum(sappy.format.price(row.LAST_PRECO))
+
+    if (PREV_PRECO > LAST_PRECO)
+      classes = <span className="float-left" style={{ color: "green" }}><i className="icon wb-graph-down" /></span>;
+    if (PREV_PRECO === LAST_PRECO)
+      classes = <span className="float-left" style={{ color: "lightgrey" }}><i className="icon wb-arrow-right" /></span>;
+    if (PREV_PRECO < LAST_PRECO) classes = <span className="float-left" style={{ color: "red" }}><i className="icon wb-graph-up" /></span>;
+
+    const formatedValue = sappy.format.price(this.props.value);
+    return (
+      <div style={{ textAlign: "right" }} id={"upc" + row.LINENUM}
+        onMouseLeave={e => {
+          if (that.hoverTimeOutHandle) clearTimeout(that.hoverTimeOutHandle)
+          that.setState({ currentPopover: null })
+        }}
+        onMouseEnter={e => {
+          if (that.hoverTimeOutHandle) clearTimeout(that.hoverTimeOutHandle)
+          that.setState({ currentPopover: null })
+
+          that.hoverTimeOutHandle = setTimeout(function () {
+            if (that.hoverServerRequest && that.hoverServerRequest.abort) that.hoverServerRequest.abort();
+            that.hoverServerRequest = axios({ method: "get", url: `api/prod/info/${row.ITEM_CODE}/upc` })
+              .then(result => {
+                let content = []
+
+                if (result.data.length === 0)
+                  content.push(<tr><td>Nenhum histórico</td></tr>)
+                else {
+                  content.push(<tr >
+                    <td>Data</td>
+                    <td>Fornecedor</td>
+                    <td>Preço</td>
+                  </tr>)
+                  result.data.forEach(popuprow => {
+                    let preco = "";
+                    if (sappy.getNum(popuprow.PRCNET) !== 0) {
+                      preco = sappy.format.price(popuprow.PRCNET, 3) + " N";
+                    } else {
+                      preco = sappy.format.price(popuprow.PRCLIQ, 3);
+                    }
+
+                    content.push(<tr >
+                      <td>{sappy.format.date(popuprow.DocDate)}</td>
+                      <td style={{ maxWidth: "130px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{popuprow.CardName}</td>
+                      <td>{preco}</td>
+                    </tr>)
+                  });
+                }
+
+                let target = "upc" + row.LINENUM;
+                let $le = $("#" + target);
+                if ($le.length === 0) return console.log("popover ignored because element does not exists anymore")
+
+                that.setState({
+                  currentPopover:
+                  <Popover isOpen={true} target={target} toggle={this.togglePopover} placement="left" onMouseLeave={e => { that.setState({ currentPopover: null }) }}>
+                    <PopoverContent><table>{content}</table></PopoverContent>
+                  </Popover>
+                })
+
+              })
+              .catch(error => sappy.showError(error, "Erro ao obter dados"));
+          }, 300);
+        }} >
+
+        {this.state.currentPopover}
+        {classes}
+        {formatedValue}
+
+      </div>
+    );
+  }
+}
+
+class NEW_PRICE_Formatter extends Component {
+  render() {
+    let classes = "";
+    let CURRENT_PRICE = 0;
+    let NEW_PRICE = 0;
+
+    if (this.props.dependentValues.CURRENT_PRICE) CURRENT_PRICE = sappy.getNum(sappy.format.price(this.props.dependentValues.CURRENT_PRICE));
+    if (this.props.dependentValues.NEW_PRICE) NEW_PRICE = sappy.getNum(sappy.format.price(this.props.dependentValues.NEW_PRICE));
+
+    if (CURRENT_PRICE > NEW_PRICE)
+      classes = <span className="float-left" style={{ color: "green" }}><i className="icon wb-graph-down" /></span>;
+    if (CURRENT_PRICE === NEW_PRICE)
+      classes = <span className="float-left" style={{ color: "lightgrey" }}><i className="icon wb-arrow-right" /></span>;
+    if (CURRENT_PRICE < NEW_PRICE)
+      classes = <span className="float-left" style={{ color: "red" }}><i className="icon wb-graph-up" /></span>;
+
+    const formatedValue = sappy.format.price(this.props.value);
+    return (
+      <div style={{ textAlign: "right" }}>
+        {classes}
         {formatedValue}
       </div>
     );
@@ -70,7 +206,16 @@ const HeaderAlignRight = ({ column }) => {
   }
 };
 
-
+class PercentFormatter extends Component {
+  render() {
+    const formatedValue = sappy.format.percent(this.props.value);
+    return (
+      <div style={{ textAlign: "right" }}>
+        {formatedValue}
+      </div>
+    );
+  }
+}
 
 class SimpleFormatter extends Component {
   render() {
@@ -143,14 +288,18 @@ class ItemCodeFormater extends Component {
 }
 
 const getinitialState = (props) => {
+
+
+  let locationState = props.location.state || {};
+
   return {
     currentModal: null,
-    loading: props.params.id ? true : false,
+    loading: locationState.id ? true : false,
     searchGridH: 300,
     docData: {
-      ID: props.params.id,
-      DOCS: props.params.id ? undefined : [],
-      OBSERVACOES: props.params.id ? undefined : "Artigos"
+      ID: locationState.id,
+      DOCS: locationState.id ? undefined : [],
+      OBSERVACOES: locationState.id ? undefined : "Artigos"
     },
     selectedIndexes: [],
     searchBtns: [],
@@ -159,6 +308,7 @@ const getinitialState = (props) => {
     rows: []
   };
 }
+
 class DocAtualizacaoPrecos extends Component {
   constructor(props) {
     super(props);
@@ -168,6 +318,7 @@ class DocAtualizacaoPrecos extends Component {
     this.createDocLines = this.createDocLines.bind(this);
     this.handleOnCellClick = this.handleOnCellClick.bind(this);
     this.getColumns = this.getColumns.bind(this);
+    this.handleGridRowsUpdated = this.handleGridRowsUpdated.bind(this);
     this.onMoveTo = this.onMoveTo.bind(this);
     this.loadDoc = this.loadDoc.bind(this);
     this.handleOnChange_txtSearch = this.handleOnChange_txtSearch.bind(this);
@@ -208,28 +359,112 @@ class DocAtualizacaoPrecos extends Component {
     return [
       { key: "LINENUM", name: "#", width: 40, formatter: SimpleFormatter },
       itemCodeCol,
+      { key: "Origem", name: "", draggable: true, width: 1 },
       { key: "ITEM_NAME_WITH_TAGS", name: "Descrição", width: 400, formatter: DescritptionFormatter },
       { key: "STOCK", name: "Stock", width: 100, formatter: IntFormatter, headerRenderer: HeaderAlignRight },
+      // {key: "UPC_NETNET", name: "Pr NET Ant", width: 100, formatter: PriceFormatter },
+      // {key: "PREV_DOCDATE", name: "DT-1", width: 100, formatter: SimpleFormatter },
+      // { key: "PREV_PRECO", name: "UPC ANT", width: 100, formatter: PriceFormatter, headerRenderer: HeaderAlignRight },
+      // {key: "LAST_DOCDATE", name: "DT", width: 100, formatter: SimpleFormatter },
 
+      {
+        key: "LAST_PRECO",
+        name: "UPC",
+        width: 120,
+        formatter: UPCPriceFormatter,
+        headerRenderer: HeaderAlignRight,
+        getRowMetaData: row => row //In into my formatter I can access all the row values into this.props.dependentValues
+      },
+      // {
+      //   key: "LAST_PRECO_ISNET",
+      //   name: "",
+      //   width: 40,
+      //   formatter: < Formatters.Flag />,
+      //   color: "success",
+      //   valueON: "icon ion-ios-done-all-outline",
+      //   valueOFF: "icon ion-ios-alert-outline",
+      //   getRowMetaData: row => row //In into my formatter I can access all the row values into this.props.dependentValues
+      // },
+      // {key: "PMC", name: "PMC", width: 100, formatter: PriceFormatter, headerRenderer: HeaderAlignRight },
       { key: "DATA_ULTIMA_ALT", name: "Data At.", width: 100, formatter: DateFormatter },
       { key: "CURRENT_PRICE", name: "P Cash", width: 100, formatter: PriceFormatter, headerRenderer: HeaderAlignRight },
+      // { key: "NEW_PRICE_BASE", name: "Base Preço", width: 80, formatter: PriceFormatter, headerRenderer: HeaderAlignRight },
+      // { key: "NEW_PRICE_SUGESTED", name: "Preço Suj", width: 80, formatter: PriceFormatter, headerRenderer: HeaderAlignRight },
+      {
+        editable: allowEdit,
+        cellClass: allowEdit && "editable-col",
+        key: "NEW_PRICE",
+        name: "Novo Preço",
+        width: 100,
+        formatter: NEW_PRICE_Formatter,
+        getRowMetaData: row => row, //In into my formatter I can access all the row values into this.props.dependentValues
+        headerRenderer: HeaderAlignRight
+      },
+      {
+        editable: allowEdit,
+        key: "TICK",
+        name: "Act.",
+        width: 50,
+        cellClass: allowEdit ? "editable-col" : "locked-col",
+        getRowMetaData: row => row, //In into my formatter I can access all the row values into this.props.dependentValues
+        headerRenderer: HeaderAlignRight,
+        formatter: <CheckboxFormatter />,
+        events: {
+          onClick: (ev, args) => {
+            ev.stopPropagation();
+
+            let currentRow = this.getRowAt(args.rowIdx);
+            this.handleGridRowsUpdated({
+              fromRow: args.rowIdx,
+              toRow: args.rowIdx,
+              updated: { [args.column.key]: !currentRow[args.column.key] }
+            });
+          },
+          onKeyDown: (ev, args) => {
+            if (ev.keyCode === 32) {
+              ev.preventDefault();
+              ev.stopPropagation();
+
+              let currentRow = this.getRowAt(args.rowIdx);
+              this.handleGridRowsUpdated({
+                fromRow: args.rowIdx,
+                toRow: args.rowIdx,
+                updated: { [args.column.key]: !currentRow[args.column.key] }
+              });
+            }
+          }
+        }
+      },
+      { key: "MARGEM_UPC", name: "M/UPC", width: 80, formatter: PercentFormatter, headerRenderer: HeaderAlignRight },
+      // {key: "MARGEM_PMC", name: "M/PMC", width: 80, formatter: PercentFormatter, headerRenderer: HeaderAlignRight },
+      {
+        editable: allowEdit,
+        cellClass: allowEdit && "editable-col",
+        key: "MARGEM_IND",
+        name: "M Ind.",
+        width: 100,
+        formatter: PercentFormatter,
+        headerRenderer: HeaderAlignRight
+      }
     ];
   }
 
-
   componentWillReceiveProps(nextProps) {
-    if (this.props.params.id !== nextProps.params.id)
+    let locationState = this.props.location.state || {};
+    let nextlocationState = nextProps.location.state || {};
+
+    if (locationState.id !== nextlocationState.id)
       this.setState(getinitialState(nextProps), this.loadDoc);;
   }
 
   onMoveTo(nextORprevious) {
     this.serverRequest = axios({
       method: "get",
-      url: `/api/etiq/doc/${this.state.docData.ID}/${nextORprevious}`
+      url: `/api/precos/doc/${this.state.docData.ID}/${nextORprevious}`
     })
       .then(result => {
         if (result.data)
-          hashHistory.push("/inv/etiq/doc/" + result.data);
+          hashHistory.push({ pathname: "/inv/prices/doc", state: { id: result.data } });
       })
       .catch(error => sappy.showError(error, "Erro ao obter dados"));
   }
@@ -237,7 +472,7 @@ class DocAtualizacaoPrecos extends Component {
   componentDidMount() {
     let that = this;
     axios
-      .get(`api/etiq/report`)
+      .get(`api/precos/report`)
       .then(function (result) {
         that.setState({
           defaultLayoutCode: result.data.LayoutCode
@@ -288,15 +523,17 @@ class DocAtualizacaoPrecos extends Component {
 
   loadDoc() {
     let that = this;
-    if (this.props.params.id) {
+    let locationState = this.props.location.state || {}
+    if (locationState.id) {
       this.serverRequest = axios
-        .get(`/api/etiq/doc/${this.props.params.id}`)
+        .get(`/api/precos/doc/${locationState.id}`)
         .then(function (result) {
           let docData = result.data;
           that.setState({
             loading: false,
             docData,
-            rows: [...docData.LINES]
+            rows: [...docData.LINES],
+            groupBy: docData.DOCS.length > 0 ? [{ key: "Origem", name: "Grupo" }] : []
           }
             , that.calcSearchGridH);
         })
@@ -347,8 +584,8 @@ class DocAtualizacaoPrecos extends Component {
     let { searchText } = this.state;
 
     this.serverRequest = axios
-      .get(`/api/etiq/searchOitm/`, {
-        params: { searchText },
+      .get(`/api/precos/searchOitm/`, {
+        params: { searchTags: [{ value: searchText }] },
         cancelToken: new CancelToken(function executor(c) {
           that.cancelPreviousAxiosRequest = c;
         })
@@ -390,7 +627,7 @@ class DocAtualizacaoPrecos extends Component {
       next();
     } else {
       this.serverRequest = axios
-        .post(`/api/etiq/doc`)
+        .post(`/api/precos/doc`)
         .then(function (result) {
           let docData = that.state.docData;
           docData = { ...docData, ...result.data };
@@ -405,7 +642,7 @@ class DocAtualizacaoPrecos extends Component {
   createDocLines(itemCodes) {
     let that = this;
     this.serverRequest = axios
-      .post(`/api/etiq/doc/${this.state.docData.ID}/lines`, { itemCodes })
+      .post(`/api/precos/doc/${this.state.docData.ID}/lines`, { itemCodes })
       .then(function (result) {
         that.setState({
           rows: result.data,
@@ -421,6 +658,34 @@ class DocAtualizacaoPrecos extends Component {
     // debugger;
   }
 
+  handleGridRowsUpdated({ fromRow, toRow, updated }) {
+    let that = this;
+    let documentoBloqueado = this.state.docData.DOCNUM > 0;
+    if (documentoBloqueado) return;
+
+    let colUpdated = Object.keys(updated)[0];
+    let newValue = updated[colUpdated];
+
+    if (newValue.replace) updated[colUpdated] = newValue.replace(',', '.');
+
+    for (var index = fromRow; index <= toRow; index++) {
+      let ix = index;
+      let currentRow = this.getRowAt(ix);
+
+      this.serverRequest = axios
+        .patch(`/api/precos/doc/${this.state.docData.ID}/line/${currentRow.LINENUM}`, { ...updated })
+        .then(function (result) {
+          let rows = that.getRows();
+          let row = rows[ix];
+          let rows_orig = [...that.state.rows];
+          let row_orig = rows_orig.find(r => r.LINENUM === row.LINENUM);
+
+          Object.assign(row_orig, result.data);// = result.data;
+          that.setState({ rows_orig });
+        })
+        .catch(error => sappy.showError(error, "Erro ao gravar linha"));
+    }
+  }
 
   handleModalSearchClose(selectedItems) {
     let that = this;
@@ -491,6 +756,7 @@ class DocAtualizacaoPrecos extends Component {
 
   render() {
     let that = this;
+    let hasHeader = this.state.docData.ID > 0;
     let documentoBloqueado = this.state.docData.DOCNUM > 0;
     let baseadoEmDocumentos = this.state.docData.DOCS && this.state.docData.DOCS.length !== 0;
 
@@ -537,7 +803,7 @@ class DocAtualizacaoPrecos extends Component {
           name: "Apagar",
           color: "danger",
           icon: "icon wb-trash",
-          visible: !documentoBloqueado && this.state.selectedIndexes.length === 0,
+          visible: !documentoBloqueado && hasHeader && this.state.selectedIndexes.length === 0,
           onClick: e => {
             this.setState({
               currentModal: (
@@ -546,7 +812,7 @@ class DocAtualizacaoPrecos extends Component {
                     this.setState({ currentModal: null });
                     if (result === "CONFIRMADO") {
                       this.serverRequest = axios
-                        .delete(`/api/etiq/doc/${this.state.docData.ID}`)
+                        .delete(`/api/precos/doc/${this.state.docData.ID}`)
                         .then(function (result) {
                           hashHistory.goBack();
                         })
@@ -580,7 +846,7 @@ class DocAtualizacaoPrecos extends Component {
                     this.setState({ currentModal: null });
                     if (result === "CONFIRMADO") {
                       this.serverRequest = axios
-                        .post(`/api/etiq/doc/${this.state.docData.ID}/deletelines`, {
+                        .post(`/api/precos/doc/${this.state.docData.ID}/deletelines`, {
                           Lines: LINENUMS
                         })
                         .then(function (result) {
@@ -608,12 +874,12 @@ class DocAtualizacaoPrecos extends Component {
           }
         },
         {
-          name: ((this.state.docData.DOCNUM || this.state.docData.ID) && "Voltar") || "Cancelar",
+          name: (hasHeader && "Voltar") || "Cancelar",
           color: "primary",
           icon: "icon wb-close",
           visible: true,
           onClick: e => {
-            hashHistory.push("/inv/etiq/");
+            hashHistory.push("/inv/prices/");
           }
         },
         {
@@ -623,45 +889,30 @@ class DocAtualizacaoPrecos extends Component {
 
           icon: "icon fa-check",
           onClick: e => {
+            let temUpdates = false;
+            this.getRows().forEach(row => {
+              if (row.TICK) temUpdates = true;
+            });
+
             this.setState({
               currentModal: (
+                <ModalConfirmDoc temUpdates={temUpdates}
 
-                <ModalMessageConfirm
-                  toggleModal={result => {
-                    that.setState({ currentModal: null });
+                  toggleModal={(result, modalState) => {
+                    this.setState({ currentModal: null });
                     if (result === "CONFIRMADO") {
-                      that.serverRequest = axios
-                        .post(`/api/etiq/doc/${that.state.docData.ID}/confirm`)
+                      this.serverRequest = axios
+                        .post(`/api/precos/doc/${this.state.docData.ID}/confirm`, {
+                          imediatamente: modalState.imediatamente,
+                          data: modalState.data
+                        })
                         .then(function (result) {
-
-
-                          let docNumArray = [result.data.DOCNUM];
-
-                          that.setState({
-                            currentModal: (
-                              <ModalConfirmPrint
-                                setCurrentModal={({ currentModal }) => {
-                                  hashHistory.push('/inv/etiq')
-                                }}
-                                defaultLayoutCode={that.state.defaultLayoutCode}
-                                docNumArray={docNumArray}
-                              />
-                            )
-                          });
-
+                          hashHistory.goBack();
                         })
                         .catch(error => sappy.showError(error, "Erro ao confirmar documento"));
                     }
                   }}
-                  title="Confirmar ação"
-                  text="Deseja Continuar?"
-                  btnConfirmar="Confirmar"
-                  iconConfirmar="icon fa-check"
-                  color="success"
-                  moreInfo="Se continuar irá concluir este documento."
                 />
-
-
               )
             });
           }
@@ -753,7 +1004,7 @@ class DocAtualizacaoPrecos extends Component {
           <div className="page-header container-fluid">
             <div className="row">
               <div className="col-xl-8 col-md-4">
-                <h5 className="page-title">Impressão de etiquetas {this.state.docData.DOCNUM && this.state.docData.DOCNUM} </h5>
+                <h5 className="page-title">Atualização de preços {this.state.docData.DOCNUM && this.state.docData.DOCNUM} </h5>
               </div>
               <div className="col-xl-4 col-md-8">
                 <div className="sappy-action-bar animation-slide-left">
@@ -765,10 +1016,9 @@ class DocAtualizacaoPrecos extends Component {
                             this.setState({ currentModal: null });
                             if (result === "CONFIRMADO") {
                               this.serverRequest = axios
-                                .post(`/api/etiq/doc/${this.state.docData.ID}/clone`)
+                                .post(`/api/precos/doc/${this.state.docData.ID}/clone`)
                                 .then(function (result) {
-
-                                  hashHistory.push("/inv/etiq/doc/" + result.data.newID);
+                                  hashHistory.push({ pathname: "/inv/prices/doc", state: { id: result.data.newID } });
                                 })
                                 .catch(error => sappy.showError(error, "Erro ao duplicar dados"));
                             }
@@ -818,8 +1068,38 @@ class DocAtualizacaoPrecos extends Component {
                   rowGetter={this.getRowAt}
                   rowsCount={this.getSize()}
                   minHeight={this.state.searchGridH}
+                  onGridRowsUpdated={this.handleGridRowsUpdated}
                   onCellClick={this.handleOnCellClick}
                   rowSelection={rowSelection}
+                  rowGroupRenderer={(props) => {
+                    let treeDepth = props.treeDepth || 0;
+                    let marginLeft = treeDepth * 20;
+
+                    let style = {
+                      height: '50px',
+                      border: '1px solid #dddddd',
+                      paddingTop: '15px',
+                      paddingLeft: '5px'
+                    };
+
+                    let onKeyDown = (e) => {
+                      if (e.key === 'ArrowLeft') return props.onRowExpandToggle(false);
+                      if (e.key === 'ArrowRight') return props.onRowExpandToggle(true);
+                      if (e.key === 'Enter') return props.onRowExpandToggle(!props.isExpanded);
+                    }
+
+
+                    /* let text = props.name.split('|')[0]; */
+                    let linkType = props.name.split('|')[1];
+                    let linkEntry = props.name.split('|')[2];
+
+                    return (
+                      <div style={style} onKeyDown={onKeyDown} tabIndex={0}>
+                        <span className="row-expand-icon" style={{ float: 'left', marginLeft: marginLeft, cursor: 'pointer' }} onClick={props.onRowExpandClick} >{props.isExpanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}</span>
+                        <strong>{props.columnGroupName}:                                {sappy.GetLinkTo(linkType, linkEntry)}                          {props.name}</strong>
+                      </div>
+                    );
+                  }}
 
                   enableDragAndDrop={true}
                   onRowExpandToggle={this.onRowExpandToggle}
@@ -832,7 +1112,7 @@ class DocAtualizacaoPrecos extends Component {
 
             {this.state.currentModal}
           </div>
-        </div>
+        </div >
       )
     );
   }
