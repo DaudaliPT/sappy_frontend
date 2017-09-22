@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 var $ = window.$;
 
-import CmpClassificacao from "./CmpClassificacao";
+import CmpPorReceber from "./CmpPorReceber";
+import CmpUltRecebimentos from "./CmpUltRecebimentos";
 import CmpUnderConstruction from "./CmpUnderConstruction";
 
 
@@ -14,7 +15,7 @@ class CaixaCentral extends Component {
     this.state = {
       ReadOnly: true,
       loading: true,
-      activeTab: "tabClassificacao"
+      activeTab: "tabCmpPorReceber"
     }
   }
 
@@ -72,8 +73,8 @@ class CaixaCentral extends Component {
               <div className="panel">
                 <div className="panel-body ">
                   <div className="list-group faq-list" role="tablist">
-                    <a className="list-group-item list-group-item-action active" data-toggle="tab" role="tab"
-                      id="tabClassificacao" onClick={this.handleOnTabClick}>A Receber </a>
+                    <a className="list-group-item list-group-item-action active" data-toggle="tab" role="tab" id="tabCmpPorReceber" onClick={this.handleOnTabClick}>A Receber</a>
+                    <a className="list-group-item list-group-item-action" data-toggle="tab" role="tab" id="tabCmpUltRecebimentos" onClick={this.handleOnTabClick}>Ult. Recebimentos</a>
                     {/* <a className="list-group-item" data-toggle="tab" role="tab"
                       id="tabPendentes" onClick={this.handleOnTabClick}>Pendentes</a>
                     <a className="list-group-item" data-toggle="tab" role="tab"
@@ -93,7 +94,8 @@ class CaixaCentral extends Component {
               {/* <!-- Panel --> */}
               <div className="panel form-panel">
                 <div className="panel-body main-body">
-                  {this.state.activeTab === "tabClassificacao" && < CmpClassificacao height={this.state.height} />}
+                  {this.state.activeTab === "tabCmpPorReceber" && < CmpPorReceber height={this.state.height} />}
+                  {this.state.activeTab === "tabCmpUltRecebimentos" && < CmpUltRecebimentos height={this.state.height} />}
                   {this.state.activeTab === "tabPendentes" && <CmpUnderConstruction height={this.state.height} />}
                   {this.state.activeTab === "tabDistribuicao" && <CmpUnderConstruction height={this.state.height} />}
                   {this.state.activeTab === "tabDespesas" && <CmpUnderConstruction height={this.state.height} />}

@@ -153,6 +153,7 @@ class SearchPage extends PureComponent {
     );
   }
 
+
   findAndGetFirstRows({ isAutoRefresh } = {}) {
     var that = this;
     if (this.props.searchApiUrl) {

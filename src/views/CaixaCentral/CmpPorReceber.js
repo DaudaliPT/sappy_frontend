@@ -7,10 +7,10 @@ import SearchPage2 from "../../components/SearchPage2";
 // import uuid from "uuid/v4";
 const sappy = window.sappy;
 const $ = window.$;
-import CmpClassificacaoFooter from "./CmpClassificacaoFooter";
+import CmpPorReceberFooter from "./CmpPorReceberFooter";
 import MeiosPagPagamentoModal from "./MeiosPagPagamentoModal";
 
-class CmpClassificacao extends Component {
+class CmpPorReceber extends Component {
     constructor(props) {
         super(props);
 
@@ -380,11 +380,11 @@ class CmpClassificacao extends Component {
                     </div>
                 </div>
                 {/* <p>{this.state.ctrlKey ? "ctrl" : ""} {this.state.shiftKey ? " shift" : ""}</p> */}
-                <CmpClassificacaoFooter {...footerProps }></CmpClassificacaoFooter>
+                <CmpPorReceberFooter {...footerProps }></CmpPorReceberFooter>
 
             </div>)
 
     }
 }
 
-export default CmpClassificacao;
+export default CmpPorReceber;
