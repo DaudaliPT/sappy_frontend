@@ -4,12 +4,11 @@ const sappy = window.sappy;
 class ButtonGetPdf extends Component {
 
   handleOnClick_GetPdf(e) {
-    // Quando entra na landing page, é feito um pedido que procura o defaultLayoutCode para o documento
-    // e o guarda em sappy.defaultLayoutCode
-    let defaultLayoutCode = sappy.defaultLayoutCode;
+    let defaultLayoutCode = this.props.defaultLayoutCode;
+    e.stopPropagation();
 
     if (!defaultLayoutCode) {
-      return sappy.showError(null, "Não foi possível obter layout predefinido para impressão.");
+      return sappy.showError({ message: "Não foi possível obter layout predefinido para impressão." });
     }
 
     // Executar o mapa
@@ -18,7 +17,7 @@ class ButtonGetPdf extends Component {
     var apiQuery = "?parValues=" + encodeURIComponent(JSON.stringify(parValues));
 
     var baseUrl = ""; // Nota: Em desenv, é preciso redirecionar o pedido. Já em produtivo a api é servida na mesma porta do pedido
-    if (window.location.port === "3000") baseUrl = "http://localhost:3005";
+    if (window.location.port === "3000") baseUrl = "http://byusserver:3005";
     window.open(baseUrl + apiRoute + apiQuery, "_blank");
   }
 

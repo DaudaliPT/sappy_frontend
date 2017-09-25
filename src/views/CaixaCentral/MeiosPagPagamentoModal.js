@@ -584,7 +584,9 @@ class MeiosPagPagamentoModal extends Component {
               onChange={this.onFieldChange} />
           </div>
           <div className="col-2 pl-1 pr-1">
-            <TextBox
+            <TextBoxNumeric
+              valueType="integer"
+              align="left"
               label="Numero"
               name={"cheques#" + ix + "#numero"}
               value={cheque.numero}

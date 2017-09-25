@@ -6,4 +6,5 @@ exports.Toggle = require("./Toggle").default
 exports.Flag = require("./Flag").default
 exports.Check = require("./Check").default
 exports.CheckHr = require("./CheckHr").default
-exports.Notas = require("./Notas").default 
+exports.Notas = require("./Notas").default
+exports.ButtonGetPdf = require("./ButtonGetPdf").default 

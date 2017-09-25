@@ -29,6 +29,20 @@ class TextBoxNumeric extends Component {
   handleChange(e) {
     let that = this;
     let value = e.target.value;
+    let oldValue = this.state.value;
+
+    if (this.props.valueType === "integer") {
+      if (sappy.getNum(value) < -2147483647) {
+        value = oldValue
+        sappy.showToastr({ color: "warning", msg: "Numero menor que o permitido" })
+      }
+      if (sappy.getNum(value) > 2147483647) {
+        value = oldValue
+        sappy.showToastr({ color: "warning", msg: "Numero maior que o permitido" })
+      }
+    }
+
+
     this.setState({ value }, () => {
       if (that.props.realTimeChange) {
         let changeInfo = {
@@ -50,7 +64,7 @@ class TextBoxNumeric extends Component {
     if (valueType === "price") formatedValue = sappy.format.price(rawValue)
     if (valueType === "amount") formatedValue = sappy.format.amount(rawValue)
     if (valueType === "percent") formatedValue = sappy.format.percent(rawValue)
-    if (valueType === "integer") formatedValue = sappy.format.integer(rawValue)
+    if (valueType === "integer") formatedValue = Math.floor(sappy.getNum(rawValue))//getnum para não ter separdores de milhares
 
     return formatedValue;
   }
@@ -59,6 +73,7 @@ class TextBoxNumeric extends Component {
     let formatedValue = this.getFormatedValue(this.props.valueType, e.target.value)
     if (sappy.isDiferent(formatedValue, this.state.receivedValue)) {
       let rawValue = sappy.unformat.number(formatedValue)
+
       let changeInfo = { fieldName: this.props.name, rawValue, formatedValue };
       this.props.onChange(changeInfo);
     }
@@ -103,7 +118,7 @@ class TextBoxNumeric extends Component {
             type="text"
             ref={this.props.name}
             id={this.props.name}
-            className="text-right"
+            className={this.props.align !== "left" ? "text-right" : ""}
             value={this.state.value}
             placeholder={this.props.placeholder}
             disabled={this.props.disabled}

@@ -89,7 +89,7 @@ class DepositoModal extends Component {
     if (sappy.getNum(state.ValorNumerario) === 0) alerts.ValorNumerario = "danger|Indique o valor"
     if (!state.AllocationAccount) alerts.AllocationAccount = "danger|Indique a conta caixa de origem"
     if (!state.DepositAccount) alerts.DepositAccount = "danger|Indique a conta bancária"
-    if (!state.BankReference) alerts.BankReference = "warning|Deve preencher a conta bancária"
+    // if (!state.BankReference) alerts.BankReference = "warning|Deve preencher a conta bancária"
 
     return { alerts, toastrMsg }
   }
@@ -128,7 +128,7 @@ class DepositoModal extends Component {
         // Bank: "MONTEPIO",
         BankAccountNum: "",
         BankBranch: "",
-        BankReference: this.state.BankReference,
+        // BankReference: this.state.BankReference,
         TotalLC: sappy.getNum(this.state.ValorNumerario),
         AllocationAccount: this.state.AllocationAccount,
         DepositAccountType: "datBankAccount",
@@ -229,7 +229,7 @@ class DepositoModal extends Component {
                   onChange={this.onFieldChange}
                 />
               </div>
-
+              {/* 
               <div className="col-4">
                 <TextBox
                   label="Referência bancária:"
@@ -238,7 +238,7 @@ class DepositoModal extends Component {
                   value={this.state.BankReference}
                   onChange={this.onFieldChange}
                 />
-              </div>
+              </div> */}
             </div>
           </div>
 

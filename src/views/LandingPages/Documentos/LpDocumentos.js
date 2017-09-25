@@ -10,18 +10,21 @@ class LpDocumentos extends Component {
     this.handleRowClick = this.handleRowClick.bind(this);
 
     this.state = {
-      showActions: false
+      showActions: false,
+      defaultLayoutCode: ""
     }
   }
   componentDidMount() {
-    axios
-      .get(`/api/docs/${this.props.docTableName}/report`)
-      .then(function (result) {
-        sappy.defaultLayoutCode = result.data.LayoutCode;
-      })
-      .catch(function (error) {
-        if (!error.__CANCEL__) sappy.showError(error, "Api error")
-      });
+    let that = this
+    if (this.props.setDefaultLayoutCode)
+      axios
+        .get(`/api/docs/${this.props.docTableName}/report`)
+        .then(function (result) {
+          that.props.setDefaultLayoutCode(result.data.LayoutCode)
+        })
+        .catch(function (error) {
+          if (!error.__CANCEL__) sappy.showError(error, "Api error")
+        });
   }
 
   handleRowClick({ row, index }) {

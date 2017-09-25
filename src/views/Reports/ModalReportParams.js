@@ -102,7 +102,7 @@ class ModalReportParams extends Component {
           let isRange = par.DiscreteOrRangeKind === sappy.CrystalReports.DiscreteOrRangeKind.RangeValue;
           let isDiscreteAndRange = par.DiscreteOrRangeKind === sappy.CrystalReports.DiscreteOrRangeKind.DiscreteAndRangeValue;
           let value = this.state.parValues[par.Name] || {};
-
+          let label = par.PromptText || par.name;
           if (isDiscreteAndRange) {
             if (hasSelect) {
               // Ecrã de seleção de artigo com de...a e propriedades
@@ -119,7 +119,7 @@ class ModalReportParams extends Component {
                 parComponent = (
                   <ComboBox
                     key={par.Name}
-                    label={par.PromptText}
+                    label={label}
                     name={par.Name}
                     getOptionsApiRoute={"/api/reports/getParameterOptions?parName=" + encodeURIComponent(modifParName)}
                     value={value.Value}
@@ -142,7 +142,7 @@ class ModalReportParams extends Component {
             parComponent = (
               <ComboBox
                 key={par.Name}
-                label={par.PromptText}
+                label={label}
                 name={par.Name}
                 getOptionsApiRoute={"/api/reports/getParameterOptions?parName=" + encodeURIComponent(par.Name)}
                 value={value.Value}
@@ -167,11 +167,11 @@ class ModalReportParams extends Component {
               par.ParameterValueKind === sappy.CrystalReports.ParameterValueKind.DateTimeParameter
             ) {
               parComponent = (
-                <Date key={par.Name} label={par.PromptText} name={par.Name} value={value.Value} onChange={this.onFieldChange} />
+                <Date key={par.Name} label={label} name={par.Name} value={value.Value} onChange={this.onFieldChange} />
               );
             } else {
               parComponent = (
-                <TextBox key={par.Name} label={par.PromptText} name={par.Name} value={value.Value} onChange={this.onFieldChange} />
+                <TextBox key={par.Name} label={label} name={par.Name} value={value.Value} onChange={this.onFieldChange} />
               );
             }
           }

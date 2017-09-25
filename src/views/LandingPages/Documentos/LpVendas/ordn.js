@@ -1,12 +1,22 @@
 import React, { Component } from "react";
 const sappy = window.sappy;
 import LpDocumentos from "../LpDocumentos";
-import ButtonGetPdf from "../ButtonGetPdf";
+import { ButtonGetPdf } from "../../../../Inputs";
 import DocBadges from "../DocBadges";
 
 class ordn extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      defaultLayoutCode: ""
+    }
+  }
+
   render() {
+    let that = this;
+
     let docProps = {
+      setDefaultLayoutCode: code => that.setState({ defaultLayoutCode: code }),
       docTableName: "ordn",
       pageTitle: "Devoluções de Clientes",
       renderRowHeight: 50,
@@ -40,7 +50,7 @@ class ordn extends Component {
                       </div>
                     </div>
                   </div>
-                  <div className="col-1 lastcol"> <ButtonGetPdf DocEntry={row.DocEntry} ObjectID={row.ObjType} />  </div>
+                  <div className="col-1 lastcol"> <ButtonGetPdf DocEntry={row.DocEntry} ObjectID={row.ObjType} defaultLayoutCode={this.state.defaultLayoutCode} />  </div>
                 </div>
               </div>
 

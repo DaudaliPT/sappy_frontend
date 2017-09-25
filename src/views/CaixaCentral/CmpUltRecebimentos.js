@@ -83,7 +83,7 @@ class CmpUltRecebimentos extends Component {
                     onClick: e => {
                         let docEntry = selectedRow.split('_')[1];
 
-                        sappy.showWaitProgress("A canelar documento...")
+                        sappy.showWaitProgress("A cancelar documento...")
 
                         axios
                             .post(`/api/caixa/recebimentos/${docEntry}/cancel`)

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import SearchPage from "../../components/SearchPage";
 import { Badge } from "reactstrap";
+import { ButtonGetPdf } from "../../Inputs";
 import uuid from "uuid/v4";
 
 // import { Badge } from "reactstrap";
@@ -35,7 +36,7 @@ class CmpDepositos extends Component {
         let { selectedRow } = this.state;
 
         let renderRowPN = ({ row, index }) => {
-            let rowId = 'row_' + row.DocEntry
+            let rowId = 'row_' + row.DeposId
             const selected = rowId === selectedRow;
             let rowStyleClass = "";
             let r = { ...row }
@@ -56,10 +57,12 @@ class CmpDepositos extends Component {
                         <div className="row">
                             <div className="col-2 text-nowrap firstcol">       {sappy.format.datetime2(row.DOC_DATETIME)}  </div>
                             <div className="col-2 text-nowrap "> {row.DeposNum}  </div>
-                            <div className="col-6 text-nowrap "> {row.DpsBank ? (row.BanckAcct + ' - ' + row.DpsBank) : row.Memo}
+                            <div className="col-5 text-nowrap "> {row.DpsBank ? (row.BanckAcct + ' - ' + row.DpsBank) : row.Memo}
                                 {renderBadges()}
                             </div>
-                            <div className="col-2 text-nowrap lastcol">  <span className="float-right">{sappy.format.amount(row.LocTotal)}</span> </div>
+                            <div className="col-2 text-nowrap ">  <span className="float-right">{sappy.format.amount(row.LocTotal)}</span> </div>
+
+                            <div className="col-1 lastcol"> <ButtonGetPdf DocEntry={row.DeposId} ObjectID={row.ObjType} />  </div>
                         </div>
                     </div>
                 </div>
