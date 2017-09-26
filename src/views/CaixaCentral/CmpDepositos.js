@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import SearchPage from "../../components/SearchPage";
+import axios from "axios";
 import { Badge } from "reactstrap";
 import { ButtonGetPdf } from "../../Inputs";
 import uuid from "uuid/v4";
@@ -14,7 +15,21 @@ import DepositoModal from "./DepositoModal";
 class CmpDepositos extends Component {
     constructor(props) {
         super(props)
-        this.state = { selectedRow: '' }
+        this.state = {
+            selectedRow: '',
+            defaultLayoutCode: ""
+        }
+    }
+    componentDidMount() {
+        let that = this
+        axios
+            .get(`/api/caixa/depositos/dfltReport`)
+            .then(function (result) {
+                that.setState({ defaultLayoutCode: result.data.LayoutCode })
+            })
+            .catch(function (error) {
+                if (!error.__CANCEL__) sappy.showError(error, "Api error")
+            });
     }
 
     handleRowselection(e, row) {
@@ -61,8 +76,7 @@ class CmpDepositos extends Component {
                                 {renderBadges()}
                             </div>
                             <div className="col-2 text-nowrap ">  <span className="float-right">{sappy.format.amount(row.LocTotal)}</span> </div>
-
-                            <div className="col-1 lastcol"> <ButtonGetPdf DocEntry={row.DeposId} ObjectID={row.ObjType} />  </div>
+                            <div className="col-1 lastcol"> <ButtonGetPdf DocEntry={row.DeposId} ObjectID={row.ObjType} defaultLayoutCode={this.state.defaultLayoutCode} />  </div>
                         </div>
                     </div>
                 </div>
@@ -79,6 +93,7 @@ class CmpDepositos extends Component {
                 icon: "icon wb-plus",
                 onClick: e => {
                     return sappy.showModal(<DepositoModal
+                        defaultLayoutCode={this.state.defaultLayoutCode}
                         toggleModal={({ success } = {}) => {
 
                             sappy.hideModal()

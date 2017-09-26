@@ -144,13 +144,32 @@ class DepositoModal extends Component {
         .then(result => {
 
           sappy.hideWaitProgress()
+          that.props.toggleModal({ success: result.data.DepositNumber });
           sappy.showToastr({
             color: "success",
             msg: `Criou com sucesso o deposito ${result.data.DepositNumber}!`
           })
 
 
-          that.props.toggleModal({ success: result.data.DepositNumber });
+          let parValues = { "DOCKEY@": { Value: result.data.AbsEntry }, "OBJECTID@": { Value: 25 } };
+          let apiRoute = "/api/reports/print(" + this.props.defaultLayoutCode + ")";
+          let apiQuery = "?parValues=" + encodeURIComponent(JSON.stringify(parValues));
+
+          axios
+            .post(apiRoute + apiQuery)
+            .then(function (rrrr) {
+              sappy.showToastr({
+                color: "success",
+                msg: `Deposito ${result.data.DepositNumber} impresso!`
+              })
+            })
+            .catch(function (error) {
+              sappy.hideWaitProgress()
+              if (!error.__CANCEL__) sappy.showError(error, "Api error")
+            });
+
+
+
         })
         .catch(error => sappy.showError(error, "Não foi possivel adicionar o depósito"));
     }
