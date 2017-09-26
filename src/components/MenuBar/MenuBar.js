@@ -118,18 +118,18 @@ class MenuBar extends Component {
               >
                 <span className="avatar avatar-online">
                   <img src="img/avatar_male.png" alt="..." />
-                  {/*<i className="icon md-account" aria-hidden="true" />*/}
+                  {/* <i className="icon md-account" aria-hidden="true" /> */}
                   <i />
                 </span>
               </a>
               <div className="dropdown-menu" role="menu">
-                {/*<a className="dropdown-item waves-effect waves-light waves-round" href="#" role="menuitem">
-                  <i className="icon md-account" aria-hidden="true" /> Profile
+                <a className="dropdown-item waves-effect waves-light waves-round" href="#" role="menuitem">
+                  <i className="icon md-account" aria-hidden="true" /> Preferencias de {user.NAME}
                 </a>
                 <a className="dropdown-item waves-effect waves-light waves-round" href="#" role="menuitem">
-                  <i className="icon md-settings" aria-hidden="true" /> Settings
+                  <i className="icon md-settings" aria-hidden="true" /> Definições Gerais
                 </a>
-                <div className="dropdown-divider" />*/}
+                <div className="dropdown-divider" />
                 <a className="dropdown-item waves-effect waves-light waves-round" href="#" role="menuitem" onClick={this.onClickLogout}>
                   <i className="icon md-power" aria-hidden="true" /> Terminar sessão de {user.NAME}
                 </a>

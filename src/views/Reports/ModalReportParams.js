@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import axios from "axios";
 var $ = window.$;
 var sappy = window.sappy;
 import { TextBox, ComboBox, Date } from "../../Inputs";
@@ -12,9 +13,10 @@ class ModalReportParams extends Component {
     this.handleClickContinuar = this.handleClickContinuar.bind(this);
 
     this.state = {
-      saving: false,
-      numberOfBarCodes: 2,
-      parValues: {}
+      parValues: {},
+      reportParameters: [],
+      loading: true
+
     };
   }
 
@@ -22,6 +24,23 @@ class ModalReportParams extends Component {
     $("body").css("position", "fixed");
   }
 
+  componentDidMount() {
+    let that = this;
+
+    axios
+      .get("/api/reports/getParameters(" + this.props.DocCode + ")")
+      .then(function (result) {
+        let parameters = result.data;
+        if (typeof parameters === "string") parameters = JSON.parse(parameters);
+
+        if (parameters.length === 0) return that.handleClickContinuar(that)
+
+        that.setState({ loading: false, reportParameters: parameters });
+      })
+      .catch(function (error) {
+        if (!error.__CANCEL__) sappy.showError(error, "Api error")
+      });
+  }
   // Recebe os valores dos campos MY*
   onFieldChange(changeInfo) {
     // let formatedValue = changeInfo.formatedValue;
@@ -51,7 +70,7 @@ class ModalReportParams extends Component {
 
     if (window.location.port === "3000") {
       // Nota: Em desev, é preciso redirecionar o pedido. Já em produtivo a api é servida na mesma porta do pedido
-      baseUrl = "http://localhost:3005";
+      baseUrl = "http://byusserver:3005";
     }
 
     var apiRoute = "/api/reports/getPdf(" + this.props.DocCode + ")";
@@ -69,13 +88,22 @@ class ModalReportParams extends Component {
     }
   }
   render() {
-    let { reportParameters } = this.props;
+    let { reportParameters } = this.state;
 
     let renderParameters = () => {
       let parameterComponents = [];
 
       if (reportParameters.length === 0) {
-        let parComponent = <p key="nopar">Este relatório não requer parametros.</p>;
+        let parComponent = <div>
+          <div className="example-loading example-well h-150 vertical-align text-center">
+            <div className="loader vertical-align-middle loader-tadpole" />
+          </div>
+          <div className="vertical-align text-center">
+            <div className="vertical-align-middle">
+              <p>A analisar relatório...</p>
+            </div>
+          </div>
+        </div>;
         parameterComponents.push(parComponent);
       }
 
@@ -102,7 +130,8 @@ class ModalReportParams extends Component {
           let isRange = par.DiscreteOrRangeKind === sappy.CrystalReports.DiscreteOrRangeKind.RangeValue;
           let isDiscreteAndRange = par.DiscreteOrRangeKind === sappy.CrystalReports.DiscreteOrRangeKind.DiscreteAndRangeValue;
           let value = this.state.parValues[par.Name] || {};
-          let label = par.PromptText || par.name;
+          let label = par.PromptText || par.Name;
+
           if (isDiscreteAndRange) {
             if (hasSelect) {
               // Ecrã de seleção de artigo com de...a e propriedades
@@ -184,7 +213,7 @@ class ModalReportParams extends Component {
     };
 
     return (
-      <Modal isOpen={true} className={"modal-md"}>
+      <Modal isOpen={true} className={"modal-m modal-success"}>
         <ModalHeader toggle={this.props.toggleModal}>{this.props.DocName} </ModalHeader>
         <ModalBody>
 
@@ -192,7 +221,7 @@ class ModalReportParams extends Component {
 
         </ModalBody>
         <ModalFooter>
-          <Button color="success" disabled={this.state.saving} onClick={this.handleClickContinuar}>
+          <Button color="success" onClick={this.handleClickContinuar} disabled={this.state.loading}>
             Continuar
           </Button>
         </ModalFooter>

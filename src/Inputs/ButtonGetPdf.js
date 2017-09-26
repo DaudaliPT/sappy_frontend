@@ -8,6 +8,7 @@ class ButtonGetPdf extends Component {
     e.stopPropagation();
 
     if (!defaultLayoutCode) {
+      debugger
       return sappy.showError({ message: "Não foi possível obter layout predefinido para impressão." });
     }
 
@@ -23,13 +24,12 @@ class ButtonGetPdf extends Component {
 
   render() {
     return (
-      <button
-        type="button"
-        className="btn btn-round btn-outline btn-default sappy-execute"
+      <span
+        className="sappy-execute"
         onClick={this.handleOnClick_GetPdf.bind(this)}
       >
         <i className="icon fa-file-pdf-o" />
-      </button>
+      </span>
     );
   }
 }

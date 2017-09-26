@@ -50,8 +50,8 @@ class odln extends Component {
                       </div>
                     </div>
                   </div>
-                  <div className="col-1 lastcol"> <ButtonGetPdf DocEntry={row.DocEntry} ObjectID={row.ObjType} defaultLayoutCode={this.state.defaultLayoutCode} />  </div>
-                  </div>
+                  <div className="col-1 lastcol"> <ButtonGetPdf DocEntry={row.DocEntry} ObjectID={row.ObjType} defaultLayoutCode={that.state.defaultLayoutCode} />  </div>
+                </div>
               </div>
 
               {/*normal displays*/}
@@ -67,7 +67,7 @@ class odln extends Component {
                       <div className="col-2 text-nowrap lastcol"> <span className="float-right"> {row.FORMATED_DOCTOTAL} </span> </div>
                     </div>
                   </div>
-                  <div className="col-1 lastcol"> <ButtonGetPdf DocEntry={row.DocEntry} ObjectID={row.ObjType} />  </div>
+                  <div className="col-1 lastcol"> <ButtonGetPdf DocEntry={row.DocEntry} ObjectID={row.ObjType} defaultLayoutCode={that.state.defaultLayoutCode} />  </div>
                 </div>
               </div>
 

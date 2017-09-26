@@ -4,6 +4,7 @@ var $ = window.$;
 import CmpPorReceber from "./CmpPorReceber";
 import CmpUltRecebimentos from "./CmpUltRecebimentos";
 import CmpDepositos from "./CmpDepositos";
+import CmpDespesas from "./CmpDespesas";
 // import CmpUnderConstruction from "./CmpUnderConstruction";
 
 
@@ -77,6 +78,7 @@ class CaixaCentral extends Component {
                     <a className="list-group-item list-group-item-action active" data-toggle="tab" role="tab" id="Por Receber" onClick={this.handleOnTabClick}>Por Receber</a>
                     <a className="list-group-item list-group-item-action" data-toggle="tab" role="tab" id="Ultimos recebimentos" onClick={this.handleOnTabClick}>Ult. Recebimentos</a>
                     <a className="list-group-item" data-toggle="tab" role="tab" id="Depósitos" onClick={this.handleOnTabClick}>Depósitos</a>
+                    <a className="list-group-item" data-toggle="tab" role="tab" id="Despesas" onClick={this.handleOnTabClick}>Despesas</a>
                   </div>
                 </div>
               </div>
@@ -89,6 +91,7 @@ class CaixaCentral extends Component {
                   {this.state.activeTab === "Por Receber" && < CmpPorReceber height={this.state.height} />}
                   {this.state.activeTab === "Ultimos recebimentos" && < CmpUltRecebimentos height={this.state.height} />}
                   {this.state.activeTab === "Depósitos" && <CmpDepositos height={this.state.height} />}
+                  {this.state.activeTab === "Despesas" && <CmpDespesas height={this.state.height} />}
                 </div>
               </div>
               {/* <!-- End Panel --> */}

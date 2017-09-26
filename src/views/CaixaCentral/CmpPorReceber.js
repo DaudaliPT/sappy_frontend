@@ -8,7 +8,7 @@ import SearchPage2 from "../../components/SearchPage2";
 const sappy = window.sappy;
 const $ = window.$;
 import CmpFooter from "./CmpFooter";
-import MeiosPagPagamentoModal from "./MeiosPagPagamentoModal";
+import ModalMeiosPagPagamento from "./ModalMeiosPagPagamento";
 
 class CmpPorReceber extends Component {
     constructor(props) {
@@ -318,7 +318,7 @@ class CmpPorReceber extends Component {
                     icon: "icon fa-check",
                     visible: totalOfSelectedDocs !== 0,
                     onClick: e => {
-                        return sappy.showModal(<MeiosPagPagamentoModal
+                        return sappy.showModal(<ModalMeiosPagPagamento
                             toggleModal={({ success } = {}) => {
                                 if (success) {
                                     //force refresh

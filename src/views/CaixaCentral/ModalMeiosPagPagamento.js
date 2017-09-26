@@ -6,7 +6,7 @@ var sappy = window.sappy;
 
 import { TextBox, TextBoxNumeric, Date, ComboBox, Notas } from "../../Inputs";
 
-class MeiosPagPagamentoModal extends Component {
+class ModalMeiosPagPagamento extends Component {
   constructor(props) {
     super(props);
 
@@ -715,4 +715,4 @@ class MeiosPagPagamentoModal extends Component {
   }
 }
 
-export default MeiosPagPagamentoModal;
+export default ModalMeiosPagPagamento;

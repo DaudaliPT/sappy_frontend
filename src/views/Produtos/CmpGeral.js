@@ -615,10 +615,10 @@ class CmpGeral extends Component {
 
     return (
       <div>
-
-        {renderLoading()}
-        {renderContent()}
-
+        <div className="panel">
+          {renderLoading()}
+          {renderContent()}
+        </div>
         <div className="sappy-action-bar animation-slide-left">
 
           {!this.state.ReadOnly &&

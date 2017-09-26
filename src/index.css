@@ -221,7 +221,7 @@ body.site-navbar-small {
   
   font-family: "Web Icons"!important;
   content: "" !important;   
-  line-height: 25px!important; /* depois de colocar o drag das row, o checkbox ficava para baixo*/
+  line-height: 20px!important; /* depois de colocar o drag das row, o checkbox ficava para baixo*/
 } 
 
 .react-grid-checkbox:disabled:checked+.react-grid-checkbox-label:before {
@@ -633,10 +633,11 @@ input, optgroup,select,textarea {
     padding-bottom: 0px !important;
 }
 .modal-body .panel-body { 
-    padding: 0px !important;  
+    /* padding: 0px !important;   */
 } 
 .modal-body {
-    padding-top: 5px!important; 
+    /* padding-top: 5px!important;  */
+    padding-bottom: 5px!important; 
 } 
 
   /* SETA ABRIR POPUP */

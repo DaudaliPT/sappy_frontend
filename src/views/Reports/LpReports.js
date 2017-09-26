@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import axios from "axios";
 const $ = window.$;
 const sappy = window.sappy;
 
@@ -34,57 +33,13 @@ class LpReports extends Component {
     let DocCode = id.split("|")[1];
     let DocName = id.split("|")[2];
 
-
-    // sappy.showProgress
-
-    sappy.showWaitProgress("A processar, aguarde por favor...");
-
-    if (this.cancelPreviousAxiosRequest) this.cancelPreviousAxiosRequest();
-    var CancelToken = axios.CancelToken;
-    this.serverRequest = axios
-      .get("/api/reports/getParameters(" + DocCode + ")", {
-        cancelToken: new CancelToken(function executor(c) {
-          // An executor function receives a cancel function as a parameter
-          that.cancelPreviousAxiosRequest = c;
-        })
-      })
-      .then(function (result) {
-        sappy.hideWaitProgress();
-
-        let reportParameters = result.data;
-        if (typeof reportParameters === "string") {
-          reportParameters = JSON.parse(reportParameters);
-        }
-
-
-        if (reportParameters.length === 0) {
-          var baseUrl = "";
-
-          if (window.location.port === "3000") {
-            //   Nota: Em desenv, é preciso redirecionar o pedido.Já em produtivo a api é servida na mesma porta do pedido
-            baseUrl = "http://localhost:3005";
-          }
-
-          var apiRoute = "/api/reports/getPdf(" + DocCode + ")";
-          var apiQuery = "?parValues=" + encodeURIComponent(JSON.stringify(reportParameters));
-          // Executar o mapa
-
-          window.open(baseUrl + apiRoute + apiQuery, "_blank");
-
-        } else {
-          that.setState({
-            currentModal: <ModalReportParams
-              DocCode={DocCode}
-              DocName={DocName}
-              reportParameters={reportParameters}
-              toggleModal={that.toggleModal}
-            />
-          });
-        }
-      })
-      .catch(function (error) {
-        if (!error.__CANCEL__) sappy.showError(error, "Api error")
-      });
+    return that.setState({
+      currentModal: <ModalReportParams
+        DocCode={DocCode}
+        DocName={DocName}
+        toggleModal={that.toggleModal}
+      />
+    });
   }
 
   render() {

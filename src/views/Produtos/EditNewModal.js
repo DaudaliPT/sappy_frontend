@@ -660,8 +660,10 @@ class ModalCreateArtigo extends Component {
       <Modal isOpen={true} className={"modal-lg modal-success"}>
         <ModalHeader toggle={this.props.toggleModal}>Abertura de novo artigo</ModalHeader>
         <ModalBody className="scrollable">
-          {renderLoading()}
-          {renderContent()}
+          <div className="panel">
+            {renderLoading()}
+            {renderContent()}
+          </div>
         </ModalBody>
         <ModalFooter>
           {(this.state.changeItemCode && this.state.changeItemCode.indexOf('DRAFT') === 0)

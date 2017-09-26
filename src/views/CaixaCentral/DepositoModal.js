@@ -205,50 +205,44 @@ class DepositoModal extends Component {
         </ModalHeader>
         <ModalBody >
 
-          <div className="containear">
+          <div className="panel">
+            <div className="panel-body">
+              <div className="row">
+                <div className="col-8">
+                  <ComboBox
+                    name="AllocationAccount"
+                    label="Origem"
+                    value={this.state.AllocationAccount}
+                    state={alerts.AllocationAccount}
+                    getOptionsApiRoute="/api/cbo/oact/cnt11"
+                    onChange={this.onFieldChange}
+                  />
+                </div>
 
-            <div className="row">
-              <div className="col   px-0">
-                <p></p>
+                <div className="col-4">
+                  <TextBoxNumeric
+                    valueType="amount"
+                    label="Valor em numerário"
+                    name="ValorNumerario"
+                    value={this.state.ValorNumerario}
+                    state={alerts.ValorNumerario}
+                    onChange={this.onFieldChange}
+                    realTimeChange={true}
+                  />
+                </div>
               </div>
-            </div>
-
-            <div className="row">
-              <div className="col-8">
-                <ComboBox
-                  name="AllocationAccount"
-                  label="Origem"
-                  value={this.state.AllocationAccount}
-                  state={alerts.AllocationAccount}
-                  getOptionsApiRoute="/api/cbo/oact/cnt11"
-                  onChange={this.onFieldChange}
-                />
-              </div>
-
-              <div className="col-4">
-                <TextBoxNumeric
-                  valueType="amount"
-                  label="Valor em numerário"
-                  name="ValorNumerario"
-                  value={this.state.ValorNumerario}
-                  state={alerts.ValorNumerario}
-                  onChange={this.onFieldChange}
-                  realTimeChange={true}
-                />
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-8">
-                <ComboBox
-                  name="DepositAccount"
-                  label="Depositar em"
-                  value={this.state.DepositAccount}
-                  state={alerts.DepositAccount}
-                  getOptionsApiRoute="/api/cbo/oact/cnt12"
-                  onChange={this.onFieldChange}
-                />
-              </div>
-              {/* 
+              <div className="row">
+                <div className="col-8">
+                  <ComboBox
+                    name="DepositAccount"
+                    label="Depositar em"
+                    value={this.state.DepositAccount}
+                    state={alerts.DepositAccount}
+                    getOptionsApiRoute="/api/cbo/oact/cnt12"
+                    onChange={this.onFieldChange}
+                  />
+                </div>
+                {/* 
               <div className="col-4">
                 <TextBox
                   label="Referência bancária:"
@@ -258,16 +252,14 @@ class DepositoModal extends Component {
                   onChange={this.onFieldChange}
                 />
               </div> */}
+              </div>
             </div>
           </div>
 
-          <hr />
           <div className="sappy-action-bar animation-slide-left">
             <Button color={"success"} onClick={this.onCreateDeposit}>
               <i className="icon wb-check" />Confirmar
             </Button>
-
-
           </div>
         </ModalBody>
       </Modal >
