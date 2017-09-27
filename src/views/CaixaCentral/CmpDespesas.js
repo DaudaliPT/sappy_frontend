@@ -61,7 +61,7 @@ class CmpDespesas extends Component {
 
     render() {
         let that = this
-        let { selectedRow } = this.state;
+        let { selectedRow, showActions } = this.state;
 
         let renderRowPN = ({ row, index }) => {
             let rowId = 'row_' + row.DocEntry
@@ -69,6 +69,7 @@ class CmpDespesas extends Component {
             let rowStyleClass = "";
             let r = { ...row }
             if (selected) rowStyleClass += " sappy-selected-row";
+            if (row.ObjType === "46") rowStyleClass += " vlist-row-danger";
 
             const renderBadges = () => {
                 const badges = row.ITEM_TAGS.split("|");
@@ -99,11 +100,14 @@ class CmpDespesas extends Component {
 
         let getfixedActions = () => {
             let fixedActions = [];
-
             fixedActions.push({
-                name: "addnew",
-                color: "success",
-                icon: "icon wb-plus",
+                name: "main", color: "primary",
+                icon: showActions ? "icon wb-close animation-fade" : "icon wb-plus",
+                onClick: e => { that.setState({ showActions: !showActions }) }
+            })
+            if (showActions) fixedActions.push({
+                name: "Novo adiantamento", color: "success",
+                icon: "icon fa-money",
                 onClick: e => {
                     return sappy.showModal(<ModalAdiantamento
                         toggleModal={({ success } = {}) => {
@@ -113,7 +117,19 @@ class CmpDespesas extends Component {
                         }}
                     />)
                 }
-            })
+            }, {
+                    name: "Nova despesa", color: "success",
+                    icon: "icon fa-file-text-o",
+                    onClick: e => {
+                        return sappy.showModal(<ModalAdiantamento
+                            toggleModal={({ success } = {}) => {
+
+                                sappy.hideModal()
+                                that.pnComponent.findAndGetFirstRows()
+                            }}
+                        />)
+                    }
+                })
             return fixedActions;
         };
 

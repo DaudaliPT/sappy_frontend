@@ -192,6 +192,7 @@ body.site-navbar-small {
 
 .react-grid-Main { 
     outline: none !important;
+    color: rgb(50,50,50)!important;
 }
 .react-grid-Grid {
     border: none !important;
@@ -273,24 +274,26 @@ body.site-navbar-small {
 } 
 
 .byusVirtualRowContainer>.sappy-selected-row:hover  {
-  background-color: #dbecfa!important; 
-  /* background-color: rgba( 98, 168, 234,0.7)  !important; */
+  /* background-color: #dbecfa!important;  */
+  background-color: rgba( 98, 168, 234,0.4)  !important;
 } 
 
 .byusVirtualRowContainer>.sappy-selected-row{ 
     /* background-color: rgba(98,168,234,0.3)   ; */
-    background-color: #dbecfa ;
-    color: rgb( 0, 0, 0) !important;
+    /* background-color: #dbecfa ; */
+    background-color: rgba( 98, 168, 234,0.3)  !important;
+    /* color: rgb( 0, 0, 0) !important; */
     font-weight: 400!important;
   } 
   .byusVirtualRowContainer>.sappy-selected-row .secondrow{  
-    /* color: rgb( 255, 255, 255) !important; */
-    color: rgb( 0, 0, 0) !important;
-  /* font-weight: normal!important; */
+    color: rgb( 50, 50, 50) !important;
+}
+.byusVirtualRowContainer{  
+  color: rgb( 50, 50, 50) !important;
 }
 
 .vlist-row-danger{    
-    color: rgb(249, 104, 104) ; 
+    color: rgb(255, 0, 0) ; 
     background-color:rgba(249, 104, 104,0.1); 
 }
 
