@@ -42,6 +42,10 @@ class Settings extends Component {
       .patch(`/api/settings`, changeInfo)
       .then(result => {
         that.setState({ settings: result.data })
+
+        // update this user loaded session info. (other users must logoff and login again)
+        sappy.sessionInfo.company.settings = result.data;
+
       })
       .catch(function (error) {
         if (!error.__CANCEL__) sappy.showError(error, "Api error")

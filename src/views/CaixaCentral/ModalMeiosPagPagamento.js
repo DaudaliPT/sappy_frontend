@@ -305,7 +305,7 @@ class ModalMeiosPagPagamento extends Component {
       let data = {
         DocType: "rCustomer",
         CardCode: this.props.selectedPN,
-        CashAccount: "111",
+        CashAccount: sappy.getSetting("FIN.CC.CAIXA_PRINCIPAL").rawValue,
         CashSum: sappy.getNum(this.state.ValorNumerario) - sappy.getNum(this.state.troco),
         Remarks: this.state.Observacoes,
         PaymentInvoices: [],
@@ -325,7 +325,7 @@ class ModalMeiosPagPagamento extends Component {
 
 
       if (sappy.getNum(this.state.ValorMultibanco)) {
-        data.TransferAccount = "118"
+        data.TransferAccount = sappy.getSetting("FIN.CC.MULTIBANCO").rawValue
         data.TransferSum = sappy.getNum(this.state.ValorMultibanco)
         data.TransferReference = 'MB'
       };
@@ -337,7 +337,7 @@ class ModalMeiosPagPagamento extends Component {
       }
 
       data.PaymentChecks = [];
-      data.CheckAccount = "119";
+      data.CheckAccount = sappy.getSetting("FIN.CC.CHEQUES").rawValue;
 
       this.state.cheques.forEach(cheque => {
         if (sappy.getNum(cheque.valor) > 0) {

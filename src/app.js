@@ -11,8 +11,7 @@ import Login from "./views/Auth/Login/";
 import ForgotPassword from "./views/Auth/ForgotPassword/";
 
 var sappy = window.sappy;
-var v = Views
-debugger
+sappy.Views = Views // to allow debug
 sappy.app = {
   menus: [
     { name: "home", text: "", icon: "icon fa-home", component: Inicio },

@@ -279,7 +279,7 @@ class ModalAdiantamento extends Component {
       let data = {
         DocType: "rAccount",
         CardName: this.state.CardName,
-        CashAccount: "111",
+        CashAccount: sappy.getSetting("FIN.CC.CAIXA_PRINCIPAL").rawValue,
         CashSum: sappy.getNum(this.state.totalPagar),
         Remarks: this.state.Observacoes,
         CounterReference: this.state.CounterRef,

@@ -150,10 +150,10 @@ class CmpPorReceber extends Component {
 
             if (meioPag === "Numerario") {
                 data.CashSum = totalOfSelectedDocs;
-                data.CashAccount = "111";
+                data.CashAccount = sappy.getSetting("FIN.CC.CAIXA_PRINCIPAL").rawValue;
             } else if (meioPag === "Multibanco") {
                 data.TransferSum = totalOfSelectedDocs
-                data.TransferAccount = "118"
+                data.TransferAccount = sappy.getSetting("FIN.CC.MULTIBANCO").rawValue
                 data.TransferReference = 'MB'
             } else {
                 return sappy.showError({ message: meioPag + " não reconhecido!" })

@@ -229,6 +229,21 @@ import moment from 'moment';
     }
   }
 
+  sappy.getSetting = settingId => {
+    let tab = settingId.split(".")[0];
+    let title = settingId.split(".")[1];
+    let name = settingId.split(".")[2];
+    let settings = sappy.sessionInfo.company.settings;
+
+    let setting
+    try {
+      setting = settings[tab].settings[title].settings[name]
+    } catch (error) {
+      console.error("Setting not found??", error)
+    }
+
+    return setting || {}
+  }
   sappy.getNum = value => {
     let ret = 0;
     if (typeof value === "number") return value;
