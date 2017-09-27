@@ -123,10 +123,10 @@ class MenuBar extends Component {
                 </span>
               </a>
               <div className="dropdown-menu" role="menu">
-                <a className="dropdown-item waves-effect waves-light waves-round" href="#" role="menuitem">
+                {/* <a className="dropdown-item waves-effect waves-light waves-round" href="#/usersettings" role="menuitem">
                   <i className="icon md-account" aria-hidden="true" /> Preferencias de {user.NAME}
-                </a>
-                <a className="dropdown-item waves-effect waves-light waves-round" href="#" role="menuitem">
+                </a> */}
+                <a className="dropdown-item waves-effect waves-light waves-round" href="#/settings" role="menuitem">
                   <i className="icon md-settings" aria-hidden="true" /> Definições Gerais
                 </a>
                 <div className="dropdown-divider" />

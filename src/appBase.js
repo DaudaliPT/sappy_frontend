@@ -51,16 +51,6 @@ class appBase extends Component {
     }
   }
 
-  requireAuth(nextState, replace, callback) {
-    let sessionInfo = sappy.sessionInfo || {}
-    var user = sessionInfo.user || {};
-    if (user.NAME) {
-      callback();
-    } else {
-      hashHistory.push("/login");
-    }
-  }
-
 
   GetLinkUrl(objType, docEntry) {
     if (!objType) return ""

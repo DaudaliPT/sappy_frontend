@@ -5,7 +5,7 @@ let Views = {
   LandingPages: require("./LandingPages").default,
   Precos: require("./Precos").default,
   Produtos: require("./Produtos").default,
-  Reports: require("./Reports").default
-
+  Reports: require("./Reports").default,
+  Settings: require("./Settings").default 
 };
 export default Views;

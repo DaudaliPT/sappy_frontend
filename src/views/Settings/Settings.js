@@ -1,32 +1,53 @@
 import React, { Component } from "react";
+import axios from 'axios';
 var $ = window.$;
+var sappy = window.sappy;
+import CmpTabContent from "./CmpTabContent";
 
-import CmpPorReceber from "./CmpPorReceber";
-import CmpUltRecebimentos from "./CmpUltRecebimentos";
-import CmpDepositos from "./CmpDepositos";
-import CmpDespesas from "./CmpDespesas";
-// import CmpUnderConstruction from "./CmpUnderConstruction";
-
-
-class CaixaCentral extends Component {
+class Settings extends Component {
   constructor(props) {
     super(props);
     this.handleOnTabClick = this.handleOnTabClick.bind(this);
+    this.saveSetting = this.saveSetting.bind(this);
     this.calcPageHeight = this.calcPageHeight.bind(this);
 
     this.state = {
       ReadOnly: true,
       loading: true,
-      activeTab: "Por Receber"
+      settings: {},
+      activeTab: "GERAL",
+      activeTabName: "Geral"
     }
   }
 
   componentDidMount() {
+    let that = this
     window.addEventListener("resize", this.calcPageHeight);
+
+    axios
+      .get(`/api/settings`)
+      .then(result => {
+        that.setState({ settings: result.data })
+      })
+      .catch(function (error) {
+        if (!error.__CANCEL__) sappy.showError(error, "Api error")
+      });
 
     this.calcPageHeight();
   }
 
+  saveSetting(changeInfo) {
+    let that = this
+    axios
+      .patch(`/api/settings`, changeInfo)
+      .then(result => {
+        that.setState({ settings: result.data })
+      })
+      .catch(function (error) {
+        if (!error.__CANCEL__) sappy.showError(error, "Api error")
+      });
+
+  }
   componentWillUnmount() {
     if (this.serverRequest && this.serverRequest.abort) this.serverRequest.abort();
     window.removeEventListener("resize", this.calcPageHeight);
@@ -37,7 +58,7 @@ class CaixaCentral extends Component {
 
     let $scrollAbleparent = $("body");
     if ($scrollAbleparent && $el && $el.position) {
-      let minH = $scrollAbleparent.height() - $el.position().top - 130;
+      let minH = $scrollAbleparent.height() - $el.position().top - 80;
       $el.css("height", minH.toString() + "px");
 
       this.setState({ height: minH })
@@ -47,17 +68,41 @@ class CaixaCentral extends Component {
   handleOnTabClick(e) {
     e.preventDefault();
     let tab = e.target.id;
-    this.setState({ activeTab: tab });
+    this.setState({
+      activeTab: tab,
+      activeTabName: this.state.settings[tab].name
+    });
   }
 
   render() {
+    let settings = this.state.settings
+    let activeTab = this.state.activeTab
+    let activeTabName = this.state.activeTabName
+    let tabs = Object.keys(settings);
+    let activeTabSettings = (settings[activeTab] || {}).settings || {}
+
+    let renderTabs = () => {
+      return tabs.map(tabId => {
+        let tab = settings[tabId]
+        return <a key={tabId}
+          className={"list-group-item list-group-item-action" + (activeTab === tabId ? " active" : "")}
+          data-toggle="tab"
+          role="tab"
+          id={tabId}
+          onClick={this.handleOnTabClick}>{tab.name}</a>
+      })
+    }
+
     return (
       <div className="page">
         <div className="page-header container-fluid">
           <div className="row">
             <div className="col-md-9    px-md-15 px-0">
               <p className="page-title">
-                Caixa Central - {this.state.activeTab}
+                {this.props.userName
+                  ? "Definições de " + this.props.userName
+                  : "Definições Gerais"}
+                {" - " + activeTabName}
               </p>
             </div>
             <div className="col-md-3    px-md-15 px-0">
@@ -75,10 +120,7 @@ class CaixaCentral extends Component {
               <div className="panel">
                 <div className="panel-body ">
                   <div className="list-group faq-list" role="tablist">
-                    <a className="list-group-item list-group-item-action active" data-toggle="tab" role="tab" id="Por Receber" onClick={this.handleOnTabClick}>Por Receber</a>
-                    <a className="list-group-item list-group-item-action" data-toggle="tab" role="tab" id="Ultimos recebimentos" onClick={this.handleOnTabClick}>Ult. Recebimentos</a>
-                    <a className="list-group-item list-group-item-action" data-toggle="tab" role="tab" id="Depósitos" onClick={this.handleOnTabClick}>Depósitos</a>
-                    <a className="list-group-item list-group-item-action" data-toggle="tab" role="tab" id="Despesas" onClick={this.handleOnTabClick}>Despesas</a>
+                    {renderTabs()}
                   </div>
                 </div>
               </div>
@@ -88,10 +130,7 @@ class CaixaCentral extends Component {
               {/* <!-- Panel --> */}
               <div className="panel form-panel">
                 <div className="panel-body main-body">
-                  {this.state.activeTab === "Por Receber" && < CmpPorReceber height={this.state.height} />}
-                  {this.state.activeTab === "Ultimos recebimentos" && < CmpUltRecebimentos height={this.state.height} />}
-                  {this.state.activeTab === "Depósitos" && <CmpDepositos height={this.state.height} />}
-                  {this.state.activeTab === "Despesas" && <CmpDespesas height={this.state.height} />}
+                  < CmpTabContent height={this.state.height} settingsTab={activeTab} settings={activeTabSettings} saveSetting={this.saveSetting} />
                 </div>
               </div>
               {/* <!-- End Panel --> */}
@@ -102,4 +141,4 @@ class CaixaCentral extends Component {
   }
 }
 
-export default CaixaCentral;
+export default Settings;

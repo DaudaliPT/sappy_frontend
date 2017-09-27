@@ -278,6 +278,42 @@ body.site-navbar-small {
   background-color: rgba( 98, 168, 234,0.4)  !important;
 } 
 
+
+.setting-title{
+  padding-top: 20px;
+}
+.setting-title>h4{ 
+  border-bottom: 1px solid #e4eaec;
+  color: rgb(88, 158, 224);
+}
+
+.setting {
+  position: relative;
+  padding-left:15px 
+}
+.setting-name{ 
+  width: 50%;
+  /* color: rgb(170,170,170)!important; */
+  padding-top: 10px;
+}
+.setting-comments{  
+  position: absolute;
+  font-size: 0.87rem;
+  padding-top: 45px;
+  padding-left: 30px;
+  
+  top:0px;
+  width: 50%;
+  right: 0px  
+}
+.setting-input {
+  width: 50%;
+  padding-top: 5px;
+}
+.setting-input .form-group {
+  margin-top: 0rem!important; 
+}
+
 .byusVirtualRowContainer>.sappy-selected-row{ 
     /* background-color: rgba(98,168,234,0.3)   ; */
     /* background-color: #dbecfa ; */
