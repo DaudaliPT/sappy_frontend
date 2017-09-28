@@ -8,7 +8,7 @@ class ButtonGetPdf extends Component {
     e.stopPropagation();
 
     if (!defaultLayoutCode) {
-      debugger
+      // debugger
       return sappy.showError({ message: "Não foi possível obter layout predefinido para impressão." });
     }
 

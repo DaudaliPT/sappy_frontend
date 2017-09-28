@@ -258,6 +258,7 @@ import moment from 'moment';
     else
       ret = parseFloat(value);
 
+    if (isNaN(ret)) return 0;
     if (typeof ret === "number") return ret;
     return 0
   }

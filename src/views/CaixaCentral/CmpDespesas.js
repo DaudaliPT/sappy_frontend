@@ -31,7 +31,7 @@ class CmpDespesas extends Component {
                 axios.get(`/api/caixa/despesas/dfltReport`)
             ])
             .then(axios.spread(function (r1, r2) {
-                debugger
+                // debugger
                 that.setState({
                     defaultLayoutCode18: r1.data.LayoutCode,
                     defaultLayoutCode46: r2.data.LayoutCode
@@ -80,13 +80,16 @@ class CmpDespesas extends Component {
                 });
             };
 
+            let entidade = row.CardCode + ' - ' + row.CardName
+            if (row.CardCode === sappy.getSetting("FIN.CCD.FORN_ADIANT").rawValue) entidade += " (" + row.CONTACT_NAME + ")"
+
             return (
                 <div id={rowId} className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={e => this.handleRowselection(e, r)}>
                     <div className="container vertical-align-middle">
                         <div className="row">
                             <div className="col-2 text-nowrap firstcol">       {sappy.format.datetime2(row.DOC_DATETIME)}  </div>
                             <div className="col-2 text-nowrap "> {row.ObjType + " - " + row.DocNum}  </div>
-                            <div className="col-5 text-nowrap "> {(row.CardCode ? row.CardCode + ' - ' : "") + row.CardName}
+                            <div className="col-5 text-nowrap "> {entidade}
                                 {renderBadges()}
                             </div>
                             <div className="col-2 text-nowrap ">  <span className="float-right">{sappy.format.amount(row.DocTotal)}</span> </div>
