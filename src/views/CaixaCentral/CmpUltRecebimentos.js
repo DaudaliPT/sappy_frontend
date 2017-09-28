@@ -83,22 +83,35 @@ class CmpUltRecebimentos extends Component {
                     onClick: e => {
                         let docEntry = selectedRow.split('_')[1];
 
-                        sappy.showWaitProgress("A cancelar documento...")
+                        sappy.showDanger({
+                            title: "Cancelar documento?",
+                            input: "text",
+                            msg: `Indique o motivo...`,
+                            cancelText: "Cancelar",
+                            onCancel: () => { },
+                            confirmStyle: "warning",
+                            confirmText: "Cancelar Recebimento",
+                            onConfirm: (value) => {
 
-                        axios
-                            .post(`/api/caixa/recebimentos/${docEntry}/cancel`)
-                            .then(result => {
+                                sappy.showWaitProgress("A cancelar documento...")
 
-                                sappy.hideWaitProgress()
-                                sappy.showToastr({
-                                    color: "success",
-                                    msg: `Documento ${docEntry} cancelado!`
-                                })
+                                axios
+                                    .post(`/api/caixa/recebimentos/${docEntry}/cancel`, { reason: value })
+                                    .then(result => {
 
-                                that.setState({ selectedRow: "", showActions: false },
-                                    e => that.pnComponent.findAndGetFirstRows())
-                            })
-                            .catch(error => sappy.showError(error, "Não foi possivel cancelar o documento"));
+                                        sappy.hideWaitProgress()
+                                        sappy.showToastr({
+                                            color: "success",
+                                            msg: `Documento ${docEntry} cancelado!`
+                                        })
+
+                                        that.setState({ selectedRow: "", showActions: false },
+                                            e => that.pnComponent.findAndGetFirstRows())
+                                    })
+                                    .catch(error => sappy.showError(error, "Não foi possivel cancelar o documento"));
+                            }
+                        })
+
                     }
                 })
             }

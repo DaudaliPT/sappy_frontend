@@ -131,7 +131,7 @@ class ModalAdiantamento extends Component {
               <div className="col-12">
                 <ComboBox
                   name="ContactPersonCode"
-                  label="Á ordem de:"
+                  label="À ordem de:"
                   createable={true}
                   value={this.state.ContactPersonCode}
                   state={alerts.ContactPersonCode}
@@ -143,7 +143,7 @@ class ModalAdiantamento extends Component {
                 <ComboBox
                   name="CounterRef"
                   createable={true}
-                  label="Referência/Matricula"
+                  label="Referência/Matrícula"
                   value={this.state.CounterRef}
                   state={alerts.CounterRef}
                   getOptionsApiRoute="/api/caixa/despesas/histvalues/CounterRef"

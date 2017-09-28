@@ -65,7 +65,7 @@ class CmpDespesas extends Component {
         let { selectedRow, showActions } = this.state;
 
         let renderRowPN = ({ row, index }) => {
-            let rowId = 'row_' + row.DocEntry
+            let rowId = 'row_' + row.ObjType + "_" + row.DocEntry
             const selected = rowId === selectedRow;
             let rowStyleClass = "";
             let r = { ...row }
@@ -104,39 +104,90 @@ class CmpDespesas extends Component {
 
         let getfixedActions = () => {
             let fixedActions = [];
-            fixedActions.push({
-                name: "main", color: "primary",
-                icon: showActions ? "icon wb-close animation-fade" : "icon wb-plus",
-                onClick: e => { that.setState({ showActions: !showActions }) }
-            })
-            if (showActions) fixedActions.push({
-                name: "Novo adiantamento", color: "success",
-                icon: "icon fa-money",
-                onClick: e => {
-                    that.setState({ showActions: false })
-                    return sappy.showModal(<ModalAdiantamento
-                        toggleModal={({ success } = {}) => {
-
-                            sappy.hideModal()
-                            that.pnComponent.findAndGetFirstRows()
-                        }}
-                    />)
-                }
-            }, {
-                    name: "Nova despesa", color: "success",
-                    icon: "icon fa-file-text-o",
-                    onClick: e => {
-                        that.setState({ showActions: false })
-                        return sappy.showModal(<ModalDespesa
-                            toggleModal={({ success } = {}) => {
-                                sappy.hideModal()
-                                that.pnComponent.findAndGetFirstRows()
-                            }}
-                        />)
-                    }
+            if (selectedRow.indexOf("_46_") > -1) {
+                fixedActions.push({
+                    name: "main", color: "primary",
+                    icon: showActions ? "icon wb-close animation-fade" : "icon wb-more-vertical",
+                    onClick: e => { that.setState({ showActions: !showActions }) }
                 })
+
+                if (showActions)
+                    fixedActions.push({
+                        name: "Cancelar documento", color: "danger",
+                        icon: "icon fa-window-close",
+                        onClick: e => {
+                            let docEntry = selectedRow.split('_')[2];
+
+                            sappy.showDanger({
+                                title: "Cancelar documento?",
+                                input: "text",
+                                msg: `Indique o motivo...`,
+                                cancelText: "Cancelar",
+                                onCancel: () => { },
+                                confirmStyle: "warning",
+                                confirmText: "Cancelar Recebimento",
+                                onConfirm: (value) => {
+
+                                    sappy.showWaitProgress("A cancelar documento...")
+
+                                    axios
+                                        .post(`/api/caixa/despesas/adiantamentos/${docEntry}/cancel`, { reason: value })
+                                        .then(result => {
+
+                                            sappy.hideWaitProgress()
+                                            sappy.showToastr({
+                                                color: "success",
+                                                msg: `Documento ${docEntry} cancelado!`
+                                            })
+
+                                            that.setState({ selectedRow: "", showActions: false },
+                                                e => that.pnComponent.findAndGetFirstRows())
+                                        })
+                                        .catch(error => sappy.showError(error, "Não foi possivel cancelar o documento"));
+                                }
+                            })
+
+                        }
+                    })
+            } else {
+                fixedActions.push({
+                    name: "main", color: "primary",
+                    icon: showActions ? "icon wb-close animation-fade" : "icon wb-plus",
+                    onClick: e => { that.setState({ showActions: !showActions }) }
+                })
+
+                if (showActions)
+                    fixedActions.push(
+                        {
+                            name: "Novo adiantamento", color: "success",
+                            icon: "icon fa-money",
+                            onClick: e => {
+                                that.setState({ showActions: false })
+                                return sappy.showModal(<ModalAdiantamento
+                                    toggleModal={({ success } = {}) => {
+
+                                        sappy.hideModal()
+                                        that.pnComponent.findAndGetFirstRows()
+                                    }}
+                                />)
+                            }
+                        },
+                        {
+                            name: "Nova despesa", color: "success",
+                            icon: "icon fa-file-text-o",
+                            onClick: e => {
+                                that.setState({ showActions: false })
+                                return sappy.showModal(<ModalDespesa
+                                    toggleModal={({ success } = {}) => {
+                                        sappy.hideModal()
+                                        that.pnComponent.findAndGetFirstRows()
+                                    }}
+                                />)
+                            }
+                        })
+            };
             return fixedActions;
-        };
+        }
 
 
         let footerProps = {

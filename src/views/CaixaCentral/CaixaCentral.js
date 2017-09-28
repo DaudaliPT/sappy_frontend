@@ -76,7 +76,7 @@ class CaixaCentral extends Component {
                 <div className="panel-body ">
                   <div className="list-group faq-list" role="tablist">
                     <a className="list-group-item list-group-item-action active" data-toggle="tab" role="tab" id="Por Receber" onClick={this.handleOnTabClick}>Por Receber</a>
-                    <a className="list-group-item list-group-item-action" data-toggle="tab" role="tab" id="Ultimos recebimentos" onClick={this.handleOnTabClick}>Ult. Recebimentos</a>
+                    <a className="list-group-item list-group-item-action" data-toggle="tab" role="tab" id="Ultimos recebimentos" onClick={this.handleOnTabClick}>Últ. Recebimentos</a>
                     <a className="list-group-item list-group-item-action" data-toggle="tab" role="tab" id="Depósitos" onClick={this.handleOnTabClick}>Depósitos</a>
                     <a className="list-group-item list-group-item-action" data-toggle="tab" role="tab" id="Despesas" onClick={this.handleOnTabClick}>Despesas</a>
                   </div>

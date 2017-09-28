@@ -143,68 +143,74 @@ class appBase extends Component {
     swal.isVisible() && swal.closeModal();
   }
 
-  showSuccess({ title, msg, moreInfo, onConfirm, onCancel, confirmText, confirmStyle, cancelText, cancelStyle } = {}) {
+
+
+  showSuccess({ title, msg, moreInfo, input, onConfirm, onCancel, confirmText, confirmStyle, cancelText, cancelStyle } = {}) {
     swal(
       {
         title: title || "Successo",
         html: `${msg || ""}<small><br />${moreInfo || ''}</small>`,
         type: 'success',
+        input,
         showCancelButton: typeof onCancel === "function",
         confirmButtonText: confirmText || "Confirmar",
         cancelButtonText: cancelText || 'Cancelar',
         cancelButtonClass: 'btn  mr-5 btn-lg btn-' + (cancelStyle || "secondary"),
         confirmButtonClass: 'btn ml-5 btn-lg btn-' + (confirmStyle || "success")
       })
-      .then(() => onConfirm && onConfirm()
+      .then(inputValue => onConfirm && onConfirm(inputValue)
       , dismiss => onCancel && onCancel())
   }
 
-  showQuestion({ title, msg, moreInfo, onConfirm, onCancel, confirmText, confirmStyle, cancelText, cancelStyle } = {}) {
+  showQuestion({ title, msg, moreInfo, input, onConfirm, onCancel, confirmText, confirmStyle, cancelText, cancelStyle } = {}) {
     swal(
       {
         title: title || "Questão",
         html: `${msg || ""}<small><br />${moreInfo || ''}</small>`,
         type: 'question',
+        input,
         showCancelButton: typeof onCancel === "function",
         confirmButtonText: confirmText || "Confirmar",
         cancelButtonText: cancelText || 'Cancelar',
         cancelButtonClass: 'btn  mr-5 btn-lg btn-' + (cancelStyle || "secondary"),
         confirmButtonClass: 'btn ml-5 btn-lg btn-' + (confirmStyle || "success")
       })
-      .then(() => onConfirm && onConfirm()
+      .then(inputValue => onConfirm && onConfirm(inputValue)
       , dismiss => onCancel && onCancel())
   }
 
 
-  showWarning({ title, msg, moreInfo, onConfirm, onCancel, confirmText, confirmStyle, cancelText, cancelStyle } = {}) {
+  showWarning({ title, msg, moreInfo, input, onConfirm, onCancel, confirmText, confirmStyle, cancelText, cancelStyle } = {}) {
     swal(
       {
         title: title || "Aviso",
         html: `${msg || ""}<small><br />${moreInfo || ''}</small>`,
         type: 'warning',
+        input,
         showCancelButton: typeof onCancel === "function",
         confirmButtonText: confirmText || "Ok",
         cancelButtonText: cancelText || 'Cancelar',
         cancelButtonClass: 'btn  mr-5 btn-lg btn-' + (cancelStyle || "secondary"),
         confirmButtonClass: 'btn ml-5 btn-lg btn-' + (confirmStyle || "warning")
       })
-      .then(() => onConfirm && onConfirm()
+      .then(inputValue => onConfirm && onConfirm(inputValue)
       , dismiss => onCancel && onCancel())
   }
 
-  showDanger({ title, msg, moreInfo, onConfirm, onCancel, confirmText, confirmStyle, cancelText, cancelStyle } = {}) {
+  showDanger({ title, msg, moreInfo, input, onConfirm, onCancel, confirmText, confirmStyle, cancelText, cancelStyle } = {}) {
     swal(
       {
         title: title || "Muita atenção!!!",
         html: `${msg || ""}<small><br />${moreInfo || ''}</small>`,
         type: 'warning',
+        input,
         showCancelButton: typeof onCancel === "function",
         confirmButtonText: confirmText || "Confirmar",
         cancelButtonText: cancelText || 'Cancelar',
         cancelButtonClass: 'btn  mr-5 btn-lg btn-' + (cancelStyle || "secondary"),
         confirmButtonClass: 'btn ml-5 btn-lg btn-' + (confirmStyle || "danger")
       })
-      .then(() => onConfirm && onConfirm()
+      .then(inputValue => onConfirm && onConfirm(inputValue)
       , dismiss => onCancel && onCancel())
   }
 
