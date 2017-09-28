@@ -22,7 +22,8 @@ class ComboBox extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.getOptionsApiRoute !== this.props.getOptionsApiRoute) {
+    if (nextProps.getOptionsApiRoute !== this.props.getOptionsApiRoute
+      || ((nextProps.options || []).length != (this.props.options || []).length)) {
       this.loadProps(nextProps)
     }
   }
@@ -33,6 +34,15 @@ class ComboBox extends Component {
 
   loadProps(props) {
     let that = this
+    if (this.props.options) {
+      this.setState({
+        options: props.options,
+        filterOptions: createFilterOptions({ options: props.options }),
+        loadingError: "",
+        isLoading: false
+      });
+
+    }
     if (this.props.getOptionsApiRoute) {
       that.setState({
         options: [],

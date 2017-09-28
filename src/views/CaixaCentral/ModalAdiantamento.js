@@ -10,22 +10,13 @@ class ModalAdiantamento extends Component {
   constructor(props) {
     super(props);
 
-    this.handleOnTabClick = this.handleOnTabClick.bind(this);
     this.onFieldChange = this.onFieldChange.bind(this);
     this.onAddAdiantamento = this.onAddAdiantamento.bind(this);
     this.getvalidationResults = this.getvalidationResults.bind(this);
 
     this.state = {
-      activeTab: "tab1",
-      cheques: [{ data: sappy.unformat.date(".") }],
       showValidations: false
     }
-  }
-
-  handleOnTabClick(e) {
-    e.preventDefault();
-    let tab = e.target.id;
-    this.setState({ activeTab: tab });
   }
 
   // Recebe os valores dos campos MY*
@@ -39,13 +30,9 @@ class ModalAdiantamento extends Component {
 
     //Correctly save to ServiceLayer properties
     Object.assign(newStateValues, { [fieldName]: (fieldName.indexOf("Valor") > -1 ? formatedValue : val) })
-
-    // if (this.state[fieldName + "_VALIDATEMSG"]) newStateValues[fieldName + "_VALIDATEMSG"] = ""
-
     let totalPagar = sappy.getNum(newStateValues.totalPagar ? newStateValues.totalPagar : this.state.totalPagar)
 
     if (changeInfo.realtime) newStateValues[fieldName] = this.state[fieldName]
-
     this.setState(newStateValues);
   }
 
@@ -83,7 +70,6 @@ class ModalAdiantamento extends Component {
 
     //Validar se há avisos ativos
     let hasWarning = Object.keys(alerts).find(f => alerts[f].startsWith("warning"))
-    debugger
 
     let invokeAddDocAPI = () => {
       let data = {

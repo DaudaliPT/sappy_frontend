@@ -164,8 +164,7 @@ class DepositoModal extends Component {
               })
             })
             .catch(function (error) {
-              sappy.hideWaitProgress()
-              if (!error.__CANCEL__) sappy.showError(error, "Api error")
+              sappy.showError(error, "Api error")
             });
 
 

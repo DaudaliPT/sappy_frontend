@@ -20,17 +20,21 @@ class CmpTabContent extends Component {
             let keys = Object.keys(sets);
             return keys.map(key => {
                 let setting = sets[key]
-                return <div key={key} className="setting">
-                    <div className="setting-name"> {setting.name}</div>
-                    <div className="setting-comments"> {setting.comments}</div>
-                    <div className="setting-input">
-                        <ComboBox
-                            name={setting.id}
-                            label=""
-                            getOptionsApiRoute={setting.source}
-                            value={setting.rawValue}
-                            onChange={this.props.saveSetting}
-                        />
+
+                let input = null
+                if (setting.source)
+                    input = <ComboBox name={setting.id} label="" getOptionsApiRoute={setting.source} value={setting.rawValue} onChange={this.props.saveSetting} />
+                else
+                    input = <TextBox name={setting.id} label="" value={setting.rawValue} onChange={this.props.saveSetting} />
+
+                return <div key={key} className="row setting">
+                    <div className="col-xl-6">
+                        <div className="setting-name"> {setting.name} </div>
+                        <div className="setting-input"> {input} </div>
+                    </div>
+                    <div className="col-xl-6">
+                        <div className="setting-id"> {setting.id} </div>
+                        <div className="setting-comments"> {setting.comments} </div>
                     </div>
                 </div>
             })

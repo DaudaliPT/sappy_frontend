@@ -175,9 +175,7 @@ export default {
 
                 let handleAddDocApiResponse = (result) => {
                     let data = result.data || {};
-
-                    // sappy.hideWaitProgress();
-
+                    debugger
                     if (data.message && data.message.indexOf("TOTALDIF") > -1) {
 
                         sappy.showDanger({
@@ -211,10 +209,7 @@ export default {
                 that.serverRequest = axios
                     .post(url, { data })
                     .then(result => handleAddDocApiResponse(result))
-                    .catch(error => {
-                        // sappy.hideWaitProgress();
-                        sappy.showError(error, "Erro ao criar documento")
-                    });
+                    .catch(error => sappy.showError(error, "Erro ao criar documento"));
             }
             if (hasWarning)
                 return sappy.showWarning({

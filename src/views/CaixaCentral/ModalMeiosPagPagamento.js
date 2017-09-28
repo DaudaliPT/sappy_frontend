@@ -318,6 +318,7 @@ class ModalMeiosPagPagamento extends Component {
         U_apyNotas200: sappy.getNum(this.state.NrNotas200),
         U_apyNotas500: sappy.getNum(this.state.NrNotas500),
         U_apyNotas: sappy.getNum(this.state.ValorNotas),
+        U_apyMoedas: sappy.getNum(this.state.ValorMoedas),
         U_apyVales: sappy.getNum(this.state.ValorVales),
         U_apyTickets: sappy.getNum(this.state.ValorTickets),
         U_apyTroco: sappy.getNum(this.state.troco)

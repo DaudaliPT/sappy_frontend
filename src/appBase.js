@@ -138,7 +138,7 @@ class appBase extends Component {
       })
   }
 
-  hideWaitProgress(msg) {
+  hideWaitProgress() {
     // this.setState({ currentProgressModal: null })
     swal.isVisible() && swal.closeModal();
   }
@@ -212,6 +212,7 @@ class appBase extends Component {
   showError(err, title, onConfirm) {
     err = err || {}
     console.error(title, err)
+    sappy.hideWaitProgress(); // If visible, hide waitprogress
     // let that = this;
     let moreInfo = '';
     let msg = ""

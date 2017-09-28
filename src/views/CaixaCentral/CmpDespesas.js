@@ -11,6 +11,7 @@ const sappy = window.sappy;
 const $ = window.$;
 import CmpFooter from "./CmpFooter";
 import ModalAdiantamento from "./ModalAdiantamento";
+import ModalDespesa from "./ModalDespesa";
 
 class CmpDespesas extends Component {
     constructor(props) {
@@ -112,6 +113,7 @@ class CmpDespesas extends Component {
                 name: "Novo adiantamento", color: "success",
                 icon: "icon fa-money",
                 onClick: e => {
+                    that.setState({ showActions: false })
                     return sappy.showModal(<ModalAdiantamento
                         toggleModal={({ success } = {}) => {
 
@@ -124,9 +126,9 @@ class CmpDespesas extends Component {
                     name: "Nova despesa", color: "success",
                     icon: "icon fa-file-text-o",
                     onClick: e => {
-                        return sappy.showModal(<ModalAdiantamento
+                        that.setState({ showActions: false })
+                        return sappy.showModal(<ModalDespesa
                             toggleModal={({ success } = {}) => {
-
                                 sappy.hideModal()
                                 that.pnComponent.findAndGetFirstRows()
                             }}
