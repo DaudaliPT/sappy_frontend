@@ -32,7 +32,7 @@ class ModalDespesa extends Component {
             ...row,
             value: row.CreatedBy,
             label: row.ContactName
-            + " [" + sappy.format.amount(row.PENDENTE) + "]"
+            + " [" + sappy.format.amount(row.VALOR_PENDENTE) + "]"
             + (row.CounterRef ? ", " + row.CounterRef : "")
             + (row.Comments ? ", " + row.Comments : "")
           }
@@ -64,7 +64,7 @@ class ModalDespesa extends Component {
 
     let totalPagar = sappy.getNum(newStateValues.totalPagar || this.state.totalPagar)
     let AdiantamentoSelecionado = (newStateValues.AdiantamentoSelecionado || this.state.AdiantamentoSelecionado);
-    newStateValues.DiferrencaAdiantamento = sappy.getNum(AdiantamentoSelecionado.PENDENTE) - totalPagar;
+    newStateValues.DiferrencaAdiantamento = sappy.getNum(AdiantamentoSelecionado.VALOR_PENDENTE) - totalPagar;
 
     if (changeInfo.realtime) newStateValues[fieldName] = this.state[fieldName]
     this.setState(newStateValues);
@@ -142,7 +142,7 @@ class ModalDespesa extends Component {
       }
       //Para que o c# faça o parse correctamente
       data.Adiantamento.VALOR_ORIGINAL = sappy.getNum(data.Adiantamento.VALOR_ORIGINAL)
-      data.Adiantamento.PENDENTE = sappy.getNum(data.Adiantamento.PENDENTE)
+      data.Adiantamento.VALOR_PENDENTE = sappy.getNum(data.Adiantamento.VALOR_PENDENTE)
 
       sappy.showWaitProgress("A criar documento...")
       axios

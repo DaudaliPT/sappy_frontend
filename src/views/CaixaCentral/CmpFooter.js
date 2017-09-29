@@ -8,27 +8,30 @@ class CmpFooter extends Component {
       if (!mainAction) return;
 
       var renderSubActions = () => {
-        if (fixedActions.length > 0) {
-          return (
-            <div key={"action-buttons"} className="sappy-action-buttons animation-scale-up">
-              {fixedActions.map(action => {
-                let btClassName = "btn btn-floating btn-" + action.color;
+        let visibleActions = fixedActions.filter(a => a.visible)
+        if (visibleActions.length === 0) return null
+        return (
+          <div key={"action-buttons"} className="sappy-action-buttons animation-scale-up">
+            {visibleActions.map(action => {
 
-                return (
-                  <div key={"action_" + action.name}>
-                    <button type="button" onClick={action.onClick} className={btClassName}>
-                      <i className={"animation-scale " + action.icon} aria-hidden="true" />
-                    </button>
+              let btClassName = "btn btn-floating btn-" + action.color;
 
-                    <span className="sappy-action-fab-tip">{action.name}</span>
-                  </div>
-                );
-              })}
-            </div>
-          );
-        }
+              return (
+                <div key={"action_" + action.name}>
+                  <button type="button" onClick={action.onClick} className={btClassName}>
+                    <i className={"animation-scale " + action.icon} aria-hidden="true" />
+                  </button>
+
+                  <span className="sappy-action-fab-tip">{action.name}</span>
+                </div>
+              );
+            })}
+          </div>
+        );
+
       };
 
+      if (!mainAction.visible) return null
       let btClassName = "sappy-action-button btn btn-floating btn-" + mainAction.color;
       return (
         <div key={"action_" + mainAction.name} className="sappy-action">
@@ -39,6 +42,7 @@ class CmpFooter extends Component {
         </div>
       );
     };
+
     let renderActions = () => {
       let actions = this.props.actions;
 

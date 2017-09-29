@@ -10,7 +10,7 @@ import uuid from "uuid/v4";
 const sappy = window.sappy;
 const $ = window.$;
 import CmpFooter from "./CmpFooter";
-import DepositoModal from "./DepositoModal";
+import ModalDeposito from "./ModalDeposito";
 
 class CmpDepositos extends Component {
     constructor(props) {
@@ -85,23 +85,23 @@ class CmpDepositos extends Component {
 
 
         let getfixedActions = () => {
-            let fixedActions = [];
-
-            fixedActions.push({
-                name: "addnew",
-                color: "success",
-                icon: "icon wb-plus",
-                onClick: e => {
-                    return sappy.showModal(<DepositoModal
-                        defaultLayoutCode={this.state.defaultLayoutCode}
-                        toggleModal={({ success } = {}) => {
-
-                            sappy.hideModal()
-                            that.pnComponent.findAndGetFirstRows()
-                        }}
-                    />)
+            let fixedActions = [
+                {
+                    name: "addnew",
+                    visible: true,
+                    color: "success",
+                    icon: "icon wb-plus",
+                    onClick: e => {
+                        return sappy.showModal(<ModalDeposito
+                            defaultLayoutCode={this.state.defaultLayoutCode}
+                            toggleModal={({ success } = {}) => {
+                                sappy.hideModal()
+                                that.pnComponent.findAndGetFirstRows()
+                            }}
+                        />)
+                    }
                 }
-            })
+            ];
             return fixedActions;
         };
 

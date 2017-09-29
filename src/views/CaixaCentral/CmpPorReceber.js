@@ -272,31 +272,23 @@ class CmpPorReceber extends Component {
 
         let getfixedActions = () => {
             let currentShowActions = this.state.showActions;
-            let fixedActions = [];
-
-            if (totalOfSelectedDocs > 0) {
-                fixedActions.push({
-                    name: "main", color: "primary",
-                    icon: currentShowActions ? "icon wb-close animation-fade" : "icon fa-flash",
-                    onClick: e => this.setState({ showActions: !this.state.showActions })
-                })
-
-                if (currentShowActions) {
-                    fixedActions.push({
-                        name: "Númerario",
-                        color: "success",
-                        icon: "icon fa-money",
-                        onClick: e => this.createReceiptOrPayment("Numerario")
-                    })
-                    fixedActions.push({
-                        name: "Multibanco",
-                        color: "success",
-                        icon: "icon fa-credit-card",
-                        onClick: e => this.createReceiptOrPayment("Multibanco")
-                    })
-                }
-            }
-
+            let fixedActions = [{
+                name: "main",
+                visible: totalOfSelectedDocs > 0,
+                color: "primary",
+                icon: currentShowActions ? "icon wb-close animation-fade" : "icon fa-flash",
+                onClick: e => this.setState({ showActions: !this.state.showActions })
+            }, {
+                name: "Númerario",
+                visible: currentShowActions,
+                color: "success", icon: "icon fa-money",
+                onClick: e => this.createReceiptOrPayment("Numerario")
+            }, {
+                name: "Multibanco",
+                visible: currentShowActions,
+                color: "success", icon: "icon fa-credit-card",
+                onClick: e => this.createReceiptOrPayment("Multibanco")
+            }];
 
             return fixedActions;
         };

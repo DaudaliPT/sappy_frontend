@@ -16,8 +16,14 @@ import ModalDespesa from "./ModalDespesa";
 class CmpDespesas extends Component {
     constructor(props) {
         super(props)
+
+        this.cancelarAdiantamento = this.cancelarAdiantamento.bind(this)
+        this.fecharAdiantamento = this.fecharAdiantamento.bind(this)
+        this.toggleModal = this.toggleModal.bind(this)
+
         this.state = {
-            selectedRow: '',
+            selectedRowId: '',
+            selectedRow: {},
             defaultLayoutCode18: "",
             defaultLayoutCode46: ""
         }
@@ -49,28 +55,167 @@ class CmpDespesas extends Component {
     handleRowselection(e, row) {
         var rowDiv = $(e.target).closest(".byusVirtualRow")[0];
         let rowId = rowDiv.id;
-        let { selectedRow } = this.state;
-        if (selectedRow === rowId) {
-            selectedRow = '';
+        let { selectedRowId } = this.state;
+        if (selectedRowId === rowId) {
+            selectedRowId = '';
         } else {
-            selectedRow = rowId;
+            selectedRowId = rowId;
         }
 
-        this.setState({ selectedRow, showActions: false });
+        this.setState({ selectedRowId, selectedRow: row, showActions: false });
     }
 
+    cancelarAdiantamento() {
+        let that = this
+        let { selectedRowId, selectedRow, showActions } = this.state;
+
+        let docEntry = selectedRowId.split('_')[2];
+
+
+        sappy.showSwal({
+            input: "select",
+            msg: `Porque deseja cancelar este adiantamento?`,
+            type: "question",
+            inputPlaceholder: 'Selecione o motivo...',
+            inputOptions: {
+                "Despesa não foi necessária": "Despesa não foi necessária",
+                "Erro do utilizador": "Erro do utilizador",
+                other: "Outro...",
+            },
+            inputValidator: function (value) {
+                return new Promise(function (resolve, reject) {
+                    if (value) return resolve()
+                    return reject('Tem que seleccionar um motivo...')
+                })
+            },
+            onCancel: () => { },
+            onConfirm: (value) => {
+                sappy.showSwal({
+                    title: "Cancelar adiantamento?",
+                    type: "warning",
+                    input: value === "other" ? "text" : null,
+                    moreInfo: `Se continuar irá cancelar este adiantamento.`,
+                    inputPlaceholder: 'Escreva o outro motivo...',
+                    inputValidator: function (value) {
+                        return new Promise(function (resolve, reject) {
+                            if (value) return resolve()
+                            return reject('Tem que indicar o motivo...')
+                        })
+                    },
+                    onCancel: () => { },
+                    onConfirm: (otherValue) => {
+                        let reason = value === "other" ? otherValue : value;
+                        sappy.showWaitProgress("A cancelar documento...")
+
+                        axios
+                            .post(`/api/caixa/despesas/adiantamentos/${docEntry}/cancel`, { reason })
+                            .then(result => {
+
+                                sappy.hideWaitProgress()
+                                sappy.showToastr({
+                                    color: "success",
+                                    msg: `Adiantamento ${docEntry} cancelado!`
+                                })
+
+                                that.setState({ selectedRowId: "", showActions: false },
+                                    e => that.pnComponent.findAndGetFirstRows())
+                            })
+                            .catch(error => sappy.showError(error, "Não foi possivel cancelar o adiantamento"));
+
+                    }
+                })
+            }
+        })
+    }
+
+    fecharAdiantamento() {
+        let that = this
+        let { selectedRow } = this.state;
+
+        let data = {
+            ...selectedRow,
+            CAIXA_DIFERENCAS: sappy.getSetting('FIN.CCD.CAIXA_DIFERENCAS').rawValue
+        }
+        //Para que o c# faça o parse correctamente
+        data.VALOR_ORIGINAL = sappy.getNum(data.VALOR_ORIGINAL)
+        data.VALOR_PENDENTE = sappy.getNum(data.VALOR_PENDENTE)
+        data.TransType = sappy.getNum(data.TransType)
+        // let docEntry = selectedRowId.split('_')[2];
+
+        sappy.showSwal({
+            input: "select",
+            msg: `Porque deseja fechar este adiantamento?`,
+            type: "question",
+            inputPlaceholder: 'Selecione o motivo...',
+            inputOptions: {
+                "Não foi pedida a fatura": "Não foi pedida a fatura",
+                "Diferença minima no troco": "Diferença minima no troco",
+                "Erro do utilizador": "Erro do utilizador",
+                other: "Outro...",
+            },
+            inputValidator: function (value) {
+                return new Promise(function (resolve, reject) {
+                    if (value) return resolve()
+                    return reject('Tem que seleccionar um motivo...')
+                })
+            },
+            onCancel: () => { },
+            onConfirm: (value) => {
+                sappy.showSwal({
+                    title: "Fechar adiantamento?",
+                    type: "warning",
+                    input: value === "other" ? "text" : null,
+                    msg: "Lembrete importante:",
+                    moreInfo: `Fechar um adiantamento, implica aceitar a perca do valor restante, que será colocado na caixa de diferenças!`,
+                    inputPlaceholder: 'Escreva o outro motivo...',
+                    inputValidator: function (value) {
+                        return new Promise(function (resolve, reject) {
+                            if (value) return resolve()
+                            return reject('Tem que indicar o motivo...')
+                        })
+                    },
+                    onCancel: () => { },
+                    onConfirm: (otherValue) => {
+                        sappy.showWaitProgress("A fechar adiantamento...")
+
+                        // Gardar o motivo
+                        data.Comments = value === "other" ? otherValue : value;
+                        axios
+                            .post(`/api/caixa/despesas/fecharadiantamento`, data)
+                            .then(result => {
+                                sappy.hideWaitProgress()
+                                sappy.showToastr({
+                                    color: "success",
+                                    msg: `Criou com sucesso o recibo ${result.data.DocNum} para a caixa de diferenças!`
+                                })
+
+                                that.props.toggleModal({ success: result.data.DocNum });
+                            })
+                            .catch(error => sappy.showError(error, "Não foi possivel fechar o adiantamento"));
+
+                    }
+                })
+            }
+        })
+    }
+
+    toggleModal({ success } = {}) {
+        sappy.hideModal()
+        this.pnComponent.findAndGetFirstRows()
+    }
 
     render() {
         let that = this
-        let { selectedRow, showActions } = this.state;
+        let { selectedRowId, selectedRow, showActions } = this.state;
 
         let renderRowPN = ({ row, index }) => {
-            let rowId = 'row_' + row.ObjType + "_" + row.DocEntry
-            const selected = rowId === selectedRow;
+            let rowId = 'row_' + row.TransType + "_" + row.CreatedBy
+            const selected = rowId === selectedRowId;
             let rowStyleClass = "";
             let r = { ...row }
             if (selected) rowStyleClass += " sappy-selected-row";
-            if (row.ObjType === "46") rowStyleClass += " vlist-row-danger";
+
+            let parcialmentePago = sappy.getNum(row.VALOR_ORIGINAL) - sappy.getNum(row.VALOR_PENDENTE) !== 0
 
             const renderBadges = () => {
                 const badges = row.ITEM_TAGS.split("|");
@@ -82,19 +227,34 @@ class CmpDespesas extends Component {
             };
 
             let entidade = row.CardCode + ' - ' + row.CardName
-            if (row.CardCode === sappy.getSetting("FIN.CCD.FORN_ADIANT").rawValue) entidade += " (" + row.CONTACT_NAME + ")"
+            if (row.TransType === "46") {
+                rowStyleClass += sappy.getNum(row.VALOR_PENDENTE) !== 0 ? " vlist-row-danger" : " vlist-row-warning";
+                entidade = "Adiantamento a "
+                    + row.ContactName
+                    + (row.CounterRef ? ", " + row.CounterRef : "")
+                    + (row.Comments ? ", " + row.Comments : "")
+            }
 
             return (
                 <div id={rowId} className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={e => this.handleRowselection(e, r)}>
                     <div className="container vertical-align-middle">
                         <div className="row">
-                            <div className="col-2 text-nowrap firstcol">       {sappy.format.datetime2(row.DOC_DATETIME)}  </div>
-                            <div className="col-2 text-nowrap "> {row.ObjType + " - " + row.DocNum}  </div>
+                            <div className="col-3 text-nowrap firstcol">
+                                {sappy.format.datetime2(row.DOC_DATETIME)}
+                                <span className="pl-15">
+                                    {row.TransType + " - " + row.BaseRef}
+                                </span>
+                            </div>
                             <div className="col-5 text-nowrap "> {entidade}
                                 {renderBadges()}
                             </div>
-                            <div className="col-2 text-nowrap ">  <span className="float-right">{sappy.format.amount(row.DocTotal)}</span> </div>
-                            <div className="col-1 lastcol"> <ButtonGetPdf DocEntry={row.DocEntry} ObjectID={row.ObjType} defaultLayoutCode={this.state["defaultLayoutCode" + row.ObjType]} />  </div>
+                            <div className="col-2 text-nowrap ">  <span className="float-right">{parcialmentePago ? sappy.format.amount(row.VALOR_ORIGINAL) : ""}</span> </div>
+                            <div className="col-2 text-nowrap lastcol">
+                                <span className="float-right">
+                                    {sappy.format.amount(row.VALOR_PENDENTE) + " "}
+                                    <ButtonGetPdf CreatedBy={row.CreatedBy} ObjectID={row.TransType} defaultLayoutCode={this.state["defaultLayoutCode" + row.TransType]} />
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -103,91 +263,55 @@ class CmpDespesas extends Component {
 
 
         let getfixedActions = () => {
-            let fixedActions = [];
-            if (selectedRow.indexOf("_46_") > -1) {
-                fixedActions.push({
-                    name: "main", color: "primary",
-                    icon: showActions ? "icon wb-close animation-fade" : "icon wb-more-vertical",
+
+            let isAdiantamentoSelected = (selectedRowId.indexOf("_46_") > -1);
+            let adiantamentoParcialmentePago = sappy.getNum(selectedRow.VALOR_ORIGINAL) - sappy.getNum(selectedRow.VALOR_PENDENTE) !== 0
+
+            let fixedActions = [
+                {
+                    name: "main",
+                    visible: true,
+                    color: isAdiantamentoSelected ? "primary" : "success",
+                    icon: showActions
+                        ? "icon wb-close animation-fade"
+                        : (isAdiantamentoSelected ? "icon wb-more-vertical" : "icon wb-plus"),
                     onClick: e => { that.setState({ showActions: !showActions }) }
-                })
-
-                if (showActions)
-                    fixedActions.push({
-                        name: "Cancelar documento", color: "danger",
-                        icon: "icon fa-window-close",
-                        onClick: e => {
-                            let docEntry = selectedRow.split('_')[2];
-
-                            sappy.showDanger({
-                                title: "Cancelar documento?",
-                                input: "text",
-                                msg: `Indique o motivo...`,
-                                cancelText: "Cancelar",
-                                onCancel: () => { },
-                                confirmStyle: "warning",
-                                confirmText: "Cancelar Recebimento",
-                                onConfirm: (value) => {
-
-                                    sappy.showWaitProgress("A cancelar documento...")
-
-                                    axios
-                                        .post(`/api/caixa/despesas/adiantamentos/${docEntry}/cancel`, { reason: value })
-                                        .then(result => {
-
-                                            sappy.hideWaitProgress()
-                                            sappy.showToastr({
-                                                color: "success",
-                                                msg: `Documento ${docEntry} cancelado!`
-                                            })
-
-                                            that.setState({ selectedRow: "", showActions: false },
-                                                e => that.pnComponent.findAndGetFirstRows())
-                                        })
-                                        .catch(error => sappy.showError(error, "Não foi possivel cancelar o documento"));
-                                }
-                            })
-
-                        }
-                    })
-            } else {
-                fixedActions.push({
-                    name: "main", color: "primary",
-                    icon: showActions ? "icon wb-close animation-fade" : "icon wb-plus",
-                    onClick: e => { that.setState({ showActions: !showActions }) }
-                })
-
-                if (showActions)
-                    fixedActions.push(
-                        {
-                            name: "Novo adiantamento", color: "success",
-                            icon: "icon fa-money",
-                            onClick: e => {
-                                that.setState({ showActions: false })
-                                return sappy.showModal(<ModalAdiantamento
-                                    toggleModal={({ success } = {}) => {
-
-                                        sappy.hideModal()
-                                        that.pnComponent.findAndGetFirstRows()
-                                    }}
-                                />)
-                            }
-                        },
-                        {
-                            name: "Nova despesa", color: "success",
-                            icon: "icon fa-file-text-o",
-                            onClick: e => {
-                                that.setState({ showActions: false })
-                                return sappy.showModal(<ModalDespesa
-                                    toggleModal={({ success } = {}) => {
-                                        sappy.hideModal()
-                                        that.pnComponent.findAndGetFirstRows()
-                                    }}
-                                />)
-                            }
-                        })
-            };
+                },
+                {
+                    name: "Cancelar adiantamento",
+                    visible: isAdiantamentoSelected && !adiantamentoParcialmentePago && showActions,
+                    color: "warning",
+                    icon: "icon fa-window-close",
+                    onClick: this.cancelarAdiantamento
+                },
+                {
+                    name: "Fechar adiantamento",
+                    visible: isAdiantamentoSelected && adiantamentoParcialmentePago && showActions,
+                    color: "danger",
+                    icon: "icon fa-window-close",
+                    onClick: this.fecharAdiantamento
+                },
+                {
+                    name: "Novo adiantamento",
+                    visible: !isAdiantamentoSelected && showActions,
+                    color: "success", icon: "icon fa-money",
+                    onClick: e => {
+                        that.setState({ showActions: false })
+                        return sappy.showModal(<ModalAdiantamento toggleModal={this.toggleModal} />)
+                    }
+                },
+                {
+                    name: "Nova despesa",
+                    visible: !isAdiantamentoSelected && showActions,
+                    color: "success", icon: "icon fa-file-text-o",
+                    onClick: e => {
+                        that.setState({ showActions: false })
+                        return sappy.showModal(<ModalDespesa toggleModal={this.toggleModal} />)
+                    }
+                }
+            ]
             return fixedActions;
-        }
+        };
 
 
         let footerProps = {

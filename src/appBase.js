@@ -29,6 +29,7 @@ class appBase extends Component {
     sappy.GetLinkTo = this.GetLinkTo.bind(this);
     sappy.LinkTo = this.LinkTo.bind(this);
 
+    sappy.showSwal = this.showSwal.bind(this);
     sappy.showSuccess = this.showSuccess.bind(this);
     sappy.showQuestion = this.showQuestion.bind(this);
     sappy.showWarning = this.showWarning.bind(this);
@@ -143,77 +144,49 @@ class appBase extends Component {
     swal.isVisible() && swal.closeModal();
   }
 
+  showSuccess(options) {
+    options.type = "success"
+    options.title = options.title || "Successo";
+    this.showSwal(options)
+  }
 
+  showQuestion(options) {
+    options.type = "question"
+    options.title = options.title || "Questão";
+    this.showSwal(options)
+  }
 
-  showSuccess({ title, msg, moreInfo, input, onConfirm, onCancel, confirmText, confirmStyle, cancelText, cancelStyle } = {}) {
+  showWarning(options) {
+    options.type = "warning"
+    options.title = options.title || "Aviso";
+    options.confirmText = options.confirmText || "Ok";
+    this.showSwal(options)
+  }
+
+  showDanger(options) {
+    options.type = "warning"
+    options.title = options.title || "Muita atenção!!!";
+    this.showSwal(options)
+  }
+
+  showSwal(options) {
+    let { type, title, html, msg, moreInfo, input, inputOptions, onConfirm, onCancel, confirmText, confirmStyle, cancelText, cancelStyle } = options
+    let color = type;
+    if (type === "question") color = "primary"
+
     swal(
       {
-        title: title || "Successo",
-        html: `${msg || ""}<small><br />${moreInfo || ''}</small>`,
-        type: 'success',
-        input,
+        ...options,
+        html: html || `${msg || ""}<small><br />${moreInfo || ''}</small>`,
         showCancelButton: typeof onCancel === "function",
         confirmButtonText: confirmText || "Confirmar",
         cancelButtonText: cancelText || 'Cancelar',
         cancelButtonClass: 'btn  mr-5 btn-lg btn-' + (cancelStyle || "secondary"),
-        confirmButtonClass: 'btn ml-5 btn-lg btn-' + (confirmStyle || "success")
+        confirmButtonClass: 'btn ml-5 btn-lg btn-' + (confirmStyle || color)
       })
       .then(inputValue => onConfirm && onConfirm(inputValue)
       , dismiss => onCancel && onCancel())
   }
-
-  showQuestion({ title, msg, moreInfo, input, onConfirm, onCancel, confirmText, confirmStyle, cancelText, cancelStyle } = {}) {
-    swal(
-      {
-        title: title || "Questão",
-        html: `${msg || ""}<small><br />${moreInfo || ''}</small>`,
-        type: 'question',
-        input,
-        showCancelButton: typeof onCancel === "function",
-        confirmButtonText: confirmText || "Confirmar",
-        cancelButtonText: cancelText || 'Cancelar',
-        cancelButtonClass: 'btn  mr-5 btn-lg btn-' + (cancelStyle || "secondary"),
-        confirmButtonClass: 'btn ml-5 btn-lg btn-' + (confirmStyle || "success")
-      })
-      .then(inputValue => onConfirm && onConfirm(inputValue)
-      , dismiss => onCancel && onCancel())
-  }
-
-
-  showWarning({ title, msg, moreInfo, input, onConfirm, onCancel, confirmText, confirmStyle, cancelText, cancelStyle } = {}) {
-    swal(
-      {
-        title: title || "Aviso",
-        html: `${msg || ""}<small><br />${moreInfo || ''}</small>`,
-        type: 'warning',
-        input,
-        showCancelButton: typeof onCancel === "function",
-        confirmButtonText: confirmText || "Ok",
-        cancelButtonText: cancelText || 'Cancelar',
-        cancelButtonClass: 'btn  mr-5 btn-lg btn-' + (cancelStyle || "secondary"),
-        confirmButtonClass: 'btn ml-5 btn-lg btn-' + (confirmStyle || "warning")
-      })
-      .then(inputValue => onConfirm && onConfirm(inputValue)
-      , dismiss => onCancel && onCancel())
-  }
-
-  showDanger({ title, msg, moreInfo, input, onConfirm, onCancel, confirmText, confirmStyle, cancelText, cancelStyle } = {}) {
-    swal(
-      {
-        title: title || "Muita atenção!!!",
-        html: `${msg || ""}<small><br />${moreInfo || ''}</small>`,
-        type: 'warning',
-        input,
-        showCancelButton: typeof onCancel === "function",
-        confirmButtonText: confirmText || "Confirmar",
-        cancelButtonText: cancelText || 'Cancelar',
-        cancelButtonClass: 'btn  mr-5 btn-lg btn-' + (cancelStyle || "secondary"),
-        confirmButtonClass: 'btn ml-5 btn-lg btn-' + (confirmStyle || "danger")
-      })
-      .then(inputValue => onConfirm && onConfirm(inputValue)
-      , dismiss => onCancel && onCancel())
-  }
-
 
   showError(err, title, onConfirm) {
     err = err || {}

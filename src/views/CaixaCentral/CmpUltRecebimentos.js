@@ -14,30 +14,102 @@ import CmpFooter from "./CmpFooter";
 class CmpUltRecebimentos extends Component {
     constructor(props) {
         super(props)
-        this.state = { selectedRow: '' }
+
+        this.cancelarRecebimento = this.cancelarRecebimento.bind(this)
+
+        this.state = { selectedRowId: '', selectedRow: {} }
     }
 
     handleRowselection(e, row) {
         var rowDiv = $(e.target).closest(".byusVirtualRow")[0];
         let rowId = rowDiv.id;
-        let { selectedRow } = this.state;
-        if (selectedRow === rowId) {
-            selectedRow = '';
+        let { selectedRowId } = this.state;
+        if (selectedRowId === rowId) {
+            selectedRowId = '';
         } else {
-            selectedRow = rowId;
+            selectedRowId = rowId;
         }
 
-        this.setState({ selectedRow, showActions: false });
+        this.setState({ selectedRowId, selectedRow: row, showActions: false });
+    }
+
+    cancelarRecebimento() {
+        let that = this
+        let { selectedRowId, selectedRow, showActions } = this.state;
+        let docEntry = selectedRowId.split('_')[1];
+
+        sappy.showSwal({
+            input: "select",
+            msg: `Porque deseja cancelar este recebimento?`,
+            type: "question",
+            inputPlaceholder: 'Selecione o motivo...',
+            inputOptions: {
+                "Método de pagamento incorreto": "Método de pagamento incorreto",
+                "Erro do utilizador": "Erro do utilizador",
+                other: "Outro...",
+            },
+            inputValidator: function (value) {
+                return new Promise(function (resolve, reject) {
+                    if (value) return resolve()
+                    return reject('Tem que seleccionar um motivo...')
+                })
+            },
+            onCancel: () => { },
+            onConfirm: (value) => {
+                sappy.showSwal({
+                    title: "Cancelar recebimento?",
+                    type: "warning",
+                    confirmStyle: "warning",
+                    confirmText: "Cancelar Recebimento",
+                    input: value === "other" ? "text" : null,
+                    moreInfo: `Se continuar irá cancelar este recebimento.`,
+                    inputPlaceholder: 'Escreva o outro motivo...',
+                    inputValidator: function (value) {
+                        return new Promise(function (resolve, reject) {
+                            if (value) return resolve()
+                            return reject('Tem que indicar o motivo...')
+                        })
+                    },
+                    onCancel: () => { },
+                    onConfirm: (otherValue) => {
+                        let reason = value === "other" ? otherValue : value;
+
+                        sappy.showWaitProgress("A cancelar documento...")
+
+                        axios
+                            .post(`/api/caixa/recebimentos/${docEntry}/cancel`, { reason })
+                            .then(result => {
+
+                                sappy.hideWaitProgress()
+                                sappy.showToastr({
+                                    color: "success",
+                                    msg: `Documento ${docEntry} cancelado!`
+                                })
+
+                                that.setState({ selectedRowId: "", showActions: false },
+                                    e => that.pnComponent.findAndGetFirstRows())
+                            })
+                            .catch(error => sappy.showError(error, "Não foi possivel cancelar o recebimento"));
+
+                    }
+                })
+            }
+        })
+
+
+
+
+
     }
 
 
     render() {
         let that = this
-        let { selectedRow, showActions } = this.state;
+        let { selectedRowId, selectedRow, showActions } = this.state;
 
         let renderRowPN = ({ row, index }) => {
             let rowId = 'row_' + row.DocEntry
-            const selected = rowId === selectedRow;
+            const selected = rowId === selectedRowId;
             let rowStyleClass = "";
             let r = { ...row }
             if (selected) rowStyleClass += " sappy-selected-row";
@@ -69,52 +141,22 @@ class CmpUltRecebimentos extends Component {
 
 
         let getfixedActions = () => {
-            let fixedActions = [];
-
-            if (selectedRow) {
-                fixedActions.push({
-                    name: "main", color: "primary",
+            let naoEstaCancelado = (selectedRow.ITEM_TAGS || '').indexOf("Cancelado!") === -1
+            let fixedActions = [
+                {
+                    name: "main",
+                    visible: selectedRowId && naoEstaCancelado,
+                    color: "primary",
                     icon: showActions ? "icon wb-close animation-fade" : "icon wb-more-vertical",
                     onClick: e => { that.setState({ showActions: !showActions }) }
-                })
-                if (showActions) fixedActions.push({
-                    name: "Cancelar documento", color: "danger",
+                }, {
+                    name: "Cancelar documento",
+                    visible: showActions,
+                    color: "warning",
                     icon: "icon fa-window-close",
-                    onClick: e => {
-                        let docEntry = selectedRow.split('_')[1];
-
-                        sappy.showDanger({
-                            title: "Cancelar documento?",
-                            input: "text",
-                            msg: `Indique o motivo...`,
-                            cancelText: "Cancelar",
-                            onCancel: () => { },
-                            confirmStyle: "warning",
-                            confirmText: "Cancelar Recebimento",
-                            onConfirm: (value) => {
-
-                                sappy.showWaitProgress("A cancelar documento...")
-
-                                axios
-                                    .post(`/api/caixa/recebimentos/${docEntry}/cancel`, { reason: value })
-                                    .then(result => {
-
-                                        sappy.hideWaitProgress()
-                                        sappy.showToastr({
-                                            color: "success",
-                                            msg: `Documento ${docEntry} cancelado!`
-                                        })
-
-                                        that.setState({ selectedRow: "", showActions: false },
-                                            e => that.pnComponent.findAndGetFirstRows())
-                                    })
-                                    .catch(error => sappy.showError(error, "Não foi possivel cancelar o documento"));
-                            }
-                        })
-
-                    }
-                })
-            }
+                    onClick: this.cancelarRecebimento
+                }
+            ];
             return fixedActions;
         };
 
