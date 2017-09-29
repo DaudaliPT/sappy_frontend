@@ -4,7 +4,7 @@ import axios from "axios";
 var $ = window.$;
 var sappy = window.sappy;
 
-import { TextBox, TextBoxNumeric, ComboBox } from "../../Inputs";
+import { TextBoxNumeric, ComboBox } from "../../Inputs";
 
 class DepositoModal extends Component {
   constructor(props) {

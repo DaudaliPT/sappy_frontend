@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { Button, Modal, ModalHeader, ModalBody } from "reactstrap";
 import axios from "axios";
-var $ = window.$;
+// var $ = window.$;
 var sappy = window.sappy;
 
-import { TextBox, TextBoxNumeric, Date, ComboBox, Notas } from "../../Inputs";
+import { TextBox, TextBoxNumeric, Date, ComboBox } from "../../Inputs";
 
 class ModalDespesa extends Component {
   constructor(props) {
@@ -52,7 +52,7 @@ class ModalDespesa extends Component {
 
   // Recebe os valores dos campos MY*
   onFieldChange(changeInfo) {
-    let that = this;
+    // let that = this;
     let formatedValue = changeInfo.formatedValue;
     let val = changeInfo.rawValue;
     let fieldName = changeInfo.fieldName;

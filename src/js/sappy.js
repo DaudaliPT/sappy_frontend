@@ -1,8 +1,6 @@
-import React, { Component } from "react";
+import React from "react";
 import accounting from "./accountingjs";
 import moment from 'moment';
-
-// import "./jquery.resize";
 
 // sappy namespace
 (function (sappy) {

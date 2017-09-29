@@ -1,15 +1,7 @@
 import React, { Component } from "react";
-import SearchPage from "../../components/SearchPage";
-import axios from "axios";
-import { Badge } from "reactstrap";
-import { ButtonGetPdf } from "../../Inputs";
-import uuid from "uuid/v4";
-
-import { TextBox, TextBoxNumeric, Date, ComboBox, Notas } from "../../Inputs";
-// import { Badge } from "reactstrap";
-// import uuid from "uuid/v4";
-const sappy = window.sappy;
-const $ = window.$;
+import { TextBox, ComboBox } from "../../Inputs";
+// const sappy = window.sappy;
+// const $ = window.$;
 
 class CmpTabContent extends Component {
     render() {

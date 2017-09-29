@@ -172,7 +172,7 @@ class appBase extends Component {
   }
 
   showSwal(options) {
-    let { type, title, html, msg, moreInfo, input, inputOptions, onConfirm, onCancel, confirmText, confirmStyle, cancelText, cancelStyle } = options
+    let { type, html, msg, moreInfo, onConfirm, onCancel, confirmText, confirmStyle, cancelText, cancelStyle } = options
     let color = type;
     if (type === "question") color = "primary"
 

@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { Button, Modal, ModalHeader, ModalBody } from "reactstrap";
 import axios from "axios";
-var $ = window.$;
+// var $ = window.$;
 var sappy = window.sappy;
 
-import { TextBox, TextBoxNumeric, Date, ComboBox, Notas } from "../../Inputs";
+import { TextBoxNumeric, ComboBox } from "../../Inputs";
 
 class ModalAdiantamento extends Component {
   constructor(props) {
@@ -27,7 +27,7 @@ class ModalAdiantamento extends Component {
 
   // Recebe os valores dos campos MY*
   onFieldChange(changeInfo) {
-    let that = this;
+    // let that = this;
     let formatedValue = changeInfo.formatedValue;
     let val = changeInfo.rawValue;
     let fieldName = changeInfo.fieldName;
@@ -36,7 +36,7 @@ class ModalAdiantamento extends Component {
 
     //Correctly save to ServiceLayer properties
     Object.assign(newStateValues, { [fieldName]: (fieldName.indexOf("Valor") > -1 ? formatedValue : val) })
-    let totalPagar = sappy.getNum(newStateValues.totalPagar ? newStateValues.totalPagar : this.state.totalPagar)
+    // let totalPagar = sappy.getNum(newStateValues.totalPagar ? newStateValues.totalPagar : this.state.totalPagar)
 
     if (changeInfo.realtime) newStateValues[fieldName] = this.state[fieldName]
     this.setState(newStateValues);

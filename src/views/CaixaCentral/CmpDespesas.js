@@ -72,7 +72,7 @@ class CmpDespesas extends Component {
 
     cancelarAdiantamento() {
         let that = this
-        let { selectedRowId, selectedRow, showActions } = this.state;
+        let { selectedRowId } = this.state;
 
         let docEntry = selectedRowId.split('_')[2];
 

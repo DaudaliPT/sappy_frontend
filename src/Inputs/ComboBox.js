@@ -23,7 +23,7 @@ class ComboBox extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.getOptionsApiRoute !== this.props.getOptionsApiRoute
-      || ((nextProps.options || []).length != (this.props.options || []).length)) {
+      || ((nextProps.options || []).length !== (this.props.options || []).length)) {
       this.loadProps(nextProps)
     }
   }
