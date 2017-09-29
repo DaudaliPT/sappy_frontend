@@ -81,7 +81,9 @@ class appBase extends Component {
 
   LinkTo(objType, docEntry) {
     let url = this.GetLinkUrl(objType, docEntry)
-    if (!url) return
+    if (!url) {
+      return sappy.showToastr({ color: "info", msg: "Ainda não há visualização par ao tipo de documento solicitado", title: "Ainda não disponivel" })
+    }
     sappy.hideModal()
     hashHistory.push({ pathname: url, state: { DocEntry: docEntry } })
   }
@@ -224,6 +226,7 @@ class appBase extends Component {
   showToastr(objPars = {}) {
     let color = objPars.color;
     let msg = objPars.msg;
+    let title = objPars.title;
     if (typeof objPars === "string") {
       color = objPars.split('|')[0];
       msg = objPars.split('|')[1];
@@ -231,11 +234,11 @@ class appBase extends Component {
 
     let toastrContainer = this.refs.container;
     setTimeout(e => {
-      if (color === "success") toastrContainer.success(msg, "", { closeButton: true })
-      else if (color === "info") toastrContainer.info(msg, "", { closeButton: true })
-      else if (color === "warning") toastrContainer.warning(msg, "", { closeButton: true })
-      else if (color === "danger") toastrContainer.error(msg, "", { closeButton: true })
-      else toastrContainer.error(msg, "", { closeButton: true })
+      if (color === "success") toastrContainer.success(msg, title, { closeButton: true })
+      else if (color === "info") toastrContainer.info(msg, title, { closeButton: true })
+      else if (color === "warning") toastrContainer.warning(msg, title, { closeButton: true })
+      else if (color === "danger") toastrContainer.error(msg, title, { closeButton: true })
+      else toastrContainer.error(msg, title, { closeButton: true })
     }, 0);
   }
 

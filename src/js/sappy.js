@@ -1,3 +1,4 @@
+import React, { Component } from "react";
 import accounting from "./accountingjs";
 import moment from 'moment';
 
@@ -229,7 +230,7 @@ import moment from 'moment';
     }
   }
 
-  sappy.getSetting = settingId => {
+  function getSetting(settingId) {
     let tab = settingId.split(".")[0];
     let title = settingId.split(".")[1];
     let name = settingId.split(".")[2];
@@ -239,11 +240,31 @@ import moment from 'moment';
     try {
       setting = settings[tab].settings[title].settings[name]
     } catch (error) {
-      console.error("Setting not found??", error)
+      sappy.showToastr({ color: "danger", settingId, title: "Definição não existe:" })
     }
 
     return setting || {}
   }
+
+
+  sappy.getSettings = settingIds => {
+    let ret = {}
+    let hasMissingValues = false
+    let msg = []
+
+    settingIds.forEach(settingId => {
+      let setting = getSetting(settingId)
+      if (!setting.rawValue) {
+        hasMissingValues = true
+        msg.push(<li>{setting.name}<small> ({setting.id})</small></li>)
+      } else {
+        ret[settingId] = setting.rawValue
+      }
+    })
+    if (hasMissingValues) sappy.showToastr({ color: "danger", msg, title: "Verifique as definições" })
+    return ret
+  }
+
   sappy.getNum = value => {
     let ret = 0;
     if (typeof value === "number") return value;

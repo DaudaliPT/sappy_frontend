@@ -26,7 +26,7 @@ class ModalConfirmPrint extends Component {
       this.props.setCurrentModal({
         currentModal: <ModalWaitProgress title="Aguarde" text="A preparar impressão..." color="success" />
       });
-      let apiRoute = "/api/reports/print(" + this.props.defaultLayoutCode + ")";
+      let apiRoute = "/api/reports/printetiq/" + this.props.defaultLayoutCode;
       let apiQuery = "?parValues=" + encodeURIComponent(JSON.stringify(parValues));
 
       axios

@@ -18,12 +18,18 @@ class ModalDespesa extends Component {
       showValidations: false,
       TaxDate: sappy.moment(), //Assumir a data de hoje
       AdiantamentosPendentes: [],
-      AdiantamentoSelecionado: {}
+      AdiantamentoSelecionado: {},
+      settings: {}
     }
   }
 
+
   componentDidMount() {
     let that = this
+    this.setState({
+      settings: sappy.getSettings(['FIN.CCD.SERIE_FACTURAS', 'FIN.CC.CAIXA_PRINCIPAL', 'FIN.CCD.CAIXA_PASSAGEM', 'FIN.CCD.CAIXA_DIFERENCAS', 'FIN.CCD.FORN_ADIANT'])
+    })
+
     axios
       .get(`/api/caixa/despesas/adiantamentos`)
       .then(result => {
@@ -126,7 +132,7 @@ class ModalDespesa extends Component {
     let invokeAddDocAPI = () => {
       let data = {
         CardCode: this.state.CardCode,
-        Series: sappy.getSetting('FIN.CCD.SERIE_FACTURAS').rawValue,
+        Series: this.state.settings['FIN.CCD.SERIE_FACTURAS'],
         TaxDate: this.state.TaxDate,
         Comments: this.state.Comments,
         Lines: [{
@@ -136,9 +142,9 @@ class ModalDespesa extends Component {
         Adiantamento: { ...this.state.AdiantamentoSelecionado },
         TrocoRecebido: sappy.getNum(this.state.TrocoRecebido),
 
-        CAIXA_PRINCIPAL: sappy.getSetting('FIN.CC.CAIXA_PRINCIPAL').rawValue,
-        CAIXA_PASSAGEM: sappy.getSetting('FIN.CCD.CAIXA_PASSAGEM').rawValue,
-        CAIXA_DIFERENCAS: sappy.getSetting('FIN.CCD.CAIXA_DIFERENCAS').rawValue
+        CAIXA_PRINCIPAL: this.state.settings['FIN.CC.CAIXA_PRINCIPAL'],
+        CAIXA_PASSAGEM: this.state.settings['FIN.CCD.CAIXA_PASSAGEM'],
+        CAIXA_DIFERENCAS: this.state.settings['FIN.CCD.CAIXA_DIFERENCAS']
       }
       //Para que o c# faça o parse correctamente
       data.Adiantamento.VALOR_ORIGINAL = sappy.getNum(data.Adiantamento.VALOR_ORIGINAL)
@@ -286,7 +292,6 @@ class ModalDespesa extends Component {
             </div>
           </div>
 
-          <hr />
           <div className="sappy-action-bar animation-slide-left">
             <Button color={"success"} onClick={this.onAddDespesa}>
               <i className="icon wb-check" />Confirmar <strong>{sappy.format.amount(this.state.totalPagar)}</strong>

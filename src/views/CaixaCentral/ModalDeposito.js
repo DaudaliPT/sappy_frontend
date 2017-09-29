@@ -16,12 +16,18 @@ class DepositoModal extends Component {
 
     this.state = {
       activeTab: "tab1",
-      showValidations: false
+      showValidations: false,
+      settings: {}
     }
   }
 
   componentDidMount() {
     window.addEventListener("resize", this.calcPageHeight);
+
+
+    this.setState({
+      settings: sappy.getSettings(["GERAL.GERAL.IMPRESSORA"])
+    })
 
     this.calcPageHeight();
   }
@@ -150,7 +156,7 @@ class DepositoModal extends Component {
 
 
           let parValues = { "DOCKEY@": { Value: result.data.AbsEntry }, "OBJECTID@": { Value: 25 } };
-          let apiRoute = "/api/reports/print(" + this.props.defaultLayoutCode + ")";
+          let apiRoute = "/api/reports/print/" + this.props.defaultLayoutCode;
           let apiQuery = "?parValues=" + encodeURIComponent(JSON.stringify(parValues));
 
           axios

@@ -25,11 +25,16 @@ class CmpDespesas extends Component {
             selectedRowId: '',
             selectedRow: {},
             defaultLayoutCode18: "",
-            defaultLayoutCode46: ""
+            defaultLayoutCode46: "",
+            settings: {}
         }
     }
     componentDidMount() {
         let that = this
+
+        this.setState({
+            settings: sappy.getSettings(["FIN.CCD.CAIXA_DIFERENCAS"])
+        })
 
 
         axios
@@ -134,7 +139,7 @@ class CmpDespesas extends Component {
 
         let data = {
             ...selectedRow,
-            CAIXA_DIFERENCAS: sappy.getSetting('FIN.CCD.CAIXA_DIFERENCAS').rawValue
+            CAIXA_DIFERENCAS: this.state.settings['FIN.CCD.CAIXA_DIFERENCAS']
         }
         //Para que o c# faça o parse correctamente
         data.VALOR_ORIGINAL = sappy.getNum(data.VALOR_ORIGINAL)

@@ -15,8 +15,14 @@ class ModalAdiantamento extends Component {
     this.getvalidationResults = this.getvalidationResults.bind(this);
 
     this.state = {
-      showValidations: false
+      showValidations: false, settings: {}
     }
+  }
+
+  componentDidMount() {
+    this.setState({
+      settings: sappy.getSettings(["FIN.CC.CAIXA_PRINCIPAL", "FIN.CCD.FORN_ADIANT"])
+    })
   }
 
   // Recebe os valores dos campos MY*
@@ -73,8 +79,8 @@ class ModalAdiantamento extends Component {
 
     let invokeAddDocAPI = () => {
       let data = {
-        CardCode: sappy.getSetting("FIN.CCD.FORN_ADIANT").rawValue,
-        CashAccount: sappy.getSetting("FIN.CC.CAIXA_PRINCIPAL").rawValue,
+        CardCode: that.state.settings["FIN.CCD.FORN_ADIANT"],
+        CashAccount: that.state.settings["FIN.CC.CAIXA_PRINCIPAL"],
         ContactPersonCode: this.state.ContactPersonCode,
         CashSum: sappy.getNum(this.state.totalPagar),
         Remarks: this.state.Comments,
@@ -135,7 +141,7 @@ class ModalAdiantamento extends Component {
                   createable={true}
                   value={this.state.ContactPersonCode}
                   state={alerts.ContactPersonCode}
-                  getOptionsApiRoute={"/api/cbo/ocpr/bycode/" + sappy.getSetting("FIN.CCD.FORN_ADIANT").rawValue}
+                  getOptionsApiRoute={"/api/cbo/ocpr/bycode/" + this.state.settings["FIN.CCD.FORN_ADIANT"]}
                   onChange={this.onFieldChange}
                 />
               </div>
@@ -170,7 +176,6 @@ class ModalAdiantamento extends Component {
             </div>
           </div>
 
-          <hr />
           <div className="sappy-action-bar animation-slide-left">
             <Button color={"success"} onClick={this.onAddAdiantamento}>
               <i className="icon wb-check" />Confirmar

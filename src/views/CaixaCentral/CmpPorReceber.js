@@ -20,7 +20,16 @@ class CmpPorReceber extends Component {
         this.createReceiptOrPayment = this.createReceiptOrPayment.bind(this);
         this.setClass = this.setClass.bind(this);
 
-        this.state = { selectedPN: '', selectedPNname: '', selectedDocKeys: [], shiftKey: false, ctrlKey: false }
+        this.state = {
+            selectedPN: '', selectedPNname: '', selectedDocKeys: [], shiftKey: false, ctrlKey: false,
+            settings: {}
+        }
+    }
+
+    componentDidMount() {
+        this.setState({
+            settings: sappy.getSettings(["FIN.CC.CAIXA_PRINCIPAL", "FIN.CC.MULTIBANCO"])
+        })
     }
 
     // componentDidMount() {
@@ -150,10 +159,10 @@ class CmpPorReceber extends Component {
 
             if (meioPag === "Numerario") {
                 data.CashSum = totalOfSelectedDocs;
-                data.CashAccount = sappy.getSetting("FIN.CC.CAIXA_PRINCIPAL").rawValue;
+                data.CashAccount = that.state.settings["FIN.CC.CAIXA_PRINCIPAL"];
             } else if (meioPag === "Multibanco") {
                 data.TransferSum = totalOfSelectedDocs
-                data.TransferAccount = sappy.getSetting("FIN.CC.MULTIBANCO").rawValue
+                data.TransferAccount = that.state.settings["FIN.CC.MULTIBANCO"]
                 data.TransferReference = 'MB'
             } else {
                 return sappy.showError({ message: meioPag + " não reconhecido!" })

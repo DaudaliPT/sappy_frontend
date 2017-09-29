@@ -12,8 +12,15 @@ class LpReports extends Component {
     this.handleOnClick_report = this.handleOnClick_report.bind(this);
 
     this.state = {
-      currentModal: null
+      currentModal: null,
+      settings: {}
     };
+  }
+
+  componentDidMount() {
+    this.setState({
+      settings: sappy.getSettings(["GERAL.GERAL.IMPRESSORA"])
+    })
   }
 
   toggleModal(refresh) {

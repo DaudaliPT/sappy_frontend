@@ -21,12 +21,18 @@ class ModalMeiosPagPagamento extends Component {
     this.state = {
       activeTab: "tab1",
       cheques: [{ data: sappy.unformat.date(".") }],
-      showValidations: false
+      showValidations: false,
+      settings: {}
     }
   }
 
   componentDidMount() {
     window.addEventListener("resize", this.calcPageHeight);
+
+    this.setState({
+      settings: sappy.getSettings(["FIN.CC.CAIXA_PRINCIPAL", "FIN.CC.MULTIBANCO", "FIN.CC.CHEQUES"])
+    })
+
     this.onFieldChange({
       fieldName: "originalTotalPagar",
       formatedValue: sappy.format.amount(this.props.totalPagar),
@@ -309,7 +315,7 @@ class ModalMeiosPagPagamento extends Component {
       let data = {
         DocType: "rCustomer",
         CardCode: this.props.selectedPN,
-        CashAccount: sappy.getSetting("FIN.CC.CAIXA_PRINCIPAL").rawValue,
+        CashAccount: this.state.settings["FIN.CC.CAIXA_PRINCIPAL"],
         CashSum: sappy.getNum(this.state.ValorNumerario) - sappy.getNum(this.state.troco),
         Remarks: this.state.Observacoes,
         PaymentInvoices: [],
@@ -330,7 +336,7 @@ class ModalMeiosPagPagamento extends Component {
 
 
       if (sappy.getNum(this.state.ValorMultibanco)) {
-        data.TransferAccount = sappy.getSetting("FIN.CC.MULTIBANCO").rawValue
+        data.TransferAccount = this.state.settings["FIN.CC.MULTIBANCO"]
         data.TransferSum = sappy.getNum(this.state.ValorMultibanco)
         data.TransferReference = 'MB'
       };
@@ -342,7 +348,7 @@ class ModalMeiosPagPagamento extends Component {
       }
 
       data.PaymentChecks = [];
-      data.CheckAccount = sappy.getSetting("FIN.CC.CHEQUES").rawValue;
+      data.CheckAccount = this.state.settings["FIN.CC.CHEQUES"];
 
       this.state.cheques.forEach(cheque => {
         if (sappy.getNum(cheque.valor) > 0) {

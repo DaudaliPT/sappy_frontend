@@ -237,7 +237,7 @@ class DocAtualizacaoPrecos extends Component {
   componentDidMount() {
     let that = this;
     axios
-      .get(`api/etiq/report`)
+      .get(`api/reports/LayoutCode/SAPPY001`)
       .then(function (result) {
         that.setState({
           defaultLayoutCode: result.data.LayoutCode

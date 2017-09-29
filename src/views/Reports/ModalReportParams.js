@@ -10,20 +10,19 @@ class ModalReportParams extends Component {
     super(props);
 
     this.onFieldChange = this.onFieldChange.bind(this);
-    this.handleClickContinuar = this.handleClickContinuar.bind(this);
+    this.handleVerPdf = this.handleVerPdf.bind(this);
+    this.handleImprimir = this.handleImprimir.bind(this);
 
     this.state = {
       parValues: {},
       reportParameters: [],
       loading: true
-
     };
   }
 
   componentWillMount() {
     $("body").css("position", "fixed");
   }
-
   componentDidMount() {
     let that = this;
 
@@ -33,7 +32,7 @@ class ModalReportParams extends Component {
         let parameters = result.data;
         if (typeof parameters === "string") parameters = JSON.parse(parameters);
 
-        if (parameters.length === 0) return that.handleClickContinuar(that)
+        if (parameters.length === 0) return that.handleVerPdf(that)
 
         that.setState({ loading: false, reportParameters: parameters });
       })
@@ -65,7 +64,7 @@ class ModalReportParams extends Component {
     this.setState(parValues);
   }
 
-  handleClickContinuar(e) {
+  handleVerPdf(e) {
     var baseUrl = "";
 
     if (window.location.port === "3000") {
@@ -79,6 +78,24 @@ class ModalReportParams extends Component {
 
     window.open(baseUrl + apiRoute + apiQuery, "_blank");
     this.props.toggleModal();
+  }
+
+  handleImprimir(e) {
+    let that = this;
+    var apiRoute = "/api/reports/print/" + this.props.DocCode;
+    var apiQuery = "?parValues=" + encodeURIComponent(JSON.stringify(this.state.parValues));
+    // Executar o mapa
+
+    sappy.showToastr({ color: "info", msg: `A impimir...` })
+    that.props.toggleModal();
+    axios
+      .post(apiRoute + apiQuery)
+      .then(function (rrrr) {
+        sappy.showToastr({ color: "success", msg: `Relatório enviado para a impressora!` })
+      })
+      .catch(function (error) {
+        sappy.showError(error, "Api error")
+      });
   }
 
   componentWillUnmount() {
@@ -216,16 +233,19 @@ class ModalReportParams extends Component {
       <Modal isOpen={true} className={"modal-m modal-success"}>
         <ModalHeader toggle={this.props.toggleModal}>{this.props.DocName} </ModalHeader>
         <ModalBody>
-
-          {renderParameters()}
-
-        </ModalBody>
-        <ModalFooter>
-          <Button color="success" onClick={this.handleClickContinuar} disabled={this.state.loading}>
-            Continuar
+          <div style={{ minHeight: "150px" }}>
+            {renderParameters()}
+          </div>
+          <div className="sappy-action-bar animation-slide-left">
+            <Button color="secondary" onClick={this.handleImprimir} disabled={this.state.loading}>
+              <i className="icon fa-print" /> Imprimir
+            </Button>
+            <Button color="secondary" onClick={this.handleVerPdf} disabled={this.state.loading}>
+              <i className="icon fa-file-pdf-o" /> Visualizar
           </Button>
-        </ModalFooter>
-      </Modal>
+          </div>
+        </ModalBody>
+      </Modal >
     );
   }
 }
