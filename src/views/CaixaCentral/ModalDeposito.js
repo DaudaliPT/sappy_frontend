@@ -82,15 +82,15 @@ class DepositoModal extends Component {
     this.setState(newStateValues);
   }
 
-  getvalidationResults(state) {
+  getvalidationResults({ forRender, state } = { forRender: false }) {
     let alerts = {};
     let toastrMsg = []
-
-    if (sappy.getNum(state.ValorNumerario) === 0) alerts.ValorNumerario = "danger|Indique o valor"
-    if (!state.AllocationAccount) alerts.AllocationAccount = "danger|Indique a conta caixa de origem"
-    if (!state.DepositAccount) alerts.DepositAccount = "danger|Indique a conta bancária"
-    // if (!state.BankReference) alerts.BankReference = "warning|Deve preencher a conta bancária"
-
+    if (!forRender || state.showValidations) {
+      if (sappy.getNum(state.ValorNumerario) === 0) alerts.ValorNumerario = "danger|Indique o valor"
+      if (!state.AllocationAccount) alerts.AllocationAccount = "danger|Indique a conta caixa de origem"
+      if (!state.DepositAccount) alerts.DepositAccount = "danger|Indique a conta bancária"
+      // if (!state.BankReference) alerts.BankReference = "warning|Deve preencher a conta bancária"
+    }
     return { alerts, toastrMsg }
   }
 
@@ -103,10 +103,8 @@ class DepositoModal extends Component {
     // let fieldsRequired = []
     // let hasChangesToState = false;
 
-    let { alerts, toastrMsg } = this.getvalidationResults(newState);
-
+    let { alerts, toastrMsg } = this.getvalidationResults({ state: newState });
     toastrMsg.forEach(toastrData => sappy.showToastr(toastrData));
-
     if (!this.state.showValidations && Object.keys(alerts).length > 0) return this.setState({ showValidations: true })
 
     //Validar se há erros ativos
@@ -194,8 +192,7 @@ class DepositoModal extends Component {
   }
 
   render() {
-    let alerts = {};
-    if (this.state.showValidations) alerts = this.getvalidationResults(this.state).alerts;
+    let alerts = this.getvalidationResults({ forRender: true, state: this.state }).alerts;
 
     return (
       <Modal isOpen={true} className={"modal-m modal-success"}>

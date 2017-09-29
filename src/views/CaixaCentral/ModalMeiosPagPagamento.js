@@ -113,6 +113,7 @@ class ModalMeiosPagPagamento extends Component {
 
     // if (this.state[fieldName + "_VALIDATEMSG"]) newStateValues[fieldName + "_VALIDATEMSG"] = ""
 
+    let originalTotalPagar = sappy.getNum(newStateValues.originalTotalPagar ? newStateValues.originalTotalPagar : this.state.originalTotalPagar)
     let totalPagar = sappy.getNum(newStateValues.totalPagar ? newStateValues.totalPagar : this.state.totalPagar)
     let ValorNumerario = sappy.getNum(fieldName === "ValorNumerario" ? formatedValue : this.state.ValorNumerario)
     let ValorMultibanco = sappy.getNum(fieldName === "ValorMultibanco" ? formatedValue : this.state.ValorMultibanco)
@@ -158,8 +159,8 @@ class ModalMeiosPagPagamento extends Component {
 
 
     let totalMeiosPag = ValorNumerario + ValorMultibanco + ValorTransferencia + ValorCheques
+    let pagamentoPorConta = totalPagar > originalTotalPagar ? sappy.round(totalPagar - originalTotalPagar, 2) : 0;
     let troco = sappy.round(totalMeiosPag - totalPagar, 2);
-
 
     if (troco > ValorNumerario) {
       sappy.showToastr({ color: "danger", msg: "O troco não pode ser superior ao valor em numerário" })
@@ -180,7 +181,7 @@ class ModalMeiosPagPagamento extends Component {
     newStateValues.continuarContent = continuarContent;
     newStateValues.totalMeiosPag = totalMeiosPag;
     newStateValues.troco = troco;
-
+    newStateValues.pagamentoPorConta = pagamentoPorConta;
 
     if (changeInfo.realtime) newStateValues[fieldName] = this.state[fieldName]
 
@@ -254,22 +255,27 @@ class ModalMeiosPagPagamento extends Component {
       })
   }
 
-  getvalidationResults(state) {
+  getvalidationResults({ forRender, state } = { forRender: false }) {
     let alerts = {};
     let toastrMsg = []
-    if (state.ValorTransferencia && (!state.RefTransferencia || !state.ContaTransferencia)) {
-      if (!state.RefTransferencia) alerts.RefTransferencia = "warning|Deve preencher a referência"
-      if (!state.ContaTransferencia) alerts.ContaTransferencia = "danger|Indique a conta de destino da transferência"
-    }
-
-    state.cheques.forEach((cheque, ix) => {
-      if (sappy.getNum(cheque.valor)) {
-        if (!cheque.data) alerts["cheques#" + ix + "data"] = "danger|Data em falta"
-        if (!cheque.banco) alerts["cheques#" + ix + "banco"] = "danger|Deve preencher o banco"
-        if (!cheque.numero) alerts["cheques#" + ix + "numero"] = "danger|Numero em falta"
+    if (!forRender || state.showValidations) {
+      if (state.ValorTransferencia && (!state.RefTransferencia || !state.ContaTransferencia)) {
+        if (!state.RefTransferencia) alerts.RefTransferencia = "warning|Deve preencher a referência"
+        if (!state.ContaTransferencia) alerts.ContaTransferencia = "danger|Indique a conta de destino da transferência"
       }
-    })
 
+      state.cheques.forEach((cheque, ix) => {
+        if (sappy.getNum(cheque.valor)) {
+          if (!cheque.data) alerts["cheques#" + ix + "data"] = "danger|Data em falta"
+          if (!cheque.banco) alerts["cheques#" + ix + "banco"] = "danger|Deve preencher o banco"
+          if (!cheque.numero) alerts["cheques#" + ix + "numero"] = "danger|Numero em falta"
+        }
+      })
+      if (sappy.getNum(state.pagamentoPorConta) > 0) alerts.totalPagar = "warning|Para crédito de conta " + sappy.format.amount(state.pagamentoPorConta)
+    } else if (forRender && !state.showValidations) {
+
+      if (sappy.getNum(state.pagamentoPorConta) > 0) alerts.totalPagar = "secondary|Para crédito de conta " + sappy.format.amount(state.pagamentoPorConta)
+    }
 
     return { alerts, toastrMsg }
   }
@@ -283,10 +289,8 @@ class ModalMeiosPagPagamento extends Component {
     // let fieldsRequired = []
     // let hasChangesToState = false;
 
-    let { alerts, toastrMsg } = this.getvalidationResults(newState);
-
+    let { alerts, toastrMsg } = this.getvalidationResults({ state: newState });
     toastrMsg.forEach(toastrData => sappy.showToastr(toastrData));
-
     if (!this.state.showValidations && Object.keys(alerts).length > 0) return this.setState({ showValidations: true })
 
     //Validar se há erros ativos
@@ -451,8 +455,7 @@ class ModalMeiosPagPagamento extends Component {
   }
 
   render() {
-    let alerts = {};
-    if (this.state.showValidations) alerts = this.getvalidationResults(this.state).alerts;
+    let alerts = this.getvalidationResults({ forRender: true, state: this.state }).alerts;
     let getRightButton = (valor) => !valor ? <i className="icon wb-arrow-left" /> : <i className="icon wb-close" />
 
     let renderNumerario = () => (
@@ -672,6 +675,7 @@ class ModalMeiosPagPagamento extends Component {
                           label="Observações"
                           name="Observacoes"
                           value={this.state.Observacoes}
+                          state={alerts.Observacoes}
                           onChange={this.onFieldChange}
                         />
                       </div>
@@ -680,6 +684,7 @@ class ModalMeiosPagPagamento extends Component {
                           valueType="amount"
                           label={this.state.isPayment ? "Total a pagar" : "Total a receber"}
                           name="totalPagar"
+                          state={alerts.totalPagar}
                           value={this.state.totalPagar}
                           onChange={this.onFieldChange}
                           realTimeChange={true}

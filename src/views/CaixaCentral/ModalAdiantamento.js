@@ -36,15 +36,15 @@ class ModalAdiantamento extends Component {
     this.setState(newStateValues);
   }
 
-  getvalidationResults(state) {
+  getvalidationResults({ forRender, state } = { forRender: false }) {
     let alerts = {};
     let toastrMsg = []
-
-    if (!state.ContactPersonCode) alerts.ContactPersonCode = "danger|Preenchimento obrigatório"
-    if (!state.CounterRef) alerts.CounterRef = "warning|Se possível indique uma referência"
-    if (!state.Comments) alerts.Comments = "warning|Deve indicar algum detalhe sobre a despesa"
-    if (sappy.getNum(state.totalPagar) <= 0) alerts.totalPagar = "danger|Indique o valor"
-
+    if (!forRender || state.showValidations) {
+      if (!state.ContactPersonCode) alerts.ContactPersonCode = "danger|Preenchimento obrigatório"
+      if (!state.CounterRef) alerts.CounterRef = "warning|Se possível indique uma referência"
+      if (!state.Comments) alerts.Comments = "warning|Deve indicar algum detalhe sobre a despesa"
+      if (sappy.getNum(state.totalPagar) <= 0) alerts.totalPagar = "danger|Indique o valor"
+    }
     return { alerts, toastrMsg }
   }
 
@@ -57,7 +57,7 @@ class ModalAdiantamento extends Component {
     // let fieldsRequired = []
     // let hasChangesToState = false;
 
-    let { alerts, toastrMsg } = this.getvalidationResults(newState);
+    let { alerts, toastrMsg } = this.getvalidationResults({ state: newState });
     toastrMsg.forEach(toastrData => sappy.showToastr(toastrData));
     if (!this.state.showValidations && Object.keys(alerts).length > 0) return this.setState({ showValidations: true })
 
@@ -118,8 +118,8 @@ class ModalAdiantamento extends Component {
   }
 
   render() {
-    let alerts = {};
-    if (this.state.showValidations) alerts = this.getvalidationResults(this.state).alerts;
+    let alerts = this.getvalidationResults({ forRender: true, state: this.state }).alerts;
+
     return (
       <Modal isOpen={true} className="modal-m modal-success">
         < ModalHeader toggle={this.props.toggleModal}  >
