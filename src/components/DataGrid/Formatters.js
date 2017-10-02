@@ -15,18 +15,21 @@ class DefaultFormater extends Component {
         let onMouseLeave;
         let onMouseEnter;
 
-        if (hover) onMouseLeave = e => sappy.hidePopover();
-        if (hover && dependentValues) onMouseEnter = e => {
-            let api = hover.api;
-            Object.keys(dependentValues).forEach(c => api = api.replace("<" + c + ">", dependentValues[c]));
+        if (hover && hover.render && dependentValues) {
+            onMouseLeave = e => sappy.hidePopover();
 
-            sappy.showPopover({
-                target: divID,
-                api,
-                renderContext: { dependentValues, rowIdx, column },
-                render: hover.render,
-                placement: hover.placement
-            });
+            onMouseEnter = e => {
+                let api = hover.api || "";
+                Object.keys(dependentValues).forEach(c => api = api.replace("<" + c + ">", dependentValues[c]));
+
+                sappy.showPopover({
+                    target: divID,
+                    api,
+                    renderContext: { dependentValues, rowIdx, column },
+                    render: hover.render,
+                    placement: hover.placement
+                });
+            }
         }
 
         let formatedValue;

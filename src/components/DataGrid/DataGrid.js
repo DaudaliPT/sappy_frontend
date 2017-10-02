@@ -3,6 +3,7 @@ import ReactDataGrid from 'react-data-grid/packages/react-data-grid/dist/react-d
 const sappy = window.sappy;
 import HeaderAlignRight from './HeaderAlignRight'
 import Formatters from './Formatters'
+import Editors from './Editors'
 
 const {
   ToolsPanel: { AdvancedToolbar, GroupedColumnsPanel },
@@ -144,6 +145,7 @@ class DataGrid extends Component {
         condition: field.condition,
         hover: field.hover,
         editable,
+        editor: Editors.Default,
         cellClass: editable ? "editable-col" : "locked-col",
         formatter: Formatters.Default,
         onLinkClick: field.onLinkClick,

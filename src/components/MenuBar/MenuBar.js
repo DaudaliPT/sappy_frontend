@@ -47,15 +47,20 @@ class MenuBar extends Component {
           // Estamos com menus no topo
           // Embora o mouse ainda esteja em cima do menu, forçar a esconde-los
           $(".site-menu-sub").css("display", "none");
-          setTimeout(function () {
-            // Algum tempo depois, remover esta propriedade (os menus já forame escondidos, o mouse
-            // já não está em cima deles), de forma que o ccs:hover funcione novamente
-            $(".site-menu-sub").css("display", "");
-          }, 1000);
+          setTimeout(() => {
+            setTimeout(() => {
+              setTimeout(() => {
+                // Algum tempo depois, remover esta propriedade (os menus já foram  escondidos, o mouse
+                // já não está em cima deles), de forma que o ccs:hover funcione novamente
+                $(".site-menu-sub").css("display", "");
+              }, 100);
+            }, 100);
+          }, 100);
         }
       }
     });
   }
+
   handleLogoImageError(event) {
     $(".navbar-brand-logo").css("display", "none");
     $("#nologotext").css("display", "");
