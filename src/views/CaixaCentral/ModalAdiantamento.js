@@ -48,6 +48,7 @@ class ModalAdiantamento extends Component {
     if (!forRender || state.showValidations) {
       if (!state.ContactPersonCode) alerts.ContactPersonCode = "danger|Preenchimento obrigatório"
       if (!state.CounterRef) alerts.CounterRef = "warning|Se possível indique uma referência"
+      if (state.CounterRef && state.CounterRef.length > 8) alerts.CounterRef = "danger|Só são permitidos 8 digitos."
       if (!state.Comments) alerts.Comments = "warning|Deve indicar algum detalhe sobre a despesa"
       if (sappy.getNum(state.totalPagar) <= 0) alerts.totalPagar = "danger|Indique o valor"
     }

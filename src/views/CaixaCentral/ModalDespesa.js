@@ -17,37 +17,50 @@ class ModalDespesa extends Component {
     this.state = {
       showValidations: false,
       TaxDate: sappy.moment(), //Assumir a data de hoje
-      AdiantamentosPendentes: [],
-      AdiantamentoSelecionado: {},
+      MeiosDePagamento: [],
+      MeioDePagamentoEscolhido: {},
       settings: {}
     }
   }
 
-
   componentDidMount() {
     let that = this
     this.setState({
-      settings: sappy.getSettings(['FIN.CCD.SERIE_FACTURAS', 'FIN.CC.CAIXA_PRINCIPAL', 'FIN.CCD.CAIXA_PASSAGEM', 'FIN.CCD.CAIXA_DIFERENCAS', 'FIN.CCD.FORN_ADIANT'])
-    })
+      settings: sappy.getSettings(['FIN.CCD.SERIE_FACTURAS', 'FIN.CC.CAIXA_PRINCIPAL', 'FIN.CCD.CAIXA_PASSAGEM', 'FIN.CCD.FORN_ADIANT'])
+    }
+      , () => {
+        axios
+          .get(`/api/caixa/despesas/adiantamentos`)
+          .then(result => {
+            let options = result.data.map(row => {
+              return {
+                ...row,
+                value: row.CreatedBy,
+                label: "Adiantamento a "
+                + row.ContactName
+                + " [" + sappy.format.amount(row.VALOR_PENDENTE) + "]"
+                + (row.CounterRef ? ", " + row.CounterRef : "")
+                + (row.Comments ? ", " + row.Comments : "")
+              }
+            })
 
-    axios
-      .get(`/api/caixa/despesas/adiantamentos`)
-      .then(result => {
-        let options = result.data.map(row => {
-          return {
-            ...row,
-            value: row.CreatedBy,
-            label: row.ContactName
-            + " [" + sappy.format.amount(row.VALOR_PENDENTE) + "]"
-            + (row.CounterRef ? ", " + row.CounterRef : "")
-            + (row.Comments ? ", " + row.Comments : "")
-          }
-        })
+            options = [{
+              value: that.state.settings['FIN.CC.CAIXA_PRINCIPAL'],
+              label: "Saida de caixa"
+            }, ...options]
 
-        that.setState({ AdiantamentosPendentes: options })
+            that.setState({
+              MeiosDePagamento: options,
+              MeioDePagamento: options[0].value,
+              MeioDePagamentoEscolhido: options[0]
+            })
 
-      })
-      .catch(error => sappy.showError(error, "Não foi possivel obter adiantamentos pendentes"));
+          })
+          .catch(error => sappy.showError(error, "Não foi possivel obter adiantamentos pendentes"));
+      }
+    )
+
+
   }
 
   // Recebe os valores dos campos MY*
@@ -63,14 +76,16 @@ class ModalDespesa extends Component {
     Object.assign(newStateValues, { [fieldName]: (fieldName.indexOf("Valor") > -1 ? formatedValue : val) })
 
     // Guardar as propriedades adicionais do adiantamento selecionado
-    if (fieldName === "Adiantamento") {
-      newStateValues.AdiantamentoSelecionado = formatedValue
-      if (!newStateValues.Adiantamento) newStateValues.TrocoRecebido = ""
+    if (fieldName === "MeioDePagamento") {
+      newStateValues.MeioDePagamentoEscolhido = formatedValue
+      if (!newStateValues.MeioDePagamento) newStateValues.TrocoRecebido = ""
     }
 
     let totalPagar = sappy.getNum(newStateValues.totalPagar || this.state.totalPagar)
-    let AdiantamentoSelecionado = (newStateValues.AdiantamentoSelecionado || this.state.AdiantamentoSelecionado);
-    newStateValues.DiferrencaAdiantamento = sappy.getNum(AdiantamentoSelecionado.VALOR_PENDENTE) - totalPagar;
+    let MeioDePagamentoEscolhido = (newStateValues.MeioDePagamentoEscolhido || this.state.MeioDePagamentoEscolhido);
+    if (MeioDePagamentoEscolhido.VALOR_PENDENTE) {
+      newStateValues.DiferrencaAdiantamento = sappy.getNum(MeioDePagamentoEscolhido.VALOR_PENDENTE) - totalPagar;
+    }
 
     if (changeInfo.realtime) newStateValues[fieldName] = this.state[fieldName]
     this.setState(newStateValues);
@@ -85,21 +100,22 @@ class ModalDespesa extends Component {
     if (!forRender || state.showValidations) {
       if (!state.CardCode) alerts.CardCode = "danger|Preenchimento obrigatório"
       if (!state.TaxDate) alerts.TaxDate = "danger|Preenchimento obrigatório"
+      if (!state.NumAtCard) alerts.NumAtCard = "danger|Preenchimento obrigatório"
       if (!state.ItemCode) alerts.ItemCode = "danger|Preenchimento obrigatório"
       if (!state.totalPagar) alerts.totalPagar = "danger|Preenchimento obrigatório"
-      if (!state.Adiantamento) alerts.Adiantamento = "warning|Verifique se não esqueceu de indicar o adiantamento"
+      if (!state.MeioDePagamento) alerts.MeioDePagamento = "warning|Verifique se não esqueceu de indicar o adiantamento"
 
-      if (DiferrencaAdiantamento < 0) alerts.Adiantamento = "danger|O valor do adiantamento é inferior á despesa"
+      if (DiferrencaAdiantamento < 0) alerts.MeioDePagamento = "danger|O valor do adiantamento é inferior á despesa"
       if (DiferrencaAdiantamento > 0) {
-        if (DiferrencaAdiantamento > TrocoRecebido) alerts.Adiantamento = "warning|Vai ficar pendente no adiantamento " + sappy.format.amount(DiferrencaAdiantamento - TrocoRecebido)
+        if (DiferrencaAdiantamento > TrocoRecebido) alerts.MeioDePagamento = "warning|Vai ficar pendente no adiantamento " + sappy.format.amount(DiferrencaAdiantamento - TrocoRecebido)
         if (DiferrencaAdiantamento < TrocoRecebido) {
           alerts.TrocoRecebido = "danger|Valor incorrecto";
           toastrMsg.push({ color: "danger", msg: "O valor do troco, não pode ser ultrapassar o valor adiantado." })
         }
       }
-    } else if (forRender && !state.showValidations && state.Adiantamento) {
+    } else if (forRender && !state.showValidations && state.MeioDePagamento) {
       if (DiferrencaAdiantamento > 0) {
-        if (DiferrencaAdiantamento > TrocoRecebido) alerts.Adiantamento = "secondary|Vai ficar pendente no adiantamento " + sappy.format.amount(DiferrencaAdiantamento - TrocoRecebido)
+        if (DiferrencaAdiantamento > TrocoRecebido) alerts.MeioDePagamento = "secondary|Vai ficar pendente no adiantamento " + sappy.format.amount(DiferrencaAdiantamento - TrocoRecebido)
       }
     }
 
@@ -135,20 +151,20 @@ class ModalDespesa extends Component {
         Series: this.state.settings['FIN.CCD.SERIE_FACTURAS'],
         TaxDate: this.state.TaxDate,
         Comments: this.state.Comments,
+        NumAtCard: this.state.NumAtCard,
         Lines: [{
           ItemCode: this.state.ItemCode,
           ValorComIva: sappy.getNum(this.state.totalPagar)
         }],
-        Adiantamento: { ...this.state.AdiantamentoSelecionado },
+        MeioDePagamento: { ...this.state.MeioDePagamentoEscolhido },
         TrocoRecebido: sappy.getNum(this.state.TrocoRecebido),
 
         CAIXA_PRINCIPAL: this.state.settings['FIN.CC.CAIXA_PRINCIPAL'],
-        CAIXA_PASSAGEM: this.state.settings['FIN.CCD.CAIXA_PASSAGEM'],
-        CAIXA_DIFERENCAS: this.state.settings['FIN.CCD.CAIXA_DIFERENCAS']
+        CAIXA_PASSAGEM: this.state.settings['FIN.CCD.CAIXA_PASSAGEM']
       }
       //Para que o c# faça o parse correctamente
-      data.Adiantamento.VALOR_ORIGINAL = sappy.getNum(data.Adiantamento.VALOR_ORIGINAL)
-      data.Adiantamento.VALOR_PENDENTE = sappy.getNum(data.Adiantamento.VALOR_PENDENTE)
+      data.MeioDePagamento.VALOR_ORIGINAL = sappy.getNum(data.MeioDePagamento.VALOR_ORIGINAL)
+      data.MeioDePagamento.VALOR_PENDENTE = sappy.getNum(data.MeioDePagamento.VALOR_PENDENTE)
 
       sappy.showWaitProgress("A criar documento...")
       axios
@@ -188,6 +204,7 @@ class ModalDespesa extends Component {
   render() {
     let that = this
     let alerts = this.getvalidationResults({ forRender: true, state: this.state }).alerts;
+    let MeioDePagamentoEscolhido = this.state.MeioDePagamentoEscolhido || {};
 
     let getRightButton = (valor) => !valor ? <i className="icon wb-arrow-left" /> : <i className="icon wb-close" />
     return (
@@ -218,6 +235,26 @@ class ModalDespesa extends Component {
               </div>
             </div>
             <div className="row">
+              <div className="col-4 pr-1">
+                <TextBox
+                  name="NumAtCard"
+                  label="Referência"
+                  value={this.state.NumAtCard}
+                  state={alerts.NumAtCard}
+                  onChange={this.onFieldChange}
+                />
+              </div>
+              <div className="col-8 pl-1">
+                <TextBox
+                  name="Comments"
+                  label="Observações"
+                  value={this.state.Comments}
+                  state={alerts.Comments}
+                  onChange={this.onFieldChange}
+                />
+              </div>
+            </div>
+            <div className="row">
               <div className="col-9 pr-1">
                 <ComboBox
                   label="Artigo"
@@ -241,60 +278,52 @@ class ModalDespesa extends Component {
               </div>
             </div>
 
-            <div className="row">
-              <div className="col-12 ">
-                <TextBox
-                  name="Comments"
-                  label="Observações"
-                  value={this.state.Comments}
-                  state={alerts.Comments}
-                  onChange={this.onFieldChange}
-                />
-              </div>
-            </div>
           </div>
           <hr />
           <div className="container">
             <div className="row">
               <div className="col-9 pr-1 ">
                 <ComboBox
-                  name="Adiantamento"
-                  label="Foi pago com adiantamento a"
-                  value={this.state.Adiantamento}
-                  state={alerts.Adiantamento}
-                  options={this.state.AdiantamentosPendentes}
+                  name="MeioDePagamento"
+                  label="Meio de Pagamento"
+                  value={this.state.MeioDePagamento}
+                  state={alerts.MeioDePagamento}
+                  options={this.state.MeiosDePagamento}
                   onChange={this.onFieldChange}
                 />
               </div>
+              {MeioDePagamentoEscolhido.ContactName &&
+                <div className="col-3 pl-1">
+                  <TextBoxNumeric
+                    valueType="amount"
+                    label="Troco recebido"
+                    name="TrocoRecebido"
+                    state={alerts.TrocoRecebido}
+                    value={this.state.TrocoRecebido}
+                    onChange={this.onFieldChange}
+                    realTimeChange={true}
+                    rightButton={getRightButton(sappy.getNum(that.state.TrocoRecebido))}
+                    onRightButtonClick={cmpThis => {
 
-              <div className="col-3 pl-1">
-                <TextBoxNumeric
-                  valueType="amount"
-                  label="Troco"
-                  name="TrocoRecebido"
-                  state={alerts.TrocoRecebido}
-                  value={this.state.TrocoRecebido}
-                  disabled={!this.state.Adiantamento}
-                  onChange={this.onFieldChange}
-                  realTimeChange={true}
-                  rightButton={getRightButton(sappy.getNum(that.state.TrocoRecebido))}
-                  onRightButtonClick={cmpThis => {
+                      let currVal = sappy.getNum(that.state.TrocoRecebido);
+                      let newVal = 0
+                      if (!currVal) newVal = sappy.getNum(that.state.DiferrencaAdiantamento)
+                      if (newVal < 0) newVal = 0;
+                      that.setState({ TrocoRecebido: sappy.format.amount(newVal) })
 
-                    let currVal = sappy.getNum(that.state.TrocoRecebido);
-                    let newVal = 0
-                    if (!currVal) newVal = sappy.getNum(that.state.DiferrencaAdiantamento)
-                    if (newVal < 0) newVal = 0;
-                    that.setState({ TrocoRecebido: sappy.format.amount(newVal) })
-
-                  }}
-                />
-              </div>
+                    }}
+                  />
+                </div>
+              }
             </div>
           </div>
 
           <div className="sappy-action-bar animation-slide-left">
-            <Button color={"success"} onClick={this.onAddDespesa}>
-              <i className="icon wb-check" />Confirmar <strong>{sappy.format.amount(this.state.totalPagar)}</strong>
+            <Button color={"success"}
+              onClick={this.onAddDespesa}
+              disabled={sappy.getNum(this.state.totalPagar) === 0}
+            >
+              <i className="icon wb-check" />Confirmar despesa de <strong>{sappy.format.amount(this.state.totalPagar)}</strong>
             </Button>
           </div>
         </ModalBody>
