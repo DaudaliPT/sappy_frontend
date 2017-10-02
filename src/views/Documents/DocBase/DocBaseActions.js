@@ -216,7 +216,7 @@ export default {
                     title: "Atenção!",
                     msg: "Ainda há campos com avisos!",
                     moreInfo: "Deseja mesmo assim criar este documento?",
-                    onConfirm: invokeAddDocAPI,
+                    onConfirm: (e) => invokeAddDocAPI(),
                     confirmText: "Ignorar e criar documento",
                     onCancel: () => { }
                 })
@@ -224,7 +224,7 @@ export default {
             return sappy.showQuestion({
                 title: "Deseja Continuar?",
                 msg: "Se continuar irá criar este documento.",
-                onConfirm: invokeAddDocAPI,
+                onConfirm: (e) => invokeAddDocAPI(),
                 confirmText: "Criar documento",
                 onCancel: () => { }
             })

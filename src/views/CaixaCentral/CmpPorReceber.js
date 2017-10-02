@@ -185,23 +185,6 @@ class CmpPorReceber extends Component {
         }
 
         invokeAddDocAPI()
-        // if (!hasWarning)
-        //   return sappy.showQuestion({
-        //     title: "Deseja Continuar?",
-        //     msg: "Se continuar irá criar este documento.",
-        //     onConfirm: invokeAddDocAPI,
-        //     confirmText: "Criar documento",
-        //     onCancel: () => { }
-        //   })
-        // else
-        //   return sappy.showWarning({
-        //     title: "Atenção!",
-        //     msg: "Ainda há campos com avisos!",
-        //     moreInfo: "Deseja mesmo assim criar este documento?",
-        //     onConfirm: invokeAddDocAPI,
-        //     confirmText: "Ignorar e criar documento",
-        //     onCancel: () => { }
-        //   })
     }
 
     setClass(docClass) {

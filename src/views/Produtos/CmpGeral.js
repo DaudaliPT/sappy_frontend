@@ -92,7 +92,7 @@ class CmpGeral extends Component {
     } else if (fieldName === "U_SubFamilia1") {
       Object.assign(Item, { ItemsGroupCode: formatedValue.U_CodigoFamilia }); // grupo de artigo (herdado da familia1) 
 
-      // Neste ecrã não definie a série, já que não pode mudar o código de artigo
+      // Neste ecrã não define a série, já que não pode mudar o código de artigo
       // Object.assign(Item, { Series: formatedValue.DefaultSeries }); // Default Series  
       Object.assign(Item, { [fieldName]: val });
 
