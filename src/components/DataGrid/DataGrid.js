@@ -145,7 +145,7 @@ class DataGrid extends Component {
         condition: field.condition,
         hover: field.hover,
         editable,
-        editor: Editors.Default,
+        editor: editable ? Editors.Default : null,
         cellClass: editable ? "editable-col" : "locked-col",
         formatter: Formatters.Default,
         onLinkClick: field.onLinkClick,

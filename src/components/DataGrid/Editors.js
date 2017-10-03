@@ -52,7 +52,7 @@ class DefaultEditor extends Component {
         that.input.select()
 
       }
-      } onMouseUp={e => false}
+      } onMouseUp={e => e.preventDefault()}
       defaultValue={formatedValue}
     />);
   }
