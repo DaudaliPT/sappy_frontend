@@ -48,7 +48,10 @@ class DefaultEditor extends Component {
       type="text" onBlur={this.props.onBlur}
       className="form-control"
       onFocus={e => {
-        setTimeout(e => that.input.select(), 2000)
+        setTimeout(() => {
+          alert("trst")
+          that.input.select()
+        }, 2000)
       }
       } onMouseUp={e => e.preventDefault()}
       defaultValue={formatedValue}
