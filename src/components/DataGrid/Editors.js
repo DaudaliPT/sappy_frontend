@@ -38,14 +38,8 @@ class DefaultEditor extends Component {
     let type = this.props.column.type;
     let value = this.props.value;
     let formatedValue = value;
-    if (type === "quantity") formatedValue = value === null ? null : sappy.format.quantity(sappy.getNum(value))
-    else if (type === "price") formatedValue = value === null ? null : sappy.format.price(sappy.getNum(value))
-    else if (type === "amount") formatedValue = value === null ? null : sappy.format.amount(sappy.getNum(value))
-    else if (type === "integer") formatedValue = value === null ? null : sappy.format.integer(sappy.getNum(value))
-    else if (type === "date") formatedValue = value === null ? null : sappy.format.date(sappy.unformat.date(value));
-
-
     let inputType = "text"
+    if ("quantity,price,amount,integer".indexOf(type) > -1) formatedValue = value === null ? null : sappy.getNum(value)
     if ("quantity,price,amount,integer".indexOf(type) > -1) inputType = "number"
 
     return (<input
