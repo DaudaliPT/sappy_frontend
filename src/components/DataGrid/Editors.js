@@ -49,9 +49,9 @@ class DefaultEditor extends Component {
       className="form-control"
       onFocus={e => {
         setTimeout(() => {
-          alert("trst")
-          that.input.select()
-        }, 2000)
+          that.input.setSelectionRange(0, 9999);
+
+        }, 0)
       }
       } onMouseUp={e => e.preventDefault()}
       defaultValue={formatedValue}
