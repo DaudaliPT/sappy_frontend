@@ -43,12 +43,22 @@ class DefaultEditor extends Component {
     else if (type === "amount") formatedValue = value === null ? null : sappy.format.amount(sappy.getNum(value))
     else if (type === "integer") formatedValue = value === null ? null : sappy.format.integer(sappy.getNum(value))
     else if (type === "date") formatedValue = value === null ? null : sappy.format.date(sappy.unformat.date(value));
+
+
+    let inputType = "text"
+    if ("quantity,price,amount,integer".indexOf(type) > -1) inputType = "number"
+
     return (<input
       ref={(node) => this.input = node}
-      type="text" onBlur={this.props.onBlur}
+      type={inputType}
+      onBlur={this.props.onBlur}
       className="form-control"
-      onFocus={e => that.input.setSelectionRange(0, 9999)}
-      onMouseUp={e => e.preventDefault()}
+      onFocus={e => {
+        setTimeout(() => {
+          that.input.setSelectionRange(0, 9999);
+        }, 0)
+      }
+      } onMouseUp={e => e.preventDefault()}
       defaultValue={formatedValue}
     />);
   }
