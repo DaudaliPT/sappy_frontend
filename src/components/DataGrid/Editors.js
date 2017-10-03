@@ -34,6 +34,7 @@ class DefaultEditor extends Component {
   }
 
   render() {
+    let that = this;
     let type = this.props.column.type;
     let value = this.props.value;
     let formatedValue = value;
@@ -46,7 +47,12 @@ class DefaultEditor extends Component {
       ref={(node) => this.input = node}
       type="text" onBlur={this.props.onBlur}
       className="form-control"
-      onFocus={e => this.input.select()} onMouseUp={e => false}
+      onFocus={e => {
+        debugger
+        that.input.select()
+
+      }
+      } onMouseUp={e => false}
       defaultValue={formatedValue}
     />);
   }
