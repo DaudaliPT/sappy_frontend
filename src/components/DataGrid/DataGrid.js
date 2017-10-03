@@ -383,7 +383,6 @@ class DataGrid extends Component {
           enableCellSelect={true}
           onRowExpandToggle={this.onRowExpandToggle}
           onGridRowsUpdated={this.handleGridRowsUpdated}
-          onCellClick={this.handleOnCellClick}
           rowGetter={this.getRowAt}
           rowActionsCell={this.state.groupBy.length !== 0 ? null : Draggable.RowActionsCell}
           rowRenderer={<RowRenderer onRowDrop={this.onRowReorder} />}

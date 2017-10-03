@@ -47,13 +47,8 @@ class DefaultEditor extends Component {
       ref={(node) => this.input = node}
       type="text" onBlur={this.props.onBlur}
       className="form-control"
-      onFocus={e => {
-        setTimeout(() => {
-          that.input.setSelectionRange(0, 9999);
-
-        }, 0)
-      }
-      } onMouseUp={e => e.preventDefault()}
+      onFocus={e => that.input.setSelectionRange(0, 9999)}
+      onMouseUp={e => e.preventDefault()}
       defaultValue={formatedValue}
     />);
   }
