@@ -622,7 +622,7 @@ input, optgroup,select,textarea {
 }
 [data-tip] {
 	position:relative;
-    display:block; 
+  display:block; 
 }  
 [data-tip]:before  {
 	content:attr(data-tip);
@@ -636,7 +636,7 @@ input, optgroup,select,textarea {
 	font-size: 0.8rem;
 	height:1.5rem;
 	line-height:1rem;
-    letter-spacing: 1px;
+  letter-spacing: 1px;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;
@@ -659,6 +659,10 @@ input, optgroup,select,textarea {
 .form-group {
      margin-top: 1.9rem!important;
      margin-bottom: 0rem !important; 
+}  
+.form-group.no-label {
+  margin-top: 0.1rem!important;
+  margin-bottom: 0rem !important; 
 }  
 .form-group.notas{
   margin-top: 0.1rem!important;

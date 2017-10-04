@@ -29,6 +29,7 @@ const getInitialState = function (props) {
       // ItemName: "danger|Iválido sskljsdkfs"
     },
     Item: Item,
+    OldItemData: JSON.parse(JSON.stringify(Item)),
     numberOfBarCodes: Item.ItemBarCodeCollection ? Item.ItemBarCodeCollection.length : 1,
     Propriedades,
     supplierCollection,
@@ -216,7 +217,6 @@ class CmpGeral extends Component {
     var that = this;
 
     let apagarArtigo = () => {
-      //save
       that.setState({ saving: true }, () => {
         this.serverRequest = axios({
           method: "delete",
@@ -289,21 +289,33 @@ class CmpGeral extends Component {
 
     if (!haErros) {
       let gravarArtigo = () => {
+
+
+        // If barcodes where deleted we need to save that
+        let oldBC = that.state.OldItemData.ItemBarCodeCollection;
+        let curBC = that.state.Item.ItemBarCodeCollection;
+        let BarCodesToDelete = []
+        oldBC.forEach(bc => {
+          let stillExists = curBC.find(item => item.AbsEntry === bc.AbsEntry)
+          if (!stillExists) BarCodesToDelete.push(bc)
+        })
+
+
         //save
         that.setState({ saving: true }, () => {
           this.serverRequest = axios({
             method: "post",
             headers: { "Content-Type": "application/json" },
             data: JSON.stringify({
-              newItem: this.state.Item,
-              supplierCollection: this.state.supplierCollection
+              newItem: that.state.Item,
+              supplierCollection: that.state.supplierCollection,
+              BarCodesToDelete
             }),
             url: "api/prod/item"
           })
             .then(result => {
 
               that.props.onItemSaved(); //notify parent
-
 
               sappy.showSuccess({
                 title: "Alterações gravadas",
@@ -334,16 +346,16 @@ class CmpGeral extends Component {
     }
   }
 
-  onClick_AddBarCode(e) {
+  onClick_AddBarCode(cmpThis) {
     let numberOfBarCodes = this.state.numberOfBarCodes;
-    if (e.target.innerText === "+") numberOfBarCodes++;
-    if (e.target.innerText === "-") numberOfBarCodes--;
+    if (cmpThis.props.rightButton === "+") numberOfBarCodes++;
+    if (cmpThis.props.rightButton === "-") numberOfBarCodes--;
     if (numberOfBarCodes < 1) numberOfBarCodes = 1;
     if (numberOfBarCodes > 10) numberOfBarCodes = 10;
 
     let Item = this.state.Item;
-    if (e.target.innerText === "-") {
-      let ix = e.target.id.split("_")[1]; // expect: CodigoBarras_1_FreeText_rbtn
+    if (cmpThis.props.rightButton === "-") {
+      let ix = cmpThis.props.name.split("_")[1]; // expect: CodigoBarras_1_FreeText
       let ItemBarCodeCollection = [...Item.ItemBarCodeCollection];
       ItemBarCodeCollection.splice(ix, 1);
       Object.assign(Item, { ItemBarCodeCollection });
@@ -352,11 +364,11 @@ class CmpGeral extends Component {
     this.setState({ Item, numberOfBarCodes });
   }
 
-  onClick_AddSupplier(e) {
+  onClick_AddSupplier(cmpThis) {
     let supplierCollection = [...this.state.supplierCollection];
 
-    if (e.target.innerText === "-") {
-      let ix = e.target.id.split("_")[1]; // expect: Supplier_1_Substitute_rbtn
+    if (cmpThis.props.rightButton === "-") {
+      let ix = cmpThis.props.name.split("_")[1]; // expect: Supplier_1_Substitute
       supplierCollection.splice(ix, 1);
     } else {
       supplierCollection.push({});
@@ -379,10 +391,10 @@ class CmpGeral extends Component {
 
         let bc = supplierCollection[index] || {};
 
-        let label = "Fornecedor secundário";
-        if (index === 0) {
-          label = "Fornecedor";
-        }
+
+        let label2 = "Código de catálogo"
+        let label = "Fornecedor";
+        if (this.state.showFabricante) label = "Fornecedor/Fabricante";
 
         ret.push(
           <div key={"div1" + supplier_field} className="row">
@@ -390,7 +402,7 @@ class CmpGeral extends Component {
               <ComboBox
                 key={supplier_field}
                 name={supplier_field}
-                label={label + ":"}
+                label={index === 0 ? label + ":" : ""}
                 disabled={this.state.ReadOnly}
                 placeholder={label + "..."}
                 value={bc.CardCode}
@@ -402,7 +414,7 @@ class CmpGeral extends Component {
 
             <div className="col" style={{ paddingLeft: "0" }}>
               <TextBox
-                label="Código de catálogo:"
+                label={index === 0 ? label2 + ":" : ""}
                 placeholder={"Código de catálogo..."}
                 name={catalogNo_field}
                 value={bc.Substitute}
@@ -419,11 +431,10 @@ class CmpGeral extends Component {
         if (index === 0 && this.state.showFabricante) {
           ret.push(
             <div key={"div_fabricante"} className="row">
-              <div className="col-7" style={{ paddingRight: "0" }}>
+              <div className="col-6 offset-1" style={{ paddingRight: "0" }}>
                 <ComboBox
                   key="Manufacturer"
                   name="Manufacturer"
-                  label={"Fabricante:"}
                   placeholder="Fabricante..."
                   createable
                   disabled={this.state.ReadOnly}
@@ -452,7 +463,7 @@ class CmpGeral extends Component {
             <div className="col-7" style={{ paddingRight: "0" }}>
               <TextBox
                 key={barcode_field}
-                label="Código de barras:"
+                label={index === 0 ? "Código de barras:" : ""}
                 disabled={this.state.ReadOnly}
                 placeholder={"Código de barras..."}
                 name={barcode_field}
@@ -464,7 +475,7 @@ class CmpGeral extends Component {
             <div className="col" style={{ paddingLeft: "0" }}>
               <TextBoxNumeric
                 valueType="integer"
-                label="Grupagem:"
+                label={index === 0 ? "Grupagem:" : ""}
                 placeholder="Grupagem..."
                 name={freetext_field}
                 value={bc.FreeText}

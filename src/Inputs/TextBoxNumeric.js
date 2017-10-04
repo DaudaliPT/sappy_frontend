@@ -84,9 +84,8 @@ class TextBoxNumeric extends Component {
     var renderRightButton = () => {
       if (this.props.rightButton) {
         let color = "success";
-        if (this.props.rightButton === "-") {
-          color = " warning";
-        }
+        if (this.props.rightButton === "-") color = "warning";
+
         return (
           <span className="input-group-btn">
             <Button color={color} outline id={this.props.name + "_rbtn"} className="right-button"
@@ -111,7 +110,7 @@ class TextBoxNumeric extends Component {
 
 
     return (
-      <FormGroup color={stateColor} data-tip={this.props.label} title={stateMsg}>
+      <FormGroup color={stateColor} className={this.props.label ? "" : "no-label"} data-tip={this.props.label} title={stateMsg}>
         {/*{renderLabel()}*/}
         <InputGroup>
           <Input

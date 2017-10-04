@@ -80,6 +80,7 @@ class MenuBar extends Component {
     var renderTopMenus = () => {
       if (user && user.NAME) {
         return this.state.menus.map(menu => {
+          if (menu.dontCreateMenu) return null
           return <RootMenu key={"menu_" + menu.fullName} menu={menu} />;
         });
       }

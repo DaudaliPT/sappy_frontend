@@ -89,16 +89,21 @@ class ModalMeiosPagPagamento extends Component {
       let cheques = [...this.state.cheques]
 
       if (prop === "valor") {
+
         cheques[ix] = Object.assign({}, cheques[ix], { [prop]: formatedValue });
-        if (changeInfo.realtime) {
-          // Alterar apenas o valor total de cheques
-          return that.updateTotalCheques(cheques);
-        } else {
-          return this.setState({ cheques },
-            //Após alterar o valor do cheque, alterar o valor total de cheques
-            () => that.updateTotalCheques(cheques)
-          )
-        }
+        if (!changeInfo.realtime) cheques[ix] = Object.assign({}, cheques[ix], { ["valorCommited"]: formatedValue });
+
+        // if (changeInfo.realtime) {
+        // Alterar apenas o valor total de cheques
+        // return that.updateTotalCheques(cheques);
+        // } else {
+        return this.setState({ cheques },
+          //Após alterar o valor do cheque, alterar o valor total de cheques
+          () => that.updateTotalCheques(cheques)
+        )
+        // }
+
+
       } else {
         cheques[ix][prop] = val;
         newStateValues.cheques = cheques
@@ -203,36 +208,37 @@ class ModalMeiosPagPagamento extends Component {
     let currVal = sappy.getNum(cheques[ix].valor);
     let totalPagar = sappy.getNum(this.state.totalPagar);
     let totalMeiosPag = sappy.getNum(this.state.totalMeiosPag);
+    let cheque = cheques[ix]
     let emFalta = 0
     if (totalPagar > totalMeiosPag) emFalta = totalPagar - totalMeiosPag
 
-    if (currVal) {
-      if (ix < cheques.length - 1
-        || (ix === cheques.length - 1 && emFalta === 0)
-      ) {
-        cheques.splice(ix, 1);
-      } else {
-        if (emFalta === 0) return
-        let cheque = cheques[ix]
-        //Assumir dados co cheque atual +1
+    let removerCheque = () => {
+      cheques.splice(ix, 1);
+      this.setState({ cheques }, that.updateTotalCheques(cheques))
+    }
+    let adicionarCheque = () => {
+      //Assumir dados co cheque atual +1
+      if (emFalta > 0) {
         cheques.push({
           banco: cheque.banco,
           numero: cheque.numero ? (sappy.getNum(cheque.numero) + 1).toString() : "",
-          valor: sappy.format.amount(currVal < emFalta ? currVal : emFalta)
+          valor: sappy.format.amount(currVal < emFalta ? currVal : emFalta),
+          valorCommited: sappy.format.amount(currVal < emFalta ? currVal : emFalta)
         })
+        this.setState({ cheques }, that.updateTotalCheques(cheques))
       }
+    }
+    let assumirValor = () => that.onFieldChange({ fieldName: "cheques#" + ix + "#valor", rawValue: emFalta, formatedValue: sappy.format.amount(totalPagar - totalMeiosPag) })
+    let removerValor = () => that.onFieldChange({ fieldName: "cheques#" + ix + "#valor", rawValue: 0, formatedValue: "" })
 
-      this.setState({ cheques }, that.updateTotalCheques(cheques))
-
+    if (cheques.length === 1) {
+      if (sappy.getNum(cheque.valor) === 0) assumirValor()
+      else if (this.state.troco === 0) removerValor()
+      else adicionarCheque()
     } else {
-      totalMeiosPag -= currVal
-      if (totalPagar > totalMeiosPag) emFalta = totalPagar - totalMeiosPag
-
-      that.onFieldChange({
-        fieldName: "cheques#" + ix + "#valor",
-        rawValue: emFalta,
-        formatedValue: sappy.format.amount(totalPagar - totalMeiosPag)
-      })
+      if (ix === 0) adicionarCheque()
+      else if (sappy.getNum(cheque.valor) === 0 && ix === cheques.length - 1) assumirValor()
+      else removerCheque()
     }
   }
 
@@ -572,21 +578,29 @@ class ModalMeiosPagPagamento extends Component {
       let cheques = this.state.cheques || [];
       let renderCheque = (cheque, ix) => {
         let rightButton
-        if (this.state.troco === 0) rightButton = "-"
-        else if (ix < cheques.length - 1) rightButton = "-"
-        else if (cheque.valor) rightButton = "+"
-        else rightButton = <i className="icon wb-arrow-left" />
+
+        if (cheques.length === 1) {
+          if (sappy.getNum(cheque.valor) === 0) rightButton = <i className="icon wb-arrow-left" />
+          else if (this.state.troco === 0) rightButton = <i className="icon wb-close" />
+          else rightButton = "+"
+        } else {
+          if (ix === 0) rightButton = "+"
+          else if (sappy.getNum(cheque.valor) === 0 && ix === cheques.length - 1) rightButton = <i className="icon wb-arrow-left" />
+          else rightButton = "-"
+        }
+
+
 
 
         return <div key={"cheques#" + ix} className="row">
           <div className="col-3 pr-1">
-            <Date label="Data" name={"cheques#" + ix + "#data"}
+            <Date label={ix === 0 ? "Data" : ""} name={"cheques#" + ix + "#data"}
               value={cheque.data}
               state={alerts["cheques#" + ix + "data"]}
               onChange={this.onFieldChange} />
           </div>
           <div className="col-4 pl-1 pr-1">
-            <ComboBox label="Banco"
+            <ComboBox label={ix === 0 ? "Banco" : ""}
               name={"cheques#" + ix + "#banco"}
               value={cheque.banco}
               state={alerts["cheques#" + ix + "banco"]}
@@ -597,7 +611,7 @@ class ModalMeiosPagPagamento extends Component {
             <TextBoxNumeric
               valueType="integer"
               align="left"
-              label="Numero"
+              label={ix === 0 ? "Número" : ""}
               name={"cheques#" + ix + "#numero"}
               value={cheque.numero}
               state={alerts["cheques#" + ix + "numero"]}
@@ -606,9 +620,9 @@ class ModalMeiosPagPagamento extends Component {
           <div className="col-3 pl-1">
             <TextBoxNumeric
               valueType="amount"
-              label="Valor"
+              label={ix === 0 ? "Valor" : ""}
               name={"cheques#" + ix + "#valor"}
-              value={cheque.valor}
+              value={cheque.valorCommited}
               onChange={this.onFieldChange}
               realTimeChange={true}
               rightButton={rightButton}

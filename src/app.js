@@ -5,10 +5,10 @@ import Full from "./containers/Full/";
 import Simple from "./containers/Simple/";
 
 import Inicio from "./views/Inicio/";
-// import UnderConstruction from "./views/UnderConstruction/"; 
 import Views from "./views";
 import Login from "./views/Auth/Login/";
 import ForgotPassword from "./views/Auth/ForgotPassword/";
+import UnderConstruction from "./views/UnderConstruction/";
 
 var sappy = window.sappy;
 sappy.Views = Views // to allow debug
@@ -50,9 +50,8 @@ sappy.app = {
         { name: "opdn/doc", component: Views.Documents.Opdn, dontCreateMenu: true, text: "Doc" },
         { name: "orpd/doc", component: Views.Documents.Orpd, dontCreateMenu: true, text: "Doc" },
         { name: "opch/doc", component: Views.Documents.Opch, dontCreateMenu: true, text: "Doc" },
-        { name: "orpc/doc", component: Views.Documents.Orpc, dontCreateMenu: true, text: "Doc" }
-
-        // { name: "contratos", component: UnderConstruction, text: "Contratos de compra" }
+        { name: "orpc/doc", component: Views.Documents.Orpc, dontCreateMenu: true, text: "Doc" },
+        // { name: "contratos", component: Views.ContratosCompra, text: "Contratos de compra" }
       ]
     },
     // 4\. Parceiros (4.1 Gestão de parceiros, 4.2 Contatos)

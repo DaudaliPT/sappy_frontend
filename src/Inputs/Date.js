@@ -86,7 +86,7 @@ class Date extends Component {
     }
 
     return (
-      <FormGroup color={stateColor} data-tip={this.props.label} title={stateMsg} >
+      <FormGroup color={stateColor} className={this.props.label ? "" : "no-label"} data-tip={this.props.label} title={stateMsg} >
         <InputGroup className="input-date">
           <Input
             type="text"

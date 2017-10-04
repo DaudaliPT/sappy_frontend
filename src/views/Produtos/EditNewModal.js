@@ -347,9 +347,9 @@ class ModalCreateArtigo extends Component {
             method: "post",
             headers: { "Content-Type": "application/json" },
             data: JSON.stringify({
-              newItem: this.state.newItem,
-              supplierCollection: this.state.supplierCollection,
-              saveDraft: this.state.saveDraft
+              newItem: that.state.newItem,
+              supplierCollection: that.state.supplierCollection,
+              saveDraft: that.state.saveDraft
             }),
             url: "api/prod/item"
           })
@@ -404,16 +404,16 @@ class ModalCreateArtigo extends Component {
     }
   }
 
-  onClick_AddBarCode(e) {
+  onClick_AddBarCode(cmpThis) {
     let numberOfBarCodes = this.state.numberOfBarCodes;
-    if (e.target.innerText === "+") numberOfBarCodes++;
-    if (e.target.innerText === "-") numberOfBarCodes--;
+    if (cmpThis.props.rightButton === "+") numberOfBarCodes++;
+    if (cmpThis.props.rightButton === "-") numberOfBarCodes--;
     if (numberOfBarCodes < 1) numberOfBarCodes = 1;
     if (numberOfBarCodes > 5) numberOfBarCodes = 5;
 
     let newItem = this.state.newItem;
-    if (e.target.innerText === "-") {
-      let ix = e.target.id.split("_")[1]; // expect: CodigoBarras_1_FreeText_rbtn
+    if (cmpThis.props.rightButton === "-") {
+      let ix = cmpThis.props.name.split("_")[1]; // expect: CodigoBarras_1_FreeText
       let ItemBarCodeCollection = [...newItem.ItemBarCodeCollection];
       ItemBarCodeCollection.splice(ix, 1);
       Object.assign(newItem, { ItemBarCodeCollection });
@@ -422,13 +422,13 @@ class ModalCreateArtigo extends Component {
     this.setState({ newItem, numberOfBarCodes });
   }
 
-  onClick_AddSupplier(e) {
+  onClick_AddSupplier(cmpThis) {
     let supplierCollection = [...this.state.supplierCollection];
 
-    if (e.target.innerText === "-") {
-      let ix = e.target.id.split("_")[1]; // expect: Supplier_1_Substitute_rbtn
+    if (cmpThis.props.rightButton === "-") {
+      let ix = cmpThis.props.name.split("_")[1]; // expect: Supplier_1_Substitute_rbtn
       supplierCollection.splice(ix, 1);
-    } else {
+    } else if (supplierCollection.length < 10) {
       supplierCollection.push({});
     }
 
@@ -446,12 +446,9 @@ class ModalCreateArtigo extends Component {
 
         let bc = supplierCollection[index] || {};
 
-        let label2 = "Código de catálogo:"
-        let label = "Fornecedor secundário";
-        if (index === 0) {
-          label = "Fornecedor";
-          label2 = "Código de catálogo"
-        }
+        let label2 = "Código de catálogo"
+        let label = "Fornecedor";
+        if (this.state.showFabricante) label = "Fornecedor/Fabricante";
 
         ret.push(
           <div key={"div1" + supplier_field} className="row">
@@ -459,7 +456,7 @@ class ModalCreateArtigo extends Component {
               <ComboBox
                 key={supplier_field}
                 name={supplier_field}
-                label={label + ":"}
+                label={index === 0 ? label + ":" : ""}
                 placeholder={label + "..."}
                 value={bc.CardCode}
                 getOptionsApiRoute="/api/cbo/ocrd/s"
@@ -470,7 +467,7 @@ class ModalCreateArtigo extends Component {
 
             <div className="col" style={{ paddingLeft: "0" }}>
               <TextBox
-                label={label2 + ":"}
+                label={index === 0 ? label2 + ":" : ""}
                 placeholder="Código de catálogo..."
                 name={catalogNo_field}
                 value={bc.Substitute}
@@ -486,11 +483,10 @@ class ModalCreateArtigo extends Component {
         if (index === 0 && this.state.showFabricante) {
           ret.push(
             <div key={"div_fabricante"} className="row">
-              <div className="col-7" style={{ paddingRight: "0" }}>
+              <div className="col-6 offset-1" style={{ paddingRight: "0" }}>
                 <ComboBox
                   key="Manufacturer"
                   name="Manufacturer"
-                  label={"Fabricante:"}
                   placeholder="Fabricante..."
                   createable
                   value={(this.state.newItem.Manufacturer || "").toString()}
@@ -518,7 +514,7 @@ class ModalCreateArtigo extends Component {
             <div className="col-7" style={{ paddingRight: "0" }}>
               <TextBox
                 key={barcode_field}
-                label="Código de barras:"
+                label={index === 0 ? "Código de barras:" : ""}
                 placeholder="Código de barras..."
                 name={barcode_field}
                 value={bc.Barcode}
@@ -529,7 +525,7 @@ class ModalCreateArtigo extends Component {
             <div className="col" style={{ paddingLeft: "0" }}>
               <TextBoxNumeric
                 valueType="integer"
-                label="Grupagem:"
+                label={index === 0 ? "Grupagem:" : ""}
                 placeholder="Grupagem..."
                 name={freetext_field}
                 value={bc.FreeText}

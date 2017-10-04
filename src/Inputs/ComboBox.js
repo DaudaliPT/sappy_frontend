@@ -116,7 +116,7 @@ class ComboBox extends Component {
     }
 
     return (
-      <FormGroup color={stateColor} data-tip={this.props.label} title={stateMsg}>
+      <FormGroup color={stateColor} className={this.props.label ? "" : "no-label"} data-tip={this.props.label} title={stateMsg}>
         {/*{renderLabel()}*/}
         <SelectVirtualized
           filterOptions={filterOptions}
