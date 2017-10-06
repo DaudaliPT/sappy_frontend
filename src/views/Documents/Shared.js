@@ -19,7 +19,7 @@ exports.prepareDocType = function ({ tableName }) {
   let priceHover = {}
   let numatcardLabel = ""
 
-  if ('13,14,15,16,17'.indexOf(objType) > -1) {          //Vendas
+  if ('13,14,15,16,17,23'.indexOf(objType) > -1) {          //Vendas
     cardCodeLabel = "Cliente";
     cardCodeApi = "/api/cbo/ocrd/c"
     contactLabel = 'Contato'

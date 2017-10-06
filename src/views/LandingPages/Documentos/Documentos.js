@@ -1,5 +1,6 @@
 let Documentos = {
   //Vendas
+  oqut: require("./LpVendas/oqut.js").default,
   odln: require("./LpVendas/odln.js").default,
   oinv: require("./LpVendas/oinv.js").default,
   ordn: require("./LpVendas/ordn.js").default,

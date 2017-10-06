@@ -463,7 +463,7 @@ import moment from 'moment';
       { tableName: "ORPD", tableSufix: "RPD", objectCode: 21, description: "Devolução de mercadoria" },
       { tableName: "OPOR", tableSufix: "POR", objectCode: 22, description: "Encomenda a fornecedor" },
 
-      { tableName: "OQUT", tableSufix: "QUT", objectCode: 23, description: "Quotations" },
+      { tableName: "OQUT", tableSufix: "QUT", objectCode: 23, description: "Cotação a Cliente" },
       { tableName: "ORCT", tableSufix: "RCT", objectCode: 24, description: "Receipts incoming payments" },
       { tableName: "ODPS", tableSufix: "DPS", objectCode: 25, description: "Bill of Exchange Deposits" },
       { tableName: "OBTD", tableSufix: "BTD", objectCode: 28, description: "Journal vouchers" },

@@ -95,6 +95,7 @@ class DepositoModal extends Component {
       if (sappy.getNum(state.ValorNumerario) === 0) alerts.ValorNumerario = "danger|Indique o valor"
       if (!state.AllocationAccount) alerts.AllocationAccount = "danger|Indique a conta caixa de origem"
       if (!state.DepositAccount) alerts.DepositAccount = "danger|Indique a conta bancária"
+      if (state.AllocationAccount === state.DepositAccount) alerts.DepositAccount = "danger|A conta de depósito não pode ser igual á conta de origem"
       // if (!state.BankReference) alerts.BankReference = "warning|Deve preencher a conta bancária"
     }
     return { alerts, toastrMsg }
@@ -216,7 +217,7 @@ class DepositoModal extends Component {
                     label="Origem"
                     value={this.state.AllocationAccount}
                     state={alerts.AllocationAccount}
-                    getOptionsApiRoute="/api/cbo/oact/cnt11"
+                    getOptionsApiRoute="/api/cbo/oact/cnt1112"
                     onChange={this.onFieldChange}
                   />
                 </div>
@@ -240,7 +241,7 @@ class DepositoModal extends Component {
                     label="Depositar em"
                     value={this.state.DepositAccount}
                     state={alerts.DepositAccount}
-                    getOptionsApiRoute="/api/cbo/oact/cnt12"
+                    getOptionsApiRoute="/api/cbo/oact/cnt1112"
                     onChange={this.onFieldChange}
                   />
                 </div>

@@ -32,7 +32,7 @@ class ModalReportParams extends Component {
         let parameters = result.data;
         if (typeof parameters === "string") parameters = JSON.parse(parameters);
 
-        if (parameters.length === 0) return that.handleVerPdf(that)
+        // if (parameters.length === 0) return that.handleVerPdf(that)
 
         that.setState({ loading: false, reportParameters: parameters });
       })
@@ -105,12 +105,12 @@ class ModalReportParams extends Component {
     }
   }
   render() {
-    let { reportParameters } = this.state;
+    let { reportParameters, loading } = this.state;
 
     let renderParameters = () => {
       let parameterComponents = [];
 
-      if (reportParameters.length === 0) {
+      if (loading) {
         let parComponent = <div>
           <div className="example-loading example-well h-150 vertical-align text-center">
             <div className="loader vertical-align-middle loader-tadpole" />
@@ -122,110 +122,112 @@ class ModalReportParams extends Component {
           </div>
         </div>;
         parameterComponents.push(parComponent);
-      }
+      } else if (reportParameters.length === 0) {
+        let parComponent = <div>
+          <div className="vertical-align text-center">
+            <div className="vertical-align-middle">
+              <p>Este relatório não requer parametros...</p>
+            </div>
+          </div>
+        </div>;
+        parameterComponents.push(parComponent);
+      } else {
+        reportParameters
+          .filter(par => {
+            // Bitwise compare
+            let isShowOnPanel = (par.ParameterFieldUsage2 & sappy.CrystalReports.ParameterFieldUsage2.ShowOnPanel) === sappy.CrystalReports.ParameterFieldUsage2.ShowOnPanel;
+            let isEditableOnPanel = (par.ParameterFieldUsage2 & sappy.CrystalReports.ParameterFieldUsage2.EditableOnPanel) === sappy.CrystalReports.ParameterFieldUsage2.EditableOnPanel;
+            let isDataFetching = (par.ParameterFieldUsage2 & sappy.CrystalReports.ParameterFieldUsage2.DataFetching) === sappy.CrystalReports.ParameterFieldUsage2.DataFetching;
 
-      reportParameters
-        .filter(par => {
-          // Bitwise compare
-          let isShowOnPanel =
-            (par.ParameterFieldUsage2 & sappy.CrystalReports.ParameterFieldUsage2.ShowOnPanel) ===
-            sappy.CrystalReports.ParameterFieldUsage2.ShowOnPanel;
-          let isEditableOnPanel =
-            (par.ParameterFieldUsage2 & sappy.CrystalReports.ParameterFieldUsage2.EditableOnPanel) ===
-            sappy.CrystalReports.ParameterFieldUsage2.EditableOnPanel;
-          let isDataFetching =
-            (par.ParameterFieldUsage2 & sappy.CrystalReports.ParameterFieldUsage2.DataFetching) ===
-            sappy.CrystalReports.ParameterFieldUsage2.DataFetching;
+            return par.ReportName === "" && (isShowOnPanel || isEditableOnPanel || isDataFetching);
+          })
+          .forEach(par => {
+            let parComponent;
+            let parComponentTo;
 
-          return par.ReportName === "" && (isShowOnPanel || isEditableOnPanel || isDataFetching);
-        })
-        .forEach(par => {
-          let parComponent;
-          let parComponentTo;
+            let hasSelect = par.Name.toUpperCase().indexOf("@SELECT") >= 0;
+            let isRange = par.DiscreteOrRangeKind === sappy.CrystalReports.DiscreteOrRangeKind.RangeValue;
+            let isDiscreteAndRange = par.DiscreteOrRangeKind === sappy.CrystalReports.DiscreteOrRangeKind.DiscreteAndRangeValue;
+            let value = this.state.parValues[par.Name] || {};
+            let label = par.PromptText || par.Name;
 
-          let hasSelect = par.Name.toUpperCase().indexOf("@SELECT") >= 0;
-          let isRange = par.DiscreteOrRangeKind === sappy.CrystalReports.DiscreteOrRangeKind.RangeValue;
-          let isDiscreteAndRange = par.DiscreteOrRangeKind === sappy.CrystalReports.DiscreteOrRangeKind.DiscreteAndRangeValue;
-          let value = this.state.parValues[par.Name] || {};
-          let label = par.PromptText || par.Name;
+            if (isDiscreteAndRange) {
+              if (hasSelect) {
+                // Ecrã de seleção de artigo com de...a e propriedades
 
-          if (isDiscreteAndRange) {
-            if (hasSelect) {
-              // Ecrã de seleção de artigo com de...a e propriedades
+                let isOCRD = par.Name.toUpperCase().indexOf("OCRD") > 0;
+                let isOITM = par.Name.toUpperCase().indexOf("OITM") > 0;
 
-              let isOCRD = par.Name.toUpperCase().indexOf("OCRD") > 0;
-              let isOITM = par.Name.toUpperCase().indexOf("OITM") > 0;
+                let nameParts = par.Name.split("@");
+                let modifParName = nameParts[0];
+                if (isOCRD) modifParName += '@SELECT "CardCode", "CardName" FROM (' + nameParts[1] + ")";
+                else if (isOITM) modifParName += '@SELECT "ItemCode", "ItemName" FROM (' + nameParts[1] + ")";
 
-              let nameParts = par.Name.split("@");
-              let modifParName = nameParts[0];
-              if (isOCRD) modifParName += '@SELECT "CardCode", "CardName" FROM (' + nameParts[1] + ")";
-              else if (isOITM) modifParName += '@SELECT "ItemCode", "ItemName" FROM (' + nameParts[1] + ")";
-
-              if (isOCRD || isOITM) {
-                parComponent = (
-                  <ComboBox
-                    key={par.Name}
-                    label={label}
-                    name={par.Name}
-                    getOptionsApiRoute={"/api/reports/getParameterOptions?parName=" + encodeURIComponent(modifParName)}
-                    value={value.Value}
-                    onChange={this.onFieldChange}
-                  />
-                );
+                if (isOCRD || isOITM) {
+                  parComponent = (
+                    <ComboBox
+                      key={par.Name}
+                      label={label}
+                      name={par.Name}
+                      getOptionsApiRoute={"/api/reports/getParameterOptions?parName=" + encodeURIComponent(modifParName)}
+                      value={value.Value}
+                      onChange={this.onFieldChange}
+                    />
+                  );
+                  parComponentTo = (
+                    <ComboBox
+                      key={"EndValueOf_" + par.Name}
+                      label=""
+                      name={"EndValueOf_" + par.Name}
+                      getOptionsApiRoute={"/api/reports/getParameterOptions?parName=" + encodeURIComponent(modifParName)}
+                      value={value.EndValue}
+                      onChange={this.onFieldChange}
+                    />
+                  );
+                }
+              }
+            } else if (hasSelect) {
+              parComponent = (
+                <ComboBox
+                  key={par.Name}
+                  label={label}
+                  name={par.Name}
+                  getOptionsApiRoute={"/api/reports/getParameterOptions?parName=" + encodeURIComponent(par.Name)}
+                  value={value.Value}
+                  onChange={this.onFieldChange}
+                />
+              );
+              if (isRange) {
                 parComponentTo = (
                   <ComboBox
                     key={"EndValueOf_" + par.Name}
                     label=""
                     name={"EndValueOf_" + par.Name}
-                    getOptionsApiRoute={"/api/reports/getParameterOptions?parName=" + encodeURIComponent(modifParName)}
+                    getOptionsApiRoute={"/api/reports/getParameterOptions?parName=" + encodeURIComponent(par.Name)}
                     value={value.EndValue}
                     onChange={this.onFieldChange}
                   />
                 );
               }
-            }
-          } else if (hasSelect) {
-            parComponent = (
-              <ComboBox
-                key={par.Name}
-                label={label}
-                name={par.Name}
-                getOptionsApiRoute={"/api/reports/getParameterOptions?parName=" + encodeURIComponent(par.Name)}
-                value={value.Value}
-                onChange={this.onFieldChange}
-              />
-            );
-            if (isRange) {
-              parComponentTo = (
-                <ComboBox
-                  key={"EndValueOf_" + par.Name}
-                  label=""
-                  name={"EndValueOf_" + par.Name}
-                  getOptionsApiRoute={"/api/reports/getParameterOptions?parName=" + encodeURIComponent(par.Name)}
-                  value={value.EndValue}
-                  onChange={this.onFieldChange}
-                />
-              );
-            }
-          } else {
-            if (
-              par.ParameterValueKind === sappy.CrystalReports.ParameterValueKind.DateParameter ||
-              par.ParameterValueKind === sappy.CrystalReports.ParameterValueKind.DateTimeParameter
-            ) {
-              parComponent = (
-                <Date key={par.Name} label={label} name={par.Name} value={value.Value} onChange={this.onFieldChange} />
-              );
             } else {
-              parComponent = (
-                <TextBox key={par.Name} label={label} name={par.Name} value={value.Value} onChange={this.onFieldChange} />
-              );
+              if (
+                par.ParameterValueKind === sappy.CrystalReports.ParameterValueKind.DateParameter ||
+                par.ParameterValueKind === sappy.CrystalReports.ParameterValueKind.DateTimeParameter
+              ) {
+                parComponent = (
+                  <Date key={par.Name} label={label} name={par.Name} value={value.Value} onChange={this.onFieldChange} />
+                );
+              } else {
+                parComponent = (
+                  <TextBox key={par.Name} label={label} name={par.Name} value={value.Value} onChange={this.onFieldChange} />
+                );
+              }
             }
-          }
 
-          if (parComponent) parameterComponents.push(parComponent);
-          if (parComponentTo) parameterComponents.push(parComponentTo);
-        });
-
+            if (parComponent) parameterComponents.push(parComponent);
+            if (parComponentTo) parameterComponents.push(parComponentTo);
+          });
+      }
       return parameterComponents;
     };
 

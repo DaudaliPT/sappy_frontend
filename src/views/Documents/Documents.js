@@ -4,6 +4,7 @@ exports.Opor = require("./DocCompras/Opor.js").default
 exports.Orpc = require("./DocCompras/Orpc.js").default
 exports.Orpd = require("./DocCompras/Orpd.js").default
 
+exports.Oqut = require("./DocVendas/Oqut.js").default
 exports.Odln = require("./DocVendas/Odln.js").default
 exports.Oinv = require("./DocVendas/Oinv.js").default
 exports.Ordn = require("./DocVendas/Ordn.js").default

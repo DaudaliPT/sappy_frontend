@@ -189,12 +189,14 @@ class CmpDespesas extends Component {
                             .post(`/api/caixa/despesas/fecharadiantamento`, data)
                             .then(result => {
                                 sappy.hideWaitProgress()
+                                debugger
                                 sappy.showToastr({
                                     color: "success",
                                     msg: `Criou com sucesso o recibo ${result.data.DocNum} para a caixa de diferenças!`
                                 })
 
-                                that.props.toggleModal({ success: result.data.DocNum });
+                                that.setState({ selectedRowId: "", showActions: false },
+                                    e => that.pnComponent.findAndGetFirstRows())
                             })
                             .catch(error => sappy.showError(error, "Não foi possivel fechar o adiantamento"));
 
@@ -291,7 +293,7 @@ class CmpDespesas extends Component {
                 },
                 {
                     name: "Fechar adiantamento",
-                    visible: isAdiantamentoSelected && adiantamentoParcialmentePago && showActions,
+                    visible: isAdiantamentoSelected && showActions,
                     color: "danger",
                     icon: "icon fa-window-close",
                     onClick: this.fecharAdiantamento

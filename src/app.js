@@ -21,11 +21,13 @@ sappy.app = {
       text: "Vendas",
       icon: "icon fa-shopping-cart",
       menus: [
+        { name: "oqut", component: Views.LandingPages.Documentos.oqut, text: "Cotações" },
         { name: "ordr", component: Views.LandingPages.Documentos.ordr, text: "Encomendas" },
         { name: "odln", component: Views.LandingPages.Documentos.odln, text: "Entregas" },
         { name: "ordn", component: Views.LandingPages.Documentos.ordn, text: "Devoluções" },
         { name: "oinv", component: Views.LandingPages.Documentos.oinv, text: "Faturas" },
         { name: "orin", component: Views.LandingPages.Documentos.orin, text: "Notas de Crédito" },
+        { name: "oqut/doc", component: Views.Documents.Oqut, dontCreateMenu: true, text: "Doc" },
         { name: "ordr/doc", component: Views.Documents.Ordr, dontCreateMenu: true, text: "Doc" },
         { name: "odln/doc", component: Views.Documents.Odln, dontCreateMenu: true, text: "Doc" },
         { name: "ordn/doc", component: Views.Documents.Ordn, dontCreateMenu: true, text: "Doc" },
