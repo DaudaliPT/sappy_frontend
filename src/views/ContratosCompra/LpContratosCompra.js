@@ -6,7 +6,6 @@ import { Badge } from "reactstrap";
 import uuid from "uuid/v4";
 
 import BaseLandingPage from "../BaseLandingPage";
-import EditModal from "./EditModal";
 import { hashHistory } from "react-router";
 
 class LpContratosCompra extends Component {
@@ -161,7 +160,7 @@ class LpContratosCompra extends Component {
           name: "main",
           color: "success",
           icon: "icon wb-plus",
-          onClick: e => sappy.showModal(<EditModal toggleModal={this.toggleModal} />)
+          onClick: e => hashHistory.push({ pathname: "/cmp/contratos/doc", state: { id: null } })
         }
       ];
 

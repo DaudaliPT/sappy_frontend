@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { FormGroup, FormFeedback } from "reactstrap";
+import { FormGroup, FormFeedback, Button } from "reactstrap";
 import { Select, Creatable } from "react-select";
 import SelectVirtualized from "react-virtualized-select";
 import createFilterOptions from "react-select-fast-filter-options";
@@ -96,6 +96,7 @@ class ComboBox extends Component {
   }
 
   render() {
+    let that = this
     var { options, filterOptions, isLoading } = this.state;
     var { name, clearable, createable, multi, disabled, searchable, value } = this.props;
 
@@ -105,6 +106,25 @@ class ComboBox extends Component {
       }
     };
 
+    var renderRightButton = () => {
+      if (this.props.rightButton) {
+        let color = "success";
+        if (this.props.rightButton === "-") color = "warning";
+
+        return (
+          <span className="input-group-btn">
+            <Button color={color} outline id={this.props.name + "_rbtn"} className="right-button"
+
+              disabled={this.props.disabled || false}
+              onClick={() => {
+                that.props.onRightButtonClick(that)
+              }}>
+              {this.props.rightButton}
+            </Button>
+          </span >
+        );
+      }
+    };
 
     let stateColor, stateMsg;
     if (this.state.loadingError) {
@@ -136,6 +156,7 @@ class ComboBox extends Component {
           value={value}
         />
 
+        {renderRightButton()}
         {stateMsg && <FormFeedback>{stateMsg}</FormFeedback>}
 
         {renderHelpText()}

@@ -1,6 +1,6 @@
 {
-  "name": "LpContratosCompra",
+  "name": "ContratosCompra",
   "version": "0.0.0",
   "private": true,
-  "main": "./LpContratosCompra.js"
+  "main": "./ContratosCompra.js"
 }

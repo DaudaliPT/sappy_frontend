@@ -53,7 +53,8 @@ sappy.app = {
         { name: "orpd/doc", component: Views.Documents.Orpd, dontCreateMenu: true, text: "Doc" },
         { name: "opch/doc", component: Views.Documents.Opch, dontCreateMenu: true, text: "Doc" },
         { name: "orpc/doc", component: Views.Documents.Orpc, dontCreateMenu: true, text: "Doc" },
-        // { name: "contratos", component: Views.ContratosCompra, text: "Contratos de compra" }
+        { name: "contratos", component: Views.ContratosCompra.Lp, text: "Contratos de compra" },
+        { name: "contratos/doc", component: Views.ContratosCompra.Doc, dontCreateMenu: true, text: "Doc" },
       ]
     },
     // 4\. Parceiros (4.1 Gestão de parceiros, 4.2 Contatos)

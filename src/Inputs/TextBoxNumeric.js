@@ -64,7 +64,7 @@ class TextBoxNumeric extends Component {
     if (valueType === "price") formatedValue = sappy.format.price(rawValue)
     if (valueType === "amount") formatedValue = sappy.format.amount(rawValue)
     if (valueType === "percent") formatedValue = sappy.format.percent(rawValue)
-    if (valueType === "integer") formatedValue = Math.floor(sappy.getNum(rawValue))//getnum para não ter separdores de milhares
+    if (valueType === "integer") formatedValue = Math.floor(sappy.getNum(rawValue))//getnum para não ter separador de milhares
 
     return formatedValue;
   }
@@ -113,6 +113,7 @@ class TextBoxNumeric extends Component {
       <FormGroup color={stateColor} className={this.props.label ? "" : "no-label"} data-tip={this.props.label} title={stateMsg}>
         {/*{renderLabel()}*/}
         <InputGroup>
+          {this.props.leftContent && this.props.leftContent}
           <Input
             type="text"
             ref={this.props.name}
@@ -125,6 +126,7 @@ class TextBoxNumeric extends Component {
             onBlur={e => this.handleBlur(e)}
           />
           {renderRightButton()}
+          {this.props.rightContent && this.props.rightContent}
         </InputGroup>
 
         {stateMsg && <FormFeedback>{stateMsg}</FormFeedback>}

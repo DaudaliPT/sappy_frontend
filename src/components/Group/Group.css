@@ -1,0 +1,23 @@
+ .sappy-group{    
+    margin-bottom: 1rem;   
+    padding-top: 15px;
+}
+
+.sappy-group .title {
+    /* padding-left :15px; */
+    
+}
+
+.sappy-group .title .text {
+    display: initial;
+    margin-top: 0;
+    margin-bottom: 0;
+    /* padding: 20px 0px;  */
+    font-size:1.1rem;
+    color: #37474f;}
+    
+.sappy-group .body {
+        /* padding:15px; */
+        /* border: 1px solid #eeeeee; */
+        /* background: rgb(241, 244, 245); */
+ }

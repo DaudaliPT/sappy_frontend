@@ -26,7 +26,12 @@ class TextBox extends Component {
   handleBlur(e) {
     let formatedValue = e.target.value;
 
-    if (sappy.isDiferent(formatedValue, this.state.receivedValue)) {
+    if (this.props.valueType === "discount") {
+      formatedValue = sappy.formatUserDisc(sappy.parseUserDisc(formatedValue))
+    }
+
+    if (sappy.isDiferent(formatedValue, this.state.receivedValue)
+      || sappy.isDiferent(formatedValue, e.target.value)) {
       let rawValue = formatedValue
       let changeInfo = { fieldName: this.props.name, rawValue, formatedValue };
       this.props.onChange(changeInfo);
@@ -68,7 +73,7 @@ class TextBox extends Component {
         {/*{renderLabel()}*/}
         <InputGroup>
           <Input
-            type="text"
+            type={this.props.type}
             ref={this.props.name}
             id={this.props.name}
             value={this.state.value || ''}

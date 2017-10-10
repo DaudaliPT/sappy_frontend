@@ -37,9 +37,8 @@ class Check extends Component {
     } else {
       classNames = "inactive " + OFF
     }
-
     return (
-      <FormGroup color={stateColor} data-tip={this.props.label} title={stateMsg}>
+      <FormGroup color={stateColor} className={this.props.label ? "" : "no-label"} data-tip={this.props.label} title={stateMsg}>
         {/*{renderLabel()}*/}
         <InputGroup>
 

@@ -292,7 +292,7 @@ body.site-navbar-small {
   padding: 15px
 }
 .setting-name{ 
-  font-weight: 600;
+  font-weight: 500;
 }
 .setting-id{   
   font-size: 0.87rem; 
@@ -1082,4 +1082,15 @@ div.flag>i.icon:hover{
   background: rgb(97, 165, 229);
   color: white;
 }
+ 
+.scrollable-doc{
+  display: block;
+  
+  padding-top: 10px;
+  padding-bottom: 0px;
+  padding-left:   10px;
+  padding-right:  10px;
+    /* border: 1px dotted red;   */
+  width: calc(100% - 30px);
+  margin: auto;}
  

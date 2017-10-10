@@ -282,6 +282,73 @@ import moment from 'moment';
     return 0
   }
 
+
+  sappy.parseUserDisc = (value) => {
+    value = value || '';
+    let DISC_SUC = [];
+    let DISC_UN = [];
+    let DISC_VAL = [];
+
+    value.split('+').map(part => {
+      if (part.indexOf('.') > -1 && part.indexOf(',') > -1) {
+        //tem pontos e virgulas, remover o que for o separador de milhares 
+        part = sappy.replaceAll(part, sappy.sessionInfo.company.oadm.ThousSep, "")
+      }
+
+      if (part.toUpperCase() === "BONUS") {
+        DISC_SUC[0] = 100;
+      } else if (part.indexOf('€/un') > -1 || part.indexOf('eu') > -1 || part.indexOf('EU') > -1 || part.indexOf('u') > -1 || part.indexOf('U') > -1) {
+        part = part.replace('€/un', '').replace('eu', '').replace('EU', '').replace('u', '').replace('U', '');
+        let d = sappy.getNum(part);
+        if (d) DISC_UN[DISC_UN.length] = d
+      } else if (part.indexOf('€') > -1 || part.indexOf('e') > -1 || part.indexOf('E') > -1 || part.indexOf('v') > -1 || part.indexOf('V') > -1 || part.indexOf('t') > -1 || part.indexOf('T') > -1) {
+        part = part.replace('€', '').replace('e', '').replace('E', '').replace('v', '').replace('V', '').replace('t', '').replace('T', '');
+        let d = sappy.getNum(part);
+        if (d) DISC_VAL[DISC_VAL.length] = d
+      } else {
+        let d = sappy.getNum(part);
+        if (d <= 100) DISC_SUC[DISC_SUC.length] = d;
+        else DISC_VAL[DISC_VAL.length] = d;
+      }
+    })
+
+    let DiscountPercent = 100;
+    DISC_SUC.forEach(DSUC => DiscountPercent -= (DiscountPercent * DSUC / 100));
+    DiscountPercent = 100 - (DiscountPercent * 100 / 100);
+    if (DiscountPercent > 100) { DiscountPercent = 100; }
+
+    let DiscountUn = 0;
+    DISC_UN.forEach(DUN => DiscountUn += DUN);
+
+    let DiscountVal = 0;
+    DISC_VAL.forEach(DVAL => DiscountVal += DVAL);
+
+    return {
+      DISC_SUC,
+      DISC_UN,
+      DISC_VAL,
+      DiscountPercent,
+      DiscountUn,
+      DiscountVal
+    }
+  }
+  sappy.formatUserDisc = (parsed) => {
+    parsed = parsed || {};
+    let DISC_SUC = parsed.DISC_SUC || [];
+    let DISC_UN = parsed.DISC_UN || [];
+    let DISC_VAL = parsed.DISC_VAL || [];
+
+    let formatted = "";
+    if (parsed.DiscountPercent === 100) {
+      formatted = "BONUS"
+    } else {
+      DISC_SUC.forEach(DSUC => formatted += (formatted ? " + " : "") + DSUC.toString().replace('.', sappy.sessionInfo.company.oadm.DecSep) + '%');
+      DISC_UN.forEach(DUN => formatted += (formatted ? " + " : "") + sappy.format.price(DUN) + '/un');
+      DISC_VAL.forEach(DVAL => formatted += (formatted ? " + " : "") + sappy.format.amount(DVAL));
+    }
+    return formatted
+  }
+
   sappy.format = {
     price: (value) => {
       let decimals = sappy.sessionInfo.company.oadm.PriceDec;
