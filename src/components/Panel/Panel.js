@@ -2,6 +2,7 @@
 import React, { Component } from "react";
 import { Button } from "reactstrap";
 import "./Panel.css"
+
 class Panel extends Component {
   constructor(props) {
     super(props)
@@ -11,6 +12,7 @@ class Panel extends Component {
   }
 
   toggleHeader() {
+    if (this.props.allowCollapse === false) return
     let expanded = !this.state.expanded
     this.setState({ expanded })
   }
@@ -21,9 +23,28 @@ class Panel extends Component {
     let expandIcon = this.state.expanded ? "wb-minus" : "wb-plus";
     let hiddenClass = this.state.expanded ? "" : "hidden-xxl-down";
     let notHiddenClass = this.state.expanded ? "hidden-xxl-down" : "";
-
-    let editIcon = this.props.editable ? "wb-close" : "wb-edit";
     let title = this.props.title;
+
+
+    let renderActions = () => {
+      let DOMactions = [];
+
+      this.props.actions.forEach(action => {
+        if (!action.visible) return
+
+
+        DOMactions.push(<div key={action.name} className="action">
+          {action.content && action.content}
+          {!action.content &&
+            <Button outline color={action.color || "secondary"} className={"btn-sm btn-flat"} onClick={action.onClick} disabled={action.disabled ? true : false}>
+              <i className={"icon " + action.icon} />
+              <span className="hidden-sm-down"> {action.text}</span>
+            </Button>
+          }
+        </div>)
+      });
+      return DOMactions;
+    }
 
     return (
       <div className="sappy-panel">
@@ -34,17 +55,13 @@ class Panel extends Component {
           </span>
           <div className="actions">
 
-            {/* {this.props.docData.DOCNUM &&
-              <div className="action">
-                <Button outline className="btn-sm btn-flat" onClick={this.props.toggleEditable}>
-                  <i className={"icon " + editIcon} />
-                  <span className="hidden-sm-down"> Alterar</span>
-                </Button>
-              </div>} */}
+            {renderActions()}
 
-            <Button outline className="btn-sm btn-flat" onClick={this.toggleHeader}>
-              <i className={"icon " + expandIcon} />
-            </Button>
+            {this.props.allowCollapse &&
+              <Button outline className="btn-sm btn-flat" onClick={this.toggleHeader}>
+                <i className={"icon " + expandIcon} />
+              </Button>
+            }
           </div>
         </div>
         <div className={"body " + hiddenClass}>
@@ -57,8 +74,10 @@ class Panel extends Component {
 }
 
 Panel.defaultProps = {
-  title: "Panel title",
-  colapsedInfo: "(more info...)",
+  title: "",
+  colapsedInfo: "",
+  allowCollapse: true,
+  actions: []
 }
 
 export default Panel;

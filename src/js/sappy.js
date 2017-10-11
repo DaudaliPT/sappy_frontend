@@ -197,7 +197,6 @@ import moment from 'moment';
     return ret;
   }
 
-
   sappy.evaluateNumericExpression = (value) => {
     if (typeof value !== "string") return value
 
@@ -244,7 +243,6 @@ import moment from 'moment';
     return setting || {}
   }
 
-
   sappy.getSettings = settingIds => {
     let ret = {}
     let hasMissingValues = false
@@ -282,6 +280,7 @@ import moment from 'moment';
     return 0
   }
 
+  sappy.padZeros = (number, digits) => ('0'.repeat(digits) + sappy.getNum(number).toString()).slice(-digits);
 
   sappy.parseUserDisc = (value) => {
     value = value || '';

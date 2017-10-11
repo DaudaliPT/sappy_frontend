@@ -4,7 +4,7 @@ import axios from "axios";
 // var $ = window.$;
 var sappy = window.sappy;
 
-import { TextBox, TextBoxNumeric, Date, ComboBox, Check } from "../../Inputs";
+import { TextBox, TextBoxNumeric, Date, ComboBox, Check, ToggleSimples } from "../../Inputs";
 import Panel from "../../components/Panel"
 import Group from "../../components/Group"
 
@@ -16,6 +16,21 @@ const DESCDEBOP_options = [
   { value: 'S', label: 'Semestral' },
   { value: 'A', label: 'Anual' },
 ]
+const getinitialState = (props) => {
+
+  let locationState = props.location.state || {};
+
+  return {
+    loading: locationState.id ? true : false,
+    editable: locationState.id ? false : true,
+    showValidations: false,
+    DC: [{}],
+    DF: [{ PREDEF: true }],
+    DD: [{}],
+    DU: [{}],
+    DA: [{}]
+  }
+}
 
 class EditModal extends Component {
   constructor(props) {
@@ -23,17 +38,80 @@ class EditModal extends Component {
 
     this.getvalidationResults = this.getvalidationResults.bind(this);
     this.onClick_AddRemove = this.onClick_AddRemove.bind(this);
+    this.loadDoc = this.loadDoc.bind(this);
+    this.loadDocToState = this.loadDocToState.bind(this);
     this.onFieldChange = this.onFieldChange.bind(this);
-    this.onAddDespesa = this.onAddDespesa.bind(this);
+    this.saveToDatabase = this.saveToDatabase.bind(this);
+    this.handleCreateContract = this.handleCreateContract.bind(this);
+    this.handleSaveContract = this.handleSaveContract.bind(this);
 
-    this.state = {
-      showValidations: false,
-      DC: [{}],
-      DF: [{ PREDEF: true }],
-      DD: [{}],
-      DU: [{}],
-      DA: [{}]
+    this.state = getinitialState(props)
+  }
+
+  componentDidMount() {
+    this.loadDoc();
+  }
+  componentWillReceiveProps(nextProps) {
+    let locationState = this.props.location.state || {};
+    let nextlocationState = nextProps.location.state || {};
+
+    if (locationState.id !== nextlocationState.id)
+      this.setState(getinitialState(nextProps), this.loadDoc);;
+  }
+
+  loadDoc() {
+    let that = this;
+    let locationState = this.props.location.state || {}
+    if (locationState.id) {
+      this.serverRequest = axios
+        .get(`/api/contratos/doc/${locationState.id}`)
+        .then(result => {
+          that.loadDocToState(result)
+        })
+        .catch(error => sappy.showError(error, "Erro ao obter dados"));
     }
+  }
+
+
+  loadDocToState(result) {
+    let newState = result.data;
+    newState.DC = newState.LINES.filter(line => line.TIPO === "DC")
+    newState.DF = newState.LINES.filter(line => line.TIPO === "DF")
+    newState.DD = newState.LINES.filter(line => line.TIPO === "DD")
+    newState.DU = newState.LINES.filter(line => line.TIPO === "DU")
+    newState.DA = newState.LINES.filter(line => line.TIPO === "DA")
+
+    if (newState.DC.length === 0) newState.DC.push({});
+    if (newState.DF.length === 0) newState.DF.push({});
+    if (newState.DD.length === 0) newState.DD.push({});
+    if (newState.DU.length === 0) newState.DU.push({});
+    if (newState.DA.length === 0) newState.DA.push({});
+
+    delete newState.LINES
+
+    newState.loading = false
+    newState.editable = (!newState.NUMERO)
+
+    this.setState(newState);
+  }
+
+
+  saveToDatabase(stateValues) {
+
+    let { DC, DF, DD, DU, DA, CARDCODE, CONTACT, DATAI, DATAF, DESCRICAO, OBSERVACOES, ID, NUMERO, ATIVO, ARQUIVADO } = stateValues;
+    let data = { ID, NUMERO, CARDCODE, CONTACT, DATAI, DATAF, DESCRICAO, OBSERVACOES, ATIVO, ARQUIVADO }
+
+    DC.forEach((item, ix) => { item.TIPO = 'DC'; item.LINE = ix; })
+    DF.forEach((item, ix) => { item.TIPO = 'DF'; item.LINE = ix; })
+    DD.forEach((item, ix) => { item.TIPO = 'DD'; item.LINE = ix; })
+    DU.forEach((item, ix) => { item.TIPO = 'DU'; item.LINE = ix; })
+    DA.forEach((item, ix) => { item.TIPO = 'DA'; item.LINE = ix; })
+    data.LINES = [...DC, ...DF, ...DD, ...DU, ...DA]
+
+    axios
+      .post(`/api/contratos/doc/`, data)
+      .then(this.loadDocToState)
+      .catch(error => sappy.showError(error, "Não foi possivel gravar o contrato"));
   }
 
   // Recebe os valores dos campos MY*
@@ -43,7 +121,7 @@ class EditModal extends Component {
     let val = changeInfo.rawValue;
     let fieldName = changeInfo.fieldName;
 
-    let newStateValues = {};
+    let newStateValues = { ...this.state };
 
 
     if (fieldName.indexOf("#") > -1) {
@@ -57,7 +135,8 @@ class EditModal extends Component {
       if (propName === "PREDEF") arr = arr.map(item => { return { ...item, PREDEF: false } })
 
       let obj = arr[arrIndex] || {}
-      obj[propName] = formatedValue;
+      obj[propName] = val;
+
       arr[arrIndex] = obj
 
 
@@ -70,20 +149,14 @@ class EditModal extends Component {
     }
 
 
-    // // Guardar as propriedades adicionais do adiantamento selecionado
-    // if (fieldName === "MeioDePagamento") {
-    //   newStateValues.MeioDePagamentoEscolhido = formatedValue
-    //   if (!newStateValues.MeioDePagamento) newStateValues.TrocoRecebido = ""
-    // }
-
-    // let totalPagar = sappy.getNum(newStateValues.totalPagar || this.state.totalPagar)
-    // let MeioDePagamentoEscolhido = (newStateValues.MeioDePagamentoEscolhido || this.state.MeioDePagamentoEscolhido);
-    // if (MeioDePagamentoEscolhido.VALOR_PENDENTE) {
-    //   newStateValues.DiferrencaAdiantamento = sappy.getNum(MeioDePagamentoEscolhido.VALOR_PENDENTE) - totalPagar;
-    // }
-
-    if (changeInfo.realtime) newStateValues[fieldName] = this.state[fieldName]
-    this.setState(newStateValues);
+    if (!newStateValues.NUMERO) {
+      // Rascunho salvar logo
+      return this.saveToDatabase(newStateValues)
+    }
+    else {
+      // Em alteração de documento, tem que ser confirmado
+      return this.setState(newStateValues)
+    }
   }
 
   getvalidationResults({ forRender, state } = { forRender: false }) {
@@ -99,7 +172,9 @@ class EditModal extends Component {
     return { alerts, toastrMsg }
   }
 
-  onAddDespesa() {
+
+
+  handleCreateContract() {
     let that = this;
 
     // perform checks
@@ -122,56 +197,60 @@ class EditModal extends Component {
     //Validar se há avisos ativos
     let hasWarning = Object.keys(alerts).find(f => alerts[f].startsWith("warning"))
 
-    let invokeAddDocAPI = () => {
-      let data = {
-        CardCode: this.state.CardCode,
-        Series: this.state.settings['FIN.CCD.SERIE_FACTURAS'],
-        TaxDate: this.state.TaxDate,
-        Comments: this.state.Comments,
-        NumAtCard: this.state.NumAtCard,
-        Lines: [{
-          ItemCode: this.state.ItemCode,
-          ValorComIva: sappy.getNum(this.state.totalPagar)
-        }],
-        TrocoRecebido: sappy.getNum(this.state.TrocoRecebido),
-
-        CAIXA_PRINCIPAL: this.state.settings['FIN.CC.CAIXA_PRINCIPAL'],
-        CAIXA_PASSAGEM: this.state.settings['FIN.CCD.CAIXA_PASSAGEM']
-      }
-      //Para que o c# faça o parse correctamente
-      data.MeioDePagamento.VALOR_ORIGINAL = sappy.getNum(data.MeioDePagamento.VALOR_ORIGINAL)
-      data.MeioDePagamento.VALOR_PENDENTE = sappy.getNum(data.MeioDePagamento.VALOR_PENDENTE)
-
-      sappy.showWaitProgress("A criar documento...")
+    let postConfirm = () =>
       axios
-        .post(`/api/caixa/despesas/despesa`, data)
-        .then(result => {
-          sappy.hideWaitProgress()
-          sappy.showToastr({
-            color: "success",
-            msg: `Criou com sucesso a despesa ${result.data.DocNum}!`
-          })
+        .post(`/api/contratos/doc/${this.state.ID}/confirm`)
+        .then(this.loadDocToState)
+        .catch(error => sappy.showError(error, "Não foi possivel criar o contrato"));
 
-          that.props.toggleModal({ success: result.data.DocNum });
-        })
-        .catch(error => sappy.showError(error, "Não foi possivel adicionar a despesa"));
-    }
 
     if (!hasWarning)
-      return sappy.showQuestion({
-        title: "Deseja Continuar?",
-        msg: "Se continuar irá criar esta despesa.",
-        onConfirm: invokeAddDocAPI,
-        confirmText: "Criar despesa",
-        onCancel: () => { }
-      })
+      return postConfirm()
     else
       return sappy.showWarning({
         title: "Atenção!",
         msg: "Ainda há campos com avisos!",
-        moreInfo: "Deseja mesmo assim criar esta despesa?",
-        onConfirm: invokeAddDocAPI,
-        confirmText: "Ignorar e criar despesa",
+        moreInfo: "Deseja mesmo assim criar este contrato?",
+        onConfirm: postConfirm,
+        confirmText: "Ignorar e gravar contrato",
+        onCancel: () => { }
+      })
+
+  }
+
+  handleSaveContract() {
+    let that = this;
+
+    // perform checks
+    //Validar campos de preenchimento obrigatório
+    let newState = { ...that.state };
+    // let fieldsRequired = []
+    // let hasChangesToState = false;
+
+    let { alerts, toastrMsg } = this.getvalidationResults({ state: newState });
+    toastrMsg.forEach(toastrData => sappy.showToastr(toastrData));
+    if (!this.state.showValidations && Object.keys(alerts).length > 0) return this.setState({ showValidations: true })
+
+    //Validar se há erros ativos
+    let hasDanger = Object.keys(alerts).find(f => alerts[f].startsWith("danger"))
+    if (hasDanger) {
+      if (toastrMsg.length > 0) return // já deu mensagens
+      return sappy.showToastr({ color: "danger", msg: "Há campos com erros. Verifique se preencheu todos os campos obrigatórios..." })
+    }
+
+    //Validar se há avisos ativos
+    let hasWarning = Object.keys(alerts).find(f => alerts[f].startsWith("warning"))
+
+
+    if (!hasWarning)
+      return that.saveToDatabase(newState)
+    else
+      return sappy.showWarning({
+        title: "Atenção!",
+        msg: "Ainda há campos com avisos!",
+        moreInfo: "Deseja mesmo assim criar este contrato?",
+        onConfirm: () => that.saveToDatabase(newState),
+        confirmText: "Ignorar e gravar contrato",
         onCancel: () => { }
       })
 
@@ -220,6 +299,7 @@ class EditModal extends Component {
       }
       props.state = alerts[name];
       props.onChange = this.onFieldChange;
+      props.disabled = props.disabled || !this.state.editable;
 
       return props;
     }
@@ -230,9 +310,9 @@ class EditModal extends Component {
       let ret = []
       for (var index = 0; index < nrItems; index++) {
         let name = `DC#${index}#`
-        ret.push(<div key={`${name}`} className="row">
+        ret.push(<div key={name} className="row">
           <div className="col-12">
-            <TextBox {...bip(`${name}DESC`, { label: "Descrição dos descontos esperados em fatura", type: "textarea" }) } />
+            <TextBox {...bip(`${name}DESCRICAO`, { label: "Descrição dos descontos esperados em fatura", type: "textarea" }) } />
           </div>
         </div>)
       }
@@ -246,19 +326,19 @@ class EditModal extends Component {
       for (var index = 0; index < nrItems; index++) {
         let name = `DF#${index}#`
         ret.push(<div key={`${name}`} className="row">
-          <div className="col-4 pr-1">
-            <TextBoxNumeric {...bip(`${name}DIAS`, { label: index === 0 ? "Prazo de pagamento (dias)" : "", valueType: "integer" }) } />
+          <div className="col-5 col-md-3 pr-1">
+            <TextBoxNumeric {...bip(`${name}DIAS`, { label: index === 0 ? "Pagamento (dias)" : "", valueType: "integer" }) } />
           </div>
-          <div className="col-4 pl-1">
-            <TextBox {...bip(`${name}DESC`, {
+          <div className="col-5 col-md-3 pl-1">
+            <TextBox {...bip(`${name}UDISC`, {
               label: index === 0 ? "Valor de desconto" : "",
               valueType: "discount",
               rightButton: index + 1 < nrItems ? "-" : "+",
               onRightButtonClick: this.onClick_AddRemove
             }) } />
           </div>
-          <div className="col-4 pl-1">
-            <Check {...bip(`${name}PREDEF`, { label: index === 0 ? "Predefinido" : "" }) } />
+          <div className="col-2 col-md-1 pl-1">
+            <Check {...bip(`${name}PREDEF`, { label: index === 0 ? " " : "" }) } />
           </div>
         </div>)
       }
@@ -273,11 +353,14 @@ class EditModal extends Component {
         let name = `DD#${index}#`
         ret.push(
           <div key={`${name}`} className="row">
-            <div className="col-6 pr-1">
+            <div className="col-12 col-md-5 pr-md-1">
+              <ComboBox {...bip(`${name}DESCRICAO`, { label: index === 0 ? "Descritivo" : "", createable: true, getOptionsApiRoute: "/api/contratos/doc/histvalues/DD" }) } />
+            </div>
+            <div className="col-6 col-md-4 pl-md-1 pr-1">
               <ComboBox {...bip(`${name}DEBPER`, { label: index === 0 ? "Prazo débito" : "", options: DESCDEBOP_options }) } />
             </div>
-            <div className="col-4 pl-1">
-              <TextBox {...bip(`${name}DESC`, {
+            <div className="col-6 col-md-3 pl-1">
+              <TextBox {...bip(`${name}UDISC`, {
                 label: index === 0 ? "Valor de desconto" : "",
                 valueType: "discount",
                 rightButton: index + 1 < nrItems ? "-" : "+",
@@ -297,11 +380,14 @@ class EditModal extends Component {
         let name = `DU#${index}#`
         ret.push(
           <div key={`${name}`} className="row">
-            <div className="col-6 pr-1">
-              <ComboBox {...bip(`${name}DEBPER`, { label: index === 0 ? "Descritivo" : "", options: DESCDEBOP_options }) } />
+            <div className="col-12 col-md-5 pr-md-1">
+              <ComboBox {...bip(`${name}DESCRICAO`, { label: index === 0 ? "Descritivo" : "", createable: true, getOptionsApiRoute: "/api/contratos/doc/histvalues/DU" }) } />
             </div>
-            <div className="col-4 pl-1">
-              <TextBox {...bip(`${name}DESC`, {
+            <div className="col-6 col-md-4 pl-md-1 pr-1">
+              <ComboBox {...bip(`${name}DEBPER`, { label: index === 0 ? "Prazo débito" : "", options: DESCDEBOP_options }) } />
+            </div>
+            <div className="col-6 col-md-3 pl-1">
+              <TextBox {...bip(`${name}UDISC`, {
                 label: index === 0 ? "Valor de débito" : "",
                 valueType: "discount",
                 rightButton: index + 1 < nrItems ? "-" : "+",
@@ -321,14 +407,14 @@ class EditModal extends Component {
         let name = `DA#${index}#`
         ret.push(
           <div key={`${name}`} className="row">
-            <div className="col-6 pr-1">
-              <ComboBox {...bip(`${name}DEBPER`, { label: index === 0 ? "Descritivo" : "", options: DESCDEBOP_options }) } />
+            <div className="col-12 col-md-6 pr-md-1">
+              <ComboBox {...bip(`${name}DESCRICAO`, { label: index === 0 ? "Descritivo" : "", createable: true, getOptionsApiRoute: "/api/contratos/doc/histvalues/DA" }) } />
             </div>
-            <div className="col-3 pl-1 pr-1">
+            <div className="col-6 col-md-3 pl-md-1 pr-1">
               <Date  {...bip(`${name}DATA`, { label: index === 0 ? "Data" : "" }) } />
             </div>
-            <div className="col-3 pl-1">
-              <TextBox {...bip(`${name}DESC`, {
+            <div className="col-6 col-md-3 pl-1">
+              <TextBox {...bip(`${name}UDISC`, {
                 label: index === 0 ? "Valor de débito" : "",
                 valueType: "discount",
                 rightButton: index + 1 < nrItems ? "-" : "+",
@@ -341,38 +427,75 @@ class EditModal extends Component {
       return ret;
     }
 
+    let headerActions = [
+
+
+      {
+        name: "toggleArquivado",
+        text: this.state.ARQUIVADO ? "Arquivado" : "Arquivar",
+        color: this.state.ARQUIVADO ? "danger" : "warning",
+        visible: this.state.NUMERO,
+        disabled: this.state.ATIVO && !this.state.ARQUIVADO,
+        icon: this.state.ARQUIVADO ? "fa-folder" : "fa-folder-open",
+        onClick: e => { that.onFieldChange({ fieldName: "ARQUIVADO", rawValue: !that.state.ARQUIVADO, value: !that.state.ARQUIVADO }) }
+      },
+      {
+        name: "toggleAtivo",
+        text: this.state.ATIVO ? "Ativo" : "Inativo",
+        color: this.state.ATIVO ? "success" : "warning",
+        visible: this.state.NUMERO,
+        disabled: this.state.ARQUIVADO,
+        icon: this.state.ATIVO ? "fa-check-square-o" : "fa-square-o",
+        onClick: e => { that.onFieldChange({ fieldName: "ATIVO", rawValue: !that.state.ATIVO, value: !that.state.ATIVO }) }
+      }, {
+        name: "toogleEdit",
+        text: "Alterar",
+        color: !this.state.editable ? "" : "danger",
+        visible: this.state.NUMERO,
+        disabled: this.state.ARQUIVADO,
+        icon: this.state.editable ? "fa-close" : "fa-edit",
+        onClick: e => {
+          if (!that.state.editable) return that.setState({ editable: true })
+          that.loadDoc()
+        }
+
+      }
+    ];
+    debugger
 
     return (
-      <div className="scrollable-doc">
+      <div className="scrollable-doc" >
 
-        <Panel title="Contrato de Fornecedor" >
+        <Panel title="Contrato de Fornecedor" actions={headerActions} >
           <div className="row">
-            <div className="col-5 pr-1">
-              <ComboBox  {...bip("CARDCODE", { label: "Fornecedor", getOptionsApiRoute: "/api/cbo/ocrd/s" }) } />
+            <div className="col-md-5 pr-md-1">
+              <ComboBox  {...bip("CARDCODE", { label: "Fornecedor", disabled: !!this.state.NUMERO, getOptionsApiRoute: "/api/cbo/ocrd/s" }) } />
             </div>
-            <div className="col-3 pl-1 pr-1">
-              <ComboBox  {...bip("CONTACT", { label: "Contato/Sub.For", getOptionsApiRoute: `/api/cbo/ocpr/${this.state.CARDCODE}` }) } />
+            <div className="col-md-3 pl-md-1 pr-md-1">
+              <ComboBox  {...bip("CONTACT", { label: "Contato/Sub.For", getOptionsApiRoute: `/api/cbo/ocpr/bycode/${this.state.CARDCODE}` }) } />
             </div>
-            <div className="col-2 pl-1 pr-1">
+            <div className="col-md-2 col-6 pl-md-1 pr-1">
               <Date  {...bip("DATAI", { label: "Válido De" }) } />
             </div>
-            <div className="col-2 pl-1  ">
+            <div className="col-md-2 col-6 pl-1  ">
               <Date  {...bip("DATAF", { label: "até" }) } />
             </div>
           </div>
           <div className="row">
-            <div className="col-6 pr-1">
+            <div className="col-md-5 pr-md-1">
               <TextBox {...bip("DESCRICAO", { label: "Descrição" }) } />
             </div>
 
-            <TextBox {...bip("OBSERVACOES", { type: "textarea" }) } />
+            <div className="col-md-7 pl-md-1">
+              <TextBox {...bip("OBSERVACOES", { label: "Observações" }) } />
+            </div>
 
           </div>
 
         </Panel>
 
 
-        <Panel title="Detalhes" >
+        <Panel title="Detalhes" allowCollapse={false}>
           <div className="row">
             <div className="col-xl-6 ">
               <div className="row">
@@ -391,23 +514,27 @@ class EditModal extends Component {
                 <div className="col-12">
                   <Group title="Condições de débito Anuais" > {renderCondDebitoAnual()} </Group>
                 </div>
-                <div className="col-12">
-                  <Group title="Observações" >
-                  </Group>
-                </div>
               </div>
             </div>
           </div>
         </Panel>
-        <div className="sappy-action-bar animation-slide-left">
-          <Button color={"success"}
-            onClick={this.onAddDespesa}
-            disabled={sappy.getNum(this.state.totalPagar) === 0}
-          >
-            <i className="icon wb-check" />Adicionar contrato
+        {!this.state.NUMERO &&
+          < div className="sappy-action-bar animation-slide-left">
+            <Button color={"success"} onClick={this.handleCreateContract}>
+              <i className="icon wb-check" />Criar contrato
             </Button>
-        </div>
-      </div>
+          </div>
+        }
+
+        {
+          this.state.NUMERO && this.state.editable &&
+          < div className="sappy-action-bar animation-slide-left">
+            <Button color={"success"} onClick={this.handleSaveContract}>
+              <i className="icon wb-check" />Gravar contrato
+            </Button>
+          </div>
+        }
+      </div >
     );
   }
 }

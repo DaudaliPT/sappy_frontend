@@ -189,7 +189,6 @@ class CmpDespesas extends Component {
                             .post(`/api/caixa/despesas/fecharadiantamento`, data)
                             .then(result => {
                                 sappy.hideWaitProgress()
-                                debugger
                                 sappy.showToastr({
                                     color: "success",
                                     msg: `Criou com sucesso o recibo ${result.data.DocNum} para a caixa de diferenças!`

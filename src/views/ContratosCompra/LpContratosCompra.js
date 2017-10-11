@@ -46,7 +46,7 @@ class LpContratosCompra extends Component {
     let id = checkbox.id;
     let docID = id.split("_")[1];
 
-    hashHistory.push({ pathname: "/inv/prices/doc", state: { id: docID } });
+    hashHistory.push({ pathname: "/cmp/contratos/doc", state: { id: docID } });
   }
 
   handleRowSelection(e) {
@@ -55,11 +55,11 @@ class LpContratosCompra extends Component {
 
     let id = checkbox.id;
     let docID = id.split("_")[1];
-    let docNum = docID.split("#")[1];
+    let NUMERO = docID.split("#")[1];
     let { selectedItems } = this.state;
     let ix = selectedItems.indexOf(docID);
 
-    if (ix === -1 && (docNum && parseInt(docNum, 10) > 0)) {
+    if (ix === -1 && (NUMERO && parseInt(NUMERO, 10) > 0)) {
       selectedItems.push(docID);
       checkbox.checked = true;
     } else {
@@ -86,37 +86,26 @@ class LpContratosCompra extends Component {
           return <Badge key={uuid()} color={color} pill>{text}</Badge>;
         });
       };
-      const renderBadges1 = () => {
-        const badges = row.ITEM_TAGS1.split("|");
-        return badges.map((item, ix) => {
-          let color = item.split("_")[0];
-          let text = item.split("_")[1];
-          return <Badge key={uuid()} color={color} pill>{text}</Badge>;
-        });
-      };
 
-      let rowId = "row_" + row.ID + "#" + (row.DOCNUM || 0);
+      let rowId = "row_" + row.ID + "#" + (row.NUMERO || 0);
       let rowStyleClass = "";
       if (selected) rowStyleClass += " sappy-selected-row";
-      if (!row.DOCNUM) rowStyleClass += " vlist-row-warning";
+      if (!row.NUMERO) rowStyleClass += " vlist-row-warning";
 
       return (
         <div className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={this.handleRowClick}>
           {/*large displays*/}
           <div className="container vertical-align-middle hidden-lg-down">
             <div className="row">
-              <div className="col-1 sappy-select-col-container" onClick={this.handleRowSelection}>
+              {/* <div className="col-1 sappy-select-col-container" onClick={this.handleRowSelection}>
                 <span className="checkbox-custom checkbox-primary checkbox-lg">
                   <input type="checkbox" className="contacts-checkbox selectable-item" value={selected} id={rowId} />
                   <label htmlFor={rowId} />
                 </span>
-              </div>
-              <div className="col-1"> {row.DOCNUM || ("#" + row.ID)} </div>
-              <div className="col-2"> {sappy.format.date(row.CONFIRMED || row.DATA)} </div>
-              <div className="col-7" style={{ maxHeight: "50px", overflow: "hidden" }}> <span> {renderBadges1()}{renderBadges()} </span> {row.ESTADO + " " + row.OBSERVACOES} </div>
-              <div className="col-1 lastcol">
-                <span className="float-right">{row.CREATED_BY_NAME}</span>
-              </div>
+              </div> */}
+              <div className="col-2"> {row.CARDCODE + "-" + sappy.padZeros(row.NUMERO, 3)} </div>
+              <div className="col-6"> {row.CardName + (row.CONTACT_NAME ? `(${row.CONTACT_NAME})` : "")} </div>
+              <div className="col-4 lastcol"> {row.DESCRICAO} {renderBadges()}</div>
             </div>
           </div>
 
@@ -131,10 +120,9 @@ class LpContratosCompra extends Component {
             <div className="sappy-nonselect-col">
               <div className="container">
                 <div className="row">
-                  <div className="col-1"> {row.DOCNUM || ("#" + row.ID)} </div>
+                  <div className="col-1"> {row.NUMERO || ("#" + row.ID)} </div>
                   <div className="col text-nowrap lastcol">
                     {sappy.format.date(row.CONFIRMED || row.DATA)}
-                    <span> {renderBadges1()} </span>
                   </div>
                 </div>
                 <div className="row secondrow">
@@ -171,7 +159,7 @@ class LpContratosCompra extends Component {
       <BaseLandingPage
         pageTitle="Contratos de compra"
         searchPlaceholder="Procurar..."
-        searchApiUrl="api/precos/"
+        searchApiUrl="api/contratos/"
         renderRow={renderRow}
         renderRowHeight={50}
         actions={renderActions()}

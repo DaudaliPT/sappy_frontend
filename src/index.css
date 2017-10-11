@@ -1026,6 +1026,86 @@ div>.has-danger  .Select-control {  border-color: rgb(217,  83,  79) !important;
 
 
 
+
+
+/* The switch2 - the box around the slider */
+.switch2 {
+  position: relative;
+  display: inline-block;
+  width: 100px;
+  height: 24.6px; }
+
+
+  .switch2.large>.sm {  left:0px; top:15px; height: 24.6px;  width: 100px;} 
+
+          /* Hide default HTML checkbox */
+          .switch2 input {display:none;}
+
+          /* The slider */
+          .switch2>.slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0; 
+            border: 1px solid #ccc;
+            -webkit-transition: .4s;
+            transition: .4s; 
+            font-size:0.8rem;
+            border-radius: 4px;
+            line-height: 36px;  
+            padding-left: 35px;  }
+
+            
+            .switch2>.slider.sm        {  line-height: 25px; padding-left: 25px;  }
+            .switch2>.slider.sm:before { height: 14px; bottom: 5px; width: 14px;}
+  
+            .switch2>.slider:before {
+            position: absolute;
+            content: "";
+            height: 24px; bottom: 5px;
+            width:  24px; left:   5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s; }
+
+            .switch2>input:checked + .switch2>.slider    {padding-left: 10px;} 
+            .switch2>input:checked + .switch2>.slider.sm {padding-left: 10px;} 
+
+            .switch2>.slider.secondary {  color: #bbb; background-color: rgb(243, 247, 249); }  
+            .switch2>.slider.primary   {  color: white; background-color: rgb(98, 168, 234); }  
+            .switch2>.slider.success   {  color: white; background-color: rgb(92, 184, 92); } 
+            .switch2>.slider.info      {  color: white; background-color: rgb(91, 192, 222); } 
+            .switch2>.slider.warning   {  color: white; background-color: rgb(240, 173, 78); } 
+            .switch2>.slider.danger    {  color: white; background-color: rgb(217, 83, 79); } 
+
+            .switch2>input         + .switch2>.slider>.icon {  padding-left: 4px;}
+            .switch2>input:checked + .switch2>.slider>.icon {  padding-left: 8px;}
+
+            .switch2>input:focus + .switch2>.slider {  box-shadow: 0 0 1px #2196F3;} 
+
+            .switch2>input:checked + .switch2>.slider:before {
+            -webkit-transform: translateX(36px);
+            -ms-transform: translateX(36px);
+            transform: translateX(36px);}
+
+            .switch2>input:checked + .switch2>.slider.sm:before {
+            -webkit-transform: translateX(30px);
+            -ms-transform: translateX(30px);
+            transform: translateX(30px);}
+
+            .switch2> .large>input:checked + .switch2>.slider.sm:before {
+            -webkit-transform: translateX(70px);
+            -ms-transform: translateX(70px);
+            transform: translateX(70px);}
+
+            .switch2>.slider.round {  border-radius: 34px;}
+            .switch2>.slider.round:before {  border-radius: 50%;}
+
+
 /* sweet alert */
 .text-muted.lead{
     max-height: 200px;
