@@ -123,7 +123,7 @@ class appBase extends Component {
           })
 
         })
-        .catch(error => sappy.showError(error, "Erro ao obter dados"));
+        .catch(error => console.log(error, "Erro ao obter dados"));
     }, 300);
   }
 

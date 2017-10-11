@@ -17,6 +17,7 @@ exports.prepareDocType = function ({ tableName }) {
   let dueDateLabel = '15,16,17, 20,21,22'.indexOf(objType) > -1 ? "Data Entrega" : "Data Vencimento";//Encomendas/Entregas/Devoluções
   let footerLimitSearchCondition = ""
   let priceHover = {}
+  let contractHover = {}
   let numatcardLabel = ""
 
   if ('13,14,15,16,17,23'.indexOf(objType) > -1) {          //Vendas
@@ -58,17 +59,52 @@ exports.prepareDocType = function ({ tableName }) {
         return <table>{content}</table>
       }
     }
+
+    contractHover = {
+      api: 'api/contratos/doc/<CONTRATO>',
+      render: ({ result, context }) => {
+        let content = []
+
+        let lines = result.data.LINES || [];
+        lines.forEach(line => {
+          if (line.TIPO === "DC" && line.DESCRICAO) {
+            content.push(<tr><td>Descontos comerciais:</td></tr>)
+            content.push(
+              <tr>
+                <td style={{ maxWidth: "130px" }}>{line.DESCRICAO}</td>
+              </tr>)
+          }
+        })
+        if (content.length === 0) return null
+
+        return <table>{content}</table>
+      }
+    }
     numatcardLabel = "Ref. Fornecedor"
   }
 
 
-  let DESCDEBOP_options = [
+  const DESCDEBOP_options = [
     { value: 'P', label: 'Pagamento' },
     { value: 'M', label: 'Mensal' },
     { value: 'T', label: 'Trimestral' },
     { value: 'S', label: 'Semestral' },
-    { value: 'A', label: 'Anual' },
+    { value: '-', label: 'Anual', type: "group" },
+    { value: '01', label: 'Janeiro' },
+    { value: '02', label: 'Fevereiro' },
+    { value: '03', label: 'Março' },
+    { value: '04', label: 'Abril' },
+    { value: '05', label: 'Maio' },
+    { value: '06', label: 'Junho' },
+    { value: '07', label: 'Julho' },
+    { value: '08', label: 'Agosto' },
+    { value: '09', label: 'Setembro' },
+    { value: '10', label: 'Outubro' },
+    { value: '11', label: 'Novembro' },
+    { value: '11', label: 'Dezembro' },
   ]
+
+
 
   let headerFields = {}
   headerFields.line1 = []
@@ -89,14 +125,17 @@ exports.prepareDocType = function ({ tableName }) {
 
   let sidebarFields = {}
   if ('18'.indexOf(objType) > -1) {    //Compras
-    // sidebarFields.line1=[];
+    sidebarFields.line0 = [];
+    sidebarFields.line0.push({ name: 'CONTRATO', label: 'Regras Contratuais', type: "combo", api: "/api/docs/new/contratos/<CARDCODE>", width: "100%", hover: contractHover })
+
+    // sidebarFields.line1 = [];
     // sidebarFields.line1.push({ name: 'DESCCOM', label: 'Desc. Comercial', type: "text", width: "100%" })
     sidebarFields.line2 = [];
     sidebarFields.line2.push({ name: 'DESCFIN', label: 'Desc. Financeiro', type: "text", width: "calc(100% - 35px)" })
-    sidebarFields.line2.push({ name: 'DESCFINAC', label: '', type: "check|success", width: "35px" })
+    sidebarFields.line2.push({ name: 'DESCFINAC', label: ' ', type: "check|success", width: "35px" })
     sidebarFields.line3 = [];
     sidebarFields.line3.push({ name: 'DESCDEB', label: 'Desc. em Débito', type: "text", width: "calc(100% - 35px)" })
-    sidebarFields.line3.push({ name: 'DESCDEBAC', label: '', type: "check|success", width: "35px" })
+    sidebarFields.line3.push({ name: 'DESCDEBAC', label: ' ', type: "check|success", width: "35px" })
     sidebarFields.line4 = [];
     sidebarFields.line4.push({ name: 'DESCDEBPER', label: 'Tipo débito:', type: "combo", width: "100%", options: DESCDEBOP_options })
     sidebarFields.line5 = [];
@@ -132,6 +171,7 @@ exports.prepareDocType = function ({ tableName }) {
 
   return {
     priceHover,
+    contractHover,
     DESCDEBOP_options,
     propsToDocBase: {
       tableName,

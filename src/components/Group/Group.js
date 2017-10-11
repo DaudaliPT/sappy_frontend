@@ -28,8 +28,14 @@ class Group extends Component {
     return (
       <div className="sappy-group">
         <div className="title">
-          {/* <h3 className="text" onClick={this.toggleHeader}>{title}</h3> */}
-          {<h3 className="text" >{title}</h3>}
+
+          <span className="row-expand-icon pl-0 pr-5"
+            style={{ float: 'left', cursor: 'pointer' }}
+            onClick={this.toggleHeader} >
+            {this.state.expanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}
+          </span>
+
+          {<h3 className="text" onClick={this.toggleHeader}>{title}</h3>}
           <span className={"moreinfo " + notHiddenClass}>
             {this.props.colapsedInfo}
           </span>

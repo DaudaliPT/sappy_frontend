@@ -9,12 +9,39 @@ import Panel from "../../components/Panel"
 import Group from "../../components/Group"
 
 
-const DESCDEBOP_options = [
+const DESCDEB_options = [
   { value: 'P', label: 'Pagamento' },
   { value: 'M', label: 'Mensal' },
   { value: 'T', label: 'Trimestral' },
   { value: 'S', label: 'Semestral' },
-  { value: 'A', label: 'Anual' },
+  { value: '-', label: 'Anual', type: "group" },
+  { value: '01', label: 'Janeiro' },
+  { value: '02', label: 'Fevereiro' },
+  { value: '03', label: 'Março' },
+  { value: '04', label: 'Abril' },
+  { value: '05', label: 'Maio' },
+  { value: '06', label: 'Junho' },
+  { value: '07', label: 'Julho' },
+  { value: '08', label: 'Agosto' },
+  { value: '09', label: 'Setembro' },
+  { value: '10', label: 'Outubro' },
+  { value: '11', label: 'Novembro' },
+  { value: '11', label: 'Dezembro' },
+]
+
+const DESCDEB_ANUAIS_options = [
+  { value: '01', label: 'Janeiro' },
+  { value: '02', label: 'Fevereiro' },
+  { value: '03', label: 'Março' },
+  { value: '04', label: 'Abril' },
+  { value: '05', label: 'Maio' },
+  { value: '06', label: 'Junho' },
+  { value: '07', label: 'Julho' },
+  { value: '08', label: 'Agosto' },
+  { value: '09', label: 'Setembro' },
+  { value: '10', label: 'Outubro' },
+  { value: '11', label: 'Novembro' },
+  { value: '11', label: 'Dezembro' },
 ]
 const getinitialState = (props) => {
 
@@ -164,8 +191,10 @@ class EditModal extends Component {
     let toastrMsg = []
 
     if (!forRender || state.showValidations) {
-      // if (!state.CardCode) alerts.CardCode = "danger|Preenchimento obrigatório"
-      // toastrMsg.push({ color: "danger", msg: "O valor do troco, não pode ser ultrapassar o valor adiantado." })
+      if (!state.CARDCODE) alerts.CARDCODE = "danger|Preenchimento obrigatório"
+      if (!state.DATAI) alerts.DATAI = "danger|Preenchimento obrigatório"
+      if (!state.DATAF) alerts.DATAF = "danger|Preenchimento obrigatório"
+      if (!state.DESCRICAO) alerts.DESCRICAO = "danger|Preenchimento obrigatório"
     } else if (forRender && !state.showValidations) {
     }
 
@@ -357,7 +386,7 @@ class EditModal extends Component {
               <ComboBox {...bip(`${name}DESCRICAO`, { label: index === 0 ? "Descritivo" : "", createable: true, getOptionsApiRoute: "/api/contratos/doc/histvalues/DD" }) } />
             </div>
             <div className="col-6 col-md-4 pl-md-1 pr-1">
-              <ComboBox {...bip(`${name}DEBPER`, { label: index === 0 ? "Prazo débito" : "", options: DESCDEBOP_options }) } />
+              <ComboBox {...bip(`${name}DEBPER`, { label: index === 0 ? "Prazo débito" : "", options: DESCDEB_options }) } />
             </div>
             <div className="col-6 col-md-3 pl-1">
               <TextBox {...bip(`${name}UDISC`, {
@@ -384,7 +413,7 @@ class EditModal extends Component {
               <ComboBox {...bip(`${name}DESCRICAO`, { label: index === 0 ? "Descritivo" : "", createable: true, getOptionsApiRoute: "/api/contratos/doc/histvalues/DU" }) } />
             </div>
             <div className="col-6 col-md-4 pl-md-1 pr-1">
-              <ComboBox {...bip(`${name}DEBPER`, { label: index === 0 ? "Prazo débito" : "", options: DESCDEBOP_options }) } />
+              <ComboBox {...bip(`${name}DEBPER`, { label: index === 0 ? "Prazo débito" : "", options: DESCDEB_options }) } />
             </div>
             <div className="col-6 col-md-3 pl-1">
               <TextBox {...bip(`${name}UDISC`, {
@@ -407,11 +436,11 @@ class EditModal extends Component {
         let name = `DA#${index}#`
         ret.push(
           <div key={`${name}`} className="row">
-            <div className="col-12 col-md-6 pr-md-1">
+            <div className="col-12 col-md-5 pr-md-1">
               <ComboBox {...bip(`${name}DESCRICAO`, { label: index === 0 ? "Descritivo" : "", createable: true, getOptionsApiRoute: "/api/contratos/doc/histvalues/DA" }) } />
             </div>
-            <div className="col-6 col-md-3 pl-md-1 pr-1">
-              <Date  {...bip(`${name}DATA`, { label: index === 0 ? "Data" : "" }) } />
+            <div className="col-6 col-md-4 pl-md-1 pr-1">
+              <ComboBox {...bip(`${name}DEBPER`, { label: index === 0 ? "Débito em" : "", options: DESCDEB_ANUAIS_options }) } />
             </div>
             <div className="col-6 col-md-3 pl-1">
               <TextBox {...bip(`${name}UDISC`, {
@@ -446,8 +475,11 @@ class EditModal extends Component {
         visible: this.state.NUMERO,
         disabled: this.state.ARQUIVADO,
         icon: this.state.ATIVO ? "fa-check-square-o" : "fa-square-o",
-        onClick: e => { that.onFieldChange({ fieldName: "ATIVO", rawValue: !that.state.ATIVO, value: !that.state.ATIVO }) }
-      }, {
+        onClick: e => {
+          that.saveToDatabase({ ...that.state, ATIVO: !that.state.ATIVO })
+        }
+      },
+      {
         name: "toogleEdit",
         text: "Alterar",
         color: !this.state.editable ? "" : "danger",

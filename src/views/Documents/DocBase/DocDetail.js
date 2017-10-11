@@ -2,6 +2,7 @@
 import React, { PureComponent } from "react";
 import DataGrid from "../../../components/DataGrid";
 import { TextBox, TextBoxNumeric, ComboBox, Date, Toggle, Flag, Check } from "../../../Inputs";
+const sappy = window.sappy;
 
 class DocDetail extends PureComponent {
   constructor(props) {
@@ -36,6 +37,30 @@ class DocDetail extends PureComponent {
         Object.keys(this.props.docData).forEach(field => route = route.replace('<' + field + '>', this.props.docData[field]))
       }
 
+      let divID = "sidebarField_" + sidebarField.name;
+
+      let onMouseLeave;
+      let onMouseEnter;
+      let hover = sidebarField.hover;
+      if (hover && hover.render) {
+        onMouseLeave = e => sappy.hidePopover();
+
+        onMouseEnter = e => {
+          let api = hover.api || "";
+          if (api && api.indexOf('<') > -1) {
+            Object.keys(this.props.docData).forEach(field => api = api.replace('<' + field + '>', this.props.docData[field]))
+          }
+
+          sappy.showPopover({
+            target: divID,
+            api,
+            renderContext: this.props.docData,
+            render: hover.render,
+            placement: hover.placement
+          });
+        }
+      }
+
 
       let commonProps = {
         name: sidebarField.name,
@@ -65,7 +90,10 @@ class DocDetail extends PureComponent {
         input = <Check {...commonProps} color={color} />
       }
 
-      return <div key={"sidebarField_" + sidebarField.name} className={classNames} style={style}> {input} </div>;
+      return <div key={divID} id={divID} className={classNames}
+        onMouseLeave={onMouseLeave}
+        onMouseEnter={onMouseEnter}
+        style={style}> {input} </div>;
     }
 
     let renderSidebarFields = () => {

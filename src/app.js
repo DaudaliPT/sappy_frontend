@@ -142,11 +142,6 @@ class App extends Component {
     super(props);
     this.requireAuth = this.requireAuth.bind(this);
 
-    this.state = {
-      currentAppModal: null,
-      currentProgressModal: null,
-      currentPopover: null
-    }
   }
 
   requireAuth(nextState, replace, callback) {

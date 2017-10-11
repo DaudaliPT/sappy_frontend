@@ -170,7 +170,7 @@ class ModalMeiosPagPagamento extends Component {
 
 
     let totalMeiosPag = ValorNumerario + ValorMultibanco + ValorTransferencia + ValorCheques
-    let pagamentoPorConta = totalPagar > originalTotalPagar ? sappy.round(totalPagar - originalTotalPagar, 2) : 0;
+    let pagamentoPorConta = totalPagar > Math.abs(originalTotalPagar) ? sappy.round(totalPagar - Math.abs(originalTotalPagar), 2) : 0;
     let troco = sappy.round(totalMeiosPag - totalPagar, 2);
 
     if (troco > ValorNumerario) {
