@@ -40,8 +40,9 @@ class DefaultEditor extends Component {
     let formatedValue = value;
     let inputType = "text"
     if ("quantity,price,amount,integer".indexOf(type) > -1) formatedValue = value === null ? null : sappy.getNum(value)
-    if ("quantity,price,amount,integer".indexOf(type) > -1) inputType = "number"
+    // if ("quantity,price,amount,integer".indexOf(type) > -1) inputType = "number"
 
+    let content = formatedValue
     return (<input
       ref={(node) => this.input = node}
       type={inputType}
@@ -49,6 +50,9 @@ class DefaultEditor extends Component {
       className="form-control"
       onFocus={e => {
         setTimeout(() => {
+          // Esta condição é para não perder o 1º caracter digitado com o teclado
+          if (that.input.value !== content) return
+
           that.input.setSelectionRange(0, 9999);
         }, 0)
       }

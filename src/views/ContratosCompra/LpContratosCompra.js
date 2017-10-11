@@ -40,11 +40,11 @@ class LpContratosCompra extends Component {
     sappy.hideModal();
   }
 
-  handleRowClick(e) {
-    var checkbox = $(e.target).closest(".byusVirtualRow").find(".contacts-checkbox")[0];
+  handleRowClick(docID) {
+    // var checkbox = $(e.target).closest(".byusVirtualRow").find(".contacts-checkbox")[0];
 
-    let id = checkbox.id;
-    let docID = id.split("_")[1];
+    // let id = checkbox.id;
+    // let docID = id.split("_")[1];
 
     hashHistory.push({ pathname: "/cmp/contratos/doc", state: { id: docID } });
   }
@@ -93,9 +93,9 @@ class LpContratosCompra extends Component {
       if (!row.NUMERO) rowStyleClass += " vlist-row-warning";
 
       return (
-        <div className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={this.handleRowClick}>
+        <div className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={e => this.handleRowClick(row.ID)}>
           {/*large displays*/}
-          <div className="container vertical-align-middle hidden-lg-down">
+          <div className="container vertical-align-middle hidden-sm-down">
             <div className="row">
               {/* <div className="col-1 sappy-select-col-container" onClick={this.handleRowSelection}>
                 <span className="checkbox-custom checkbox-primary checkbox-lg">
@@ -110,26 +110,16 @@ class LpContratosCompra extends Component {
           </div>
 
           {/*mobile*/}
-          <div className="vertical-align-middle hidden-xl-up">
-            <div className="sappy-select-col" onClick={this.handleRowSelection}>
-              <span className="checkbox-custom checkbox-primary checkbox-lg">
-                <input type="checkbox" className="contacts-checkbox selectable-item" value={selected} id={rowId} />
-                <label htmlFor={rowId} />
-              </span>
-            </div>
-            <div className="sappy-nonselect-col">
-              <div className="container">
-                <div className="row">
-                  <div className="col-1"> {row.NUMERO || ("#" + row.ID)} </div>
-                  <div className="col text-nowrap lastcol">
-                    {sappy.format.date(row.CONFIRMED || row.DATA)}
-                  </div>
+          <div className="vertical-align-middle hidden-md-up">
+            <div className="container">
+              <div className="row">
+                <div className="col text-nowrap firstcol lastcol" style={{ maxHeight: "25px", overflow: "hidden" }}>
+                  {row.CARDCODE + "-" + sappy.padZeros(row.NUMERO, 3) + " " + row.CardName + (row.CONTACT_NAME ? `(${row.CONTACT_NAME})` : "")}
                 </div>
-                <div className="row secondrow">
-                  <div className="col text-nowrap firstcol lastcol" style={{ maxHeight: "25px", overflow: "hidden" }}>
-
-                    {row.ESTADO + " " + row.OBSERVACOES}
-                  </div>
+              </div>
+              <div className="row secondrow">
+                <div className="col offset-2 text-nowrap firstcol lastcol" style={{ maxHeight: "25px", overflow: "hidden" }}>
+                  {row.DESCRICAO} {renderBadges()}
                 </div>
               </div>
             </div>

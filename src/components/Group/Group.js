@@ -28,7 +28,8 @@ class Group extends Component {
     return (
       <div className="sappy-group">
         <div className="title">
-          <h3 className="text" onClick={this.toggleHeader}>{title}</h3>
+          {/* <h3 className="text" onClick={this.toggleHeader}>{title}</h3> */}
+          {<h3 className="text" >{title}</h3>}
           <span className={"moreinfo " + notHiddenClass}>
             {this.props.colapsedInfo}
           </span>

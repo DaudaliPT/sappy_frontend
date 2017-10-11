@@ -461,7 +461,6 @@ class EditModal extends Component {
 
       }
     ];
-    debugger
 
     return (
       <div className="scrollable-doc" >
