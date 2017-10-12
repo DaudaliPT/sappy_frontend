@@ -33,7 +33,7 @@ export default {
                         })
                         .then(result => {
                             let docData = { ...that.state.docData, ...result.data };
-                            that.setState({ hasSelectedRows: false, docData })
+                            that.setState({ selectedLineNums: [], docData })
                         })
                         .catch(error => sappy.showError(error, "Não foi possível apagar linhas"));
             },

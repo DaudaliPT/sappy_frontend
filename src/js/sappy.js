@@ -341,9 +341,9 @@ import moment from 'moment';
     if (parsed.DiscountPercent === 100) {
       formatted = "BONUS"
     } else {
-      DISC_SUC.forEach(DSUC => formatted += (formatted ? " + " : "") + DSUC.toString().replace('.', sappy.sessionInfo.company.oadm.DecSep) + '%');
-      DISC_UN.forEach(DUN => formatted += (formatted ? " + " : "") + sappy.format.price(DUN) + '/un');
-      DISC_VAL.forEach(DVAL => formatted += (formatted ? " + " : "") + sappy.format.amount(DVAL));
+      DISC_SUC.filter(item => !!item).forEach(DSUC => formatted += (formatted ? " + " : "") + DSUC.toString().replace('.', sappy.sessionInfo.company.oadm.DecSep) + '%');
+      DISC_UN.filter(item => !!item).forEach(DUN => formatted += (formatted ? " + " : "") + sappy.format.price(DUN) + '/un');
+      DISC_VAL.filter(item => !!item).forEach(DVAL => formatted += (formatted ? " + " : "") + sappy.format.amount(DVAL));
     }
     return formatted
   }

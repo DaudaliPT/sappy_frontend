@@ -19,6 +19,17 @@ const ToastMessageFactory = React.createFactory(ToastMessage.animation);
 var sappy = window.sappy;
 var $ = window.$;
 
+
+// variable to ensure we wait to check the input we are receiving
+// you will see how this works further down
+var barcodeDetect_receivingKeystrokes = false;
+// Variable to keep the barcode when scanned. When we scan each
+// character is a keypress and hence we push it onto the array. Later we check
+// the length and final char to ensure it is a carriage return - ascii code 13
+// this will tell us if it is a scan or just someone writing on the keyboard
+var barcodeDetect_charBuffer = [];
+var barcodeDetect_BarcodeBuffer = [];
+
 class appBase extends Component {
   constructor(props) {
     super(props);
@@ -52,6 +63,43 @@ class appBase extends Component {
     }
   }
 
+  componentDidMount() {
+
+    // let handleNewBarcode = () => {
+    //   // check we have a long length e.g. it is a barcode
+    //   if (barcodeDetect_charBuffer.length >= 10) {
+    //     var barcode = barcodeDetect_charBuffer.join("");
+    //     barcodeDetect_BarcodeBuffer.push(barcode)
+    //     console.log(barcodeDetect_BarcodeBuffer)
+    //     if (document.activeElement.tagName === "INPUT") {
+    //       //when writing to input (at end remove barcode) 
+    //       document.activeElement.value = document.activeElement.value.replace(barcode, "")
+    //     }
+    //   }
+    //   barcodeDetect_charBuffer = [];
+    //   barcodeDetect_receivingKeystrokes = false;
+    // }
+
+    // // trigger an event on any keypress on this webpage
+    // $(window).keypress(function (e) {
+    //   barcodeDetect_charBuffer.push(String.fromCharCode(e.which));
+    //   console.log(e.which + ":" + barcodeDetect_charBuffer.join("|"));
+
+    //   if (e.which === 13 && barcodeDetect_charBuffer.length >= 10) {
+
+    //     e.preventDefault();
+    //     e.stopPropagation();
+    //     console.log(e.which + " prevented")
+    //     return handleNewBarcode()
+    //   }
+
+    //   if (barcodeDetect_receivingKeystrokes == false) {
+    //     setTimeout(handleNewBarcode, 100);
+    //   }
+
+    //   barcodeDetect_receivingKeystrokes = true; // set press to true so we do not reenter the timeout function above
+    // });
+  }
 
   GetLinkUrl(objType, docEntry) {
     if (!objType) return ""

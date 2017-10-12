@@ -126,7 +126,7 @@ exports.prepareDocType = function ({ tableName }) {
   let sidebarFields = {}
   if ('18'.indexOf(objType) > -1) {    //Compras
     sidebarFields.line0 = [];
-    sidebarFields.line0.push({ name: 'CONTRATO', label: 'Regras Contratuais', type: "combo", api: "/api/docs/new/contratos/<CARDCODE>", width: "100%", hover: contractHover })
+    sidebarFields.line0.push({ name: 'CONTRATO', label: 'Regras Contratuais', type: "combo", api: "/api/docs/new/contratos/<CARDCODE>/<CONTACT>/<TAXDATE>", width: "100%", hover: contractHover })
 
     // sidebarFields.line1 = [];
     // sidebarFields.line1.push({ name: 'DESCCOM', label: 'Desc. Comercial', type: "text", width: "100%" })

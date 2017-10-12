@@ -209,8 +209,6 @@ class EditModal extends Component {
     // perform checks
     //Validar campos de preenchimento obrigatório
     let newState = { ...that.state };
-    // let fieldsRequired = []
-    // let hasChangesToState = false;
 
     let { alerts, toastrMsg } = this.getvalidationResults({ state: newState });
     toastrMsg.forEach(toastrData => sappy.showToastr(toastrData));
@@ -234,7 +232,12 @@ class EditModal extends Component {
 
 
     if (!hasWarning)
-      return postConfirm()
+      return sappy.showQuestion({
+        msg: "Deseja criar este contrato?",
+        onConfirm: postConfirm,
+        confirmText: "Criar contrato",
+        onCancel: () => { }
+      })
     else
       return sappy.showWarning({
         title: "Atenção!",
@@ -272,7 +275,12 @@ class EditModal extends Component {
 
 
     if (!hasWarning)
-      return that.saveToDatabase(newState)
+      return sappy.showQuestion({
+        msg: "Deseja gravar alterações?",
+        onConfirm: () => that.saveToDatabase(newState),
+        confirmText: "Gravar contrato",
+        onCancel: () => { }
+      })
     else
       return sappy.showWarning({
         title: "Atenção!",
@@ -362,7 +370,7 @@ class EditModal extends Component {
             <TextBox {...bip(`${name}UDISC`, {
               label: index === 0 ? "Valor de desconto" : "",
               valueType: "discount",
-              rightButton: index + 1 < nrItems ? "-" : "+",
+              rightButton: index === 0 ? "+" : "-",
               onRightButtonClick: this.onClick_AddRemove
             }) } />
           </div>
@@ -385,14 +393,14 @@ class EditModal extends Component {
             <div className="col-12 col-md-5 pr-md-1">
               <ComboBox {...bip(`${name}DESCRICAO`, { label: index === 0 ? "Descritivo" : "", createable: true, getOptionsApiRoute: "/api/contratos/doc/histvalues/DD" }) } />
             </div>
-            <div className="col-6 col-md-4 pl-md-1 pr-1">
+            <div className="col-6 col-md-3 pl-md-1 pr-1">
               <ComboBox {...bip(`${name}DEBPER`, { label: index === 0 ? "Prazo débito" : "", options: DESCDEB_options }) } />
             </div>
             <div className="col-6 col-md-3 pl-1">
               <TextBox {...bip(`${name}UDISC`, {
                 label: index === 0 ? "Valor de desconto" : "",
                 valueType: "discount",
-                rightButton: index + 1 < nrItems ? "-" : "+",
+                rightButton: index === 0 ? "+" : "-",
                 onRightButtonClick: this.onClick_AddRemove
               }) } />
             </div>
@@ -412,16 +420,19 @@ class EditModal extends Component {
             <div className="col-12 col-md-5 pr-md-1">
               <ComboBox {...bip(`${name}DESCRICAO`, { label: index === 0 ? "Descritivo" : "", createable: true, getOptionsApiRoute: "/api/contratos/doc/histvalues/DU" }) } />
             </div>
-            <div className="col-6 col-md-4 pl-md-1 pr-1">
+            <div className="col-5 col-md-3 pl-md-1 pr-1">
               <ComboBox {...bip(`${name}DEBPER`, { label: index === 0 ? "Prazo débito" : "", options: DESCDEB_options }) } />
             </div>
-            <div className="col-6 col-md-3 pl-1">
+            <div className="col-5 col-md-3 pl-1 pr-1">
               <TextBox {...bip(`${name}UDISC`, {
                 label: index === 0 ? "Valor de débito" : "",
                 valueType: "discount",
-                rightButton: index + 1 < nrItems ? "-" : "+",
+                rightButton: index === 0 ? "+" : "-",
                 onRightButtonClick: this.onClick_AddRemove
               }) } />
+            </div>
+            <div className="col-2 col-md-1 pl-1">
+              <Check {...bip(`${name}BYASSOC`, { label: index === 0 ? "Assoc." : "" }) } />
             </div>
           </div>
         )
@@ -439,14 +450,14 @@ class EditModal extends Component {
             <div className="col-12 col-md-5 pr-md-1">
               <ComboBox {...bip(`${name}DESCRICAO`, { label: index === 0 ? "Descritivo" : "", createable: true, getOptionsApiRoute: "/api/contratos/doc/histvalues/DA" }) } />
             </div>
-            <div className="col-6 col-md-4 pl-md-1 pr-1">
+            <div className="col-6 col-md-3 pl-md-1 pr-1">
               <ComboBox {...bip(`${name}DEBPER`, { label: index === 0 ? "Débito em" : "", options: DESCDEB_ANUAIS_options }) } />
             </div>
             <div className="col-6 col-md-3 pl-1">
               <TextBox {...bip(`${name}UDISC`, {
                 label: index === 0 ? "Valor de débito" : "",
                 valueType: "discount",
-                rightButton: index + 1 < nrItems ? "-" : "+",
+                rightButton: index === 0 ? "+" : "-",
                 onRightButtonClick: this.onClick_AddRemove
               }) } />
             </div>
@@ -494,10 +505,16 @@ class EditModal extends Component {
       }
     ];
 
+
+    let strNumero =
+      (this.state.NUMERO && (this.state.CARDCODE + "-" + sappy.padZeros(this.state.NUMERO, 3)))
+      || (this.state.ID && "Rascunho")
+      || "Novo";
+
     return (
       <div className="scrollable-doc" >
 
-        <Panel title="Contrato de Fornecedor" actions={headerActions} >
+        <Panel title={"Contrato de Fornecedor (" + strNumero + ")"} actions={headerActions} >
           <div className="row">
             <div className="col-md-5 pr-md-1">
               <ComboBox  {...bip("CARDCODE", { label: "Fornecedor", disabled: !!this.state.NUMERO, getOptionsApiRoute: "/api/cbo/ocrd/s" }) } />
