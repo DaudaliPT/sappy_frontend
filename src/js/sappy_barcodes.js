@@ -111,7 +111,7 @@ import axios from "axios";
         }
 
         // set press to true so we do not reenter the timeout function above
-        if (!timeOutHandler) timeOutHandler = setTimeout(onTypeTimeout, 200);
+        if (!timeOutHandler) timeOutHandler = setTimeout(onTypeTimeout, 500);
 
       },
       useCapturingFase);
