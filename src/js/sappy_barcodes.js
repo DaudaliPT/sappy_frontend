@@ -84,6 +84,10 @@ import axios from "axios";
     }
   }
 
+  lib.getBufferContent = function () {
+    return [...charBuffer]
+  }
+
   lib.init = function (sappyObj) {
     sappy = sappyObj
     // We want to capture the event before any thing else
@@ -107,7 +111,7 @@ import axios from "axios";
         }
 
         // set press to true so we do not reenter the timeout function above
-        if (!timeOutHandler) timeOutHandler = setTimeout(onTypeTimeout, 100);
+        if (!timeOutHandler) timeOutHandler = setTimeout(onTypeTimeout, 200);
 
       },
       useCapturingFase);
