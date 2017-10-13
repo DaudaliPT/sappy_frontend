@@ -54,7 +54,7 @@ class CmpUltRecebimentos extends Component {
                     return reject('Tem que seleccionar um motivo...')
                 })
             },
-            onCancel: () => { },
+            showCancelButton: true,
             onConfirm: (value) => {
                 sappy.showSwal({
                     title: "Cancelar recebimento?",
@@ -70,7 +70,7 @@ class CmpUltRecebimentos extends Component {
                             return reject('Tem que indicar o motivo...')
                         })
                     },
-                    onCancel: () => { },
+                    showCancelButton: true,
                     onConfirm: (otherValue) => {
                         let reason = value === "other" ? otherValue : value;
 

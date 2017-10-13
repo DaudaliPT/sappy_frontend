@@ -6,6 +6,9 @@ import { Popover, PopoverContent } from 'reactstrap';
 import axios from "axios";
 import swal from 'sweetalert2'
 import 'sweetalert2/dist/sweetalert2.css';
+
+import ReactAudioPlayer from "react-audio-player";
+
 swal.setDefaults({
   reverseButtons: true,
   allowOutsideClick: false,
@@ -19,20 +22,11 @@ const ToastMessageFactory = React.createFactory(ToastMessage.animation);
 var sappy = window.sappy;
 var $ = window.$;
 
-
-// variable to ensure we wait to check the input we are receiving
-// you will see how this works further down
-var barcodeDetect_receivingKeystrokes = false;
-// Variable to keep the barcode when scanned. When we scan each
-// character is a keypress and hence we push it onto the array. Later we check
-// the length and final char to ensure it is a carriage return - ascii code 13
-// this will tell us if it is a scan or just someone writing on the keyboard
-var barcodeDetect_charBuffer = [];
-var barcodeDetect_BarcodeBuffer = [];
-
 class appBase extends Component {
   constructor(props) {
     super(props);
+
+    let that = this;
 
     sappy.showModal = this.showModal.bind(this);
     sappy.hideModal = this.hideModal.bind(this);
@@ -59,46 +53,10 @@ class appBase extends Component {
     this.state = {
       currentAppModal: null,
       currentProgressModal: null,
-      currentPopover: null
+      currentPopover: null,
+      playBadInputSound: false,
+      badInputAlertComponent: <ReactAudioPlayer src="/files/216090__richerlandtv__bad-beep-incorrect.mp3" autoPlay={true} onEnded={() => that.setState({ playBadInputSound: false })} />
     }
-  }
-
-  componentDidMount() {
-
-    // let handleNewBarcode = () => {
-    //   // check we have a long length e.g. it is a barcode
-    //   if (barcodeDetect_charBuffer.length >= 10) {
-    //     var barcode = barcodeDetect_charBuffer.join("");
-    //     barcodeDetect_BarcodeBuffer.push(barcode)
-    //     console.log(barcodeDetect_BarcodeBuffer)
-    //     if (document.activeElement.tagName === "INPUT") {
-    //       //when writing to input (at end remove barcode) 
-    //       document.activeElement.value = document.activeElement.value.replace(barcode, "")
-    //     }
-    //   }
-    //   barcodeDetect_charBuffer = [];
-    //   barcodeDetect_receivingKeystrokes = false;
-    // }
-
-    // // trigger an event on any keypress on this webpage
-    // $(window).keypress(function (e) {
-    //   barcodeDetect_charBuffer.push(String.fromCharCode(e.which));
-    //   console.log(e.which + ":" + barcodeDetect_charBuffer.join("|"));
-
-    //   if (e.which === 13 && barcodeDetect_charBuffer.length >= 10) {
-
-    //     e.preventDefault();
-    //     e.stopPropagation();
-    //     console.log(e.which + " prevented")
-    //     return handleNewBarcode()
-    //   }
-
-    //   if (barcodeDetect_receivingKeystrokes == false) {
-    //     setTimeout(handleNewBarcode, 100);
-    //   }
-
-    //   barcodeDetect_receivingKeystrokes = true; // set press to true so we do not reenter the timeout function above
-    // });
   }
 
   GetLinkUrl(objType, docEntry) {
@@ -221,15 +179,17 @@ class appBase extends Component {
   }
 
   showSwal(options) {
-    let { type, html, msg, moreInfo, onConfirm, onCancel, confirmText, confirmStyle, cancelText, cancelStyle } = options
+    let { type, html, msg, moreInfo, onConfirm, onCancel, confirmText, confirmStyle, cancelText, cancelStyle, playBadInput } = options
     let color = type;
     if (type === "question") color = "primary"
+
+
+    if (playBadInput) this.setState({ playBadInputSound: true })
 
     swal(
       {
         ...options,
         html: html || `${msg || ""}<small><br />${moreInfo || ''}</small>`,
-        showCancelButton: typeof onCancel === "function",
         confirmButtonText: confirmText || "Confirmar",
         cancelButtonText: cancelText || 'Cancelar',
         cancelButtonClass: 'btn  mr-5 btn-lg btn-' + (cancelStyle || "secondary"),
@@ -305,6 +265,10 @@ class appBase extends Component {
           preventDuplicates={true}
           className="toast-top-right"
         />
+        {
+          this.state.playBadInputSound && this.state.badInputAlertComponent
+        }
+
         {this.state.currentAppModal}
         {this.state.currentProgressModal}
         {this.state.currentPopover}

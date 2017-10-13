@@ -200,6 +200,7 @@ class ModalOitm extends Component {
 
 
 ModalOitm.searchApiUrl = "/api/search/oitm/";
+ModalOitm.barcodeApiUrl = "/api/search/oitm/bc/";
 
 ModalOitm.defaultProps = {
   limitSearch: false,

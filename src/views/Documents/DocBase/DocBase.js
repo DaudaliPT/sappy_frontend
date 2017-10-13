@@ -330,28 +330,33 @@ class DocBase extends Component {
     this.setState({ footerLimitSearch: !this.state.footerLimitSearch })
   }
 
-  handleFooterSearchResult(selectedItems) {
+  handleFooterSearchResult({ selectedItems, barcodes, callback } = {}) {
     let that = this;
+    let itemCodes = selectedItems;
 
-    let createDocLines = (itemCodes) => {
+
+    let createDocLines = () => {
       this.serverRequest = axios
-        .post(`${this.props.apiDocsNew}/${this.state.docData.ID}/lines`, { itemCodes })
+        .post(`${this.props.apiDocsNew}/${this.state.docData.ID}/lines`, { itemCodes, barcodes })
         .then(function (result) {
           let newDocData = { ...that.state.docData, ...result.data }
           that.setState({ docData: newDocData }, () => {
             //scroll to end
             that.refs.DocDetail.scrollToLastLine();
           });
+          if (callback) callback()
         })
-        .catch(error => sappy.showError(error, "Erro ao adicionar linhas"));
+        .catch(error => {
+          sappy.showError(error, "Erro ao adicionar linhas")
+          if (callback) callback()
+        });
     }
 
-    if (selectedItems && selectedItems.length > 0) {
-      this.ensureDocHeaderExists(() => {
-        createDocLines(selectedItems);
-      });
+    if ((itemCodes && itemCodes.length > 0) || (barcodes && barcodes.length > 0)) {
+      this.ensureDocHeaderExists(createDocLines);
     }
   }
+
 
   render() {
     let that = this;

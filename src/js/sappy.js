@@ -1,12 +1,12 @@
 import React from "react";
 import accounting from "./accountingjs";
 import moment from 'moment';
+import barcodes from "./sappy_barcodes";
 
 // sappy namespace
 (function (sappy) {
   // Public Property
   sappy.author = "Urbino Pescada";
-
 
   sappy.isEqual = (val1, val2) => {
     if ((val1 === null || typeof val1 === "undefined")
@@ -30,7 +30,8 @@ import moment from 'moment';
     return costumMsg + "(" + msg + ")";
   };
 
-
+  sappy.barcodes = barcodes;
+  sappy.barcodes.init(sappy);
 
 
 
@@ -505,7 +506,6 @@ import moment from 'moment';
     if (t === 204) return "it_PurchaseDownPayment ";
     return ""
   }
-
 
   sappy.b1.sapObjectInfo = ({ tableName, objectCode } = {}) => {
     let objData = [

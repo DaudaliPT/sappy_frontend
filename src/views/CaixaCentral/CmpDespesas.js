@@ -93,7 +93,7 @@ class CmpDespesas extends Component {
                     return reject('Tem que seleccionar um motivo...')
                 })
             },
-            onCancel: () => { },
+            showCancelButton: true,
             onConfirm: (value) => {
                 sappy.showSwal({
                     title: "Cancelar adiantamento?",
@@ -107,7 +107,7 @@ class CmpDespesas extends Component {
                             return reject('Tem que indicar o motivo...')
                         })
                     },
-                    onCancel: () => { },
+                    showCancelButton: true,
                     onConfirm: (otherValue) => {
                         let reason = value === "other" ? otherValue : value;
                         sappy.showWaitProgress("A cancelar documento...")
@@ -164,7 +164,7 @@ class CmpDespesas extends Component {
                     return reject('Tem que seleccionar um motivo...')
                 })
             },
-            onCancel: () => { },
+            showCancelButton: true,
             onConfirm: (value) => {
                 sappy.showSwal({
                     title: "Fechar adiantamento?",
@@ -179,7 +179,7 @@ class CmpDespesas extends Component {
                             return reject('Tem que indicar o motivo...')
                         })
                     },
-                    onCancel: () => { },
+                    showCancelButton: true,
                     onConfirm: (otherValue) => {
                         sappy.showWaitProgress("A fechar adiantamento...")
 

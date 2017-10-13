@@ -12,6 +12,7 @@ class SearchAndChoose extends Component {
     this.handleOnChange_txtSearch = this.handleOnChange_txtSearch.bind(this)
     this.handleOnKeyDown_txtSearch = this.handleOnKeyDown_txtSearch.bind(this)
     this.openSearchModal = this.openSearchModal.bind(this)
+    this.handleBarcodeRead = this.handleBarcodeRead.bind(this)
 
     this.state = {
       searchText: "",
@@ -19,9 +20,61 @@ class SearchAndChoose extends Component {
     }
   }
 
+  componentDidMount() {
+    sappy.barcodes.onRead(this.handleBarcodeRead);
+  }
+
+  componentWillUnmount() {
+    sappy.barcodes.onRead(null);
+  }
+
+  handleBarcodeRead(barcodes) {
+    // let that = this;
+    // let barcodeApiUrl = ""
+    // if (this.props.searchType === "oitm") barcodeApiUrl = ModalOitm.barcodeApiUrl;
+    // else sappy.showError(this.props.searchType, "Tipo de pesquisa desconhecido")
+
+    this.setState({ searchText: "" })
+
+    this.props.onReturnSelectItems({
+      barcodes: barcodes,
+      callback: sappy.barcodes.notifyBarcodesProcessed
+    });
+    // that.setState({ searchText: "" })
+
+
+    // if (barcodeApiUrl) {
+    //   axios
+    //     .get(barcodeApiUrl + barcode)
+    //     .then(result => {
+    //       var listItems = result.data;
+    //       let found = listItems.length;
+
+    //       if (found === 1) {
+    //         let selectedItems = [listItems[0].ItemCode];
+    //         this.props.onReturnSelectItems({
+    //           [selectedItems],
+    //           callback: sappy.barcodes.notifyBarcodesProcessed
+    //         });
+    //         that.setState({ searchText: "" })
+    //       } else if (found > 1) {
+    //         that.setState({ searchText: barcode }, that.openSearchModal);
+    //       } else {
+    //         that.setState({ searchText: "" })
+    //         sappy.showWarning({ title: "Nada encontrado", moreInfo: "Não foi possivel encontrar ao procurar por '" + barcode + "'", playBadInput: true })
+    //       }
+    //     })
+    //     .catch(function (error) {
+    //       sappy.barcodes.notifyBarcodesProcessed();
+    //       if (!error.__CANCEL__) sappy.showError(error, "Api error")
+    //       that.setState({ searchText: "" })
+    //     });
+    // }
+  }
+
   handleModalSearchClose(selectedItems) {
     this.setState({ currentModal: null });
-    this.props.onReturnSelectItems(selectedItems);
+    this.props.onReturnSelectItems({ selectedItems });
   }
   handleOnChange_txtSearch(e) {
     e.preventDefault();
@@ -83,7 +136,7 @@ class SearchAndChoose extends Component {
 
           if (found === 1) {
             let selectedItems = [listItems[0].ItemCode];
-            this.props.onReturnSelectItems(selectedItems);
+            this.props.onReturnSelectItems({ selectedItems });
             that.setState({ searchText: "" })
           } else if (found > 1) {
             that.openSearchModal();

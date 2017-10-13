@@ -286,7 +286,7 @@ class ModalCreateArtigo extends Component {
           title: "Apagar rascunho?",
           moreInfo: `Se confirmar a remoção deste rascunho, ele será removido do sistema.`,
           cancelText: "Cancelar",
-          onCancel: () => { },
+          showCancelButton: true,
           confirmText: "Apagar rascunho",
           onConfirm: apagarArtigo
         });
@@ -394,7 +394,7 @@ class ModalCreateArtigo extends Component {
               title: "Confirma?",
               moreInfo: `Se confirmar, será criado este novo artigo em sistema.`,
               cancelText: "Cancelar",
-              onCancel: () => { },
+              showCancelButton: true,
               confirmText: "Confirmar",
               onConfirm: criarArtigo
             });

@@ -242,7 +242,7 @@ class CmpGeral extends Component {
           title: "Apagar artigo?",
           moreInfo: `Se confirmar a remoção deste artigo, ele será removido do sistema.`,
           cancelText: "Cancelar",
-          onCancel: () => { },
+          showCancelButton: true,
           confirmText: "Apagar artigo",
           // eslint-disable-next-line
           onConfirm: apagarArtigo
@@ -337,7 +337,7 @@ class CmpGeral extends Component {
             title: "Confirma?",
             moreInfo: `Se confirmar, as alterações ao artigo serão gravadas no sistema.`,
             cancelText: "Cancelar",
-            onCancel: () => { },
+            showCancelButton: true,
             confirmText: "Confirmar",
             onConfirm: gravarArtigo
           });

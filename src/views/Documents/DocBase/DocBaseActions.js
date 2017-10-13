@@ -183,7 +183,7 @@ export default {
                             moreInfo: "A criação do documento foi cancelada.",
                             cancelText: "Cancelar",
                             cancelStyle: "success",
-                            onCancel: () => { },
+                            showCancelButton: true,
                             confirmText: "Adicionar mesmo assim",
                             // eslint-disable-next-line
                             onConfirm: () => invokeAddDocAPI(data.DocTotal)
