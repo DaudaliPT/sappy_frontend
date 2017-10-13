@@ -152,7 +152,7 @@ body.site-navbar-small {
 @media (min-width: 992px) {
     .modal-md {       max-width: 60% !important;    }
     .modal-lg {       max-width: 80% !important;    }
-    .sappy-search-bar {        width: 50%;    } 
+    .sappy-search-bar {        width: 40%;    } 
 }
 @media (max-width: 480px) {
   .modal-md {       max-width: 90% !important;    }

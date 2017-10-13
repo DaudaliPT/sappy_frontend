@@ -179,7 +179,7 @@ class appBase extends Component {
   }
 
   showSwal(options) {
-    let { type, html, msg, moreInfo, onConfirm, onCancel, confirmText, confirmStyle, cancelText, cancelStyle, playBadInput } = options
+    let { showCancelButton, type, html, msg, moreInfo, onConfirm, onCancel, confirmText, confirmStyle, cancelText, cancelStyle, playBadInput } = options
     let color = type;
     if (type === "question") color = "primary"
 
@@ -190,6 +190,7 @@ class appBase extends Component {
       {
         ...options,
         html: html || `${msg || ""}<small><br />${moreInfo || ''}</small>`,
+        showCancelButton: showCancelButton || cancelText || onCancel,
         confirmButtonText: confirmText || "Confirmar",
         cancelButtonText: cancelText || 'Cancelar',
         cancelButtonClass: 'btn  mr-5 btn-lg btn-' + (cancelStyle || "secondary"),

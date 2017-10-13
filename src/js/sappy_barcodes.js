@@ -25,8 +25,7 @@ import axios from "axios";
       title,
       moreInfo,
       playBadInput: true,
-      onConfirm: acknowledgePopupMsg,
-      onCancel: acknowledgePopupMsg
+      onClose: acknowledgePopupMsg
     })
   }
 
