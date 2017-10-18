@@ -47,9 +47,8 @@ class DocPromocoes extends Component {
       { value: "ListNum", label: "Lista de preços", optionsApi: "/api/cbo/opln", multi: true },
     ]
 
-
     this.fieldsAllowedForArt = [
-      { value: "ItmsGrpCode", label: "Família", optionsApi: "/api/cbo/oitb", multi: true },
+      { value: "ItmsGrpCod", label: "Família", optionsApi: "/api/cbo/oitb", multi: true },
       { value: "U_SubFamilia1", label: "Sub-Família", optionsApi: "/api/cbo/subfamilia1", multi: true },
       { value: "CardCode", label: "Fornecedor", optionsApi: "/api/cbo/ocrd/s", multi: true },
       { value: "FirmCode", label: "Fabricante", optionsApi: "/api/cbo/omrc", multi: true },
@@ -68,7 +67,7 @@ class DocPromocoes extends Component {
       .catch(error => sappy.showError(error, "Erro ao obter dados"));
 
     this.serverRequest = axios
-      .get(`/api/cbo/oitg`)
+      .get(`/api/cbo/oitg/forpromo`)
       .then(result => {
         that.setState({ fieldsAllowedForArt: [...that.fieldsAllowedForArt, ...result.data] })
       })

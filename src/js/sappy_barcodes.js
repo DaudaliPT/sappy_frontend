@@ -13,6 +13,7 @@ import axios from "axios";
   var processing = false;
   var sappy = null; // só será preenchido no init(sappy)
   var withError = false;
+  var isHuman = false;
 
   function acknowledgePopupMsg() {
     withError = false
@@ -67,17 +68,14 @@ import axios from "axios";
 
   function onTypeTimeout() {
     if (!currentCallback) return
-    timeOutHandler = null
+    var barcode = charBuffer.join("");
+    console.log(barcode)
 
-    console.log("********************************************")
+    timeOutHandler = null
+    charBuffer = [];
 
     // check we have a long length e.g. it is a barcode
-    if (charBuffer.length >= 10) {
-      var barcode = charBuffer.join("");
-
-      charBuffer = [];
-      timeOutHandler = false;
-
+    if (barcode.length >= 10) {
       if (withError) return // ignore bar code when error is visible
       validate(barcode)
     }
@@ -100,8 +98,8 @@ import axios from "axios";
           e.stopPropagation();
           // console.log(e.keyCode + " prevented")
 
-          if (timeOutHandler) clearTimeout(timeOutHandler);
-          return onTypeTimeout();
+          // if (timeOutHandler) clearTimeout(timeOutHandler);
+          return // onTypeTimeout();
         }
 
         // Se 0 a z    [0-9] e [A-Z] e [a-z]
@@ -109,14 +107,17 @@ import axios from "axios";
           charBuffer.push(String.fromCharCode(e.which));
           // console.log(e.which + ":" + charBuffer.join("|"));
 
-          // set press to true so we do not reenter the timeout function above
-          if (!timeOutHandler) timeOutHandler = setTimeout(onTypeTimeout, 500);
-        } else {
-          charBuffer = [] //clear buffer
           if (timeOutHandler) {
-            clearTimeout(timeOutHandler);
+            clearTimeout(timeOutHandler)
             timeOutHandler = null
           }
+          timeOutHandler = setTimeout(e => {
+            // took mode than 50 milisecs, is a human or ended barcode
+            onTypeTimeout();
+          }, 50)
+
+        } else {
+          charBuffer = [] //clear buffer 
         }
 
       },
