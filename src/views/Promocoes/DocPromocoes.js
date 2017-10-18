@@ -119,7 +119,7 @@ class DocPromocoes extends Component {
   }
 
 
-  saveToDatabase(stateValues) {
+  saveToDatabase(stateValues, specialOption) {
 
     let { IC, EC, IA, EA, DATAI, DATAF, UDISC, IC_SPECIFIC, EC_SPECIFIC, IA_SPECIFIC, EA_SPECIFIC, DESCRICAO, OBSERVACOES, ID, NUMERO, ATIVO, ARQUIVADO, DIASEM0, DIASEM1, DIASEM2, DIASEM3, DIASEM4, DIASEM5, DIASEM6, PRIORIDADE, CLI_RESTRICT, ART_RESTRICT, CLI_EXCLUDE, ART_EXCLUDE } = stateValues;
     let data = { ID, NUMERO, UDISC, DATAI, DATAF, IC_SPECIFIC, EC_SPECIFIC, IA_SPECIFIC, EA_SPECIFIC, DESCRICAO, OBSERVACOES, ATIVO, ARQUIVADO, DIASEM0, DIASEM1, DIASEM2, DIASEM3, DIASEM4, DIASEM5, DIASEM6, PRIORIDADE, CLI_RESTRICT, ART_RESTRICT, CLI_EXCLUDE, ART_EXCLUDE }
@@ -130,10 +130,25 @@ class DocPromocoes extends Component {
     EA.forEach((item, ix) => { item.TIPO = 'EA'; item.LINE = ix; })
     data.LINES = [...IC, ...EC, ...IA, ...EA]
 
-    axios
-      .post(`/api/promocoes/doc/`, data)
-      .then(this.loadDocToState)
-      .catch(error => sappy.showError(error, "Não foi possivel gravar a promoção"));
+    if (!specialOption) {
+      axios
+        .post(`/api/promocoes/doc/`, data)
+        .then(this.loadDocToState)
+        .catch(error => sappy.showError(error, "Não foi possivel gravar a promoção"));
+    }
+    if (specialOption === "CLIENTES_ABRANGIDOS") {
+      axios
+        .post(`/api/promocoes/doc/clientes`, data)
+        .then(result => console.log(result.data))
+        .catch(error => sappy.showError(error, "Não foi possivel obter artigos abrangidos"));
+    }
+    if (specialOption === "ARTIGOS_ABRANGIDOS") {
+      axios
+        .post(`/api/promocoes/doc/artigos`, data)
+        .then(result => console.log(result.data))
+        .catch(error => sappy.showError(error, "Não foi possivel obter artigos abrangidos"));
+    }
+
   }
 
   // Recebe os valores dos campos MY*
@@ -408,7 +423,7 @@ class DocPromocoes extends Component {
         text: "Ver Lista",
         visible: true,
         icon: "fa-eye",
-        onClick: e => { that.onFieldChange({ fieldName: "ARQUIVADO", rawValue: !that.state.ARQUIVADO, value: !that.state.ARQUIVADO }) }
+        onClick: e => { that.saveToDatabase(that.state, "CLIENTES_ABRANGIDOS") }
       }
     ];
 
@@ -418,7 +433,7 @@ class DocPromocoes extends Component {
         text: "Ver Lista",
         visible: true,
         icon: "fa-eye",
-        onClick: e => { that.onFieldChange({ fieldName: "ARQUIVADO", rawValue: !that.state.ARQUIVADO, value: !that.state.ARQUIVADO }) }
+        onClick: e => { that.saveToDatabase(that.state, "ARTIGOS_ABRANGIDOS") }
       }
     ];
 
