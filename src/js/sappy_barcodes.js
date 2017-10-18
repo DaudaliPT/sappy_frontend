@@ -69,7 +69,7 @@ import axios from "axios";
   function onTypeTimeout() {
     if (!currentCallback) return
     var barcode = charBuffer.join("");
-    console.log(barcode)
+    // console.log(barcode)
 
     timeOutHandler = null
     charBuffer = [];
