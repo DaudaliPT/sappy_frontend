@@ -10,6 +10,9 @@ import "./index.css";
 import "./modified_site.css";
 import 'react-select/dist/react-select.css'
 import "react-toggle/style.css"
+import 'rc-slider/assets/index.css';
+import 'rc-tooltip/assets/bootstrap.css';
+
 var sappy = window.sappy;
 
 try {

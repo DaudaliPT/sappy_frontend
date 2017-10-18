@@ -102,15 +102,22 @@ import axios from "axios";
 
           if (timeOutHandler) clearTimeout(timeOutHandler);
           return onTypeTimeout();
-        } else {
-
-          // Se 0 a z    [0-9] e [A-Z] e [a-z]
-          if (e.which >= 48 && e.which <= 122) charBuffer.push(String.fromCharCode(e.which));
-          // console.log(e.which + ":" + charBuffer.join("|"));
         }
 
-        // set press to true so we do not reenter the timeout function above
-        if (!timeOutHandler) timeOutHandler = setTimeout(onTypeTimeout, 500);
+        // Se 0 a z    [0-9] e [A-Z] e [a-z]
+        if (e.which >= 48 && e.which <= 122) {
+          charBuffer.push(String.fromCharCode(e.which));
+          // console.log(e.which + ":" + charBuffer.join("|"));
+
+          // set press to true so we do not reenter the timeout function above
+          if (!timeOutHandler) timeOutHandler = setTimeout(onTypeTimeout, 500);
+        } else {
+          charBuffer = [] //clear buffer
+          if (timeOutHandler) {
+            clearTimeout(timeOutHandler);
+            timeOutHandler = null
+          }
+        }
 
       },
       useCapturingFase);

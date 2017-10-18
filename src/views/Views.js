@@ -6,6 +6,7 @@ let Views = {
   Precos: require("./Precos").default,
   ContratosCompra: require("./ContratosCompra"),
   Produtos: require("./Produtos").default,
+  Promocoes: require("./Promocoes"),
   Reports: require("./Reports").default,
   Settings: require("./Settings").default
 };

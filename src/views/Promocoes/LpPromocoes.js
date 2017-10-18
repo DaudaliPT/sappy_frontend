@@ -8,7 +8,7 @@ import uuid from "uuid/v4";
 import BaseLandingPage from "../BaseLandingPage";
 import { hashHistory } from "react-router";
 
-class LpContratosCompra extends Component {
+class LpPromocoes extends Component {
   constructor(props) {
     super(props);
     this.handleRowClick = this.handleRowClick.bind(this);
@@ -19,15 +19,8 @@ class LpContratosCompra extends Component {
       showActions: false
     };
   }
-
-
   handleRowClick(docID) {
-    // var checkbox = $(e.target).closest(".byusVirtualRow").find(".contacts-checkbox")[0];
-
-    // let id = checkbox.id;
-    // let docID = id.split("_")[1];
-
-    hashHistory.push({ pathname: "/cmp/contratos/doc", state: { id: docID } });
+    hashHistory.push({ pathname: "/vnd/promocoes/doc", state: { id: docID } });
   }
 
   render() {
@@ -91,7 +84,7 @@ class LpContratosCompra extends Component {
           name: "main",
           color: "success",
           icon: "icon wb-plus",
-          onClick: e => hashHistory.push({ pathname: "/cmp/contratos/doc", state: { id: null } })
+          onClick: e => hashHistory.push({ pathname: "/vnd/promocoes/doc", state: { id: null } })
         }
       ];
 
@@ -100,9 +93,9 @@ class LpContratosCompra extends Component {
 
     return (
       <BaseLandingPage
-        pageTitle="Contratos de compra"
+        pageTitle="Promoções"
         searchPlaceholder="Procurar..."
-        searchApiUrl="api/contratos/"
+        searchApiUrl="api/promocoes/"
         renderRow={renderRow}
         renderRowHeight={50}
         actions={renderActions()}
@@ -111,4 +104,4 @@ class LpContratosCompra extends Component {
   }
 }
 
-export default LpContratosCompra; 
+export default LpPromocoes; 

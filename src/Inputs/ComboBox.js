@@ -33,8 +33,9 @@ class ComboBox extends Component {
   }
 
   loadProps(props) {
+    // console.log("loadProps", props)
     let that = this
-    if (this.props.options) {
+    if (props.options) {
       this.setState({
         options: props.options,
         filterOptions: createFilterOptions({ options: props.options }),
@@ -43,7 +44,7 @@ class ComboBox extends Component {
       });
 
     }
-    if (this.props.getOptionsApiRoute) {
+    if (props.getOptionsApiRoute) {
       that.setState({
         options: [],
         filterOptions: createFilterOptions({ options: [] }),
