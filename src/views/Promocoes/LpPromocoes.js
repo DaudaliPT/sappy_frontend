@@ -49,9 +49,9 @@ class LpPromocoes extends Component {
           {/*large displays*/}
           <div className="container vertical-align-middle hidden-sm-down">
             <div className="row">
-              <div className="col-2"> {row.CARDCODE + "-" + sappy.padZeros(row.NUMERO, 3)} </div>
-              <div className="col-6"> {row.CardName + (row.CONTACT_NAME ? `(${row.CONTACT_NAME})` : "")} </div>
-              <div className="col-4 lastcol"> {row.DESCRICAO} {renderBadges()}</div>
+              <div className="col-1"> {row.NUMERO} </div>
+              <div className="col-8"> {row.DESCRICAO} {renderBadges()}</div>
+              <div className="col-3 lastcol"> {sappy.format.date(row.DATAI) + " a " + sappy.format.date(row.DATAF)}</div>
             </div>
           </div>
 
@@ -59,13 +59,18 @@ class LpPromocoes extends Component {
           <div className="vertical-align-middle hidden-md-up">
             <div className="container">
               <div className="row">
-                <div className="col text-nowrap firstcol lastcol" style={{ maxHeight: "25px", overflow: "hidden" }}>
-                  {row.CARDCODE + "-" + sappy.padZeros(row.NUMERO, 3) + " " + row.CardName + (row.CONTACT_NAME ? `(${row.CONTACT_NAME})` : "")}
+                <div className="col-1 firstcol">
+                  {row.NUMERO}
+                </div>
+                <div className="col-11 text-nowrap " style={{ maxHeight: "25px", overflow: "hidden" }}>
+                  {row.DESCRICAO}
                 </div>
               </div>
               <div className="row secondrow">
-                <div className="col offset-2 text-nowrap firstcol lastcol" style={{ maxHeight: "25px", overflow: "hidden" }}>
-                  {row.DESCRICAO} {renderBadges()}
+                <div className="col offset-1 text-nowrap firstcol lastcol" style={{ maxHeight: "25px", overflow: "hidden" }}>
+
+                  {sappy.format.date(row.DATAI) + " a " + sappy.format.date(row.DATAF)}
+                  {renderBadges()}
                 </div>
               </div>
             </div>

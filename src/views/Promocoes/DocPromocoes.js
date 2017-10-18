@@ -347,7 +347,9 @@ class DocPromocoes extends Component {
         visible: this.state.NUMERO,
         disabled: this.state.ATIVO && !this.state.ARQUIVADO,
         icon: this.state.ARQUIVADO ? "fa-folder" : "fa-folder-open",
-        onClick: e => { that.onFieldChange({ fieldName: "ARQUIVADO", rawValue: !that.state.ARQUIVADO, value: !that.state.ARQUIVADO }) }
+        onClick: e => {
+          that.saveToDatabase({ ...that.state, ARQUIVADO: !that.state.ARQUIVADO })
+        }
       },
       {
         name: "toggleAtivo",
