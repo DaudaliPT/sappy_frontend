@@ -104,11 +104,12 @@ class DocPromocoes extends Component {
     newState.IA = newState.LINES.filter(line => line.TIPO === "IA")
     newState.EA = newState.LINES.filter(line => line.TIPO === "EA")
 
-    if (newState.IC.length === 0) newState.IC.push({});
-    if (newState.EC.length === 0) newState.EC.push({});
-    if (newState.IA.length === 0) newState.IA.push({});
-    if (newState.EA.length === 0) newState.EA.push({});
-
+    if (newState.editable) {
+      if (newState.IC.length === 0) newState.IC.push({});
+      if (newState.EC.length === 0) newState.EC.push({});
+      if (newState.IA.length === 0) newState.IA.push({});
+      if (newState.EA.length === 0) newState.EA.push({});
+    }
     delete newState.LINES
 
     newState.loading = false
@@ -143,6 +144,24 @@ class DocPromocoes extends Component {
     let fieldName = changeInfo.fieldName;
 
     let newStateValues = { ...this.state };
+
+    if (fieldName === "CLI_RESTRICT" && !val) {
+      newStateValues.IC = [{}]
+      newStateValues.IC_SPECIFIC = ""
+    }
+    if (fieldName === "CLI_EXCLUDE" && !val) {
+      newStateValues.EC = [{}]
+      newStateValues.EC_SPECIFIC = ""
+    }
+    if (fieldName === "ART_RESTRICT" && !val) {
+      newStateValues.IA = [{}]
+      newStateValues.IA_SPECIFIC = ""
+    }
+    if (fieldName === "ART_EXCLUDE" && !val) {
+      newStateValues.EA = [{}]
+      newStateValues.EA_SPECIFIC = ""
+    }
+
 
 
     if (fieldName.indexOf("#") > -1) {
@@ -367,7 +386,16 @@ class DocPromocoes extends Component {
         disabled: this.state.ARQUIVADO,
         icon: this.state.editable ? "fa-close" : "fa-edit",
         onClick: e => {
-          if (!that.state.editable) return that.setState({ editable: true })
+          if (!that.state.editable) {
+            let newState = { ...this.state };
+            newState.editable = true
+            if (newState.IC.length === 0) newState.IC.push({});
+            if (newState.EC.length === 0) newState.EC.push({});
+            if (newState.IA.length === 0) newState.IA.push({});
+            if (newState.EA.length === 0) newState.EA.push({});
+
+            return that.setState(newState)
+          }
           that.loadDoc()
         }
 
@@ -495,7 +523,7 @@ class DocPromocoes extends Component {
         </Panel>
 
         <Panel title="Âmbito de parceiros" allowCollapse={true} actions={scopeCliActions}>
-          <div className="radio-custom radio-primary" style={{ display: "block" }}>
+          <div className="radio-custom radio-success" style={{ display: "block" }}>
             <input type="radio"
               id="CLI_RESTRICT"
               name="CLI_RESTRICT"
@@ -505,7 +533,7 @@ class DocPromocoes extends Component {
             <label htmlFor="CLI_RESTRICT">Todos os clientes</label>
           </div>
 
-          <div className="radio-custom radio-primary" style={{ display: "block" }}>
+          <div className="radio-custom radio-success" style={{ display: "block" }}>
             <input type="radio"
               disabled={!this.state.editable}
               id="CLI_RESTRICT2"
@@ -527,7 +555,7 @@ class DocPromocoes extends Component {
               editable={this.state.editable} />
           }
 
-          <div className="checkbox-custom checkbox-primary" style={{ display: "block" }}>
+          <div className="checkbox-custom checkbox-danger" style={{ display: "block" }}>
             <input type="checkbox"
               id="CLI_EXCLUDE"
               disabled={!this.state.editable}
@@ -551,7 +579,7 @@ class DocPromocoes extends Component {
         <Panel title="Âmbito de artigos" allowCollapse={true} actions={scopeArtActions}>
           <div className="row">
             <div className="col-12">
-              <div className="radio-custom radio-primary" style={{ display: "block" }}>
+              <div className="radio-custom radio-success" style={{ display: "block" }}>
                 <input type="radio"
                   id="ART_RESTRICT"
                   name="ART_RESTRICT"
@@ -562,7 +590,7 @@ class DocPromocoes extends Component {
               </div>
 
 
-              <div className="radio-custom radio-primary" style={{ display: "block" }}>
+              <div className="radio-custom radio-success" style={{ display: "block" }}>
                 <input type="radio"
                   id="ART_RESTRICT2"
                   name="ART_RESTRICT"
@@ -586,7 +614,7 @@ class DocPromocoes extends Component {
 
             </div>
             <div className="col-12">
-              <div className="checkbox-custom checkbox-primary" style={{ display: "block" }}>
+              <div className="checkbox-custom checkbox-danger" style={{ display: "block" }}>
                 <input type="checkbox"
                   disabled={!this.state.editable} id="ART_EXCLUDE" name="ART_EXCLUDE" checked={this.state.ART_EXCLUDE}
                   onChange={e => { that.onFieldChange({ fieldName: "ART_EXCLUDE", value: e.target.checked, rawValue: e.target.checked }) }} />

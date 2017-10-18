@@ -32,10 +32,11 @@ class CmpCondicoes extends Component {
     let nameChkInclude = "chk" + this.props.name + "_SPECIFIC"
     let labelChkInclude = "";
     let includeOptionsRoute = ""
-    if (this.props.name === "IC") { labelChkInclude = "Incluir os seguintes clientes especificos:"; includeOptionsRoute = "/api/cbo/ocrd/c" }
-    if (this.props.name === "EC") { labelChkInclude = "Excluir os seguintes clientes especificos:"; includeOptionsRoute = "/api/cbo/ocrd/c" }
-    if (this.props.name === "IA") { labelChkInclude = "Incluir os seguintes artigos especificos:"; includeOptionsRoute = "/api/cbo/oitm/" }
-    if (this.props.name === "EA") { labelChkInclude = "Excluir os seguintes artigos especificos:"; includeOptionsRoute = "/api/cbo/oitm/" }
+    let includColor = ""
+    if (this.props.name === "IC") { labelChkInclude = "Incluir os seguintes clientes especificos:"; includeOptionsRoute = "/api/cbo/ocrd/c"; includColor = "success" }
+    if (this.props.name === "EC") { labelChkInclude = "Excluir os seguintes clientes especificos:"; includeOptionsRoute = "/api/cbo/ocrd/c"; includColor = "danger" }
+    if (this.props.name === "IA") { labelChkInclude = "Incluir os seguintes artigos especificos:"; includeOptionsRoute = "/api/cbo/oitm/"; includColor = "success" }
+    if (this.props.name === "EA") { labelChkInclude = "Excluir os seguintes artigos especificos:"; includeOptionsRoute = "/api/cbo/oitm/"; includColor = "danger" }
 
     // Build Input Props 
     let bip = (name, props) => {
@@ -104,10 +105,10 @@ class CmpCondicoes extends Component {
       <div style={{ border: "1px solid #EEE", marginLeft: "30px", padding: "15px", backgroundColor: "#fcfcfc" }}>
         {renderCondicoes()}
 
-        <div className="checkbox-custom checkbox-primary" style={{ display: "block" }}>
+        <div className={"checkbox-custom checkbox-" + includColor} style={{ display: "block" }}>
           <input type="checkbox"
             checked={this.state.chkSpecific}
-            onChange={e => that.setState({ chkSpecific: !that.state.chkSpecific })}
+            onChange={e => that.setState({ chkSpecific: !that.state.chkSpecific }, e => that.props.onFieldChange({ fieldName: `${this.props.name}_SPECIFIC`, rawValue: "", formatedValue: "" }))}
             disabled={!this.props.editable}
             id={nameChkInclude}
           />
