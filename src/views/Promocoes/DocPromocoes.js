@@ -121,8 +121,8 @@ class DocPromocoes extends Component {
 
   saveToDatabase(stateValues) {
 
-    let { IC, EC, IA, EA, DATAI, DATAF, UDISC, DESCRICAO, OBSERVACOES, ID, NUMERO, ATIVO, ARQUIVADO, DIASEM0, DIASEM1, DIASEM2, DIASEM3, DIASEM4, DIASEM5, DIASEM6, PRIORIDADE, CLI_RESTRICT, ART_RESTRICT, CLI_EXCLUDE, ART_EXCLUDE } = stateValues;
-    let data = { ID, NUMERO, UDISC, DATAI, DATAF, DESCRICAO, OBSERVACOES, ATIVO, ARQUIVADO, DIASEM0, DIASEM1, DIASEM2, DIASEM3, DIASEM4, DIASEM5, DIASEM6, PRIORIDADE, CLI_RESTRICT, ART_RESTRICT, CLI_EXCLUDE, ART_EXCLUDE }
+    let { IC, EC, IA, EA, DATAI, DATAF, UDISC, IC_SPECIFIC, EC_SPECIFIC, IA_SPECIFIC, EA_SPECIFIC, DESCRICAO, OBSERVACOES, ID, NUMERO, ATIVO, ARQUIVADO, DIASEM0, DIASEM1, DIASEM2, DIASEM3, DIASEM4, DIASEM5, DIASEM6, PRIORIDADE, CLI_RESTRICT, ART_RESTRICT, CLI_EXCLUDE, ART_EXCLUDE } = stateValues;
+    let data = { ID, NUMERO, UDISC, DATAI, DATAF, IC_SPECIFIC, EC_SPECIFIC, IA_SPECIFIC, EA_SPECIFIC, DESCRICAO, OBSERVACOES, ATIVO, ARQUIVADO, DIASEM0, DIASEM1, DIASEM2, DIASEM3, DIASEM4, DIASEM5, DIASEM6, PRIORIDADE, CLI_RESTRICT, ART_RESTRICT, CLI_EXCLUDE, ART_EXCLUDE }
 
     IC.forEach((item, ix) => { item.TIPO = 'IC'; item.LINE = ix; })
     EC.forEach((item, ix) => { item.TIPO = 'EC'; item.LINE = ix; })
@@ -156,9 +156,7 @@ class DocPromocoes extends Component {
 
       let obj = { ...arr[arrIndex] }
       obj[propName] = val;
-
       arr[arrIndex] = obj
-
 
       Object.assign(newStateValues, { [arrName]: [...arr] })
 
@@ -424,12 +422,12 @@ class DocPromocoes extends Component {
                   <Date  {...bip("DATAF", { label: "até" }) } />
                 </div>
               </div>
-              <div className="row">
+              {/* <div className="row">
                 <div className="col-md-8 pr-md-1">
                   <TagInput name="tags" label="Observações" getOptionsApiRoute="/api/cbo/ocrd/c" />
 
                 </div>
-              </div>
+              </div> */}
 
 
               <div className="row">
@@ -521,9 +519,10 @@ class DocPromocoes extends Component {
           {
             !!this.state.CLI_RESTRICT &&
             <CmpCondicoes name="IC"
+              items={this.state.IC}
+              IC_SPECIFIC={this.state.IC_SPECIFIC}
               onClick_AddRemove={this.onClick_AddRemove2}
               onFieldChange={this.onFieldChange}
-              items={this.state.IC}
               fieldsAllowed={this.state.fieldsAllowedForCli}
               alerts={this.alerts}
               editable={this.state.editable} />
@@ -541,9 +540,10 @@ class DocPromocoes extends Component {
             !!this.state.CLI_EXCLUDE &&
 
             <CmpCondicoes name="EC"
+              items={this.state.EC}
+              EC_SPECIFIC={this.state.EC_SPECIFIC}
               onClick_AddRemove={this.onClick_AddRemove2}
               onFieldChange={this.onFieldChange}
-              items={this.state.EC}
               fieldsAllowed={this.state.fieldsAllowedForCli}
               alerts={this.alerts}
               editable={this.state.editable} />
@@ -577,6 +577,7 @@ class DocPromocoes extends Component {
 
                 <CmpCondicoes name="IA"
                   items={this.state.IA}
+                  IA_SPECIFIC={this.state.IA_SPECIFIC}
                   onClick_AddRemove={this.onClick_AddRemove2}
                   onFieldChange={this.onFieldChange}
                   fieldsAllowed={this.state.fieldsAllowedForArt}
@@ -596,6 +597,7 @@ class DocPromocoes extends Component {
                 !!this.state.ART_EXCLUDE &&
                 <CmpCondicoes name="EA"
                   items={this.state.EA}
+                  EA_SPECIFIC={this.state.EA_SPECIFIC}
                   onClick_AddRemove={this.onClick_AddRemove2}
                   onFieldChange={this.onFieldChange}
                   fieldsAllowed={this.state.fieldsAllowedForArt}
@@ -622,6 +624,9 @@ class DocPromocoes extends Component {
             </Button>
           </div>
         }
+
+        <div style={{ height: "100px" }}>
+        </div>
       </div >
     );
   }

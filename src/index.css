@@ -1190,3 +1190,8 @@ div.flag>i.icon:hover{
   margin: 1px !important;
   border-radius: 15px !important;
 }
+
+
+div.one-value-per-line .Select--multi .Select-value {
+  display:block !important;
+}
