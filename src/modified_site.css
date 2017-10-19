@@ -1640,7 +1640,7 @@ body.site-navbar-small {
 }
 
 .radio-custom, .checkbox-custom {
-  position: relative;
+  position: relative !important;
   /*display: block;          nas linhas das landindpages deformatava o resto da linha */ 
   margin-top: 10px;
   margin-bottom: 10px;

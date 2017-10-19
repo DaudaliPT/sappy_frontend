@@ -676,24 +676,21 @@ class DocPromocoes extends Component {
         </Panel>
 
         < div className="sappy-action-bar animation-slide-left">
-          {!this.state.NUMERO &&
-            <Button color={"danger"} onClick={this.handleApagarRascunho}>
+          {!this.state.NUMERO && this.state.ID &&
+            < Button color={"danger"} onClick={this.handleApagarRascunho}>
               <i className="icon wb-trash" />Apagar rascunho
-            </Button>
-          }
+            </Button>}
 
-          {!this.state.NUMERO &&
+          {!this.state.NUMERO && this.state.ID &&
             <Button color={"success"} onClick={this.handleCreateDocument}>
               <i className="icon wb-check" />Criar promoção
-            </Button>
-          }
+            </Button>}
 
-          {
-            this.state.NUMERO && this.state.editable &&
+          {this.state.NUMERO && this.state.editable &&
             <Button color={"success"} onClick={this.handleUpdateDocument}>
               <i className="icon wb-check" />Gravar promoção
-            </Button>
-          }
+            </Button>}
+
         </div>
 
         <div style={{ height: "100px" }}>
