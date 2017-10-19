@@ -40,15 +40,15 @@ class DocPromocoes extends Component {
   constructor(props) {
     super(props);
 
-    this.handleApagarRascunho = this.handleApagarRascunho.bind(this);
     this.getvalidationResults = this.getvalidationResults.bind(this);
     this.onClick_AddRemove2 = this.onClick_AddRemove2.bind(this);
     this.loadDoc = this.loadDoc.bind(this);
     this.loadDocToState = this.loadDocToState.bind(this);
     this.onFieldChange = this.onFieldChange.bind(this);
     this.saveToDatabase = this.saveToDatabase.bind(this);
-    this.handleCreateContract = this.handleCreateContract.bind(this);
-    this.handleSaveContract = this.handleSaveContract.bind(this);
+    this.handleApagarRascunho = this.handleApagarRascunho.bind(this);
+    this.handleCreateDocument = this.handleCreateDocument.bind(this);
+    this.handleUpdateDocument = this.handleUpdateDocument.bind(this);
     this.toggleField = this.toggleField.bind(this);
 
 
@@ -244,13 +244,14 @@ class DocPromocoes extends Component {
       msg: "Deseja apagar este rascunho?",
       onConfirm: postConfirm,
       confirmText: "Apagar rascunho",
+      confirmStyle: "danger",
       onCancel: () => { }
     })
 
   }
 
 
-  handleCreateContract() {
+  handleCreateDocument() {
     let that = this;
 
     // perform checks
@@ -297,7 +298,7 @@ class DocPromocoes extends Component {
 
   }
 
-  handleSaveContract() {
+  handleUpdateDocument() {
     let that = this;
 
     // perform checks
@@ -682,14 +683,14 @@ class DocPromocoes extends Component {
           }
 
           {!this.state.NUMERO &&
-            <Button color={"success"} onClick={this.handleCreateContract}>
+            <Button color={"success"} onClick={this.handleCreateDocument}>
               <i className="icon wb-check" />Criar promoção
             </Button>
           }
 
           {
             this.state.NUMERO && this.state.editable &&
-            <Button color={"success"} onClick={this.handleSaveContract}>
+            <Button color={"success"} onClick={this.handleUpdateDocument}>
               <i className="icon wb-check" />Gravar promoção
             </Button>
           }

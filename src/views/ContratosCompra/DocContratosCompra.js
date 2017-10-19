@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Button, Modal, ModalHeader, ModalBody } from "reactstrap";
+import { hashHistory } from "react-router";
 import axios from "axios";
 // var $ = window.$;
 var sappy = window.sappy;
@@ -69,8 +70,9 @@ class EditModal extends Component {
     this.loadDocToState = this.loadDocToState.bind(this);
     this.onFieldChange = this.onFieldChange.bind(this);
     this.saveToDatabase = this.saveToDatabase.bind(this);
-    this.handleCreateContract = this.handleCreateContract.bind(this);
-    this.handleSaveContract = this.handleSaveContract.bind(this);
+    this.handleApagarRascunho = this.handleApagarRascunho.bind(this);
+    this.handleCreateDocument = this.handleCreateDocument.bind(this);
+    this.handleUpdateDocument = this.handleUpdateDocument.bind(this);
 
     this.state = getinitialState(props)
   }
@@ -201,9 +203,31 @@ class EditModal extends Component {
     return { alerts, toastrMsg }
   }
 
+  handleApagarRascunho() {
+    let that = this;
+
+    if (this.state.NUMERO) return;
+
+    let postConfirm = () =>
+      axios
+        .delete(`/api/contratos/doc/${this.state.ID}`)
+        .then(result => {
+          hashHistory.goBack();
+        })
+        .catch(error => sappy.showError(error, "Não foi possivel apagar rascunho"));
+
+    return sappy.showQuestion({
+      msg: "Deseja apagar este rascunho?",
+      onConfirm: postConfirm,
+      confirmText: "Apagar rascunho",
+      confirmStyle: "danger",
+      onCancel: () => { }
+    })
+
+  }
 
 
-  handleCreateContract() {
+  handleCreateDocument() {
     let that = this;
 
     // perform checks
@@ -250,7 +274,7 @@ class EditModal extends Component {
 
   }
 
-  handleSaveContract() {
+  handleUpdateDocument() {
     let that = this;
 
     // perform checks
@@ -568,22 +592,28 @@ class EditModal extends Component {
             </div>
           </div>
         </Panel>
-        {!this.state.NUMERO &&
-          < div className="sappy-action-bar animation-slide-left">
-            <Button color={"success"} onClick={this.handleCreateContract}>
+
+        < div className="sappy-action-bar animation-slide-left">
+          {!this.state.NUMERO &&
+            <Button color={"danger"} onClick={this.handleApagarRascunho}>
+              <i className="icon wb-trash" />Apagar rascunho
+            </Button>
+          }
+
+          {!this.state.NUMERO &&
+            <Button color={"success"} onClick={this.handleCreateDocument}>
               <i className="icon wb-check" />Criar contrato
             </Button>
-          </div>
-        }
+          }
 
-        {
-          this.state.NUMERO && this.state.editable &&
-          < div className="sappy-action-bar animation-slide-left">
-            <Button color={"success"} onClick={this.handleSaveContract}>
+          {
+            this.state.NUMERO && this.state.editable &&
+            <Button color={"success"} onClick={this.handleUpdateDocument}>
               <i className="icon wb-check" />Gravar contrato
             </Button>
-          </div>
-        }
+          }
+        </div>
+
       </div >
     );
   }
