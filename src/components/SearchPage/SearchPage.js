@@ -175,21 +175,36 @@ class SearchPage extends PureComponent {
       let limitSearchCondition = "";
       if (this.state.limitSearch && this.props.limitSearchCondition) limitSearchCondition = this.props.limitSearchCondition;
 
-      this.serverRequest = axios
-        .get(that.props.searchApiUrl, {
-          params: {
-            searchTags,
-            limitSearchCondition,
-            activeTab
-          },
-          cancelToken: new CancelToken(function executor(c) {
-            // An executor function receives a cancel function as a parameter
-            that.cancelPreviousAxiosRequest = c;
-          })
+
+      // this.serverRequest = axios
+      // .get(that.props.searchApiUrl, {
+      //   params: {
+      //     searchTags,
+      //     limitSearchCondition,
+      //     activeTab
+      //   },
+      //   cancelToken: new CancelToken(function executor(c) {
+      //     // An executor function receives a cancel function as a parameter
+      //     that.cancelPreviousAxiosRequest = c;
+      //   })
+      // })
+      this.serverRequest = axios({
+        method: this.props.searchApiMethod || "get",
+        url: that.props.searchApiUrl,
+        data: that.props.searchApiData,
+        params: {
+          searchTags,
+          limitSearchCondition,
+          activeTab
+        },
+        cancelToken: new CancelToken(function executor(c) {
+          // An executor function receives a cancel function as a parameter
+          that.cancelPreviousAxiosRequest = c;
         })
+      })
         .then(function (result) {
           var { activeTab } = that.state;
-          var tabItems = result.data.tabItems;
+          var tabItems = result.data.tabItems || [];
           var listItems = result.data.firstRows;
           var rvHasNextPage = listItems.length < result.data.totalRowCount;
           let totalInfo = {

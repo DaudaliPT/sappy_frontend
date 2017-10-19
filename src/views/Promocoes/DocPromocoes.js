@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { Button } from "reactstrap";
 import axios from "axios";
+
+import { hashHistory } from "react-router";
 // var $ = window.$;
 var sappy = window.sappy;
 
@@ -9,6 +11,8 @@ import Slider from 'rc-slider';
 import { TextBox, Date, ComboBox, ButtonGroup, TagInput } from "../../Inputs";
 import Panel from "../../components/Panel"
 import CmpCondicoes from "./CmpCondicoes"
+import ModalCoveredItems from './ModalCoveredItems'
+import ModalCoveredPNs from './ModalCoveredPNs'
 
 const getinitialState = (props) => {
   let locationState = props.location.state || {};
@@ -18,6 +22,13 @@ const getinitialState = (props) => {
     showValidations: false,
     fieldsAllowedForCli: [],
     fieldsAllowedForArt: [],
+    DIASEM0: 1,
+    DIASEM1: 1,
+    DIASEM2: 1,
+    DIASEM3: 1,
+    DIASEM4: 1,
+    DIASEM5: 1,
+    DIASEM6: 1,
     IC: [{}],
     EC: [{}],
     IA: [{}],
@@ -29,6 +40,7 @@ class DocPromocoes extends Component {
   constructor(props) {
     super(props);
 
+    this.handleApagarRascunho = this.handleApagarRascunho.bind(this);
     this.getvalidationResults = this.getvalidationResults.bind(this);
     this.onClick_AddRemove2 = this.onClick_AddRemove2.bind(this);
     this.loadDoc = this.loadDoc.bind(this);
@@ -136,18 +148,9 @@ class DocPromocoes extends Component {
         .then(this.loadDocToState)
         .catch(error => sappy.showError(error, "Não foi possivel gravar a promoção"));
     }
-    if (specialOption === "CLIENTES_ABRANGIDOS") {
-      axios
-        .post(`/api/promocoes/doc/clientes`, data)
-        .then(result => console.log(result.data))
-        .catch(error => sappy.showError(error, "Não foi possivel obter artigos abrangidos"));
-    }
-    if (specialOption === "ARTIGOS_ABRANGIDOS") {
-      axios
-        .post(`/api/promocoes/doc/artigos`, data)
-        .then(result => console.log(result.data))
-        .catch(error => sappy.showError(error, "Não foi possivel obter artigos abrangidos"));
-    }
+    if (specialOption === "CLIENTES_ABRANGIDOS") sappy.showModal(<ModalCoveredPNs contentPromocao={data} toggleModal={sappy.hideModal} />)
+    if (specialOption === "ARTIGOS_ABRANGIDOS") sappy.showModal(<ModalCoveredItems contentPromocao={data} toggleModal={sappy.hideModal} />)
+
 
   }
 
@@ -224,6 +227,27 @@ class DocPromocoes extends Component {
     return { alerts, toastrMsg }
   }
 
+  handleApagarRascunho() {
+    let that = this;
+
+    if (this.state.NUMERO) return;
+
+    let postConfirm = () =>
+      axios
+        .delete(`/api/promocoes/doc/${this.state.ID}`)
+        .then(result => {
+          hashHistory.goBack();
+        })
+        .catch(error => sappy.showError(error, "Não foi possivel apagar rascunho"));
+
+    return sappy.showQuestion({
+      msg: "Deseja apagar este rascunho?",
+      onConfirm: postConfirm,
+      confirmText: "Apagar rascunho",
+      onCancel: () => { }
+    })
+
+  }
 
 
   handleCreateContract() {
@@ -650,22 +674,26 @@ class DocPromocoes extends Component {
           </div>
         </Panel>
 
-        {!this.state.NUMERO &&
-          < div className="sappy-action-bar animation-slide-left">
+        < div className="sappy-action-bar animation-slide-left">
+          {!this.state.NUMERO &&
+            <Button color={"danger"} onClick={this.handleApagarRascunho}>
+              <i className="icon wb-trash" />Apagar rascunho
+            </Button>
+          }
+
+          {!this.state.NUMERO &&
             <Button color={"success"} onClick={this.handleCreateContract}>
               <i className="icon wb-check" />Criar promoção
             </Button>
-          </div>
-        }
+          }
 
-        {
-          this.state.NUMERO && this.state.editable &&
-          < div className="sappy-action-bar animation-slide-left">
+          {
+            this.state.NUMERO && this.state.editable &&
             <Button color={"success"} onClick={this.handleSaveContract}>
               <i className="icon wb-check" />Gravar promoção
             </Button>
-          </div>
-        }
+          }
+        </div>
 
         <div style={{ height: "100px" }}>
         </div>
