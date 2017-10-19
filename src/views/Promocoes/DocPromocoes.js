@@ -148,9 +148,12 @@ class DocPromocoes extends Component {
         .then(this.loadDocToState)
         .catch(error => sappy.showError(error, "Não foi possivel gravar a promoção"));
     }
-    if (specialOption === "CLIENTES_ABRANGIDOS") sappy.showModal(<ModalCoveredPNs contentPromocao={data} toggleModal={sappy.hideModal} />)
-    if (specialOption === "ARTIGOS_ABRANGIDOS") sappy.showModal(<ModalCoveredItems contentPromocao={data} toggleModal={sappy.hideModal} />)
-
+    else {
+      data.ATIVO = 1; // para que consiga simular
+      data.NUMERO = 999999999;
+      if (specialOption === "CLIENTES_ABRANGIDOS") sappy.showModal(<ModalCoveredPNs contentPromocao={data} toggleModal={sappy.hideModal} />)
+      if (specialOption === "ARTIGOS_ABRANGIDOS") sappy.showModal(<ModalCoveredItems contentPromocao={data} toggleModal={sappy.hideModal} />)
+    }
 
   }
 
