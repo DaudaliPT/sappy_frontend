@@ -2,6 +2,7 @@
 import React, { PureComponent } from "react";
 import DataGrid from "../../../components/DataGrid";
 import { TextBox, TextBoxNumeric, ComboBox, Date, Toggle, Flag, Check } from "../../../Inputs";
+import Panel from "../../../components/Panel"
 const sappy = window.sappy;
 
 class DocDetail extends PureComponent {
@@ -123,24 +124,28 @@ class DocDetail extends PureComponent {
 
     return (
       <div id="docDetail">
-        <div id="docDetailGrid" style={docDetailGridStyle}  >
-          <DataGrid
-            ref="grid"
-            height={this.props.height}
-            fields={this.props.fields}
-            disabled={this.props.docData.DOCNUM > 0 ? true : false}
-            rows={this.props.docData.LINES}
-            onRowUpdate={this.props.onRowUpdate}
-            onRowSelectionChange={this.props.onRowSelectionChange}
-            selectedKeys={this.props.selectedKeys}
-            onRowReorder={this.props.onRowReorder}
-          ></DataGrid>
-        </div >
-        {hasSidebar &&
-          <div id="docDetailSidebar" style={docDetailSidebarStyle} >
-            {renderSidebarFields()}
+
+        <Panel name="panelDetails" allowCollapse={false}  >
+          <div id="docDetailGrid" style={docDetailGridStyle}  >
+            <DataGrid
+              ref="grid"
+              height={this.props.height}
+              fields={this.props.fields}
+              disabled={this.props.docData.DOCNUM > 0 ? true : false}
+              rows={this.props.docData.LINES}
+              onRowUpdate={this.props.onRowUpdate}
+              onRowSelectionChange={this.props.onRowSelectionChange}
+              selectedKeys={this.props.selectedKeys}
+              onRowReorder={this.props.onRowReorder}
+            ></DataGrid>
           </div >
-        }
+
+          {hasSidebar &&
+            <div id="docDetailSidebar" style={docDetailSidebarStyle} >
+              {renderSidebarFields()}
+            </div >
+          }
+        </Panel>
       </div >
     );
   }

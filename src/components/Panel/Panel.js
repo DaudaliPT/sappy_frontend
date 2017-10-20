@@ -1,6 +1,7 @@
 
 import React, { Component } from "react";
 import { Button } from "reactstrap";
+import uuid from 'uuid'
 import "./Panel.css"
 
 class Panel extends Component {
@@ -54,7 +55,7 @@ class Panel extends Component {
     }
 
     return (
-      <div className={"sappy-panel " + (!expanded ? "collapsed" : "expanded")}>
+      <div id={this.props.name || uuid()} className={"sappy-panel " + (!expanded ? "collapsed" : "expanded")} >
         {(title || subtitle || allowCollapse) &&
           < div className="title">
             {title && <h4 className="text" onClick={this.toggleHeader}>{title}</h4>}

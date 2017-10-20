@@ -26,7 +26,9 @@ const getinitialState = (props) => {
     TIPO: locationState.tipo === "P" ? "P" : "F",
     selectedLineNums: [],
     fieldsAllowedForCli: [],
+    detailHeight: 500,
     fieldsAllowedForArt: [],
+    headerExpanded: true,
     pnScopeExpanded: locationState.tipo === "P" ? true : false,
     DIASEM0: 1,
     DIASEM1: 1,
@@ -89,7 +91,7 @@ class DocPromocao extends Component {
         name: 'ITEMCODE', label: 'Artigo', type: "text", width: 100, editable: false, dragable: false,
         onLinkClick: props => sappy.showModal(<EditModal toggleModal={sappy.hideModal} itemcode={props.dependentValues.ITEMCODE} />)
       },
-      { name: 'ITEMNAME', label: 'Descrição', type: "tags", width: 400, editable: true },
+      { name: 'ITEMNAME', label: 'Descrição', type: "tags", width: 400, editable: false },
       { name: 'QTSTOCK', label: 'Stk', type: "quantity", width: 60, editable: false },
       { name: 'PRICEINFO', label: 'Preço Cash', type: "price", width: 60, editable: false },
       { name: 'PRICEBASE', label: 'Preço Base', type: "price", width: 60, editable: true },
@@ -106,6 +108,7 @@ class DocPromocao extends Component {
   componentDidMount() {
     let that = this
     window.addEventListener("resize", this.recalcComponentsHeight);
+
     this.recalcComponentsHeight();
 
     this.serverRequest = axios
@@ -130,12 +133,11 @@ class DocPromocao extends Component {
   }
 
   recalcComponentsHeight() {
-    // let docHeight = $("#doc").height();
-    // let detailsTop = $("#docDetail").position().top;
-    // let detail = { ...this.state.detail }
-    // detail.height = (docHeight - detailsTop)
+    let docHeight = $("#doc").height();
+    let detailsTop = $("#docDetail").position().top;
+    let detailHeight = (docHeight - detailsTop - 26)
 
-    // this.setState({ detail })
+    this.setState({ detailHeight })
   }
 
 
@@ -162,7 +164,9 @@ class DocPromocao extends Component {
 
   loadDocToState(result) {
     let newState = { ...result.data };
-    newState.pnScopeExpanded = newState.TIPO === "P" ? true : false;
+
+    if (this.state.ID !== newState.ID) newState.pnScopeExpanded = newState.TIPO === "P" ? true : false;
+
     newState.IC = newState.SCOPE.filter(line => line.TIPO === "IC")
     newState.EC = newState.SCOPE.filter(line => line.TIPO === "EC")
     newState.IA = newState.SCOPE.filter(line => line.TIPO === "IA")
@@ -672,17 +676,18 @@ class DocPromocao extends Component {
     let footerProps = {
       // ...this.state.footer,
       // docData,
-      editable: this.state.NUMERO && this.state.editable,
+      editable: (this.state.ID && !this.state.NUMERO) || (this.state.NUMERO && this.state.editable),
       loading: false,
       footerSearchType: "oitm",
       onFooterSearchResult: this.handleFooterSearchResult,
       actions: [{
-        name: this.state.selectedLineNums.length === 1 ? "Apagar linha" : "Apagar linhas", color: "danger", icon: "icon wb-trash",
+        name: this.state.selectedLineNums.length === 1 ? "Apagar linha" : "Apagar linhas",
+        color: "danger", icon: "icon wb-trash",
         visible: (this.state.ID > 0 && this.state.selectedLineNums.length > 0),
         onClick: this.handleOnApagarLinhas
       }, {
         name: "Apagar rascunho", color: "danger", icon: "icon wb-trash",
-        visible: !this.state.NUMERO && this.state.ID,
+        visible: this.state.selectedLineNums.length === 0 && !this.state.NUMERO && this.state.ID,
         onClick: this.handleApagarRascunho
       }, {
         name: "Cancelar", color: "primary", icon: "icon wb-close",
@@ -705,250 +710,250 @@ class DocPromocao extends Component {
 
 
     return (
-      <div className="scrollable-doc" >
+      <div id="doc" >
 
-        <Panel title={(this.state.TIPO === "P" ? "Promoção" : "Folheto") + " (" + strNumero + ")"} actions={headerActions} >
+        <div id="docHeader">
+          <Panel title={(this.state.TIPO === "P" ? "Promoção" : "Folheto") + " (" + strNumero + ")"}
 
-          <div className="row">
-            <div className="col-md-9 col-lg-10 pr-md-1">
-              <div className="row">
-                <div className="col-md-8 col-lg-6 pr-md-1">
-                  <TextBox {...bip("DESCRICAO", { label: "Descrição" }) } />
-                </div>
-                {this.state.TIPO === "P" &&
-                  // O desconto só existe em folhetos promocionais
-                  <div className="col-md-4 col-lg-2 pl-md-1 pr-md-1">
-                    <TextBox  {...bip("UDISC", { label: "Desconto", valueType: "discount" }) } />
-                  </div>
-                }
-                <div className="col-6 col-md-4 col-lg-2 pl-lg-1 pr-1">
-                  <Date  {...bip("DATAI", { label: "Válido De" }) } />
-                </div>
-                <div className="col-6 col-md-4 col-lg-2 pl-1 pr-md-1">
-                  <Date  {...bip("DATAF", { label: "até" }) } />
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-md-8 pr-md-1">
-                  <TextBox {...bip("OBSERVACOES", { label: "Observações" }) } />
+            expanded={this.state.headerExpanded}
+            onToogleExpand={() => that.setState({ headerExpanded: !this.state.headerExpanded }, this.recalcComponentsHeight)}
+            actions={headerActions} >
 
-                </div>
-
-                <div className="col-md-4 pl-md-1">
-                  <ButtonGroup  {...bip("DIASEM", {
-                    label: "Dias da semana", buttons: [
-                      { value: "0", label: "S", disabled: !this.state.editable, className: "btn btn-circle btn-outline " + (!!that.state.DIASEM0 ? "active btn-primary" : "btn-secondary"), onClick: (e) => { that.onFieldChange({ fieldName: "DIASEM0", value: !that.state.DIASEM0, rawValue: !that.state.DIASEM0 }) } },
-                      { value: "1", label: "T", disabled: !this.state.editable, className: "btn btn-circle btn-outline " + (!!that.state.DIASEM1 ? "active btn-primary" : "btn-secondary"), onClick: (e) => { that.onFieldChange({ fieldName: "DIASEM1", value: !that.state.DIASEM1, rawValue: !that.state.DIASEM1 }) } },
-                      { value: "2", label: "Q", disabled: !this.state.editable, className: "btn btn-circle btn-outline " + (!!that.state.DIASEM2 ? "active btn-primary" : "btn-secondary"), onClick: (e) => { that.onFieldChange({ fieldName: "DIASEM2", value: !that.state.DIASEM2, rawValue: !that.state.DIASEM2 }) } },
-                      { value: "3", label: "Q", disabled: !this.state.editable, className: "btn btn-circle btn-outline " + (!!that.state.DIASEM3 ? "active btn-primary" : "btn-secondary"), onClick: (e) => { that.onFieldChange({ fieldName: "DIASEM3", value: !that.state.DIASEM3, rawValue: !that.state.DIASEM3 }) } },
-                      { value: "4", label: "S", disabled: !this.state.editable, className: "btn btn-circle btn-outline " + (!!that.state.DIASEM4 ? "active btn-primary" : "btn-secondary"), onClick: (e) => { that.onFieldChange({ fieldName: "DIASEM4", value: !that.state.DIASEM4, rawValue: !that.state.DIASEM4 }) } },
-                      { value: "5", label: "S", disabled: !this.state.editable, className: "btn btn-circle btn-outline " + (!!that.state.DIASEM5 ? "active btn-primary" : "btn-secondary"), onClick: (e) => { that.onFieldChange({ fieldName: "DIASEM5", value: !that.state.DIASEM5, rawValue: !that.state.DIASEM5 }) } },
-                      { value: "6", label: "D", disabled: !this.state.editable, className: "btn btn-circle btn-outline " + (!!that.state.DIASEM6 ? "active btn-primary" : "btn-secondary"), onClick: (e) => { that.onFieldChange({ fieldName: "DIASEM6", value: !that.state.DIASEM6, rawValue: !that.state.DIASEM6 }) } }
-                    ]
-                  }) } />
-                </div>
-
-              </div>
-
-            </div>
-
-            <div className="col-lg-2 col-md-3 pr-md-1 hidden-sm-down">
-              <div style={{ marginTop: "27px", padding: "15px", height: 100 }} data-tip="Prioridade">
-                <Slider ref="PRIORIDADE"
-                  disabled={!this.state.editable}
-                  vertical min={-2} max={2} value={this.state.PRIORIDADE}
-                  onChange={e => { that.onFieldChange({ fieldName: "PRIORIDADE", value: e, rawValue: e }) }}
-                  marks={{
-                    '-2': { label: "Muito baixa", style: { fontWeight: this.state.PRIORIDADE === -2 ? 700 : "normal" } },
-                    '-1': { label: 'Baixa', style: { fontWeight: this.state.PRIORIDADE === -1 ? 700 : "normal" } },
-                    '0': { label: 'Normal', style: { fontWeight: this.state.PRIORIDADE === 0 ? 700 : "normal" } },
-                    '1': { label: 'Alta', style: { fontWeight: this.state.PRIORIDADE === 1 ? 700 : "normal" } },
-                    '2': { label: 'Muito alta', style: { fontWeight: this.state.PRIORIDADE === 2 ? 700 : "normal" } },
-                  }} />
-              </div>
-            </div>
-
-            <div className="col-lg-2 col-md-3 pr-md-1 hidden-md-up">
-              <div style={{
-                marginTop: "27px",
-                paddingTop: "5px",
-                paddingLeft: "30px",
-                paddingRight: "30px",
-                paddingBottom: "20px"
-              }} data-tip="Prioridade">
-                <Slider ref="PRIORIDADE"
-                  disabled={!this.state.editable}
-                  min={-2} max={2} value={this.state.PRIORIDADE}
-                  onChange={e => { that.onFieldChange({ fieldName: "PRIORIDADE", value: e, rawValue: e }) }}
-                  marks={{
-                    '-2': { label: "Muito baixa", style: { fontWeight: this.state.PRIORIDADE === -2 ? 700 : "normal" } },
-                    '-1': { label: 'Baixa', style: { fontWeight: this.state.PRIORIDADE === -1 ? 700 : "normal" } },
-                    '0': { label: 'Normal', style: { fontWeight: this.state.PRIORIDADE === 0 ? 700 : "normal" } },
-                    '1': { label: 'Alta', style: { fontWeight: this.state.PRIORIDADE === 1 ? 700 : "normal" } },
-                    '2': { label: 'Muito alta', style: { fontWeight: this.state.PRIORIDADE === 2 ? 700 : "normal" } },
-                  }} />
-              </div>
-            </div>
-          </div>
-
-        </Panel>
-
-        <Panel subtitle="Âmbito de parceiros" allowCollapse={true} actions={scopeCliActions}
-          expanded={this.state.pnScopeExpanded}
-          onToogleExpand={() => that.setState({ pnScopeExpanded: !this.state.pnScopeExpanded })}
-          colapsedInfo={cliColapsedInfo}>
-          <div className="radio-custom radio-success" style={{ display: "block" }}>
-            <input type="radio"
-              id="CLI_RESTRICT"
-              name="CLI_RESTRICT"
-              checked={!this.state.CLI_RESTRICT}
-              disabled={!this.state.editable}
-              onChange={e => that.toggleField("CLI_RESTRICT")} />
-            <label htmlFor="CLI_RESTRICT">Todos os clientes</label>
-          </div>
-
-          <div className="radio-custom radio-success" style={{ display: "block" }}>
-            <input type="radio"
-              disabled={!this.state.editable}
-              id="CLI_RESTRICT2"
-              name="CLI_RESTRICT"
-              checked={!!this.state.CLI_RESTRICT}
-              disabled={!this.state.editable}
-              onChange={e => that.toggleField("CLI_RESTRICT")} />
-            <label htmlFor="CLI_RESTRICT2">Clientes com base nas seguintes condições:</label>
-          </div>
-          {
-            !!this.state.CLI_RESTRICT &&
-            <CmpCondicoes name="IC"
-              items={this.state.IC}
-              IC_SPECIFIC={this.state.IC_SPECIFIC}
-              onClick_AddRemove={this.onClick_AddRemove2}
-              onFieldChange={this.onFieldChange}
-              fieldsAllowed={this.state.fieldsAllowedForCli}
-              alerts={this.alerts}
-              editable={this.state.editable} />
-          }
-
-          <div className="checkbox-custom checkbox-danger" style={{ display: "block" }}>
-            <input type="checkbox"
-              id="CLI_EXCLUDE"
-              disabled={!this.state.editable}
-              name="CLI_EXCLUDE" checked={this.state.CLI_EXCLUDE}
-              onChange={e => { that.onFieldChange({ fieldName: "CLI_EXCLUDE", value: e.target.checked, rawValue: e.target.checked }) }} />
-            <label htmlFor="CLI_EXCLUDE">Excluir clientes com base nas seguintes condições:</label>
-          </div>
-          {
-            !!this.state.CLI_EXCLUDE &&
-
-            <CmpCondicoes name="EC"
-              items={this.state.EC}
-              EC_SPECIFIC={this.state.EC_SPECIFIC}
-              onClick_AddRemove={this.onClick_AddRemove2}
-              onFieldChange={this.onFieldChange}
-              fieldsAllowed={this.state.fieldsAllowedForCli}
-              alerts={this.alerts}
-              editable={this.state.editable} />
-          }
-        </Panel>
-
-        {this.state.TIPO === "P" &&
-          // Âmbito de artigos só existe em promoções
-          <Panel subtitle="Âmbito de artigos" allowCollapse={true} actions={scopeArtActions} colapsedInfo={artColapsedInfo}>
             <div className="row">
-              <div className="col-12">
-                <div className="radio-custom radio-success" style={{ display: "block" }}>
-                  <input type="radio"
-                    id="ART_RESTRICT"
-                    name="ART_RESTRICT"
-                    checked={!this.state.ART_RESTRICT}
-                    disabled={!this.state.editable}
-                    onChange={e => that.toggleField("ART_RESTRICT")} />
-                  <label htmlFor="ART_RESTRICT">Todos os artigos</label>
+              <div className="col-md-9 col-lg-10 pr-md-1">
+                <div className="row">
+                  <div className="col-md-8 col-lg-6 pr-md-1">
+                    <TextBox {...bip("DESCRICAO", { label: "Descrição" }) } />
+                  </div>
+                  {this.state.TIPO === "P" &&
+                    // O desconto só existe em folhetos promocionais
+                    <div className="col-md-4 col-lg-2 pl-md-1 pr-md-1">
+                      <TextBox  {...bip("UDISC", { label: "Desconto", valueType: "discount" }) } />
+                    </div>
+                  }
+                  <div className="col-6 col-md-4 col-lg-2 pl-lg-1 pr-1">
+                    <Date  {...bip("DATAI", { label: "Válido De" }) } />
+                  </div>
+                  <div className="col-6 col-md-4 col-lg-2 pl-1 pr-md-1">
+                    <Date  {...bip("DATAF", { label: "até" }) } />
+                  </div>
                 </div>
+                <div className="row">
+                  <div className="col-md-8 pr-md-1">
+                    <TextBox {...bip("OBSERVACOES", { label: "Observações" }) } />
 
+                  </div>
 
-                <div className="radio-custom radio-success" style={{ display: "block" }}>
-                  <input type="radio"
-                    id="ART_RESTRICT2"
-                    name="ART_RESTRICT"
-                    checked={!!this.state.ART_RESTRICT}
-                    disabled={!this.state.editable}
-                    onChange={e => that.toggleField("ART_RESTRICT")} />
-                  <label htmlFor="ART_RESTRICT2">Artigos com base nas seguintes condições:</label>
+                  <div className="col-md-4 pl-md-1">
+                    <ButtonGroup  {...bip("DIASEM", {
+                      label: "Dias da semana", buttons: [
+                        { value: "0", label: "S", disabled: !this.state.editable, className: "btn btn-circle btn-outline " + (!!that.state.DIASEM0 ? "active btn-primary" : "btn-secondary"), onClick: (e) => { that.onFieldChange({ fieldName: "DIASEM0", value: !that.state.DIASEM0, rawValue: !that.state.DIASEM0 }) } },
+                        { value: "1", label: "T", disabled: !this.state.editable, className: "btn btn-circle btn-outline " + (!!that.state.DIASEM1 ? "active btn-primary" : "btn-secondary"), onClick: (e) => { that.onFieldChange({ fieldName: "DIASEM1", value: !that.state.DIASEM1, rawValue: !that.state.DIASEM1 }) } },
+                        { value: "2", label: "Q", disabled: !this.state.editable, className: "btn btn-circle btn-outline " + (!!that.state.DIASEM2 ? "active btn-primary" : "btn-secondary"), onClick: (e) => { that.onFieldChange({ fieldName: "DIASEM2", value: !that.state.DIASEM2, rawValue: !that.state.DIASEM2 }) } },
+                        { value: "3", label: "Q", disabled: !this.state.editable, className: "btn btn-circle btn-outline " + (!!that.state.DIASEM3 ? "active btn-primary" : "btn-secondary"), onClick: (e) => { that.onFieldChange({ fieldName: "DIASEM3", value: !that.state.DIASEM3, rawValue: !that.state.DIASEM3 }) } },
+                        { value: "4", label: "S", disabled: !this.state.editable, className: "btn btn-circle btn-outline " + (!!that.state.DIASEM4 ? "active btn-primary" : "btn-secondary"), onClick: (e) => { that.onFieldChange({ fieldName: "DIASEM4", value: !that.state.DIASEM4, rawValue: !that.state.DIASEM4 }) } },
+                        { value: "5", label: "S", disabled: !this.state.editable, className: "btn btn-circle btn-outline " + (!!that.state.DIASEM5 ? "active btn-primary" : "btn-secondary"), onClick: (e) => { that.onFieldChange({ fieldName: "DIASEM5", value: !that.state.DIASEM5, rawValue: !that.state.DIASEM5 }) } },
+                        { value: "6", label: "D", disabled: !this.state.editable, className: "btn btn-circle btn-outline " + (!!that.state.DIASEM6 ? "active btn-primary" : "btn-secondary"), onClick: (e) => { that.onFieldChange({ fieldName: "DIASEM6", value: !that.state.DIASEM6, rawValue: !that.state.DIASEM6 }) } }
+                      ]
+                    }) } />
+                  </div>
+
                 </div>
-                {
-                  !!this.state.ART_RESTRICT &&
-
-                  <CmpCondicoes name="IA"
-                    items={this.state.IA}
-                    IA_SPECIFIC={this.state.IA_SPECIFIC}
-                    onClick_AddRemove={this.onClick_AddRemove2}
-                    onFieldChange={this.onFieldChange}
-                    fieldsAllowed={this.state.fieldsAllowedForArt}
-                    alerts={this.alerts}
-                    editable={this.state.editable} />
-                }
 
               </div>
-              <div className="col-12">
-                <div className="checkbox-custom checkbox-danger" style={{ display: "block" }}>
-                  <input type="checkbox"
-                    disabled={!this.state.editable} id="ART_EXCLUDE" name="ART_EXCLUDE" checked={this.state.ART_EXCLUDE}
-                    onChange={e => { that.onFieldChange({ fieldName: "ART_EXCLUDE", value: e.target.checked, rawValue: e.target.checked }) }} />
-                  <label htmlFor="ART_EXCLUDE">Excluir artigos com base nas seguintes condições:</label>
+
+              <div className="col-lg-2 col-md-3 pr-md-1 hidden-sm-down">
+                <div style={{ marginTop: "27px", padding: "15px", height: 100 }} data-tip="Prioridade">
+                  <Slider ref="PRIORIDADE"
+                    disabled={!this.state.editable}
+                    vertical min={-2} max={2} value={this.state.PRIORIDADE}
+                    onChange={e => { that.onFieldChange({ fieldName: "PRIORIDADE", value: e, rawValue: e }) }}
+                    marks={{
+                      '-2': { label: "Muito baixa", style: { fontWeight: this.state.PRIORIDADE === -2 ? 700 : "normal" } },
+                      '-1': { label: 'Baixa', style: { fontWeight: this.state.PRIORIDADE === -1 ? 700 : "normal" } },
+                      '0': { label: 'Normal', style: { fontWeight: this.state.PRIORIDADE === 0 ? 700 : "normal" } },
+                      '1': { label: 'Alta', style: { fontWeight: this.state.PRIORIDADE === 1 ? 700 : "normal" } },
+                      '2': { label: 'Muito alta', style: { fontWeight: this.state.PRIORIDADE === 2 ? 700 : "normal" } },
+                    }} />
                 </div>
-                {
-                  !!this.state.ART_EXCLUDE &&
-                  <CmpCondicoes name="EA"
-                    items={this.state.EA}
-                    EA_SPECIFIC={this.state.EA_SPECIFIC}
-                    onClick_AddRemove={this.onClick_AddRemove2}
-                    onFieldChange={this.onFieldChange}
-                    fieldsAllowed={this.state.fieldsAllowedForArt}
-                    alerts={this.alerts}
-                    editable={this.state.editable} />
-                }
+              </div>
+
+              <div className="col-lg-2 col-md-3 pr-md-1 hidden-md-up">
+                <div style={{
+                  marginTop: "27px",
+                  paddingTop: "5px",
+                  paddingLeft: "30px",
+                  paddingRight: "30px",
+                  paddingBottom: "20px"
+                }} data-tip="Prioridade">
+                  <Slider ref="PRIORIDADE"
+                    disabled={!this.state.editable}
+                    min={-2} max={2} value={this.state.PRIORIDADE}
+                    onChange={e => { that.onFieldChange({ fieldName: "PRIORIDADE", value: e, rawValue: e }) }}
+                    marks={{
+                      '-2': { label: "Muito baixa", style: { fontWeight: this.state.PRIORIDADE === -2 ? 700 : "normal" } },
+                      '-1': { label: 'Baixa', style: { fontWeight: this.state.PRIORIDADE === -1 ? 700 : "normal" } },
+                      '0': { label: 'Normal', style: { fontWeight: this.state.PRIORIDADE === 0 ? 700 : "normal" } },
+                      '1': { label: 'Alta', style: { fontWeight: this.state.PRIORIDADE === 1 ? 700 : "normal" } },
+                      '2': { label: 'Muito alta', style: { fontWeight: this.state.PRIORIDADE === 2 ? 700 : "normal" } },
+                    }} />
+                </div>
               </div>
             </div>
-          </Panel>
-        }
 
+          </Panel>
+
+          <Panel subtitle="Âmbito de parceiros" allowCollapse={true} actions={scopeCliActions}
+            expanded={this.state.pnScopeExpanded}
+            onToogleExpand={() => that.setState({ pnScopeExpanded: !this.state.pnScopeExpanded }, this.recalcComponentsHeight)}
+            colapsedInfo={cliColapsedInfo}>
+            <div className="radio-custom radio-success" style={{ display: "block" }}>
+              <input type="radio"
+                id="CLI_RESTRICT"
+                name="CLI_RESTRICT"
+                checked={!this.state.CLI_RESTRICT}
+                disabled={!this.state.editable}
+                onChange={e => that.toggleField("CLI_RESTRICT")} />
+              <label htmlFor="CLI_RESTRICT">Todos os clientes</label>
+            </div>
+
+            <div className="radio-custom radio-success" style={{ display: "block" }}>
+              <input type="radio"
+                disabled={!this.state.editable}
+                id="CLI_RESTRICT2"
+                name="CLI_RESTRICT"
+                checked={!!this.state.CLI_RESTRICT}
+                disabled={!this.state.editable}
+                onChange={e => that.toggleField("CLI_RESTRICT")} />
+              <label htmlFor="CLI_RESTRICT2">Clientes com base nas seguintes condições:</label>
+            </div>
+            {
+              !!this.state.CLI_RESTRICT &&
+              <CmpCondicoes name="IC"
+                items={this.state.IC}
+                IC_SPECIFIC={this.state.IC_SPECIFIC}
+                onClick_AddRemove={this.onClick_AddRemove2}
+                onFieldChange={this.onFieldChange}
+                fieldsAllowed={this.state.fieldsAllowedForCli}
+                alerts={this.alerts}
+                editable={this.state.editable} />
+            }
+
+            <div className="checkbox-custom checkbox-danger" style={{ display: "block" }}>
+              <input type="checkbox"
+                id="CLI_EXCLUDE"
+                disabled={!this.state.editable}
+                name="CLI_EXCLUDE" checked={this.state.CLI_EXCLUDE}
+                onChange={e => { that.onFieldChange({ fieldName: "CLI_EXCLUDE", value: e.target.checked, rawValue: e.target.checked }) }} />
+              <label htmlFor="CLI_EXCLUDE">Excluir clientes com base nas seguintes condições:</label>
+            </div>
+            {
+              !!this.state.CLI_EXCLUDE &&
+
+              <CmpCondicoes name="EC"
+                items={this.state.EC}
+                EC_SPECIFIC={this.state.EC_SPECIFIC}
+                onClick_AddRemove={this.onClick_AddRemove2}
+                onFieldChange={this.onFieldChange}
+                fieldsAllowed={this.state.fieldsAllowedForCli}
+                alerts={this.alerts}
+                editable={this.state.editable} />
+            }
+          </Panel>
+
+          {this.state.TIPO === "P" &&
+            // Âmbito de artigos só existe em promoções
+            <Panel subtitle="Âmbito de artigos" allowCollapse={true} actions={scopeArtActions} colapsedInfo={artColapsedInfo}>
+              <div className="row">
+                <div className="col-12">
+                  <div className="radio-custom radio-success" style={{ display: "block" }}>
+                    <input type="radio"
+                      id="ART_RESTRICT"
+                      name="ART_RESTRICT"
+                      checked={!this.state.ART_RESTRICT}
+                      disabled={!this.state.editable}
+                      onChange={e => that.toggleField("ART_RESTRICT")} />
+                    <label htmlFor="ART_RESTRICT">Todos os artigos</label>
+                  </div>
+
+
+                  <div className="radio-custom radio-success" style={{ display: "block" }}>
+                    <input type="radio"
+                      id="ART_RESTRICT2"
+                      name="ART_RESTRICT"
+                      checked={!!this.state.ART_RESTRICT}
+                      disabled={!this.state.editable}
+                      onChange={e => that.toggleField("ART_RESTRICT")} />
+                    <label htmlFor="ART_RESTRICT2">Artigos com base nas seguintes condições:</label>
+                  </div>
+                  {
+                    !!this.state.ART_RESTRICT &&
+
+                    <CmpCondicoes name="IA"
+                      items={this.state.IA}
+                      IA_SPECIFIC={this.state.IA_SPECIFIC}
+                      onClick_AddRemove={this.onClick_AddRemove2}
+                      onFieldChange={this.onFieldChange}
+                      fieldsAllowed={this.state.fieldsAllowedForArt}
+                      alerts={this.alerts}
+                      editable={this.state.editable} />
+                  }
+
+                </div>
+                <div className="col-12">
+                  <div className="checkbox-custom checkbox-danger" style={{ display: "block" }}>
+                    <input type="checkbox"
+                      disabled={!this.state.editable} id="ART_EXCLUDE" name="ART_EXCLUDE" checked={this.state.ART_EXCLUDE}
+                      onChange={e => { that.onFieldChange({ fieldName: "ART_EXCLUDE", value: e.target.checked, rawValue: e.target.checked }) }} />
+                    <label htmlFor="ART_EXCLUDE">Excluir artigos com base nas seguintes condições:</label>
+                  </div>
+                  {
+                    !!this.state.ART_EXCLUDE &&
+                    <CmpCondicoes name="EA"
+                      items={this.state.EA}
+                      EA_SPECIFIC={this.state.EA_SPECIFIC}
+                      onClick_AddRemove={this.onClick_AddRemove2}
+                      onFieldChange={this.onFieldChange}
+                      fieldsAllowed={this.state.fieldsAllowedForArt}
+                      alerts={this.alerts}
+                      editable={this.state.editable} />
+                  }
+                </div>
+              </div>
+
+            </Panel>
+          }
+        </div>
         {this.state.TIPO === "F" &&
           // Grelha de artigos só existe em folhetos
-          <Panel allowCollapse={false}  >
-            <DataGrid
-              ref="grid"
-              fields={this.detailFields}
-              disabled={!this.state.editable}
-              rows={this.state.LINES}
-              onRowUpdate={this.handleDetailRowChange}
-              onRowSelectionChange={this.handleDetailRowSelect}
-              selectedKeys={this.state.selectedLineNums}
-              onRowReorder={this.handleDetailRowReorder}
-            ></DataGrid>
-          </Panel>
+
+          <div id="docDetail">
+            <Panel name="panelDetails" allowCollapse={false}  >
+              <DataGrid
+                ref="grid"
+                height={this.state.detailHeight}
+                fields={this.detailFields}
+                disabled={!this.state.editable}
+                rows={this.state.LINES}
+                onRowUpdate={this.handleDetailRowChange}
+                onRowSelectionChange={this.handleDetailRowSelect}
+                selectedKeys={this.state.selectedLineNums}
+                onRowReorder={this.handleDetailRowReorder}
+              ></DataGrid>
+            </Panel>
+          </div>
         }
+
+
+
+        {this.state.TIPO === "P" &&
+          // Âmbito de artigos - colocar este espaço adicional para as combos abrirem bem
+          <div style={{ height: "100px" }}>
+          </div>}
         <DocFooter {...footerProps}></DocFooter>
-        {/*           
-        < div className="sappy-action-bar animation-slide-left">
-          {!this.state.NUMERO && this.state.ID &&
-            < Button color={"danger"} onClick={this.handleApagarRascunho}>
-              <i className="icon wb-trash" />Apagar rascunho
-            </Button>}
 
-          {!this.state.NUMERO && this.state.ID &&
-            <Button color={"success"} onClick={this.handleCreateDocument}>
-              <i className="icon wb-check" />Criar promoção
-            </Button>}
 
-          {this.state.NUMERO && this.state.editable &&
-            <Button color={"success"} onClick={this.handleUpdateDocument}>
-              <i className="icon wb-check" />Gravar promoção
-            </Button>} 
-        </div>*/}
 
-        <div style={{ height: "100px" }}>
-        </div>
       </div >
     );
   }

@@ -52,7 +52,10 @@ class LpPromocoes extends Component {
           <div className="container vertical-align-middle hidden-sm-down">
             <div className="row">
               <div className="col-1"> {row.NUMERO} </div>
-              <div className="col-8"> {row.DESCRICAO} {renderBadges()}</div>
+              <div className="col-8">
+                {row.TIPO === 'P' && <i style={{ color: "#ddd", paddingRight: "5px" }} className="icon fa-tags" />}
+                {row.TIPO === 'F' && <i style={{ color: "#ddd", paddingRight: "5px" }} className="icon fa-newspaper-o" />}
+                {row.DESCRICAO} {renderBadges()}</div>
               <div className="col-3 lastcol"> {sappy.format.date(row.DATAI) + " a " + sappy.format.date(row.DATAF)}</div>
             </div>
           </div>
@@ -95,7 +98,7 @@ class LpPromocoes extends Component {
         {
           name: "Promoção",
           color: "success",
-          icon: "icon wb-tag",
+          icon: "icon fa-tags",
           visible: showActions,
           onClick: e => hashHistory.push({ pathname: "/vnd/promocoes/doc", state: { id: null, tipo: "P" } })
         }
@@ -103,7 +106,7 @@ class LpPromocoes extends Component {
         {
           name: "Folheto",
           color: "success",
-          icon: "icon wb-library",
+          icon: "icon fa-newspaper-o",
           visible: showActions,
           onClick: e => hashHistory.push({ pathname: "/vnd/promocoes/doc", state: { id: null }, tipo: "F" })
         }

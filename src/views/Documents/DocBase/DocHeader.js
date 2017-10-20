@@ -2,6 +2,7 @@
 import React, { Component } from "react";
 import { TextBox, TextBoxNumeric, ComboBox, Date, Toggle, Flag } from "../../../Inputs";
 import { Button } from "reactstrap";
+import Panel from "../../../components/Panel"
 
 class DocHeader extends Component {
   render() {
@@ -80,32 +81,30 @@ class DocHeader extends Component {
     let title = this.props.title;
     if (this.props.docData.DOCNUM > 0) title += " (" + this.props.docData.DOCNUM + ")";
 
+
+    let headerActions = [
+
+      {
+        name: "toogleEdit",
+        text: "Alterar",
+        color: !this.props.editable ? "" : "danger",
+        visible: !!this.props.docData.DOCNUM,
+        icon: this.props.editable ? "fa-close" : "fa-edit",
+        onClick: this.props.toggleEditable
+      }
+    ];
+
+
     return (
       <div id="docHeader">
-        <div className="header-title">
-          <h3 className="header-title-text" onClick={this.props.toggleHeader}>{title}</h3>
-          <span className={" " + notHiddenClass}>
-            {this.props.docData.CARDCODE && (" (" + this.props.docData.CARDCODE + " - " + this.props.docData.CARDNAME) + ")"}
-          </span>
-          <div className="header-actions">
+        <Panel title={title}
+          colapsedInfo={this.props.docData.CARDCODE && (" (" + this.props.docData.CARDCODE + " - " + this.props.docData.CARDNAME) + ")"}
+          expanded={this.props.expanded}
+          onToogleExpand={this.props.toggleHeader}
+          actions={headerActions} >
 
-            {this.props.docData.DOCNUM &&
-              <div className="header-action">
-                <Button outline className="btn-sm btn-flat" onClick={this.props.toggleEditable}>
-                  <i className={"icon " + editIcon} />
-                  <span className="hidden-sm-down"> Alterar</span>
-                </Button>
-              </div>}
-
-            <Button outline className="btn-sm btn-flat" onClick={this.props.toggleHeader}>
-              <i className={"icon " + expandIcon} />
-            </Button>
-          </div>
-        </div>
-        <div className={"header-body " + hiddenClass}>
           {renderHeaderFields()}
-        </div>
-
+        </Panel>
       </div>
     );
   }
