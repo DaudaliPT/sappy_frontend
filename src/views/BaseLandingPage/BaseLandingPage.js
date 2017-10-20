@@ -212,14 +212,19 @@ class BaseLandingPage extends Component {
 
     let renderActions = () => {
       let actions = [...that.props.actions];
-      let mainAction = actions.shift(1);
+
+      let visibleActions = actions.filter(a => !a.hasOwnProperty("visible") || a.visible)
+      if (visibleActions.length === 0) return null
+
+      let mainAction = visibleActions.shift(1);
       if (!mainAction) return;
 
       var renderSubActions = () => {
-        if (actions.length > 0) {
+
+        if (visibleActions.length > 0) {
           return (
             <div key={"action-buttons"} className="sappy-action-buttons animation-scale-up">
-              {actions.map(action => {
+              {visibleActions.map(action => {
                 let btClassName = "btn btn-floating btn-" + action.color;
 
                 return (

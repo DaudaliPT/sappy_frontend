@@ -1,47 +1,59 @@
  .sappy-panel{    
-    margin-bottom: 1rem;   
-     /* background: rgb(222, 222, 222) !important; */
-     background: white !important;
- 
-    border-top-left-radius: 1.214rem;
-    border-top-right-radius: 1.214rem; 
-     padding: 20px;}
+    margin-bottom: 1rem;    
+    background: white !important; 
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem; 
+    padding: 10px;}
+
+.sappy-panel.collapsed{    
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem; 
+    padding-bottom: 5px;}
+    
+.sappy-panel.collapsed >.title{    
+    padding-bottom: 0px;
+    border-bottom:none;
+    margin-bottom: 0px;  }
 
 .sappy-panel >.title {
     position: relative;
-    padding: 0px;
-    padding-bottom: 5px;
-    margin-bottom: 10px;
-    /* border-bottom: 1px solid #eeeeee; */
+    padding: 0px; 
+    border-bottom: 1px solid #f5f5f5;
     border-top-left-radius: .214rem;
     border-top-right-radius: .214rem; }
 
-.sappy-panel >.title .text {
+.sappy-panel .title .text {
     display: initial;
     margin-top: 0;
-    margin-bottom: 0;
-     /* padding: 20px 0px;  */
-    cursor: pointer;
-    font-size: 18px;
+    margin-bottom: 0; 
+    cursor: pointer; 
     color: #37474f;}
 
-.sappy-panel >.title .moreinfo {
+.sappy-panel>.title>.moreinfo {
     display: initial;
     margin-top: 0;
     margin-bottom: 0;
-    margin-left: 15px;
-    font-size: 1rem;
-    color: #37474f;}
-.sappy-panel >.title .actions {
+    margin-left: 15px; 
+    color: #37474f;
+    animation-name: fade;
+    animation-duration: 2s; }
+
+.sappy-panel>.body { 
+    animation-name: fade;
+    animation-duration: 2s; 
+    padding-left: 15px;
+    padding-right: 15px;
+    }
+
+.sappy-panel>.title+.body {
+    margin-top: 15px; }
+
+.sappy-panel .title .actions {
     position: absolute;
     right: 0px; 
-    top: 25%;
-    /* margin-top: -10px; */
-    -webkit-transform: translate(0%, -50%);
-    -ms-transform: translate(0%, -50%);
-    transform: translate(0%, -50%);
-    margin: auto;
-    z-index: 1;}
+    top: 9px;   
+    transform: translate(0%, -50%); 
+    z-index: 1; }
 
 .sappy-panel >.title .actions .action {
     display: inline-block;

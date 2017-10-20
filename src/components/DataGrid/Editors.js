@@ -36,22 +36,25 @@ class DefaultEditor extends Component {
   render() {
     let that = this;
     let type = this.props.column.type;
+    let name = this.props.column.name;
     let value = this.props.value;
-    let formatedValue = value;
     let inputType = "text"
-    if ("quantity,price,amount,integer".indexOf(type) > -1) formatedValue = value === null ? null : sappy.getNum(value)
-    // if ("quantity,price,amount,integer".indexOf(type) > -1) inputType = "number"
+    let formatedValue = value
 
-    let content = formatedValue
+
     return (<input
       ref={(node) => this.input = node}
       type={inputType}
       onBlur={this.props.onBlur}
       className="form-control"
       onFocus={e => {
+        let previousValue = that.props.rowData[name];
+        if ("quantity,price,amount,integer".indexOf(type) > -1)
+          previousValue = previousValue === null ? null : sappy.getNum(previousValue)
+
         setTimeout(() => {
           // Esta condição é para não perder o 1º caracter digitado com o teclado
-          if (that.input.value !== content) return
+          if (that.input.value !== previousValue || !previousValue) return
 
           that.input.setSelectionRange(0, 9999);
         }, 0)

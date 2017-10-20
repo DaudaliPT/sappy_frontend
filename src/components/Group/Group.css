@@ -1,25 +1,23 @@
  .sappy-group{    
-    margin-bottom: 1rem;   
+    margin-top: 15px;   
+    margin-bottom: 5px;   
     padding-top: 0px;
-}
-
-.sappy-group .title {
-    /* padding-left :15px; */
-    
-}
+} 
 
 .sappy-group .title .text {
     display: initial;
     margin-top: 0;
-    margin-bottom: 0;
-    /* padding: 20px 0px;  */
+    margin-bottom: 0; 
     cursor: pointer;
     font-size:1.1rem;
     color: #37474f;}
     
-.sappy-group .body {
+.sappy-group>.body {
         padding:15px;
-        margin-bottom: 30px;
-        /* border: 1px solid #eeeeee; */
-        /* background: rgb(241, 244, 245); */
+        background-color: #fcfcfc;
+        border: 1px solid #eeeeee;
+        
+        animation-name: fade;
+        animation-duration: 1s;
+    
  }

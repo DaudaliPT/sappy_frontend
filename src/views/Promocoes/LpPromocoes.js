@@ -24,6 +24,8 @@ class LpPromocoes extends Component {
   }
 
   render() {
+
+    let that = this
     let { selectedItems } = this.state;
 
 
@@ -80,8 +82,7 @@ class LpPromocoes extends Component {
     };
 
     const renderActions = () => {
-      let currentShowActions = this.state.showActions;
-
+      let showActions = this.state.showActions;
       let { selectedItems } = this.state;
 
       let actions = [
@@ -89,8 +90,24 @@ class LpPromocoes extends Component {
           name: "main",
           color: "success",
           icon: "icon wb-plus",
-          onClick: e => hashHistory.push({ pathname: "/vnd/promocoes/doc", state: { id: null } })
+          onClick: e => that.setState({ showActions: !showActions })
+        },
+        {
+          name: "Promoção",
+          color: "success",
+          icon: "icon wb-tag",
+          visible: showActions,
+          onClick: e => hashHistory.push({ pathname: "/vnd/promocoes/doc", state: { id: null, tipo: "P" } })
         }
+        ,
+        {
+          name: "Folheto",
+          color: "success",
+          icon: "icon wb-library",
+          visible: showActions,
+          onClick: e => hashHistory.push({ pathname: "/vnd/promocoes/doc", state: { id: null }, tipo: "F" })
+        }
+
       ];
 
       return actions;

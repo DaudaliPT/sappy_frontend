@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import { Button } from "reactstrap";
 import axios from "axios";
+import EditModal from "../Produtos/EditModal";
 
+import DataGrid from "../../components/DataGrid";
 import { hashHistory } from "react-router";
-// var $ = window.$;
+var $ = window.$;
 var sappy = window.sappy;
 
 import Slider from 'rc-slider';
@@ -13,6 +15,7 @@ import Panel from "../../components/Panel"
 import CmpCondicoes from "./CmpCondicoes"
 import ModalCoveredItems from './ModalCoveredItems'
 import ModalCoveredPNs from './ModalCoveredPNs'
+import DocFooter from './DocFooter'
 
 const getinitialState = (props) => {
   let locationState = props.location.state || {};
@@ -20,8 +23,11 @@ const getinitialState = (props) => {
     loading: locationState.id ? true : false,
     editable: locationState.id ? false : true,
     showValidations: false,
+    TIPO: locationState.tipo === "P" ? "P" : "F",
+    selectedLineNums: [],
     fieldsAllowedForCli: [],
     fieldsAllowedForArt: [],
+    pnScopeExpanded: locationState.tipo === "P" ? true : false,
     DIASEM0: 1,
     DIASEM1: 1,
     DIASEM2: 1,
@@ -29,6 +35,7 @@ const getinitialState = (props) => {
     DIASEM4: 1,
     DIASEM5: 1,
     DIASEM6: 1,
+    LINES: [],
     IC: [{}],
     EC: [{}],
     IA: [{}],
@@ -36,7 +43,7 @@ const getinitialState = (props) => {
   }
 }
 
-class DocPromocoes extends Component {
+class DocPromocao extends Component {
   constructor(props) {
     super(props);
 
@@ -51,6 +58,16 @@ class DocPromocoes extends Component {
     this.handleUpdateDocument = this.handleUpdateDocument.bind(this);
     this.toggleField = this.toggleField.bind(this);
 
+    this.handleDetailRowChange = this.handleDetailRowChange.bind(this);
+    this.handleDetailRowSelect = this.handleDetailRowSelect.bind(this);
+    this.handleDetailRowReorder = this.handleDetailRowReorder.bind(this);
+    this.handleFooterSearchResult = this.handleFooterSearchResult.bind(this);
+
+    this.handleOnApagarLinhas = this.handleOnApagarLinhas.bind(this)
+    this.recalcComponentsHeight = this.recalcComponentsHeight.bind(this)
+    this.scrollToLastLine = this.scrollToLastLine.bind(this)
+    this.handleOnCancelar = this.handleOnCancelar.bind(this)
+    this.handleOnVoltar = this.handleOnVoltar.bind(this)
 
     this.fieldsAllowedForCli = [
       { value: "SlpCode", label: "Vendedor", optionsApi: "/api/cbo/oslp", multi: true },
@@ -66,11 +83,31 @@ class DocPromocoes extends Component {
       { value: "FirmCode", label: "Fabricante", optionsApi: "/api/cbo/omrc", multi: true },
     ]
 
+    // detailFields.push({ name: 'LINENUM', label: '#', type: "text", width: 40, editable: false })
+    this.detailFields = [
+      {
+        name: 'ITEMCODE', label: 'Artigo', type: "text", width: 100, editable: false, dragable: false,
+        onLinkClick: props => sappy.showModal(<EditModal toggleModal={sappy.hideModal} itemcode={props.dependentValues.ITEMCODE} />)
+      },
+      { name: 'ITEMNAME', label: 'Descrição', type: "tags", width: 400, editable: true },
+      { name: 'QTSTOCK', label: 'Stk', type: "quantity", width: 60, editable: false },
+      { name: 'PRICEINFO', label: 'Preço Cash', type: "price", width: 60, editable: false },
+      { name: 'PRICEBASE', label: 'Preço Base', type: "price", width: 60, editable: true },
+      { name: 'USER_DISC', label: 'Descontos', type: "text", width: 120, editable: true },
+      // { name: 'DISCOUNT', label: 'Desconto', type: "discount", width: 60, editable: false },
+      { name: 'PRICE', label: 'Preço', type: "price", width: 70, editable: true },
+      { name: 'QTMIN', label: 'Qt.Min', type: "quantity", width: 60, editable: true }
+    ]
+
     this.state = getinitialState(props)
+
   }
 
   componentDidMount() {
     let that = this
+    window.addEventListener("resize", this.recalcComponentsHeight);
+    this.recalcComponentsHeight();
+
     this.serverRequest = axios
       .get(`/api/cbo/ocqg`)
       .then(result => {
@@ -87,6 +124,21 @@ class DocPromocoes extends Component {
 
     this.loadDoc();
   }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.recalcComponentsHeight);
+  }
+
+  recalcComponentsHeight() {
+    // let docHeight = $("#doc").height();
+    // let detailsTop = $("#docDetail").position().top;
+    // let detail = { ...this.state.detail }
+    // detail.height = (docHeight - detailsTop)
+
+    // this.setState({ detail })
+  }
+
+
   componentWillReceiveProps(nextProps) {
     let locationState = this.props.location.state || {};
     let nextlocationState = nextProps.location.state || {};
@@ -108,13 +160,13 @@ class DocPromocoes extends Component {
     }
   }
 
-
   loadDocToState(result) {
     let newState = { ...result.data };
-    newState.IC = newState.LINES.filter(line => line.TIPO === "IC")
-    newState.EC = newState.LINES.filter(line => line.TIPO === "EC")
-    newState.IA = newState.LINES.filter(line => line.TIPO === "IA")
-    newState.EA = newState.LINES.filter(line => line.TIPO === "EA")
+    newState.pnScopeExpanded = newState.TIPO === "P" ? true : false;
+    newState.IC = newState.SCOPE.filter(line => line.TIPO === "IC")
+    newState.EC = newState.SCOPE.filter(line => line.TIPO === "EC")
+    newState.IA = newState.SCOPE.filter(line => line.TIPO === "IA")
+    newState.EA = newState.SCOPE.filter(line => line.TIPO === "EA")
 
     if (newState.editable) {
       if (newState.IC.length === 0) newState.IC.push({});
@@ -122,7 +174,7 @@ class DocPromocoes extends Component {
       if (newState.IA.length === 0) newState.IA.push({});
       if (newState.EA.length === 0) newState.EA.push({});
     }
-    delete newState.LINES
+    delete newState.SCOPE
 
     newState.loading = false
     newState.editable = (!newState.NUMERO)
@@ -130,23 +182,51 @@ class DocPromocoes extends Component {
     this.setState(newState);
   }
 
+  handleOnVoltar() {
+    hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", ''));
+  }
+
+
+  handleOnCancelar() {
+    let that = this
+    if (!this.state.NUMERO) {
+      sappy.showQuestion({
+        title: "Manter rascunho?",
+        moreInfo: "Se escolher manter, as alterações ficarão disponiveis como rascunho e poderá continuar mais tarde...",
+        onConfirm: () => { hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", '')) },
+        cancelText: "Descartar",
+        cancelStyle: "danger btn-outline",
+        confirmText: "Manter rascunho",
+        confirmStyle: "success",
+        onCancel: () => {
+          that.serverRequest =
+            axios
+              .delete(`/api/promocoes/doc/${this.state.ID}`)
+              .then(result => hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", '')))
+              .catch(error => sappy.showError(error, "Erro ao apagar dados"));
+        }
+      })
+    } else {
+      hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", ''));
+    }
+  }
 
   saveToDatabase(stateValues, specialOption) {
 
-    let { IC, EC, IA, EA, DATAI, DATAF, UDISC, IC_SPECIFIC, EC_SPECIFIC, IA_SPECIFIC, EA_SPECIFIC, DESCRICAO, OBSERVACOES, ID, NUMERO, ATIVO, ARQUIVADO, DIASEM0, DIASEM1, DIASEM2, DIASEM3, DIASEM4, DIASEM5, DIASEM6, PRIORIDADE, CLI_RESTRICT, ART_RESTRICT, CLI_EXCLUDE, ART_EXCLUDE } = stateValues;
-    let data = { ID, NUMERO, UDISC, DATAI, DATAF, IC_SPECIFIC, EC_SPECIFIC, IA_SPECIFIC, EA_SPECIFIC, DESCRICAO, OBSERVACOES, ATIVO, ARQUIVADO, DIASEM0, DIASEM1, DIASEM2, DIASEM3, DIASEM4, DIASEM5, DIASEM6, PRIORIDADE, CLI_RESTRICT, ART_RESTRICT, CLI_EXCLUDE, ART_EXCLUDE }
+    let { TIPO, IC, EC, IA, EA, DATAI, DATAF, UDISC, IC_SPECIFIC, EC_SPECIFIC, IA_SPECIFIC, EA_SPECIFIC, DESCRICAO, OBSERVACOES, ID, NUMERO, ATIVO, ARQUIVADO, DIASEM0, DIASEM1, DIASEM2, DIASEM3, DIASEM4, DIASEM5, DIASEM6, PRIORIDADE, CLI_RESTRICT, ART_RESTRICT, CLI_EXCLUDE, ART_EXCLUDE } = stateValues;
+    let data = { TIPO, ID, NUMERO, UDISC, DATAI, DATAF, IC_SPECIFIC, EC_SPECIFIC, IA_SPECIFIC, EA_SPECIFIC, DESCRICAO, OBSERVACOES, ATIVO, ARQUIVADO, DIASEM0, DIASEM1, DIASEM2, DIASEM3, DIASEM4, DIASEM5, DIASEM6, PRIORIDADE, CLI_RESTRICT, ART_RESTRICT, CLI_EXCLUDE, ART_EXCLUDE }
 
     IC.forEach((item, ix) => { item.TIPO = 'IC'; item.LINE = ix; })
     EC.forEach((item, ix) => { item.TIPO = 'EC'; item.LINE = ix; })
     IA.forEach((item, ix) => { item.TIPO = 'IA'; item.LINE = ix; })
     EA.forEach((item, ix) => { item.TIPO = 'EA'; item.LINE = ix; })
-    data.LINES = [...IC, ...EC, ...IA, ...EA]
+    data.SCOPE = [...IC, ...EC, ...IA, ...EA]
 
     if (!specialOption) {
       axios
         .post(`/api/promocoes/doc/`, data)
         .then(this.loadDocToState)
-        .catch(error => sappy.showError(error, "Não foi possivel gravar a promoção"));
+        .catch(error => sappy.showError(error, "Não foi possivel gravar documneto"));
     }
     else {
       data.ATIVO = 1; // para que consiga simular
@@ -157,7 +237,6 @@ class DocPromocoes extends Component {
 
   }
 
-  // Recebe os valores dos campos MY*
   onFieldChange(changeInfo) {
     // let that = this;
     let formatedValue = changeInfo.formatedValue;
@@ -253,7 +332,6 @@ class DocPromocoes extends Component {
 
   }
 
-
   handleCreateDocument() {
     let that = this;
 
@@ -279,7 +357,7 @@ class DocPromocoes extends Component {
       axios
         .post(`/api/promocoes/doc/${this.state.ID}/confirm`)
         .then(this.loadDocToState)
-        .catch(error => sappy.showError(error, "Não foi possivel criar a promoção"));
+        .catch(error => sappy.showError(error, "Não foi possivel criar documento"));
 
 
     if (!hasWarning)
@@ -368,6 +446,116 @@ class DocPromocoes extends Component {
   toggleField(fieldName) {
     this.onFieldChange({ fieldName, rawValue: !this.state[fieldName], value: !this.state[fieldName] })
   }
+
+  handleOnApagarLinhas() {
+    let that = this
+
+    let LINENUMS = that.state.selectedLineNums;
+
+    let title = "Apagar linha?"
+    let confirmText = "Apagar linha"
+    let moreInfo = "Se continuar a linha " + LINENUMS.toString() + " será removida do documento.";
+    if (LINENUMS.length > 1) {
+      title = "Apagar linhas?"
+      confirmText = "Apagar linhas"
+      moreInfo = "Se continuar as linhas " + LINENUMS.toString() + " serão removidas do documento.";
+    }
+
+    sappy.showDanger({
+      title,
+      moreInfo,
+      confirmText,
+      onConfirm: () => {
+        that.serverRequest =
+          axios
+            .post(`/api/promocoes/doc/${this.state.ID}/deletelines`, {
+              Lines: LINENUMS
+            })
+            .then(result => {
+              that.setState({ selectedLineNums: [], ...result.data })
+            })
+            .catch(error => sappy.showError(error, "Não foi possível apagar linhas"));
+      },
+      onCancel: () => { }
+    })
+  }
+
+  handleDetailRowChange(currentRow, updated) {
+    let that = this;
+    // debugger
+    this.serverRequest = axios
+      .patch(`/api/promocoes/doc/${this.state.ID}/line/${currentRow.LINENUM}`, { ...updated })
+      .then(function (result) {
+        let new_row = result.data.UPDATED_LINE;
+        // create a new object and replace the line on it, keeping the other intact
+        let rows = that.state.LINES.map(r => {
+          if (r.LINENUM === new_row.LINENUM) {
+            return new_row
+          } else {
+            return r
+          }
+        });
+
+        let newDocData = { LINES: rows }
+        that.setState(newDocData)
+      })
+      .catch(error => sappy.showError(error, "Erro ao gravar linha"));
+  }
+
+  handleDetailRowSelect(selectedLineNums) {
+    this.setState({ selectedLineNums });
+  }
+
+  handleDetailRowReorder(draggedRows, rowTarget, orderedRows) {
+    let that = this
+
+    let LINENUMS = orderedRows.map(line => line.LINENUM);
+    that.serverRequest =
+      axios
+        .post(`/api/promocoes/doc/${that.state.ID}/reorderlines`, {
+          Lines: LINENUMS
+        })
+        .then(result => {
+          that.setState({ selectedLineNums: false, ...result.data })
+        })
+        .catch(error => sappy.showError(error, "Não foi possível reordernar as linhas"));
+
+  }
+
+  handleFooterSearchResult({ selectedItems, barcodes, callback } = {}) {
+    let that = this;
+    let itemCodes = selectedItems;
+    if (!((itemCodes && itemCodes.length > 0) || (barcodes && barcodes.length > 0))) return
+
+    let createDocLines = () => {
+      this.serverRequest = axios
+        .post(`/api/promocoes/doc/${this.state.ID}/lines`, { itemCodes, barcodes })
+        .then(function (result) {
+          let newDocData = { ...result.data }
+
+          that.setState(newDocData, () => {
+            //scroll to end
+            that.scrollToLastLine();
+          });
+          if (callback) callback()
+        })
+        .catch(error => {
+          sappy.showError(error, "Erro ao adicionar linhas")
+          if (callback) callback()
+        });
+    }
+
+    // if ((itemCodes && itemCodes.length > 0) || (barcodes && barcodes.length > 0)) {
+    //    this.ensureDocHeaderExists(createDocLines);
+    // }
+
+    createDocLines()
+  }
+
+  scrollToLastLine() {
+    return this.refs.grid.scrollToRow(this.refs.grid.getSize())
+  }
+
 
   render() {
     let that = this
@@ -471,10 +659,55 @@ class DocPromocoes extends Component {
       || (this.state.ID && "Rascunho")
       || "Novo";
 
+
+    let cliColapsedInfo = ""
+    if (!this.state.CLI_RESTRICT) cliColapsedInfo = "(Todos os clientes" + (this.state.CLI_EXCLUDE ? ", com algumas exclusões]" : "") + ")"
+    if (this.state.CLI_RESTRICT) cliColapsedInfo = "(Alguns clientes" + (this.state.CLI_EXCLUDE ? " , com algumas exclusões]" : "") + ")"
+
+    let artColapsedInfo = ""
+    if (!this.state.ART_RESTRICT) artColapsedInfo = "(Todos os artigos" + (this.state.ART_EXCLUDE ? ", com algumas exclusões]" : "") + ")"
+    if (this.state.ART_RESTRICT) artColapsedInfo = "(Alguns artigos" + (this.state.ART_EXCLUDE ? ", com algumas exclusões]" : "") + ")"
+
+
+    let footerProps = {
+      // ...this.state.footer,
+      // docData,
+      editable: this.state.NUMERO && this.state.editable,
+      loading: false,
+      footerSearchType: "oitm",
+      onFooterSearchResult: this.handleFooterSearchResult,
+      actions: [{
+        name: this.state.selectedLineNums.length === 1 ? "Apagar linha" : "Apagar linhas", color: "danger", icon: "icon wb-trash",
+        visible: (this.state.ID > 0 && this.state.selectedLineNums.length > 0),
+        onClick: this.handleOnApagarLinhas
+      }, {
+        name: "Apagar rascunho", color: "danger", icon: "icon wb-trash",
+        visible: !this.state.NUMERO && this.state.ID,
+        onClick: this.handleApagarRascunho
+      }, {
+        name: "Cancelar", color: "primary", icon: "icon wb-close",
+        visible: this.state.ID && !this.state.NUMERO,
+        onClick: this.handleOnCancelar
+      }, {
+        name: "Voltar", color: "primary", icon: "icon wb-close",
+        visible: !this.state.ID || (this.state.NUMERO && !this.state.editable),
+        onClick: this.handleOnVoltar
+      }, {
+        name: "Criar promoção", color: "success", icon: "icon fa-check",
+        visible: !this.state.NUMERO && this.state.ID,
+        onClick: this.handleCreateDocument
+      }, {
+        name: "Gravar promoção", color: "success", icon: "icon fa-check",
+        visible: this.state.NUMERO && this.state.editable,
+        onClick: this.handleUpdateDocument
+      }]
+    }
+
+
     return (
       <div className="scrollable-doc" >
 
-        <Panel title={"Promoção (" + strNumero + ")"} actions={headerActions} >
+        <Panel title={(this.state.TIPO === "P" ? "Promoção" : "Folheto") + " (" + strNumero + ")"} actions={headerActions} >
 
           <div className="row">
             <div className="col-md-9 col-lg-10 pr-md-1">
@@ -482,9 +715,12 @@ class DocPromocoes extends Component {
                 <div className="col-md-8 col-lg-6 pr-md-1">
                   <TextBox {...bip("DESCRICAO", { label: "Descrição" }) } />
                 </div>
-                <div className="col-md-4 col-lg-2 pl-md-1 pr-md-1">
-                  <TextBox  {...bip("UDISC", { label: "Desconto", valueType: "discount" }) } />
-                </div>
+                {this.state.TIPO === "P" &&
+                  // O desconto só existe em folhetos promocionais
+                  <div className="col-md-4 col-lg-2 pl-md-1 pr-md-1">
+                    <TextBox  {...bip("UDISC", { label: "Desconto", valueType: "discount" }) } />
+                  </div>
+                }
                 <div className="col-6 col-md-4 col-lg-2 pl-lg-1 pr-1">
                   <Date  {...bip("DATAI", { label: "Válido De" }) } />
                 </div>
@@ -492,14 +728,6 @@ class DocPromocoes extends Component {
                   <Date  {...bip("DATAF", { label: "até" }) } />
                 </div>
               </div>
-              {/* <div className="row">
-                <div className="col-md-8 pr-md-1">
-                  <TagInput name="tags" label="Observações" getOptionsApiRoute="/api/cbo/ocrd/c" />
-
-                </div>
-              </div> */}
-
-
               <div className="row">
                 <div className="col-md-8 pr-md-1">
                   <TextBox {...bip("OBSERVACOES", { label: "Observações" }) } />
@@ -565,7 +793,10 @@ class DocPromocoes extends Component {
 
         </Panel>
 
-        <Panel title="Âmbito de parceiros" allowCollapse={true} actions={scopeCliActions}>
+        <Panel subtitle="Âmbito de parceiros" allowCollapse={true} actions={scopeCliActions}
+          expanded={this.state.pnScopeExpanded}
+          onToogleExpand={() => that.setState({ pnScopeExpanded: !this.state.pnScopeExpanded })}
+          colapsedInfo={cliColapsedInfo}>
           <div className="radio-custom radio-success" style={{ display: "block" }}>
             <input type="radio"
               id="CLI_RESTRICT"
@@ -619,65 +850,86 @@ class DocPromocoes extends Component {
               editable={this.state.editable} />
           }
         </Panel>
-        <Panel title="Âmbito de artigos" allowCollapse={true} actions={scopeArtActions}>
-          <div className="row">
-            <div className="col-12">
-              <div className="radio-custom radio-success" style={{ display: "block" }}>
-                <input type="radio"
-                  id="ART_RESTRICT"
-                  name="ART_RESTRICT"
-                  checked={!this.state.ART_RESTRICT}
-                  disabled={!this.state.editable}
-                  onChange={e => that.toggleField("ART_RESTRICT")} />
-                <label htmlFor="ART_RESTRICT">Todos os artigos</label>
+
+        {this.state.TIPO === "P" &&
+          // Âmbito de artigos só existe em promoções
+          <Panel subtitle="Âmbito de artigos" allowCollapse={true} actions={scopeArtActions} colapsedInfo={artColapsedInfo}>
+            <div className="row">
+              <div className="col-12">
+                <div className="radio-custom radio-success" style={{ display: "block" }}>
+                  <input type="radio"
+                    id="ART_RESTRICT"
+                    name="ART_RESTRICT"
+                    checked={!this.state.ART_RESTRICT}
+                    disabled={!this.state.editable}
+                    onChange={e => that.toggleField("ART_RESTRICT")} />
+                  <label htmlFor="ART_RESTRICT">Todos os artigos</label>
+                </div>
+
+
+                <div className="radio-custom radio-success" style={{ display: "block" }}>
+                  <input type="radio"
+                    id="ART_RESTRICT2"
+                    name="ART_RESTRICT"
+                    checked={!!this.state.ART_RESTRICT}
+                    disabled={!this.state.editable}
+                    onChange={e => that.toggleField("ART_RESTRICT")} />
+                  <label htmlFor="ART_RESTRICT2">Artigos com base nas seguintes condições:</label>
+                </div>
+                {
+                  !!this.state.ART_RESTRICT &&
+
+                  <CmpCondicoes name="IA"
+                    items={this.state.IA}
+                    IA_SPECIFIC={this.state.IA_SPECIFIC}
+                    onClick_AddRemove={this.onClick_AddRemove2}
+                    onFieldChange={this.onFieldChange}
+                    fieldsAllowed={this.state.fieldsAllowedForArt}
+                    alerts={this.alerts}
+                    editable={this.state.editable} />
+                }
+
               </div>
-
-
-              <div className="radio-custom radio-success" style={{ display: "block" }}>
-                <input type="radio"
-                  id="ART_RESTRICT2"
-                  name="ART_RESTRICT"
-                  checked={!!this.state.ART_RESTRICT}
-                  disabled={!this.state.editable}
-                  onChange={e => that.toggleField("ART_RESTRICT")} />
-                <label htmlFor="ART_RESTRICT2">Artigos com base nas seguintes condições:</label>
+              <div className="col-12">
+                <div className="checkbox-custom checkbox-danger" style={{ display: "block" }}>
+                  <input type="checkbox"
+                    disabled={!this.state.editable} id="ART_EXCLUDE" name="ART_EXCLUDE" checked={this.state.ART_EXCLUDE}
+                    onChange={e => { that.onFieldChange({ fieldName: "ART_EXCLUDE", value: e.target.checked, rawValue: e.target.checked }) }} />
+                  <label htmlFor="ART_EXCLUDE">Excluir artigos com base nas seguintes condições:</label>
+                </div>
+                {
+                  !!this.state.ART_EXCLUDE &&
+                  <CmpCondicoes name="EA"
+                    items={this.state.EA}
+                    EA_SPECIFIC={this.state.EA_SPECIFIC}
+                    onClick_AddRemove={this.onClick_AddRemove2}
+                    onFieldChange={this.onFieldChange}
+                    fieldsAllowed={this.state.fieldsAllowedForArt}
+                    alerts={this.alerts}
+                    editable={this.state.editable} />
+                }
               </div>
-              {
-                !!this.state.ART_RESTRICT &&
-
-                <CmpCondicoes name="IA"
-                  items={this.state.IA}
-                  IA_SPECIFIC={this.state.IA_SPECIFIC}
-                  onClick_AddRemove={this.onClick_AddRemove2}
-                  onFieldChange={this.onFieldChange}
-                  fieldsAllowed={this.state.fieldsAllowedForArt}
-                  alerts={this.alerts}
-                  editable={this.state.editable} />
-              }
-
             </div>
-            <div className="col-12">
-              <div className="checkbox-custom checkbox-danger" style={{ display: "block" }}>
-                <input type="checkbox"
-                  disabled={!this.state.editable} id="ART_EXCLUDE" name="ART_EXCLUDE" checked={this.state.ART_EXCLUDE}
-                  onChange={e => { that.onFieldChange({ fieldName: "ART_EXCLUDE", value: e.target.checked, rawValue: e.target.checked }) }} />
-                <label htmlFor="ART_EXCLUDE">Excluir artigos com base nas seguintes condições:</label>
-              </div>
-              {
-                !!this.state.ART_EXCLUDE &&
-                <CmpCondicoes name="EA"
-                  items={this.state.EA}
-                  EA_SPECIFIC={this.state.EA_SPECIFIC}
-                  onClick_AddRemove={this.onClick_AddRemove2}
-                  onFieldChange={this.onFieldChange}
-                  fieldsAllowed={this.state.fieldsAllowedForArt}
-                  alerts={this.alerts}
-                  editable={this.state.editable} />
-              }
-            </div>
-          </div>
-        </Panel>
+          </Panel>
+        }
 
+        {this.state.TIPO === "F" &&
+          // Grelha de artigos só existe em folhetos
+          <Panel allowCollapse={false}  >
+            <DataGrid
+              ref="grid"
+              fields={this.detailFields}
+              disabled={!this.state.editable}
+              rows={this.state.LINES}
+              onRowUpdate={this.handleDetailRowChange}
+              onRowSelectionChange={this.handleDetailRowSelect}
+              selectedKeys={this.state.selectedLineNums}
+              onRowReorder={this.handleDetailRowReorder}
+            ></DataGrid>
+          </Panel>
+        }
+        <DocFooter {...footerProps}></DocFooter>
+        {/*           
         < div className="sappy-action-bar animation-slide-left">
           {!this.state.NUMERO && this.state.ID &&
             < Button color={"danger"} onClick={this.handleApagarRascunho}>
@@ -692,9 +944,8 @@ class DocPromocoes extends Component {
           {this.state.NUMERO && this.state.editable &&
             <Button color={"success"} onClick={this.handleUpdateDocument}>
               <i className="icon wb-check" />Gravar promoção
-            </Button>}
-
-        </div>
+            </Button>} 
+        </div>*/}
 
         <div style={{ height: "100px" }}>
         </div>
@@ -703,4 +954,4 @@ class DocPromocoes extends Component {
   }
 }
 
-export default DocPromocoes;
+export default DocPromocao;

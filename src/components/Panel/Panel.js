@@ -7,23 +7,31 @@ class Panel extends Component {
   constructor(props) {
     super(props)
     this.toggleHeader = this.toggleHeader.bind(this)
-
-    this.state = { expanded: props.hasOwnProperty("expanded") ? props.expanded : true }
+    this.state = {
+      expanded: true
+    }
   }
 
   toggleHeader() {
     if (this.props.allowCollapse === false) return
+
+    if (this.props.onToogleExpand) return this.props.onToogleExpand()
+
     let expanded = !this.state.expanded
     this.setState({ expanded })
   }
 
   render() {
 
+    let expanded = this.props.onToogleExpand ? this.props.expanded : this.state.expanded;
 
-    let expandIcon = this.state.expanded ? "wb-minus" : "wb-plus";
-    let hiddenClass = this.state.expanded ? "" : "hidden-xxl-down";
-    let notHiddenClass = this.state.expanded ? "hidden-xxl-down" : "";
+    let expandIcon = expanded ? "wb-minus" : "wb-plus";
+    let hiddenClass = expanded ? "" : "hidden-xxl-down";
+    let notHiddenClass = expanded ? "hidden-xxl-down" : "";
     let title = this.props.title;
+    let subtitle = this.props.subtitle;
+    let allowCollapse = this.props.allowCollapse;
+
 
 
     let renderActions = () => {
@@ -31,7 +39,6 @@ class Panel extends Component {
 
       this.props.actions.forEach(action => {
         if (!action.visible) return
-
 
         DOMactions.push(<div key={action.name} className="action">
           {action.content && action.content}
@@ -47,33 +54,38 @@ class Panel extends Component {
     }
 
     return (
-      <div className="sappy-panel">
-        <div className="title">
-          <h3 className="text" onClick={this.toggleHeader}>{title}</h3>
-          <span className={"moreinfo " + notHiddenClass}>
-            {this.props.colapsedInfo}
-          </span>
-          <div className="actions">
+      <div className={"sappy-panel " + (!expanded ? "collapsed" : "expanded")}>
+        {(title || subtitle || allowCollapse) &&
+          < div className="title">
+            {title && <h4 className="text" onClick={this.toggleHeader}>{title}</h4>}
+            {subtitle && <h5 className="text" onClick={this.toggleHeader}>{subtitle}</h5>}
+            <span className={"moreinfo " + notHiddenClass}>
+              {this.props.colapsedInfo}
+            </span>
+            <div className="actions">
 
-            {renderActions()}
+              {renderActions()}
 
-            {this.props.allowCollapse &&
-              <Button outline className="btn-sm btn-flat" onClick={this.toggleHeader}>
-                <i className={"icon " + expandIcon} />
-              </Button>
-            }
+              {allowCollapse &&
+                <Button outline className="btn-sm btn-flat" onClick={this.toggleHeader}>
+                  <i className={"icon " + expandIcon} />
+                </Button>
+              }
+            </div>
           </div>
-        </div>
+        }
         <div className={"body " + hiddenClass}>
           {this.props.children}
         </div>
 
-      </div>
+      </div >
     );
   }
 }
 
 Panel.defaultProps = {
+  onToogleExpand: null,
+  expanded: true,
   title: "",
   colapsedInfo: "",
   allowCollapse: true,

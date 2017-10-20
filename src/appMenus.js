@@ -29,7 +29,7 @@ sappy.app = {
         { name: "oinv/doc", component: Views.Documents.Oinv, dontCreateMenu: true, text: "Doc" },
         { name: "orin/doc", component: Views.Documents.Orin, dontCreateMenu: true, text: "Doc" },
         { name: "promocoes", component: Views.Promocoes.Lp, text: "Promoções" },
-        { name: "promocoes/doc", component: Views.Promocoes.Doc, dontCreateMenu: true, text: "Doc" },
+        { name: "promocoes/doc", component: Views.Promocoes.DocPromocao, dontCreateMenu: true, text: "Doc" },
       ]
     },
     // 3\. Compras (3.1 Encomendas, 3.2 Receção mercadoria, 3.3 Devolução, 3.4 Fatura de fornecedor, 3.5 NC de fornecedor, 3.6 Contratos de compra)

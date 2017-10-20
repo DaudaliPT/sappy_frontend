@@ -63,6 +63,19 @@ class DocBase extends Component {
     this.loadDoc();
   }
 
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.recalcComponentsHeight);
+  }
+
+  recalcComponentsHeight() {
+    let docHeight = $("#doc").height();
+    let detailsTop = $("#docDetail").position().top;
+    let detail = { ...this.state.detail }
+    detail.height = (docHeight - detailsTop)
+
+    this.setState({ detail })
+  }
+
   componentWillReceiveProps(nextProps) {
 
     let locationState = this.props.location.state || {};
@@ -78,18 +91,7 @@ class DocBase extends Component {
     }
   }
 
-  recalcComponentsHeight() {
-    let docHeight = $("#doc").height();
-    let detailsTop = $("#docDetail").position().top;
-    let detail = { ...this.state.detail }
-    detail.height = (docHeight - detailsTop)
 
-    this.setState({ detail })
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("resize", this.recalcComponentsHeight);
-  }
 
   toggleHeader() {
     let header = { ...this.state.header }

@@ -175,7 +175,7 @@ export default {
 
                 let handleAddDocApiResponse = (result) => {
                     let data = result.data || {};
-                    debugger
+                    // debugger
                     if (data.message && data.message.indexOf("TOTALDIF") > -1) {
 
                         sappy.showDanger({
