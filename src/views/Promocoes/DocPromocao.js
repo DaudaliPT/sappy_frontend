@@ -134,10 +134,14 @@ class DocPromocao extends Component {
 
   recalcComponentsHeight() {
     let docHeight = $("#doc").height();
-    let detailsTop = $("#docDetail").position().top;
-    let detailHeight = (docHeight - detailsTop - 26)
 
-    this.setState({ detailHeight })
+    let $docDetail = $("#docDetail");
+    if ($docDetail.length === 1) {
+      let detailsTop = $docDetail.position().top;
+      let detailHeight = (docHeight - detailsTop - 26)
+
+      this.setState({ detailHeight })
+    }
   }
 
 
@@ -165,6 +169,11 @@ class DocPromocao extends Component {
   loadDocToState(result) {
     let newState = { ...result.data };
 
+    if (newState.ReturnMessage) {
+      sappy.showToastr(newState.ReturnMessage);
+      delete newState.ReturnMessage
+    }
+
     if (this.state.ID !== newState.ID) newState.pnScopeExpanded = newState.TIPO === "P" ? true : false;
 
     newState.IC = newState.SCOPE.filter(line => line.TIPO === "IC")
@@ -183,7 +192,7 @@ class DocPromocao extends Component {
     newState.loading = false
     newState.editable = (!newState.NUMERO)
 
-    this.setState(newState);
+    this.setState(newState, this.recalcComponentsHeight);
   }
 
   handleOnVoltar() {
@@ -499,6 +508,10 @@ class DocPromocao extends Component {
             return r
           }
         });
+
+        if (result.data.ReturnMessage) {
+          sappy.showToastr(result.data.ReturnMessage);
+        }
 
         let newDocData = { LINES: rows }
         that.setState(newDocData)
