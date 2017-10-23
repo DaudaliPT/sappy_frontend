@@ -426,10 +426,11 @@ class DocBase extends Component {
 
     // console.log("DocBase", this.state)
     return (
-      <div id="doc">
-        {/* <DocTitle></DocTitle> */}
-        <DocHeader {...headerProps}></DocHeader>
-        <DocDetail ref="DocDetail" {...detailProps}></DocDetail>
+      <div>
+        <div id="doc">
+          <DocHeader {...headerProps}></DocHeader>
+          <DocDetail ref="DocDetail" {...detailProps}></DocDetail>
+        </div >
         <DocFooter {...footerProps}></DocFooter>
         {this.state.footer.showTotals &&
           <DocTotal {...totalProps}></DocTotal>
