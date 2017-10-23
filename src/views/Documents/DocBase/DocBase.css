@@ -4,7 +4,7 @@
     padding-bottom: 0px;
     padding-left:   10px;
     padding-right:  10px;
-    border: 1px dotted red;  
+    /* border: 1px dotted red;   */
     position: fixed;
     width: calc(100% - 30px);
     height: calc(100% - 108px);
