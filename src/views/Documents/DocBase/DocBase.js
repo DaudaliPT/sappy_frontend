@@ -1,10 +1,9 @@
-
 import React, { Component } from "react";
 import DocHeader from "./DocHeader";
 import DocDetail from "./DocDetail";
 import DocFooter from "./DocFooter";
 import DocTotal from "./DocTotal";
-import actionFunc from './DocBaseActions'
+import actionFunc from "./DocBaseActions";
 import axios from "axios";
 import "./DocBase.css";
 const $ = window.$;
@@ -12,25 +11,27 @@ const sappy = window.sappy;
 
 class DocBase extends Component {
   constructor(props) {
-    super(props)
+    super(props);
 
-    this.recalcComponentsHeight = this.recalcComponentsHeight.bind(this)
-    this.toggleHeader = this.toggleHeader.bind(this)
-    this.toggleEditable = this.toggleEditable.bind(this)
-    this.loadDoc = this.loadDoc.bind(this)
+    this.recalcComponentsHeight = this.recalcComponentsHeight.bind(this);
+    this.toggleHeader = this.toggleHeader.bind(this);
+    this.toggleEditable = this.toggleEditable.bind(this);
+    this.loadDoc = this.loadDoc.bind(this);
 
     this.ensureDocHeaderExists = this.ensureDocHeaderExists.bind(this);
-    this.handleHeaderFieldChange = this.handleHeaderFieldChange.bind(this)
-    this.handleDetailRowChange = this.handleDetailRowChange.bind(this)
-    this.handleDetailRowReorder = this.handleDetailRowReorder.bind(this)
-    this.handleDetailRowSelect = this.handleDetailRowSelect.bind(this)
-    this.handleFooterSearchResult = this.handleFooterSearchResult.bind(this)
-    this.handleToggleShowTotals = this.handleToggleShowTotals.bind(this)
-    this.handleToogleLimitSearch = this.handleToogleLimitSearch.bind(this)
-    this.forceReload = this.forceReload.bind(this)
-    this.setNewDataAndDisplayAlerts = this.setNewDataAndDisplayAlerts.bind(this)
+    this.handleHeaderFieldChange = this.handleHeaderFieldChange.bind(this);
+    this.handleDetailRowChange = this.handleDetailRowChange.bind(this);
+    this.handleDetailRowReorder = this.handleDetailRowReorder.bind(this);
+    this.handleDetailRowSelect = this.handleDetailRowSelect.bind(this);
+    this.handleFooterSearchResult = this.handleFooterSearchResult.bind(this);
+    this.handleToggleShowTotals = this.handleToggleShowTotals.bind(this);
+    this.handleToogleLimitSearch = this.handleToogleLimitSearch.bind(this);
+    this.forceReload = this.forceReload.bind(this);
+    this.setNewDataAndDisplayAlerts = this.setNewDataAndDisplayAlerts.bind(
+      this
+    );
 
-    this.state = this.getinitialState(props)
+    this.state = this.getinitialState(props);
   }
 
   getinitialState(props) {
@@ -49,8 +50,7 @@ class DocBase extends Component {
         toggleHeader: this.toggleHeader,
         toggleEditable: this.toggleEditable
       },
-      detail: {
-      },
+      detail: {},
       footer: {
         showTotals: false
       }
@@ -70,66 +70,67 @@ class DocBase extends Component {
   recalcComponentsHeight() {
     let docHeight = $("#doc").height();
     let detailsTop = $("#docDetail").position().top;
-    let detail = { ...this.state.detail }
-    detail.height = (docHeight - detailsTop - 26)
+    let detail = { ...this.state.detail };
+    detail.height = docHeight - detailsTop - 26;
 
-    this.setState({ detail })
+    this.setState({ detail });
   }
 
   componentWillReceiveProps(nextProps) {
-
     let locationState = this.props.location.state || {};
     let nextlocationState = nextProps.location.state || {};
 
     this.recalcComponentsHeight();
 
-    if (Object.keys(nextlocationState).length === 0
-      || locationState.DocEntry !== nextlocationState.DocEntry
-      || locationState.id !== nextlocationState.id
+    if (
+      Object.keys(nextlocationState).length === 0 ||
+      locationState.DocEntry !== nextlocationState.DocEntry ||
+      locationState.id !== nextlocationState.id
     ) {
       return this.setState(this.getinitialState(nextProps), this.loadDoc);
     }
   }
 
-
-
   toggleHeader() {
-    let header = { ...this.state.header }
-    header.expanded = !header.expanded
-    this.setState({ header }, this.recalcComponentsHeight)
+    let header = { ...this.state.header };
+    header.expanded = !header.expanded;
+    this.setState({ header }, this.recalcComponentsHeight);
   }
   toggleEditable() {
     let that = this;
-    let locationState = this.props.location.state || {}
+    let locationState = this.props.location.state || {};
     let editable = this.state.editable;
 
-    if (editable) return that.setState({ editable: !editable }, that.loadDoc)
+    if (editable) return that.setState({ editable: !editable }, that.loadDoc);
 
-    if (!locationState.DocEntry) return
+    if (!locationState.DocEntry) return;
     let docentry = locationState.DocEntry;
     this.serverRequest = axios
       .get(`${this.props.apiDocsEdit}/${docentry}/haschanges`)
-      .then(function (result) {
-
+      .then(function(result) {
         let changes = result.data || [];
-        if (changes.length === 0) return that.setState({ editable: !editable }, that.loadDoc)
+        if (changes.length === 0)
+          return that.setState({ editable: !editable }, that.loadDoc);
 
         sappy.showQuestion({
           title: "Continuar edição?",
           msg: "Há alterações não confirmadas neste documento.",
-          moreInfo: "Pode continuar a editar ou ignorar as alterações registadas e recomeçar do zero.",
-          onConfirm: () => { that.setState({ editable: !editable }, that.loadDoc) },
+          moreInfo:
+            "Pode continuar a editar ou ignorar as alterações registadas e recomeçar do zero.",
+          onConfirm: () => {
+            that.setState({ editable: !editable }, that.loadDoc);
+          },
           confirmText: "Continuar edição",
           cancelText: "Ignorar alterações anteriores",
           onCancel: () => {
             that.serverRequest = axios
               .post(`${that.props.apiDocsEdit}/${docentry}/deletechanges`)
-              .then(function (result) {
-                that.setState({ editable: !editable }, that.loadDoc)
+              .then(function(result) {
+                that.setState({ editable: !editable }, that.loadDoc);
               })
               .catch(error => sappy.showError(error, "Erro ao obter dados"));
           }
-        })
+        });
       })
       .catch(error => sappy.showError(error, "Erro ao obter dados"));
   }
@@ -141,21 +142,22 @@ class DocBase extends Component {
   loadDoc() {
     let that = this;
 
-    let locationState = this.props.location.state || {}
+    let locationState = this.props.location.state || {};
 
     if (locationState.DocEntry) {
-
       let docentry = locationState.DocEntry;
       this.serverRequest = axios
-        .get(`${this.props.apiDocsEdit}/${docentry}?editable=${this.state.editable ? 'yes' : ''}`)
-        .then(function (result) {
-
-          let newDocData = result.data
+        .get(
+          `${this.props.apiDocsEdit}/${docentry}?editable=${this.state.editable
+            ? "yes"
+            : ""}`
+        )
+        .then(function(result) {
+          let newDocData = result.data;
           that.setNewDataAndDisplayAlerts(newDocData);
-
         })
         .catch(error => sappy.showError(error, "Erro ao obter dados"));
-      return
+      return;
     }
 
     let id = 0;
@@ -164,32 +166,30 @@ class DocBase extends Component {
     if (id) {
       this.serverRequest = axios
         .get(`${this.props.apiDocsNew}/${id}`)
-        .then(function (result) {
-
-          let newDocData = result.data
+        .then(function(result) {
+          let newDocData = result.data;
           that.setNewDataAndDisplayAlerts(newDocData);
-
         })
         .catch(error => sappy.showError(error, "Erro ao obter dados"));
-    }
-    else {
-      that.setState({
-        loading: false
-      }, that.recalcComponentsHeight)
+    } else {
+      that.setState(
+        {
+          loading: false
+        },
+        that.recalcComponentsHeight
+      );
 
       //procurar série predefinida
       this.serverRequest = axios
         .get(this.props.apiDocsNew + "/dfltseries")
-        .then(function (result) {
+        .then(function(result) {
           let docData = that.state.docData;
           docData = { ...docData, DOCSERIES: result.data.Series };
           that.setState({ docData });
         })
-        .catch(error => sappy.showError(error, "Erro ao obter dados"))
-
+        .catch(error => sappy.showError(error, "Erro ao obter dados"));
     }
   }
-
 
   ensureDocHeaderExists(next) {
     let that = this;
@@ -197,12 +197,12 @@ class DocBase extends Component {
     if (this.state.docData.ID) {
       next();
     } else {
-      let data = { ...this.state.docData }
-      delete data.LINES
+      let data = { ...this.state.docData };
+      delete data.LINES;
 
       this.serverRequest = axios
         .post(this.props.apiDocsNew, data)
-        .then(function (result) {
+        .then(function(result) {
           let docData = that.state.docData;
           docData = { ...docData, ...result.data };
           that.setState({ docData, rows: [] });
@@ -218,15 +218,17 @@ class DocBase extends Component {
 
     if (docData.ReturnMessage) {
       sappy.showToastr(docData.ReturnMessage);
-      delete docData.ReturnMessage
+      delete docData.ReturnMessage;
     }
 
-    this.setState({
-      loading: false,
-      changingTotals: false,
-      docData
-    }, that.recalcComponentsHeight)
-
+    this.setState(
+      {
+        loading: false,
+        changingTotals: false,
+        docData
+      },
+      that.recalcComponentsHeight
+    );
   }
 
   handleHeaderFieldChange(changeInfo) {
@@ -236,41 +238,46 @@ class DocBase extends Component {
     // let oldVal = this.state.docData[fieldName];
     let val = changeInfo.rawValue;
 
-    let updated = { [fieldName]: val }
-    if (that.props.onHeaderChange) updated = that.props.onHeaderChange(this.state.docData, updated);
+    let updated = { [fieldName]: val };
+    if (that.props.onHeaderChange)
+      updated = that.props.onHeaderChange(this.state.docData, updated);
 
     // // check if really changed
     // if (sappy.isEqual(oldVal, val)) return console.log("skip update");
     // console.log(fieldName, oldVal, val)
-    if ('EXTRADISC,EXTRADISCPERC,DOCTOTAL'.indexOf(fieldName) > -1) this.setState({ changingTotals: true })
+    if ("EXTRADISC,EXTRADISCPERC,DOCTOTAL".indexOf(fieldName) > -1)
+      this.setState({ changingTotals: true });
 
     if (this.state.docData.DOCENTRY > 0) {
       that.serverRequest = axios
-        .patch(this.props.apiDocsEdit + "/" + this.state.docData.DOCENTRY + `?editable=${this.state.editable ? 'yes' : ''}`, updated)
-        .then(function (result) {
+        .patch(
+          this.props.apiDocsEdit +
+            "/" +
+            this.state.docData.DOCENTRY +
+            `?editable=${this.state.editable ? "yes" : ""}`,
+          updated
+        )
+        .then(function(result) {
           let docData = { ...that.state.docData, ...result.data };
-          delete docData.changing
-          delete docData[changeInfo.fieldName + "_LOGICMSG"]
+          delete docData.changing;
+          delete docData[changeInfo.fieldName + "_LOGICMSG"];
           that.setNewDataAndDisplayAlerts(docData);
         })
         .catch(error => sappy.showError(error, "Erro ao gravar cabeçalho"));
-    }
-    else {
-
+    } else {
       this.ensureDocHeaderExists(() => {
         that.serverRequest = axios
           .patch(this.props.apiDocsNew + "/" + this.state.docData.ID, updated)
-          .then(function (result) {
+          .then(function(result) {
             let docData = { ...that.state.docData, ...result.data };
-            delete docData.changing
-            delete docData[changeInfo.fieldName + "_LOGICMSG"]
+            docData.LINES = [...docData.LINES];
+            delete docData.changing;
+            delete docData[changeInfo.fieldName + "_LOGICMSG"];
             that.setNewDataAndDisplayAlerts(docData);
           })
           .catch(error => sappy.showError(error, "Erro ao gravar cabeçalho"));
       });
-
     }
-
   }
 
   handleDetailRowChange(currentRow, updated) {
@@ -278,24 +285,29 @@ class DocBase extends Component {
     let documentoBloqueado = this.state.docData.DOCNUM > 0;
     if (documentoBloqueado) return;
 
-    if (this.props.onRowChange) updated = this.props.onRowChange(currentRow, updated)
+    if (this.props.onRowChange)
+      updated = this.props.onRowChange(currentRow, updated);
 
     this.serverRequest = axios
-      .patch(`${this.props.apiDocsNew}/${this.state.docData.ID}/line/${currentRow.LINENUM}`, { ...updated })
-      .then(function (result) {
+      .patch(
+        `${this.props.apiDocsNew}/${this.state.docData
+          .ID}/line/${currentRow.LINENUM}`,
+        { ...updated }
+      )
+      .then(function(result) {
         let new_row = result.data.UPDATED_LINE;
         // create a new object and replace the line on it, keeping the other intact
         let rows = that.state.docData.LINES.map(r => {
           if (r.LINENUM === new_row.LINENUM) {
-            return new_row
+            return new_row;
           } else {
-            return r
+            return r;
           }
         });
 
-        let newDocData = { ...result.data, LINES: rows }
+        let newDocData = { ...result.data, LINES: rows };
         delete newDocData.UPDATED_LINE;
-        that.setNewDataAndDisplayAlerts(newDocData)
+        that.setNewDataAndDisplayAlerts(newDocData);
       })
       .catch(error => sappy.showError(error, "Erro ao gravar linha"));
   }
@@ -305,60 +317,64 @@ class DocBase extends Component {
   }
 
   handleDetailRowReorder(draggedRows, rowTarget, orderedRows) {
-    let that = this
+    let that = this;
 
     let LINENUMS = orderedRows.map(line => line.LINENUM);
-    that.serverRequest =
-      axios
-        .post(`${that.props.apiDocsNew}/${that.state.docData.ID}/reorderlines`, {
-          Lines: LINENUMS
-        })
-        .then(result => {
-          let docData = { ...that.state.docData, ...result.data };
-          that.setState({ selectedLineNums: false, docData })
-        })
-        .catch(error => sappy.showError(error, "Não foi possível reordernar as linhas"));
-
+    that.serverRequest = axios
+      .post(`${that.props.apiDocsNew}/${that.state.docData.ID}/reorderlines`, {
+        Lines: LINENUMS
+      })
+      .then(result => {
+        let docData = { ...that.state.docData, ...result.data };
+        that.setState({ selectedLineNums: false, docData });
+      })
+      .catch(error =>
+        sappy.showError(error, "Não foi possível reordernar as linhas")
+      );
   }
 
   handleToggleShowTotals() {
-    let footer = { ...this.state.footer }
+    let footer = { ...this.state.footer };
     footer.showTotals = !footer.showTotals;
 
-    this.setState({ footer })
+    this.setState({ footer });
   }
 
   handleToogleLimitSearch() {
-    this.setState({ footerLimitSearch: !this.state.footerLimitSearch })
+    this.setState({ footerLimitSearch: !this.state.footerLimitSearch });
   }
 
   handleFooterSearchResult({ selectedItems, barcodes, callback } = {}) {
     let that = this;
     let itemCodes = selectedItems;
 
-
     let createDocLines = () => {
       this.serverRequest = axios
-        .post(`${this.props.apiDocsNew}/${this.state.docData.ID}/lines`, { itemCodes, barcodes })
-        .then(function (result) {
-          let newDocData = { ...that.state.docData, ...result.data }
+        .post(`${this.props.apiDocsNew}/${this.state.docData.ID}/lines`, {
+          itemCodes,
+          barcodes
+        })
+        .then(function(result) {
+          let newDocData = { ...that.state.docData, ...result.data };
           that.setState({ docData: newDocData }, () => {
             //scroll to end
             that.refs.DocDetail.scrollToLastLine();
           });
-          if (callback) callback()
+          if (callback) callback();
         })
         .catch(error => {
-          sappy.showError(error, "Erro ao adicionar linhas")
-          if (callback) callback()
+          sappy.showError(error, "Erro ao adicionar linhas");
+          if (callback) callback();
         });
-    }
+    };
 
-    if ((itemCodes && itemCodes.length > 0) || (barcodes && barcodes.length > 0)) {
+    if (
+      (itemCodes && itemCodes.length > 0) ||
+      (barcodes && barcodes.length > 0)
+    ) {
       this.ensureDocHeaderExists(createDocLines);
     }
   }
-
 
   render() {
     let that = this;
@@ -373,7 +389,7 @@ class DocBase extends Component {
       docData,
       fields: this.props.headerFields,
       onFieldChange: this.handleHeaderFieldChange
-    }
+    };
 
     let detailProps = {
       ...this.state.detail,
@@ -385,14 +401,21 @@ class DocBase extends Component {
       onRowSelectionChange: this.handleDetailRowSelect,
       selectedKeys: this.state.selectedLineNums,
       onRowReorder: this.handleDetailRowReorder
-    }
+    };
 
-    let footerLimitSearchCondition = this.props.footerLimitSearchCondition || '';
+    let footerLimitSearchCondition =
+      this.props.footerLimitSearchCondition || "";
     Object.keys(docData).forEach(
-      field => footerLimitSearchCondition = sappy.replaceAll(footerLimitSearchCondition, "<" + field + ">", docData[field])
-    )
+      field =>
+        (footerLimitSearchCondition = sappy.replaceAll(
+          footerLimitSearchCondition,
+          "<" + field + ">",
+          docData[field]
+        ))
+    );
 
-    let canConfirmar = (this.state.docData.ID > 0 || (this.state.docData.DOCNUM > 0 && editable));
+    let canConfirmar =
+      this.state.docData.ID > 0 || (this.state.docData.DOCNUM > 0 && editable);
 
     let footerProps = {
       ...this.state.footer,
@@ -409,47 +432,63 @@ class DocBase extends Component {
       totals,
       actions: [
         {
-          name: this.state.selectedLineNums.length === 1 ? "Apagar linha" : "Apagar linhas", color: "danger", icon: "icon wb-trash",
-          visible: (this.state.docData.ID > 0 && this.state.selectedLineNums.length > 0),
+          name:
+            this.state.selectedLineNums.length === 1
+              ? "Apagar linha"
+              : "Apagar linhas",
+          color: "danger",
+          icon: "icon wb-trash",
+          visible:
+            this.state.docData.ID > 0 && this.state.selectedLineNums.length > 0,
           onClick: e => actionFunc.handleOnApagarLinhas(that)
         },
-        { name: "Voltar", color: "primary", icon: "icon wb-close", visible: true, onClick: e => actionFunc.handleOnCancelar(that) },
-        { name: "Confirmar", color: "success", icon: "icon fa-check", visible: canConfirmar, onClick: e => actionFunc.handleOnConfirmar(that) }
+        {
+          name: "Voltar",
+          color: "primary",
+          icon: "icon wb-close",
+          visible: true,
+          onClick: e => actionFunc.handleOnCancelar(that)
+        },
+        {
+          name: "Confirmar",
+          color: "success",
+          icon: "icon fa-check",
+          visible: canConfirmar,
+          onClick: e => actionFunc.handleOnConfirmar(that)
+        }
       ]
-    }
+    };
     let totalProps = {
       totals,
       docData,
       changingTotals,
       onFieldChange: this.handleHeaderFieldChange
-    }
+    };
 
     // console.log("DocBase", this.state)
     return (
       <div>
         <div id="doc">
-          <DocHeader {...headerProps}></DocHeader>
-          <DocDetail ref="DocDetail" {...detailProps}></DocDetail>
-        </div >
-        <DocFooter {...footerProps}></DocFooter>
-        {this.state.footer.showTotals &&
-          <DocTotal {...totalProps}></DocTotal>
-        }
-      </div >
+          <DocHeader {...headerProps} />
+          <DocDetail ref="DocDetail" {...detailProps} />
+        </div>
+        <DocFooter {...footerProps} />
+        {this.state.footer.showTotals && <DocTotal {...totalProps} />}
+      </div>
     );
   }
 }
 
 DocBase.defaultProps = {
   title: "title...",
-  apiDocsNew: '',//  /api/docs/ordr/doc
+  apiDocsNew: "", //  /api/docs/ordr/doc
   headerFields: {},
   sidebarFields: {},
   detailFields: [],
-  footerLimitSearchCondition: '',
+  footerLimitSearchCondition: "",
   footerSearchShowCatNum: false,
-  onRowChange: null,//   handleRowChange(currentRow, updated) => allows for specific doc behaviour
-  onHeaderChange: null, //  onHeaderChange(docData, updated) => allows to react to user change on header
-}
+  onRowChange: null, //   handleRowChange(currentRow, updated) => allows for specific doc behaviour
+  onHeaderChange: null //  onHeaderChange(docData, updated) => allows to react to user change on header
+};
 
 export default DocBase;
