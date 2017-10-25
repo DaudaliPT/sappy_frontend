@@ -71,7 +71,7 @@ class DocBase extends Component {
     let docHeight = $("#doc").height();
     let detailsTop = $("#docDetail").position().top;
     let detail = { ...this.state.detail };
-    detail.height = docHeight - detailsTop - 26;
+    detail.height = docHeight - detailsTop - 36;
 
     this.setState({ detail });
   }
