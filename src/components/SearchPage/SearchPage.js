@@ -4,7 +4,7 @@ import VirtualizedInfiniteLoader from "../VirtualizedInfiniteLoader";
 import SearchBar from "../SearchBar";
 import TabsBar from "../TabsBar";
 import NoContent from "../NoContent";
-import uuid from 'uuid';
+import uuid from "uuid";
 const sappy = window.sappy;
 const $ = window.$;
 
@@ -17,17 +17,15 @@ class SearchPage extends PureComponent {
     this.handleOnTabSelect = this.handleOnTabSelect.bind(this);
     this.handleOnChange_txtSearch = this.handleOnChange_txtSearch.bind(this);
     this.calcPageHeight = this.calcPageHeight.bind(this);
-    this.handleToogleLimitSearch = this.handleToogleLimitSearch.bind(this)
+    this.handleToogleLimitSearch = this.handleToogleLimitSearch.bind(this);
 
-    this.byusModalInfiniteListID = 'byusModalInfiniteList' + uuid();
-    this.byusModalTabsBarID = 'byusModalTabsBar' + uuid();
+    this.byusModalInfiniteListID = "byusModalInfiniteList" + uuid();
+    this.byusModalTabsBarID = "byusModalTabsBar" + uuid();
     this.state = {
-
       /** holds the text typed by the user */
       searchTags: (props.searchText && [{ value: props.searchText, label: props.searchText }]) || [],
 
       limitSearch: props.limitSearch || false,
-
 
       /*********/
       /** list of items to put on tabs bar */
@@ -52,18 +50,13 @@ class SearchPage extends PureComponent {
     };
   }
 
-
   componentWillReceiveProps(nextProps) {
-    if (nextProps.searchText !== this.props.searchText
-      || nextProps.searchApiUrl !== this.props.searchApiUrl
-    ) {
-
+    if (nextProps.searchText !== this.props.searchText || nextProps.searchApiUrl !== this.props.searchApiUrl) {
       setTimeout(() => {
-        this.findAndGetFirstRows()
+        this.findAndGetFirstRows();
         if (this.resfreshInterval) clearInterval(this.resfreshInterval);
-        if (this.props.autoRefreshTime) this.resfreshInterval = setInterval(() => this.findAndGetFirstRows({ isAutoRefresh: true }), this.props.autoRefreshTime)
+        if (this.props.autoRefreshTime) this.resfreshInterval = setInterval(() => this.findAndGetFirstRows({ isAutoRefresh: true }), this.props.autoRefreshTime);
       }, 1);
-
     }
   }
 
@@ -73,11 +66,10 @@ class SearchPage extends PureComponent {
     this.calcPageHeight();
 
     setTimeout(() => {
-      this.findAndGetFirstRows()
+      this.findAndGetFirstRows();
       if (this.resfreshInterval) clearInterval(this.resfreshInterval);
-      if (this.props.autoRefreshTime) this.resfreshInterval = setInterval(() => this.findAndGetFirstRows({ isAutoRefresh: true }), this.props.autoRefreshTime)
+      if (this.props.autoRefreshTime) this.resfreshInterval = setInterval(() => this.findAndGetFirstRows({ isAutoRefresh: true }), this.props.autoRefreshTime);
     }, 1);
-
   }
 
   calcPageHeight() {
@@ -87,8 +79,8 @@ class SearchPage extends PureComponent {
       var overflowRegex = includeHidden ? /(auto|scroll|hidden)/ : /(auto|scroll)/;
 
       if (style.position === "fixed") return document.body;
-      // eslint-disable-next-line 
-      for (var parent = element; (parent = parent.parentElement);) {
+      // eslint-disable-next-line
+      for (var parent = element; (parent = parent.parentElement); ) {
         style = getComputedStyle(parent);
         if (excludeStaticParent && style.position === "static") {
           continue;
@@ -102,27 +94,31 @@ class SearchPage extends PureComponent {
     let $elTab = $("#" + this.byusModalTabsBarID);
     let $elList = $("#" + this.byusModalInfiniteListID);
     if ($elList[0] && $elTab[0]) {
-
-      let $body = $("body");
-      let scrollAbleparent = getScrollParent($elList[0], false);
-      let $scrollAbleparent = $(scrollAbleparent);
-
-      if ($scrollAbleparent && $body) {
-        let bodyHeight = $body.height();
-        let parentHeight = $scrollAbleparent.height();
-        let useHeight = 0;
-        if (parentHeight < bodyHeight)
-          useHeight = bodyHeight
-        else
-          useHeight = parentHeight
-
-        let minH = useHeight - ($elList.position().top - $elTab.height()) * 2 - (120 + $elTab.height());
-        if (minH < 350) { minH = 350; }
+      if (this.props.height) {
+        let useHeight = this.props.height;
+        let minH = useHeight - $elTab.height();
         $elList.css("height", minH.toString() + "px");
+      } else {
+        let $body = $("body");
+        let scrollAbleparent = getScrollParent($elList[0], false);
+        let $scrollAbleparent = $(scrollAbleparent);
+
+        if ($scrollAbleparent && $body) {
+          let bodyHeight = $body.height();
+          let parentHeight = $scrollAbleparent.height();
+          let useHeight = 0;
+          if (parentHeight < bodyHeight) useHeight = bodyHeight;
+          else useHeight = parentHeight;
+
+          let minH = useHeight - ($elList.position().top - $elTab.height()) * 2 - (120 + $elTab.height());
+          if (minH < 350) {
+            minH = 350;
+          }
+          $elList.css("height", minH.toString() + "px");
+        }
       }
     }
   }
-
 
   componentWillUnmount() {
     if (this.serverRequest && this.serverRequest.abort) this.serverRequest.abort();
@@ -144,15 +140,14 @@ class SearchPage extends PureComponent {
     var that = this;
     this.setState(
       {
-        searchTags: values,
+        searchTags: values
         // rvIsLoading: true
       },
-      function () {
+      function() {
         that.findAndGetFirstRows();
       }
     );
   }
-
 
   findAndGetFirstRows({ isAutoRefresh } = {}) {
     var that = this;
@@ -174,7 +169,6 @@ class SearchPage extends PureComponent {
 
       let limitSearchCondition = "";
       if (this.state.limitSearch && this.props.limitSearchCondition) limitSearchCondition = this.props.limitSearchCondition;
-
 
       // this.serverRequest = axios
       // .get(that.props.searchApiUrl, {
@@ -202,7 +196,7 @@ class SearchPage extends PureComponent {
           that.cancelPreviousAxiosRequest = c;
         })
       })
-        .then(function (result) {
+        .then(function(result) {
           var { activeTab } = that.state;
           var tabItems = result.data.tabItems || [];
           var listItems = result.data.firstRows;
@@ -218,18 +212,15 @@ class SearchPage extends PureComponent {
             if (ReactVirtualized__List) ReactVirtualized__List.scrollTop = 0;
           }
 
-          that.setState(
-            { listItems, tabItems, activeTab, rvHasNextPage, totalInfo, rvIsLoading: false },
-            e => {
-              that.calcPageHeight()
-              that.props.onRefresh && that.props.onRefresh()
-            }
-          );
+          that.setState({ listItems, tabItems, activeTab, rvHasNextPage, totalInfo, rvIsLoading: false }, e => {
+            that.calcPageHeight();
+            that.props.onRefresh && that.props.onRefresh();
+          });
         })
-        .catch(function (error) {
-          if (error.__CANCEL__) return
-          if (isAutoRefresh) return console.log(error)
-          sappy.showError(error, "Api error")
+        .catch(function(error) {
+          if (error.__CANCEL__) return;
+          if (isAutoRefresh) return console.log(error);
+          sappy.showError(error, "Api error");
         });
     }
   }
@@ -253,7 +244,7 @@ class SearchPage extends PureComponent {
 
       that.serverRequest = axios
         .get(that.props.searchApiUrl + "/more", { params })
-        .then(function (result) {
+        .then(function(result) {
           var nextRows = result.data;
           var listItems = that.state.listItems.concat(nextRows);
           var rvHasNextPage = nextRows.length > 0 && listItems.length < nextRows[0].TOTAL_ROWS;
@@ -263,31 +254,24 @@ class SearchPage extends PureComponent {
           };
           that.setState({ listItems, rvHasNextPage, totalInfo, rvIsLoading: false });
         })
-        .catch(function (error) {
-          if (!error.__CANCEL__) sappy.showError(error, "Api error")
+        .catch(function(error) {
+          if (!error.__CANCEL__) sappy.showError(error, "Api error");
 
           that.setState({ rvIsLoading: false });
         });
     }
   };
 
-
-
   render() {
     var { activeTab, tabItems, totalInfo } = this.state;
 
-    let hasNoContent = (this.state.rvIsLoading === false &&
-      this.state.listItems.length === 0 &&
-      this.state.searchTags.length === 0 &&
-      this.state.activeTab === Object.keys(tabItems)[0])
+    let hasNoContent = this.state.rvIsLoading === false && this.state.listItems.length === 0 && this.state.searchTags.length === 0 && this.state.activeTab === Object.keys(tabItems)[0];
 
-    let hasContent = !hasNoContent || !this.props.noRecordsMessage
+    let hasContent = !hasNoContent || !this.props.noRecordsMessage;
 
     return (
-      <div  >
-        {!hasContent &&
-          <NoContent message={this.props.noRecordsMessage}></NoContent>
-        }
+      <div>
+        {!hasContent && <NoContent message={this.props.noRecordsMessage} />}
         {hasContent &&
           <SearchBar
             totalInfo={totalInfo}
@@ -297,15 +281,13 @@ class SearchPage extends PureComponent {
             limitSearchCondition={this.props.limitSearchCondition}
             onToogleLimitSearch={this.handleToogleLimitSearch}
             inputProps={{
-              placeholder: this.props.searchPlaceholder,
+              placeholder: this.props.searchPlaceholder
             }}
-          />
-        }
+          />}
         {hasContent &&
           <div className="byusModalTabsBar" id={this.byusModalTabsBarID}>
             <TabsBar items={tabItems} activeItem={activeTab} onSelect={this.handleOnTabSelect} />
-          </div>
-        }
+          </div>}
         {hasContent &&
           <div className="byusModalInfiniteList" id={this.byusModalInfiniteListID}>
             {VirtualizedInfiniteLoader({
@@ -323,25 +305,23 @@ class SearchPage extends PureComponent {
 
               /** callback to function responsible for rendering the row */
               renderRow: this.props.renderRow,
-              rowHeight: this.props.renderRowHeight,
-
+              rowHeight: this.props.renderRowHeight
             })}
-          </div>
-        }
+          </div>}
       </div>
-    )
+    );
   }
 }
 
 SearchPage.defaultProps = {
   searchPlaceholder: "Procurar...",
   searchApiUrl: "",
-  renderHeaders: () => { },
-  renderRow: ({ row, index }) => { },
+  renderHeaders: () => {},
+  renderRow: ({ row, index }) => {},
   autoRefreshTime: 0,
   renderRowHeight: 20,
   limitSearch: false,
-  limitSearchCondition: "",
+  limitSearchCondition: ""
 };
 
 export default SearchPage;

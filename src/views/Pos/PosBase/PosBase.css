@@ -8,6 +8,15 @@
   height: calc(100% - 95px);
   overflow-y: auto;
   margin: auto;
+  /* animation */
+  transform-origin: center bottom;
+  transition-timing-function: ease-in;
+  -webkit-animation-name: fade-in;
+  -o-animation-name: fade-in;
+  animation-name: fade-in;
+  -webkit-animation-duration: 1.5s;
+  -o-animation-duration: 1.5s;
+  animation-duration: 1.5s;
 }
 
 #posDetail {
@@ -16,7 +25,7 @@
   /* border: 1px solid blue;  */
 }
 #posDetailGrid {
-  font-family: "Abel";
+  /* font-family: "Abel"; */
   letter-spacing: 1px;
   color: rgba(255, 255, 255, 0.5) !important;
 }
@@ -76,7 +85,7 @@
 }
 
 #posTotal {
-  font-family: "Abel";
+  /* font-family: "Abel"; */
   letter-spacing: 1px;
   font-weight: bold;
   position: absolute;

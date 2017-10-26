@@ -1,5 +1,5 @@
 .pos {
-  font-family: "Abel" !important;
+  /* font-family: "Abel" !important; */
   letter-spacing: 1px !important;
 
   position: absolute;
@@ -14,6 +14,104 @@
   -webkit-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+}
+
+.company-logo {
+  position: absolute;
+  width: 10%;
+  top: 3%;
+  left: 0;
+  right: 0;
+  margin: 0px auto;
+  border-radius: 1000px;
+}
+
+.company-logo img {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border: 0 none;
+  border-radius: 1000px;
+
+  -webkit-filter: sepia(10%) opacity(20%);
+  filter: sepia(10%) opacity(20%);
+}
+.posMenu-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: rgba(32, 46, 55, 0.01) !important;
+  box-shadow: 5px 5px 15px 5px rgba(32, 46, 55, 0.1);
+  border-radius: 1000px;
+  position: absolute;
+  width: 80%;
+  height: 15%;
+  top: 30%;
+  left: 0;
+  right: 0;
+  margin: 0px auto;
+}
+.posMenu-actions2 {
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+
+  /* background: rgba(32, 46, 55, 0.1) !important; */
+  border-radius: 1000px;
+  position: absolute;
+  width: 80%;
+  height: 15%;
+  top: 80%;
+  left: 0;
+  right: 0;
+  margin: 0px auto;
+}
+
+.posMenu-actions2.open {
+  height: 45%;
+  width: 60%;
+  top: 35%;
+}
+.posMenu-actions2.open > .sappy-panel {
+  width: 100%;
+  padding: 30px;
+
+  /* Animação */
+  transform-origin: center bottom;
+  transition-timing-function: linear;
+  -webkit-animation-name: zoom-in;
+  -o-animation-name: zoom-in;
+  animation-name: zoom-in;
+  -webkit-animation-duration: 1.5s;
+  -o-animation-duration: 1.5s;
+  animation-duration: 1.5s;
+}
+
+.pos .byusVirtualRow {
+  color: #dedede;
+}
+
+.posMenu-action {
+  width: 25%;
+  height: 80%;
+  margin: 1%;
+}
+.posMenu-action > .btn {
+  font-size: 1.3rem;
+  font-weight: 500 !important;
+  text-shadow: 2px 2px 8px rgba(32, 46, 55, 0.5);
+  height: 100% !important;
+  border: none;
+  /* background: rgba(232, 246, 255, 0.1) !important; */
+}
+.posMenu-action > .btn:hover {
+  background: rgba(32, 46, 55, 0.2) !important;
+  border: 3px solid rgba(232, 246, 255, 0.3) !important;
+}
+.posMenu-action i {
+  padding-bottom: 2%;
 }
 
 #bg {
@@ -70,7 +168,7 @@
 .pos select,
 .pos textarea {
   color: #fefefe !important;
-  font-family: "Abel";
+  /* font-family: "Abel"; */
   letter-spacing: 1px;
 }
 
@@ -78,7 +176,7 @@
 .pos .Select {
   color: #fefefe !important;
   letter-spacing: 1px;
-  font-family: "Abel";
+  /* font-family: "Abel"; */
 }
 .pos .form-control,
 .pos .Select-control {
@@ -117,5 +215,5 @@
 
 .pos .react-grid-Cell.editable-col {
   color: #fefefe !important;
-  font-weight: 600;
+  font-weight: 500;
 }

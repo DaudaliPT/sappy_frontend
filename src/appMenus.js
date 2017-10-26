@@ -87,6 +87,11 @@ sappy.app = {
           component: Views.Promocoes.DocPromocao,
           dontCreateMenu: true,
           text: "Doc"
+        },
+        {
+          name: "pos",
+          to: "pos",
+          text: "POS"
         }
       ]
     },
