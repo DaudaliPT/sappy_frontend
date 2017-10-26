@@ -84,9 +84,9 @@
   -webkit-animation-name: zoom-in;
   -o-animation-name: zoom-in;
   animation-name: zoom-in;
-  -webkit-animation-duration: 1.5s;
-  -o-animation-duration: 1.5s;
-  animation-duration: 1.5s;
+  -webkit-animation-duration: 1s;
+  -o-animation-duration: 1s;
+  animation-duration: 1s;
 }
 
 .pos .byusVirtualRow {

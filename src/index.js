@@ -22,9 +22,11 @@ try {
   console.error(error);
 }
 
+alert("obter sessioninfo");
 axios
   .get("auth/sessioninfo")
   .then(result => {
+    alert("obter sessioninfo response");
     sappy.sessionInfo = result.data;
 
     //check if session is  valid

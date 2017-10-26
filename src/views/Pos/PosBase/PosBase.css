@@ -14,9 +14,9 @@
   -webkit-animation-name: fade-in;
   -o-animation-name: fade-in;
   animation-name: fade-in;
-  -webkit-animation-duration: 1.5s;
-  -o-animation-duration: 1.5s;
-  animation-duration: 1.5s;
+  -webkit-animation-duration: 1s;
+  -o-animation-duration: 1s;
+  animation-duration: 1s;
 }
 
 #posDetail {

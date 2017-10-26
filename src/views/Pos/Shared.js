@@ -87,7 +87,7 @@ exports.prepareDocType = function({ tableName }) {
     label: numatcardLabel,
     type: "text",
     gridSize: 2,
-    required: true
+    required: false
   });
   headerFields.line2.push({
     name: "COMMENTS",
@@ -96,28 +96,10 @@ exports.prepareDocType = function({ tableName }) {
     gridSize: 5,
     savedEditable: true
   });
-  headerFields.line2.push({
-    name: "HASINCONF",
-    label: "",
-    type: "flag|danger",
-    gridSize: 1,
-    savedEditable: true
-  });
 
   let sidebarFields = {};
 
   let detailFields = [];
-  // detailFields.push({ name: 'LINENUM', label: '#', type: "text", width: 40, editable: false })
-  // detailFields.push({ name: 'ITEMCODE', label: 'Artigo', type: "text", width: 220, editable: false, dragable: false, onLinkClick: this.handleItemcodeLinkClick })
-  detailFields.push({
-    name: "CATNUM_OR_ITEMCODE",
-    label: "Catálogo",
-    type: "text",
-    width: 100,
-    editable: false,
-    dragable: false,
-    onLinkClick: props => sappy.showModal(<EditModal toggleModal={sappy.hideModal} itemcode={props.dependentValues.ITEMCODE} />)
-  });
   detailFields.push({
     name: "ITEMNAME",
     label: "Descrição",
@@ -153,7 +135,6 @@ exports.prepareDocType = function({ tableName }) {
     width: 120,
     editable: true
   });
-  // detailFields.push({ name: 'BONUS_NAP', label: 'NAP', type: "check", width: 40, editable: true })
   detailFields.push({
     name: "PRICE",
     label: "Preço",
@@ -170,40 +151,12 @@ exports.prepareDocType = function({ tableName }) {
     editable: true
   });
   detailFields.push({
-    name: "LINETOTAL",
-    label: "Total",
-    width: 90,
-    type: "amount",
-    editable: true
-  });
-  // detailFields.push({ name: 'LINETOTALBONUS', label: 'TotalB', width: 90, type: "amount", editable: true })
-  detailFields.push({
     name: "VATGROUP",
     label: "IVA",
-    type: "vat",
+    type: "vatpercent",
     width: 70,
     editable: true
   });
-  // detailFields.push({ name: 'WHSCODE', label: 'Arm', type: "text", width: 50, editable: true })
-  detailFields.push({
-    name: "HASINCONF",
-    label: "",
-    type: "flag|danger",
-    width: 35,
-    editable: true
-  });
-  if ("18".indexOf(objType) > -1) {
-    //Compras
-    detailFields.push({
-      name: "NETPRICE",
-      label: "Pr.NET",
-      width: 70,
-      type: "price",
-      editable: false
-    });
-  }
-  // detailFields.push({ name: 'NETTOTAL', label: 'V.NET', width: 70, type: "amount", editable: false })
-  // detailFields.push({ name: 'NETTOTALBONUS', label: 'V.NET.BONUS', width: 70, type: "amount", editable: false })
 
   return {
     priceHover,
