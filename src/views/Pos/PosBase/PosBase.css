@@ -1,0 +1,130 @@
+#pos {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 90%;
+  height: calc(100% - 95px);
+  overflow-y: auto;
+  margin: auto;
+}
+
+#posDetail {
+  /* position: fixed; */
+  /* width: calc(100% - 20px); */
+  /* border: 1px solid blue;  */
+}
+#posDetailGrid {
+  font-family: "Abel";
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+#posFooter {
+  background: rgba(32, 46, 55, 0.9);
+  padding: 0px 19px !important;
+}
+
+#posDetailSidebar {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  bottom: 15px;
+  background: white !important;
+  padding: 0px;
+  overflow-y: scroll;
+}
+
+#posDetailSidebar div .flag > .icon {
+  padding-left: 5px;
+}
+
+#posFooter-actions {
+  padding-top: 10px;
+  padding-bottom: 8px;
+
+  display: flex;
+  /* border-top: 1px solid #e4eaec;  */
+
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+#posFooter-actions > div.left {
+  width: 40%;
+}
+
+#posFooter-actions > div.right {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  width: 80%;
+
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+}
+#posFooter-actions > div > :not(:first-child) {
+  margin-left: .25rem;
+}
+#posFooter-actions > div > :not(:last-child) {
+  margin-right: .25rem;
+}
+
+#posTotal {
+  font-family: "Abel";
+  letter-spacing: 1px;
+  font-weight: bold;
+  position: absolute;
+  padding: 25px 25px 10px 30px;
+  color: #fefefe;
+  background: rgba(32, 46, 55, 0.9);
+  right: 0px;
+  bottom: 52px;
+  z-index: 3;
+  max-width: 300px;
+  border-top-left-radius: 3rem;
+}
+
+#posTotal > hr {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+#posTotal > .total {
+  font-size: 1.2rem;
+  color: #fefefe !important;
+}
+
+#posTotal .total  input {
+  font-size: 1.2rem;
+}
+
+#total-btn-text {
+  padding-left: 5px;
+  padding-right: 10px;
+}
+
+#posTotal .form-group {
+  margin-top: 0px !important;
+}
+
+#posTotal .form-group input {
+  font-weight: bold !important;
+  max-height: 1.5rem;
+  padding-left: 0px;
+  padding-right: 0px;
+  color: #fefefe !important;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+#posTotal .form-group input:hover,
+#posTotal .form-group input:focus {
+  color: rgb(0, 0, 0) !important;
+  background: rgba(255, 255, 255, 0.7) !important;
+}

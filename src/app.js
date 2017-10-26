@@ -1,14 +1,17 @@
 import React, { Component } from "react";
 import { Router, Route, IndexRoute, hashHistory } from "react-router";
-import './appMenus.js'
+import "./appMenus.js";
 
 // Containers
 import Inicio from "./views/Inicio/";
 import Full from "./containers/Full/";
+import PosContainer from "./containers/PosContainer/";
+import Pos from "./views/Pos/";
 import Simple from "./containers/Simple/";
 import Login from "./views/Auth/Login/";
 import ForgotPassword from "./views/Auth/ForgotPassword/";
 import UnderConstruction from "./views/UnderConstruction/";
+import NotFound from "./views/NotFound/";
 
 var sappy = window.sappy;
 
@@ -25,29 +28,26 @@ var processMenuFullName = (fathername, menus) => {
 };
 processMenuFullName(null, sappy.app.menus);
 
-var routes = [<IndexRoute component={Inicio} />];
+var buildedRoutes = [<IndexRoute component={Inicio} />];
 var processMenuLevel = menus => {
   menus.forEach(menu => {
     if (menu.menus) {
       processMenuLevel(menu.menus);
     } else if (menu.component) {
-      routes.push(<Route key={"route_" + menu.fullName} path={menu.fullName} name={menu.fullName} component={menu.component} />);
+      buildedRoutes.push(<Route key={"route_" + menu.fullName} path={menu.fullName} name={menu.fullName} component={menu.component} />);
     }
   });
 };
 processMenuLevel(sappy.app.menus);
 
-const buildedRoutes = [...routes]; // tentativa falhada de construir
-
 class App extends Component {
   constructor(props) {
     super(props);
     this.requireAuth = this.requireAuth.bind(this);
-
   }
 
   requireAuth(nextState, replace, callback) {
-    let sessionInfo = sappy.sessionInfo || {}
+    let sessionInfo = sappy.sessionInfo || {};
     var user = sessionInfo.user || {};
     if (user.NAME) {
       callback();
@@ -61,11 +61,19 @@ class App extends Component {
       <div>
         <Router history={hashHistory}>
           <Route path="/" name="Main" component={Full} children={buildedRoutes} onEnter={this.requireAuth} />
+          <Route path="/pos" name="Pos" component={PosContainer} onEnter={this.requireAuth}>
+            <IndexRoute component={Pos.PosMenu} />
+            <Route path="/pos/ordr" name="." component={Pos.Ordr} />
+            <Route path="/pos/oinv" name="." component={Pos.Oinv} />
+            <Route path="/pos/orin" name="." component={Pos.Orin} />
+            <Route path="/pos/odln" name="." component={Pos.Odln} />
+          </Route>
           <Route path="/" name="Login" component={Simple}>
             <IndexRoute component={Login} />
             <Route path="/login" name="." component={Login} />
             <Route path="/forgotpass" name="ForgotPassword" component={ForgotPassword} />
           </Route>
+          <Route path="*" component={NotFound} />
         </Router>
       </div>
     );

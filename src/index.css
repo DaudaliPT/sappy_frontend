@@ -161,7 +161,8 @@ body.site-navbar-small {
 }
 
 .react-grid-Header {
-  background: rgb(255, 255, 255) !important;
+  /* background: rgb(255, 255, 255) !important; */
+  background: transparent !important;
   color: rgba(0, 0, 0, .8);
 }
 
@@ -169,7 +170,7 @@ body.site-navbar-small {
   font-weight: initial !important;
   border-right: none !important;
   /* border-bottom: none !important;  */
-  background: rgb(255, 255, 255) !important;
+  background: transparent !important;
 }
 
 /* .react-grid-HeaderCell.editable-col,  */
@@ -180,6 +181,7 @@ body.site-navbar-small {
 .react-grid-HeaderCell.locked-col,
 .react-grid-Cell.locked-col {
   /* background-color: rgba(98,168,234,0.1);  */
+  background-color: transparent !important;
 }
 
 /* Overrride elemet style  */
@@ -190,6 +192,11 @@ body.site-navbar-small {
 .react-grid-Main {
   outline: none !important;
   color: rgb(50, 50, 50) !important;
+  background-color: transparent !important;
+}
+.react-grid-Canvas,
+.react-grid-Grid {
+  background-color: transparent !important;
 }
 .react-grid-Grid {
   border: none !important;
@@ -197,6 +204,7 @@ body.site-navbar-small {
 
 .react-grid-Cell {
   border-right: none !important;
+  background-color: transparent !important;
 }
 .react-grid-Cell:focus {
   outline: 2px solid #66afe9 !important;
@@ -226,8 +234,7 @@ body.site-navbar-small {
 .react-grid-checkbox:disabled:checked + .react-grid-checkbox-label:before {
   background: rgba(98, 168, 234, 0.5) !important;
 }
-.react-grid-checkbox:disabled:not(:checked)
-  + .react-grid-checkbox-label:before {
+.react-grid-checkbox:disabled:not(:checked) + .react-grid-checkbox-label:before {
   background: rgba(98, 168, 234, 0.2) !important;
 }
 
@@ -241,6 +248,8 @@ body.site-navbar-small {
 }
 
 .byusVirtualRow {
+  padding-left: 5px;
+  padding-right: 5px;
   height: 100%;
   width: 100%;
   cursor: pointer;
@@ -519,19 +528,6 @@ body.site-navbar-small {
   outline: none !important;
 }
 
-.byusVirtualRowContainer div {
-  width: 100%;
-}
-
-.byusVirtualRow {
-  padding-left: 5px;
-  padding-right: 5px;
-  height: 100%;
-  width: 100%;
-  cursor: pointer;
-  border-bottom: 1px solid #e4eaec;
-}
-
 /* Quando abria a modal, o conteúdo da página ficava á esquerda*/
 body {
   width: 100% !important;
@@ -599,7 +595,9 @@ body {
   min-height: 50px;
   box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.03);
 }
-
+::-webkit-scrollbar-corner {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.03);
+}
 /* --------------------------------------------------------------------------- */
 /* INPUT COMPONENTS */
 input,
@@ -684,7 +682,7 @@ textarea {
 }
 
 .ReactVirtualized__Grid__innerScrollContainer {
-  background: white;
+  background: transparent;
 }
 
 .popover td {
@@ -796,13 +794,7 @@ body.page-login-v3 {
   /* Old browsers */
   /* IE9 SVG, needs conditional override of 'filter' to 'none' */
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzYyYThlYSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMxNTcxYjEiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
-  background-image: -webkit-gradient(
-    linear,
-    left top,
-    left bottom,
-    from(#62a8ea),
-    to(#3583ca)
-  );
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#62a8ea), to(#3583ca));
   background-image: -webkit-linear-gradient(top, #62a8ea 0%, #3583ca 100%);
   background-image: -o-linear-gradient(top, #62a8ea 0%, #3583ca 100%);
   background-image: linear-gradient(to bottom, #62a8ea 0%, #3583ca 100%);
@@ -826,8 +818,7 @@ body.page-login-v3 {
 .page-login-v3 form a {
   margin-left: 20px;
 }
-.page-login-v3 form .form-material.floating
-  + .page-login-v3 form .form-material.floating {
+.page-login-v3 form .form-material.floating + .page-login-v3 form .form-material.floating {
   margin-top: 30px;
 }
 .page-login-v3 form .form-material label {

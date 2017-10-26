@@ -1,0 +1,6 @@
+{
+  "name": "PosMenu",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./PosMenu.js"
+}
