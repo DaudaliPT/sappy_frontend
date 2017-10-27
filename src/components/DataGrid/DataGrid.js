@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import ReactDataGrid from "react-data-grid/packages/react-data-grid/dist/react-data-grid";
 const sappy = window.sappy;
+const $ = window.$;
 import HeaderAlignRight from "./HeaderAlignRight";
 import Formatters from "./Formatters";
 import Editors from "./Editors";
@@ -119,6 +120,16 @@ class DataGrid extends Component {
     var top = this.thisComponent.getRowOffsetHeight() * idx;
     var gridCanvas = this.thisComponent.getDataGridDOMNode().querySelector(".react-grid-Canvas");
     gridCanvas.scrollTop = top;
+  }
+
+  focusCell({ rowIdx, idx }) {
+    let ll = document.activeElement;
+    setTimeout(() => {
+      var $e = $(".react-grid-Row .editable-col");
+      $e[0].focus();
+      this.thisComponent.onSelect({ rowIdx, idx });
+      this.thisComponent.checkFocus();
+    }, 10);
   }
 
   buildColumnList(props) {

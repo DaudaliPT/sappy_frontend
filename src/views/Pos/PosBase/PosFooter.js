@@ -7,7 +7,7 @@ class PosFooter extends Component {
   render() {
     let docData = this.props.docData || {};
     let allowAddLines = docData.DOCNUM > 0 ? false : true;
-    // let editable = docData.DOCNUM > 0 ? this.props.editable : true;
+    // let pinHeader = docData.DOCNUM > 0 ? this.props.pinHeader : true;
     let loaded = !this.props.loading;
 
     let renderActions = () => {
@@ -21,12 +21,7 @@ class PosFooter extends Component {
               if (!action.visible) return null;
               let btClassName = "btn btn-" + action.color;
               return (
-                <button
-                  key={"action_" + action.name}
-                  type="button"
-                  onClick={action.onClick}
-                  className={btClassName}
-                >
+                <button key={"action_" + action.name} type="button" onClick={action.onClick} className={btClassName}>
                   <span>
                     <i className={action.icon} aria-hidden="true" />
                     <span className="hidden-sm-down">
@@ -51,10 +46,7 @@ class PosFooter extends Component {
       );
     };
     return (
-      <nav
-        id="posFooter"
-        className="site-navbar navbar navbar-default navbar-fixed-bottom"
-      >
+      <nav id="posFooter" className="site-navbar navbar navbar-default navbar-fixed-bottom">
         {allowAddLines &&
           loaded &&
           <div className="sappy-search-bar float-left">

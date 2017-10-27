@@ -11,12 +11,11 @@ class Inicio extends Component {
   constructor(props) {
     super(props);
     this.handleLogoImageError = this.handleLogoImageError.bind(this);
-    this.handleRowSelection = this.handleRowSelection.bind(this);
+    this.handleRowClick = this.handleRowClick.bind(this);
 
     this.state = {
       companyLogo: "img/" + sappy.sessionInfo.company.dbName + "/logo.png",
-      showRetomar: false,
-      selectedItems: []
+      showRetomar: false
     };
   }
 
@@ -30,34 +29,27 @@ class Inicio extends Component {
     $(".tokenfield").tokenfield();
   }
 
-  handleRowSelection(e) {
-    var checkbox = $(e.target).closest(".byusVirtualRow").find(".contacts-checkbox")[0];
+  handleRowClick(e) {
+    var mainDiv = $(e.target).closest(".byusVirtualRow")[0];
 
-    let id = checkbox.id;
-    let itemCode = id.split("_")[1];
-    let { selectedItems } = this.state;
-    let ix = selectedItems.indexOf(itemCode);
+    let id = mainDiv.id;
+    let docId = id.split("_")[1]; //  "row_" + row.ObjType + "#" + row.ID
+    let objCode = docId.split("#")[0]; //  "row_" + row.ObjType + "#" + row.ID
+    let ID = sappy.getNum(docId.split("#")[1]); //  "row_" + row.ObjType + "#" + row.ID
 
-    if (ix === -1) {
-      selectedItems.push(itemCode);
-      checkbox.checked = true;
-    } else {
-      if (ix > -1) selectedItems.splice(ix, 1);
-      checkbox.checked = false;
-    }
-
-    this.setState({ selectedItems });
+    let url = "pos/";
+    if (objCode === "17") url += "Ordr";
+    if (objCode === "13") url += "Oinv";
+    if (objCode === "14") url += "Orin";
+    hashHistory.push({ pathname: url, state: { ID } });
   }
 
   render() {
-    let selectedItems = this.state.selectedItems || [];
     var { user, company } = sappy.sessionInfo;
     var { companyLogo } = this.state;
     let that = this;
 
     const renderRow = ({ row, index }) => {
-      const selected = selectedItems.indexOf(row.ObjType + "#" + row.DocEntry + "#" + row.DocNum) > -1;
-
       const renderBadges = () => {
         const badges = row.ITEM_TAGS.split("|");
         return badges.map((item, ix) => {
@@ -71,29 +63,19 @@ class Inicio extends Component {
         });
       };
 
-      let rowId = "row_" + row.ObjType + "#" + row.DocEntry + "#" + row.DocNum;
-      let rowStyleClass = "";
-      if (selected) rowStyleClass += " sappy-selected-row";
+      let rowId = "row_" + row.ObjType + "#" + row.ID;
       return (
-        <div className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={this.handleRowSelection}>
+        <div id={rowId} className={"byusVirtualRow vertical-align"} onClick={this.handleRowClick}>
           <div className="container vertical-align-middle">
             <div className="row no-gutters">
               <div className="col-12 text-nowrap ">
-                <span className="checkbox-custom checkbox-dark checkbox-lg">
-                  <input type="checkbox" className="contacts-checkbox selectable-item" checked={selected} id={rowId} />
-                  <label htmlFor={rowId} />
-                </span>
-                <span style={{ display: "inline-block", paddingLeft: "15px" }}>
-                  {row.CardCode + " - " + row.CardName}
-                </span>
+                {row.CardCode + " - " + row.CardName}
                 {renderBadges()}
               </div>
             </div>
             <div className="row no-gutters secondrow">
               <div className="col-12 text-nowrap">
-                <span style={{ display: "inline-block", paddingLeft: "38px" }}>
-                  {"Criado em " + sappy.format.datetime(row.DOC_DATETIME) + ". Tem " + row.NR_LINES + (row.NR_LINES == "1" ? " linha" : " linhas")}
-                </span>
+                {"Criado em " + sappy.format.datetime(row.DOC_DATETIME) + ". Tem " + row.NR_LINES + (row.NR_LINES == "1" ? " linha" : " linhas")}
               </div>
             </div>
           </div>

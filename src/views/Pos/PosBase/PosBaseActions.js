@@ -45,14 +45,16 @@ export default {
         title: "Manter rascunho?",
         moreInfo: "Se escolher manter, as alterações ficarão disponiveis como rascunho e poderá continuar mais tarde...",
         onConfirm: () => {
-          hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", ""));
+          hashHistory.push("/pos");
         },
         cancelText: "Descartar",
+        cancelStyle: "danger btn-outline",
         confirmText: "Manter rascunho",
+        confirmStyle: "success",
         onCancel: () => {
           that.serverRequest = axios
             .delete(`${that.props.apiDocsNew}/${that.state.docData.ID}`)
-            .then(result => hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", "")))
+            .then(result => hashHistory.push("/pos"))
             .catch(error => sappy.showError(error, "Erro ao apagar dados"));
         }
       });
@@ -109,50 +111,6 @@ export default {
         let aviso = newDocData[f + "_VALIDATEMSG"] || newDocData[f + "_LOGICMSG"] || "";
         return aviso.startsWith("warning");
       });
-
-      //Alterações a documentos existentes
-      let invokePatchDocAPI = forceTotal => {
-        sappy.showWaitProgress("A atualizar documento, aguarde por favor...");
-
-        let handlePatchDocApiResponse = result => {
-          sappy.showSuccess({
-            title: "Documento atualizado",
-            msg: `Atualizou com sucesso o documento ${result.data.DocNum}!`,
-            cancelText: "Adicionar novo",
-            onCancel: () => {
-              hashHistory.replace(hashHistory.getCurrentLocation().pathname + "?new=" + new Date().getTime());
-            },
-            confirmText: "Concluido",
-            onConfirm: () => hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", ""))
-          });
-        };
-
-        let url = `${that.props.apiDocsEdit}/${that.state.docData.DOCENTRY}/confirm`;
-
-        that.serverRequest = axios.post(url).then(result => handlePatchDocApiResponse(result)).catch(error => {
-          sappy.showError(error, "Erro ao gravar documento");
-        });
-      };
-      if (newDocData.DOCENTRY > 0 && hasWarning)
-        return sappy.showWarning({
-          title: "Atenção!",
-          msg: "Ainda há campos com avisos!",
-          moreInfo: "Deseja mesmo assim gravar as alterações a este documento?",
-          onConfirm: invokePatchDocAPI,
-          confirmText: "Ignorar e gravar alterações",
-          onCancel: () => {}
-        });
-
-      if (newDocData.DOCENTRY > 0)
-        return sappy.showQuestion({
-          title: "Deseja Continuar?",
-          msg: "Se continuar irá gravar as alterações a este documento.",
-          onConfirm: invokePatchDocAPI,
-          confirmText: "Gravar alterações",
-          onCancel: () => {}
-        });
-
-      // Novos documentos
 
       let invokeAddDocAPI = forceTotal => {
         sappy.showWaitProgress("A adicionar documento, aguarde por favor...");

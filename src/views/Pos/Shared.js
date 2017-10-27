@@ -63,11 +63,8 @@ exports.prepareDocType = function({ tableName }) {
     name: "COMMENTS",
     label: "Observações",
     type: "text",
-    gridSize: 5,
-    savedEditable: true
+    gridSize: 5
   });
-
-  let sidebarFields = {};
 
   let detailFields = [];
   detailFields.push({
@@ -135,11 +132,8 @@ exports.prepareDocType = function({ tableName }) {
       objType,
       title,
       headerFields,
-      sidebarFields,
       detailFields,
       apiDocsNew: `/api/docs/new/${tableName}`,
-      apiDocsView: `/api/docs/view/${tableName}`,
-      apiDocsEdit: `/api/docs/edit/${tableName}`,
       footerSearchType: "oitm",
       footerSearchShowCatNum: true,
       footerLimitSearchCondition

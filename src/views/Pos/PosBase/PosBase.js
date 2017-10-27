@@ -15,7 +15,7 @@ class PosBase extends Component {
 
     this.recalcComponentsHeight = this.recalcComponentsHeight.bind(this);
     this.toggleHeader = this.toggleHeader.bind(this);
-    this.toggleEditable = this.toggleEditable.bind(this);
+    this.togglePinHeader = this.togglePinHeader.bind(this);
     this.loadDoc = this.loadDoc.bind(this);
 
     this.ensureposHeaderExists = this.ensureposHeaderExists.bind(this);
@@ -37,16 +37,15 @@ class PosBase extends Component {
       selectedLineNums: [],
       footerLimitSearch: props.footerLimitSearchCondition || false,
       loading: true,
-      changingTotals: false,
-      editable: false,
       docData: {
         LINES: []
       },
       header: {
         title: props.title,
         expanded: true,
+        pinHeader: localStorage.getItem("pinHeader") === "Y",
         toggleHeader: this.toggleHeader,
-        toggleEditable: this.toggleEditable
+        togglePinHeader: this.togglePinHeader
       },
       detail: {},
       footer: {
@@ -80,7 +79,7 @@ class PosBase extends Component {
 
     this.recalcComponentsHeight();
 
-    if (Object.keys(nextlocationState).length === 0 || locationState.DocEntry !== nextlocationState.DocEntry || locationState.id !== nextlocationState.id) {
+    if (Object.keys(nextlocationState).length === 0 || locationState.ID !== nextlocationState.ID || locationState.ID !== nextlocationState.ID) {
       return this.setState(this.getinitialState(nextProps), this.loadDoc);
     }
   }
@@ -90,41 +89,17 @@ class PosBase extends Component {
     header.expanded = !header.expanded;
     this.setState({ header }, this.recalcComponentsHeight);
   }
-  toggleEditable() {
+
+  togglePinHeader() {
     let that = this;
-    let locationState = this.props.location.state || {};
-    let editable = this.state.editable;
+    let header = { ...this.state.header };
+    header.pinHeader = !header.pinHeader;
+    if (header.pinHeader) {
+      header.expanded = true;
+    }
+    localStorage.setItem("pinHeader", header.pinHeader ? "Y" : "N");
 
-    if (editable) return that.setState({ editable: !editable }, that.loadDoc);
-
-    if (!locationState.DocEntry) return;
-    let docentry = locationState.DocEntry;
-    this.serverRequest = axios
-      .get(`${this.props.apiDocsEdit}/${docentry}/haschanges`)
-      .then(function(result) {
-        let changes = result.data || [];
-        if (changes.length === 0) return that.setState({ editable: !editable }, that.loadDoc);
-
-        sappy.showQuestion({
-          title: "Continuar edição?",
-          msg: "Há alterações não confirmadas neste documento.",
-          moreInfo: "Pode continuar a editar ou ignorar as alterações registadas e recomeçar do zero.",
-          onConfirm: () => {
-            that.setState({ editable: !editable }, that.loadDoc);
-          },
-          confirmText: "Continuar edição",
-          cancelText: "Ignorar alterações anteriores",
-          onCancel: () => {
-            that.serverRequest = axios
-              .post(`${that.props.apiDocsEdit}/${docentry}/deletechanges`)
-              .then(function(result) {
-                that.setState({ editable: !editable }, that.loadDoc);
-              })
-              .catch(error => sappy.showError(error, "Erro ao obter dados"));
-          }
-        });
-      })
-      .catch(error => sappy.showError(error, "Erro ao obter dados"));
+    this.setState({ header }, this.recalcComponentsHeight);
   }
 
   forceReload() {
@@ -136,20 +111,8 @@ class PosBase extends Component {
 
     let locationState = this.props.location.state || {};
 
-    if (locationState.DocEntry) {
-      let docentry = locationState.DocEntry;
-      this.serverRequest = axios
-        .get(`${this.props.apiDocsEdit}/${docentry}?editable=${this.state.editable ? "yes" : ""}`)
-        .then(function(result) {
-          let newDocData = result.data;
-          that.setNewDataAndDisplayAlerts(newDocData);
-        })
-        .catch(error => sappy.showError(error, "Erro ao obter dados"));
-      return;
-    }
-
     let id = 0;
-    if (locationState.id) id = locationState.id;
+    if (locationState.ID) id = locationState.ID;
     if (this.state.docData && this.state.docData.ID) id = this.state.docData.ID;
     if (id) {
       this.serverRequest = axios
@@ -166,16 +129,6 @@ class PosBase extends Component {
         },
         that.recalcComponentsHeight
       );
-
-      //procurar série predefinida
-      this.serverRequest = axios
-        .get(this.props.apiDocsNew + "/dfltseries")
-        .then(function(result) {
-          let docData = that.state.docData;
-          docData = { ...docData, DOCSERIES: result.data.Series };
-          that.setState({ docData });
-        })
-        .catch(error => sappy.showError(error, "Erro ao obter dados"));
     }
   }
 
@@ -212,7 +165,6 @@ class PosBase extends Component {
     this.setState(
       {
         loading: false,
-        changingTotals: false,
         docData
       },
       that.recalcComponentsHeight
@@ -231,42 +183,22 @@ class PosBase extends Component {
 
     if (that.props.onHeaderChange) updated = that.props.onHeaderChange(this.state.docData, updated);
 
-    // // check if really changed
-    // if (sappy.isEqual(oldVal, val)) return console.log("skip update");
-    // console.log(fieldName, oldVal, val)
-    if ("EXTRADISC,EXTRADISCPERC,DOCTOTAL".indexOf(fieldName) > -1) this.setState({ changingTotals: true });
-
-    if (this.state.docData.DOCENTRY > 0) {
+    this.ensureposHeaderExists(() => {
       that.serverRequest = axios
-        .patch(this.props.apiDocsEdit + "/" + this.state.docData.DOCENTRY + `?editable=${this.state.editable ? "yes" : ""}`, updated)
+        .patch(this.props.apiDocsNew + "/" + this.state.docData.ID, updated)
         .then(function(result) {
           let docData = { ...that.state.docData, ...result.data };
+          docData.LINES = [...docData.LINES];
           delete docData.changing;
           delete docData[changeInfo.fieldName + "_LOGICMSG"];
           that.setNewDataAndDisplayAlerts(docData);
         })
         .catch(error => sappy.showError(error, "Erro ao gravar cabeçalho"));
-    } else {
-      this.ensureposHeaderExists(() => {
-        that.serverRequest = axios
-          .patch(this.props.apiDocsNew + "/" + this.state.docData.ID, updated)
-          .then(function(result) {
-            let docData = { ...that.state.docData, ...result.data };
-            docData.LINES = [...docData.LINES];
-            delete docData.changing;
-            delete docData[changeInfo.fieldName + "_LOGICMSG"];
-            that.setNewDataAndDisplayAlerts(docData);
-          })
-          .catch(error => sappy.showError(error, "Erro ao gravar cabeçalho"));
-      });
-    }
+    });
   }
 
   handleDetailRowChange(currentRow, updated) {
     let that = this;
-    let documentoBloqueado = this.state.docData.DOCNUM > 0;
-    if (documentoBloqueado) return;
-
     if (this.props.onRowChange) updated = this.props.onRowChange(currentRow, updated);
 
     this.serverRequest = axios
@@ -323,6 +255,10 @@ class PosBase extends Component {
     let that = this;
     let itemCodes = selectedItems;
 
+    let pinHeader = this.state.header.pinHeader;
+    let expanded = this.state.header.expanded;
+    if (!pinHeader && expanded) that.toggleHeader();
+
     let createDocLines = () => {
       this.serverRequest = axios
         .post(`${this.props.apiDocsNew}/${this.state.docData.ID}/lines`, {
@@ -331,9 +267,12 @@ class PosBase extends Component {
         })
         .then(function(result) {
           let newDocData = { ...that.state.docData, ...result.data };
+
           that.setState({ docData: newDocData }, () => {
             //scroll to end
-            // that.refs.PosDetail.scrollToLastLine();
+            that.refs.PosDetail.focusCell({ rowIdx: 0, idx: 2 });
+            // var $e = $(".react-grid-Row :nth-child(2).editable-col");
+            // $e[0].focus();
           });
           if (callback) callback();
         })
@@ -351,22 +290,19 @@ class PosBase extends Component {
   render() {
     let that = this;
     let docData = this.state.docData;
-    let changingTotals = this.state.changingTotals;
-    let editable = this.state.editable;
 
     let totals = docData.totals || {};
     let headerProps = {
       ...this.state.header,
-      editable,
       docData,
       fields: this.props.headerFields,
-      onFieldChange: this.handleHeaderFieldChange
+      onFieldChange: this.handleHeaderFieldChange,
+      togglePinHeader: this.togglePinHeader
     };
 
     let detailProps = {
       ...this.state.detail,
       fields: this.props.detailFields,
-      sidebarFields: this.props.sidebarFields,
       onSideBarFieldChange: this.handleHeaderFieldChange,
       docData,
       onRowUpdate: this.handleDetailRowChange,
@@ -378,12 +314,11 @@ class PosBase extends Component {
     let footerLimitSearchCondition = this.props.footerLimitSearchCondition || "";
     Object.keys(docData).forEach(field => (footerLimitSearchCondition = sappy.replaceAll(footerLimitSearchCondition, "<" + field + ">", docData[field])));
 
-    let canConfirmar = this.state.docData.ID > 0 || (this.state.docData.DOCNUM > 0 && editable);
+    let canConfirmar = this.state.docData.ID > 0;
 
     let footerProps = {
       ...this.state.footer,
       docData,
-      editable,
       loading: this.state.loading,
       footerLimitSearch: this.state.footerLimitSearch,
       footerLimitSearchCondition,
@@ -420,7 +355,6 @@ class PosBase extends Component {
     let totalProps = {
       totals,
       docData,
-      changingTotals,
       onFieldChange: this.handleHeaderFieldChange
     };
 
@@ -442,7 +376,6 @@ PosBase.defaultProps = {
   title: "title...",
   apiDocsNew: "", //  /api/docs/ordr/doc
   headerFields: {},
-  sidebarFields: {},
   detailFields: [],
   footerLimitSearchCondition: "",
   footerSearchShowCatNum: false,
