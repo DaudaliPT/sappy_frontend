@@ -1,14 +1,6 @@
 import React, { PureComponent } from "react";
 import DataGrid from "../../../components/DataGrid";
-import {
-  TextBox,
-  TextBoxNumeric,
-  ComboBox,
-  Date,
-  Toggle,
-  Flag,
-  Check
-} from "../../../Inputs";
+import { TextBox, TextBoxNumeric, ComboBox, Date, Toggle, Flag, Check } from "../../../Inputs";
 import Panel from "../../../components/Panel";
 const sappy = window.sappy;
 
@@ -40,13 +32,7 @@ class PosDetail extends PureComponent {
 
       let route = sidebarField.api;
       if (route && route.indexOf("<") > -1) {
-        Object.keys(this.props.docData).forEach(
-          field =>
-            (route = route.replace(
-              "<" + field + ">",
-              this.props.docData[field]
-            ))
-        );
+        Object.keys(this.props.docData).forEach(field => (route = route.replace("<" + field + ">", this.props.docData[field])));
       }
 
       let divID = "sidebarField_" + sidebarField.name;
@@ -60,13 +46,7 @@ class PosDetail extends PureComponent {
         onMouseEnter = e => {
           let api = hover.api || "";
           if (api && api.indexOf("<") > -1) {
-            Object.keys(this.props.docData).forEach(
-              field =>
-                (api = api.replace(
-                  "<" + field + ">",
-                  this.props.docData[field]
-                ))
-            );
+            Object.keys(this.props.docData).forEach(field => (api = api.replace("<" + field + ">", this.props.docData[field])));
           }
 
           sappy.showPopover({
@@ -84,9 +64,7 @@ class PosDetail extends PureComponent {
         label: sidebarField.label,
         disabled: this.props.docData.DOCNUM > 0 ? true : sidebarField.disabled,
         value: this.props.docData[sidebarField.name],
-        state:
-          this.props.docData[sidebarField.name + "_VALIDATEMSG"] ||
-          this.props.docData[sidebarField.name + "_LOGICMSG"],
+        state: this.props.docData[sidebarField.name + "_VALIDATEMSG"] || this.props.docData[sidebarField.name + "_LOGICMSG"],
         onChange: this.props.onSideBarFieldChange,
         getOptionsApiRoute: route,
         options: sidebarField.options
@@ -94,17 +72,12 @@ class PosDetail extends PureComponent {
 
       let input = null;
       if (sidebarField.type === "text") input = <TextBox {...commonProps} />;
-      else if (sidebarField.type === "textarea")
-        input = <TextBox {...commonProps} type="textarea" />;
-      else if (sidebarField.type === "integer")
-        input = <TextBoxNumeric {...commonProps} valueType="integer" />;
-      else if (sidebarField.type === "percent")
-        input = <TextBoxNumeric {...commonProps} valueType="percent" />;
-      else if (sidebarField.type === "combo")
-        input = <ComboBox {...commonProps} />;
+      else if (sidebarField.type === "textarea") input = <TextBox {...commonProps} type="textarea" />;
+      else if (sidebarField.type === "integer") input = <TextBoxNumeric {...commonProps} valueType="integer" />;
+      else if (sidebarField.type === "percent") input = <TextBoxNumeric {...commonProps} valueType="percent" />;
+      else if (sidebarField.type === "combo") input = <ComboBox {...commonProps} />;
       else if (sidebarField.type === "date") input = <Date {...commonProps} />;
-      else if (sidebarField.type === "bool")
-        input = <Toggle {...commonProps} />;
+      else if (sidebarField.type === "bool") input = <Toggle {...commonProps} />;
       else if (sidebarField.type.startsWith("flag")) {
         let color = sidebarField.type.split("|")[1];
         input = <Flag {...commonProps} color={color} />;
@@ -114,14 +87,7 @@ class PosDetail extends PureComponent {
       }
 
       return (
-        <div
-          key={divID}
-          id={divID}
-          className={classNames}
-          onMouseLeave={onMouseLeave}
-          onMouseEnter={onMouseEnter}
-          style={style}
-        >
+        <div key={divID} id={divID} className={classNames} onMouseLeave={onMouseLeave} onMouseEnter={onMouseEnter} style={style}>
           {" "}{input}{" "}
         </div>
       );
@@ -154,7 +120,8 @@ class PosDetail extends PureComponent {
       posDetailGridStyle = { width: "calc(100% - 200px)" };
       posDetailSidebarStyle = { width: "190px" };
     }
-
+    let LINES = [...this.props.docData.LINES];
+    LINES.reverse();
     return (
       <div id="posDetail">
         <Panel name="panelDetails" allowCollapse={false}>
@@ -164,7 +131,7 @@ class PosDetail extends PureComponent {
               height={this.props.height}
               fields={this.props.fields}
               disabled={this.props.docData.DOCNUM > 0 ? true : false}
-              rows={this.props.docData.LINES}
+              rows={LINES}
               onRowUpdate={this.props.onRowUpdate}
               onRowSelectionChange={this.props.onRowSelectionChange}
               selectedKeys={this.props.selectedKeys}

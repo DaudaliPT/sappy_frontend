@@ -166,10 +166,35 @@
 .pos input,
 .pos optgroup,
 .pos select,
-.pos textarea {
+.pos textarea,
+.pos .Select-control,
+.pos .form-control {
   color: #fefefe !important;
   /* font-family: "Abel"; */
   letter-spacing: 1px;
+
+  border: 1px solid #555 !important;
+  border-top-color: #555 !important;
+  border-right-color: #555 !important;
+  border-bottom-color: #555 !important;
+  border-left-color: #555 !important;
+}
+
+.pos .Select-control input,
+.pos .tokenfield input {
+  border: none !important;
+  border-top-color: none !important;
+  border-right-color: none !important;
+  border-bottom-color: none !important;
+  border-left-color: none !important;
+}
+
+.pos .tokenfield > .token {
+  background-color: rgba(232, 246, 255, 0.1) !important;
+  border: 1px solid rgba(232, 246, 255, 0.3) !important;
+}
+.pos .tokenfield > .token > a {
+  color: #fefefe !important;
 }
 
 .pos .Select-value,
@@ -195,7 +220,7 @@
   /* background-color: rgba(32, 46, 55, 0.7) !important; */
 }
 .pos .ReactVirtualized__List:focus {
-  background-color: rgba(32, 46, 55, 0.7) !important;
+  /* background-color: rgba(32, 46, 55, 0.7) !important; */
 }
 
 .pos .VirtualizedSelectOption {
@@ -216,4 +241,23 @@
 .pos .react-grid-Cell.editable-col {
   color: #fefefe !important;
   font-weight: 500;
+}
+
+.pos .byusVirtualRowContainer:hover {
+  background-color: rgba(32, 46, 55, 0.9) !important;
+}
+.pos .byusVirtualRow {
+  border-bottom: 1px solid #555;
+}
+
+.pos .byusVirtualRowContainer > .sappy-selected-row {
+  background-color: rgba(232, 246, 255, 0.1) !important;
+  font-weight: 400 !important;
+}
+
+.pos .byusVirtualRowContainer > .sappy-selected-row .secondrow {
+  color: #a3afb7 !important;
+}
+.pos .nav-tabs {
+  border-bottom: 1px solid #555;
 }

@@ -11,10 +11,12 @@ class Inicio extends Component {
   constructor(props) {
     super(props);
     this.handleLogoImageError = this.handleLogoImageError.bind(this);
+    this.handleRowSelection = this.handleRowSelection.bind(this);
 
     this.state = {
       companyLogo: "img/" + sappy.sessionInfo.company.dbName + "/logo.png",
-      showRetomar: false
+      showRetomar: false,
+      selectedItems: []
     };
   }
 
@@ -26,6 +28,25 @@ class Inicio extends Component {
 
   componentDidMount() {
     $(".tokenfield").tokenfield();
+  }
+
+  handleRowSelection(e) {
+    var checkbox = $(e.target).closest(".byusVirtualRow").find(".contacts-checkbox")[0];
+
+    let id = checkbox.id;
+    let itemCode = id.split("_")[1];
+    let { selectedItems } = this.state;
+    let ix = selectedItems.indexOf(itemCode);
+
+    if (ix === -1) {
+      selectedItems.push(itemCode);
+      checkbox.checked = true;
+    } else {
+      if (ix > -1) selectedItems.splice(ix, 1);
+      checkbox.checked = false;
+    }
+
+    this.setState({ selectedItems });
   }
 
   render() {
@@ -56,51 +77,23 @@ class Inicio extends Component {
       return (
         <div className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={this.handleRowSelection}>
           <div className="container vertical-align-middle">
-            {/*large displays*/}
-            <div className="row hidden-lg-down">
-              <div className="col-2">
-                <span className="checkbox-custom checkbox-primary checkbox-lg">
+            <div className="row no-gutters">
+              <div className="col-12 text-nowrap ">
+                <span className="checkbox-custom checkbox-dark checkbox-lg">
                   <input type="checkbox" className="contacts-checkbox selectable-item" checked={selected} id={rowId} />
                   <label htmlFor={rowId} />
                 </span>
-                <span className="ml-10">
-                  {" "}{row.ABREV + " " + row.DocNum}
+                <span style={{ display: "inline-block", paddingLeft: "15px" }}>
+                  {row.CardCode + " - " + row.CardName}
                 </span>
-              </div>
-              <div className="col-2">
-                {" "}{sappy.format.date(row.TaxDate)}
-              </div>
-              <div className="col-5">
-                {row.CardCode + " - " + row.CardName}
-                {/* {renderBadges()} */}
-              </div>
-              <div className="col-3 lastcol">
-                {row.CONTACT_NAME ? row.CONTACT_NAME : ""}
-                <span className="float-right">
-                  {" "}{row.FORMATED_DOCTOTAL}{" "}
-                </span>
+                {renderBadges()}
               </div>
             </div>
-
-            {/*mobile*/}
-            <div className="hidden-xl-up">
-              <div className="row">
-                <div className="col text-nowrap">
-                  {" "}{row.CardCode + " - " + row.CardName}{" "}
-                </div>
-              </div>
-              <div className="row secondrow">
-                <div className="col-4 text-nowrap firstcol">
-                  {" "}{row.ABREV + " " + row.DocNum}{" "}
-                </div>
-                <div className="col-5 text-nowrap firstcol">
-                  {" "}{sappy.format.date(row.TaxDate)} <span className="hidden-lg-down"> {renderBadges()} </span>{" "}
-                </div>
-                <div className="col-3 text-nowrap lastcol">
-                  <span className="float-right">
-                    {row.FORMATED_DOCTOTAL}
-                  </span>
-                </div>
+            <div className="row no-gutters secondrow">
+              <div className="col-12 text-nowrap">
+                <span style={{ display: "inline-block", paddingLeft: "38px" }}>
+                  {"Criado em " + sappy.format.datetime(row.DOC_DATETIME) + ". Tem " + row.NR_LINES + (row.NR_LINES == "1" ? " linha" : " linhas")}
+                </span>
               </div>
             </div>
           </div>
@@ -154,11 +147,11 @@ class Inicio extends Component {
             <Panel name="panelDetails" allowCollapse={true} title="Documentos em curso" onToogleExpand={e => that.setState({ showRetomar: !that.state.showRetomar })}>
               <SearchPage
                 searchPlaceholder="Procurar..."
-                searchApiUrl="/api/precos/searchBaseDocs/"
+                searchApiUrl="/api/docs/pospending/"
                 renderRow={renderRow}
                 height={295}
                 searchText={this.props.searchText}
-                renderRowHeight={50}
+                renderRowHeight={60}
                 currentModal={this.state.currentModal}
               />
             </Panel>}

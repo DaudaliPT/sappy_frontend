@@ -1,19 +1,13 @@
 import React, { Component } from "react";
-import ReactDataGrid from 'react-data-grid/packages/react-data-grid/dist/react-data-grid';
+import ReactDataGrid from "react-data-grid/packages/react-data-grid/dist/react-data-grid";
 const sappy = window.sappy;
-import HeaderAlignRight from './HeaderAlignRight'
-import Formatters from './Formatters'
-import Editors from './Editors'
+import HeaderAlignRight from "./HeaderAlignRight";
+import Formatters from "./Formatters";
+import Editors from "./Editors";
 
-const {
-  ToolsPanel: { AdvancedToolbar, GroupedColumnsPanel },
-  Data: { Selectors },
-  Draggable
-} = require('react-data-grid/packages/react-data-grid-addons/dist/react-data-grid-addons');
+const { ToolsPanel: { AdvancedToolbar, GroupedColumnsPanel }, Data: { Selectors }, Draggable } = require("react-data-grid/packages/react-data-grid-addons/dist/react-data-grid-addons");
 
 const RowRenderer = Draggable.DropTargetRowContainer(ReactDataGrid.Row);
-
-
 
 class DataGrid extends Component {
   constructor(props) {
@@ -38,7 +32,7 @@ class DataGrid extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState(this.createStateFromProps(nextProps))
+    this.setState(this.createStateFromProps(nextProps));
   }
 
   createStateFromProps(props) {
@@ -58,27 +52,27 @@ class DataGrid extends Component {
   }
 
   getSelectedKeys() {
-    if (this.props.onRowSelectionChange) return this.props.selectedKeys || []
+    if (this.props.onRowSelectionChange) return this.props.selectedKeys || [];
     return this.state.selectedKeys;
   }
 
   getSelectedRows() {
-    let selectedKeys = this.getSelectedKeys()
+    let selectedKeys = this.getSelectedKeys();
 
     // let rows = this.state.rows.filter(row => selectedKeys.indexOf(row[this.props.rowKey]))
     let selectedRows = Selectors.getSelectedRowsByKey({ rowKey: this.props.rowKey, selectedKeys: selectedKeys, rows: this.state.rows });
-    return selectedRows
+    return selectedRows;
   }
 
   onRowsSelected(rows) {
-    let selectedKeys = this.getSelectedKeys()
+    let selectedKeys = this.getSelectedKeys();
     rows.forEach(r => {
-      if (r.row && r.row.__metaData && r.row.__metaData.isGroup) return
-      selectedKeys.push(r.row[this.props.rowKey])
-    })
+      if (r.row && r.row.__metaData && r.row.__metaData.isGroup) return;
+      selectedKeys.push(r.row[this.props.rowKey]);
+    });
 
     if (this.props.onRowSelectionChange) {
-      this.props.onRowSelectionChange(selectedKeys)
+      this.props.onRowSelectionChange(selectedKeys);
     } else {
       this.setState({ selectedKeys });
     }
@@ -89,7 +83,7 @@ class DataGrid extends Component {
     let selectedKeys = this.getSelectedKeys().filter(key => rowIds.indexOf(key) === -1);
 
     if (this.props.onRowSelectionChange) {
-      this.props.onRowSelectionChange(selectedKeys)
+      this.props.onRowSelectionChange(selectedKeys);
     } else {
       this.setState({ selectedKeys });
     }
@@ -97,9 +91,9 @@ class DataGrid extends Component {
 
   onRowReorder(e) {
     let selectedRows = this.getSelectedRows();
-    let isDraggedRowSelected = selectedRows.find(row => row[this.props.rowKey] === e.rowSource.data[this.props.rowKey])
+    let isDraggedRowSelected = selectedRows.find(row => row[this.props.rowKey] === e.rowSource.data[this.props.rowKey]);
     let draggedRows = isDraggedRowSelected ? selectedRows : [e.rowSource.data];
-    let orderedRows = this.state.rows.filter(function (r) {
+    let orderedRows = this.state.rows.filter(function(r) {
       return draggedRows.indexOf(r) === -1;
     });
     let args = [e.rowTarget.idx, 0].concat(draggedRows);
@@ -123,12 +117,12 @@ class DataGrid extends Component {
 
   scrollToRow(idx) {
     var top = this.thisComponent.getRowOffsetHeight() * idx;
-    var gridCanvas = this.thisComponent.getDataGridDOMNode().querySelector('.react-grid-Canvas');
+    var gridCanvas = this.thisComponent.getDataGridDOMNode().querySelector(".react-grid-Canvas");
     gridCanvas.scrollTop = top;
   }
 
   buildColumnList(props) {
-    let that = this
+    let that = this;
     let gridWidth = this.thisComponent ? this.thisComponent.DOMMetrics.gridWidth() : 0;
     let totalWidth = this.props.fields.reduce((sum, field) => sum + sappy.getNum(field.width || 100), 0);
     totalWidth += 60; //Levar em conta a coluna de select
@@ -153,17 +147,18 @@ class DataGrid extends Component {
         type: field.type
       };
 
-      if (gridWidth > totalWidth) col.width *= proporcao
+      if (gridWidth > totalWidth) col.width *= proporcao;
 
       if ("quantity,price,amount".indexOf(field.type) > -1) {
         col.headerRenderer = HeaderAlignRight;
       } else if (field.type === "vat") {
         col.formatter = Formatters.Vat;
+      } else if (field.type === "vatpercent") {
+        col.formatter = Formatters.VatPercent;
       } else if (field.type === "tags") {
         col.formatter = Formatters.Tags;
       } else if (field.type.startsWith("check") || field.type.startsWith("switch") || field.type.startsWith("flag")) {
-
-        let parts = field.type.split('|');
+        let parts = field.type.split("|");
         let type = parts[0];
         col.color = parts[1];
         col.valueON = parts[2];
@@ -198,11 +193,10 @@ class DataGrid extends Component {
                 });
               }
             }
-          }
+          };
         }
       } else if (field.type.startsWith("discount")) {
-
-        let parts = field.type.split('|');
+        let parts = field.type.split("|");
         // let type = parts[0];
         col.color = parts[1];
         col.valueON = parts[2];
@@ -212,7 +206,7 @@ class DataGrid extends Component {
           col.events = {
             onClick: (ev, args) => {
               let currentRow = this.getRowAt(args.rowIdx);
-              if (currentRow.USER_DISC === 'BONUS') {
+              if (currentRow.USER_DISC === "BONUS") {
                 ev.stopPropagation();
 
                 let currentValue = currentRow["BONUS_NAP"];
@@ -226,7 +220,7 @@ class DataGrid extends Component {
             },
             onKeyDown: (ev, args) => {
               let currentRow = this.getRowAt(args.rowIdx);
-              if (currentRow.USER_DISC === 'BONUS' && ev.keyCode === 32) {
+              if (currentRow.USER_DISC === "BONUS" && ev.keyCode === 32) {
                 ev.preventDefault();
                 ev.stopPropagation();
 
@@ -240,11 +234,10 @@ class DataGrid extends Component {
                 });
               }
             }
-          }
+          };
         }
       } else if (field.type.startsWith("bonus")) {
-
-        let parts = field.type.split('|');
+        let parts = field.type.split("|");
         // let type = parts[0];
         col.color = parts[1];
         col.valueON = parts[2];
@@ -282,12 +275,12 @@ class DataGrid extends Component {
                 });
               }
             }
-          }
+          };
         }
       }
 
-      return col
-    })
+      return col;
+    });
 
     if (gridWidth > totalWidth) {
       // colocar as diferenças na última coluna
@@ -304,52 +297,50 @@ class DataGrid extends Component {
   handleGridRowsUpdated({ fromRow, toRow, updated }) {
     let colUpdated = Object.keys(updated)[0];
 
-    let colType = "string"
-    if (true) { // make sure col is not available because it can not exist
-      let col = this.state.columns.find(col => col.key === colUpdated)
+    let colType = "string";
+    if (true) {
+      // make sure col is not available because it can not exist
+      let col = this.state.columns.find(col => col.key === colUpdated);
       if (col) colType = col.type;
     }
 
     if ("quantity,price,amount,bonus".indexOf(colType) > -1) {
       let newValue = updated[colUpdated];
 
-      if (colType === "price" && (newValue.toString().indexOf("p") > -1)) {
-        let pk = sappy.getNum(this.getRowAt(fromRow).QTPK)
+      if (colType === "price" && newValue.toString().indexOf("p") > -1) {
+        let pk = sappy.getNum(this.getRowAt(fromRow).QTPK);
         if (pk) {
-          newValue = newValue.toString().replace("/pk", "/" + pk)
-          newValue = newValue.toString().replace("pk", "/" + pk)
-          newValue = newValue.toString().replace("p", "/" + pk)
-          newValue = newValue.toString().replace("/p", "/" + pk)
+          newValue = newValue.toString().replace("/pk", "/" + pk);
+          newValue = newValue.toString().replace("pk", "/" + pk);
+          newValue = newValue.toString().replace("p", "/" + pk);
+          newValue = newValue.toString().replace("/p", "/" + pk);
         }
       }
 
-      newValue = sappy.evaluateNumericExpression(newValue)
+      newValue = sappy.evaluateNumericExpression(newValue);
 
       if (colType === "price" && sappy.getNum(newValue) < 0) {
-        return sappy.showToastr({ color: "warning", msg: "Os preços não podem ser negativos, use a quantidade para obter um valor negativo." })
+        return sappy.showToastr({ color: "warning", msg: "Os preços não podem ser negativos, use a quantidade para obter um valor negativo." });
       }
       updated[colUpdated] = newValue;
     }
-
-
 
     for (var index = fromRow; index <= toRow; index++) {
       let ix = index;
       let currentRow = this.getRowAt(ix);
 
-      this.props.onRowUpdate(currentRow, { ...updated })
+      this.props.onRowUpdate(currentRow, { ...updated });
     }
   }
 
   onColumnGroupAdded(colName) {
-
     let documentoBloqueado = this.state.docData.DOCNUM > 0;
     let baseadoEmDocumentos = this.state.docData.DOCS && this.state.docData.DOCS.length !== 0;
 
-    let columns = this.getColumns({ allowEdit: !documentoBloqueado, baseadoEmDocumentos })
+    let columns = this.getColumns({ allowEdit: !documentoBloqueado, baseadoEmDocumentos });
     let columnGroups = this.state.groupBy.slice(0);
-    let activeColumn = columns.find((c) => c.key === colName)
-    let isNotInGroups = columnGroups.find((c) => activeColumn.key === c.name) == null;
+    let activeColumn = columns.find(c => c.key === colName);
+    let isNotInGroups = columnGroups.find(c => activeColumn.key === c.name) == null;
     if (isNotInGroups) {
       columnGroups.push({ key: activeColumn.key, name: activeColumn.name });
     }
@@ -358,8 +349,8 @@ class DataGrid extends Component {
   }
 
   onColumnGroupDeleted(name) {
-    let columnGroups = this.state.groupBy.filter(function (g) {
-      return typeof g === 'string' ? g !== name : g.key !== name;
+    let columnGroups = this.state.groupBy.filter(function(g) {
+      return typeof g === "string" ? g !== name : g.key !== name;
     });
     this.setState({ groupBy: columnGroups });
   }
@@ -371,12 +362,11 @@ class DataGrid extends Component {
     this.setState({ expandedRows: expandedRows });
   }
 
-
   render() {
     return (
-      <Draggable.Container >
+      <Draggable.Container>
         <ReactDataGrid
-          ref={node => this.thisComponent = node}
+          ref={node => (this.thisComponent = node)}
           columns={this.state.columns}
           minHeight={this.props.height || 0}
           enableDragAndDrop={true}
@@ -387,31 +377,31 @@ class DataGrid extends Component {
           rowActionsCell={this.state.groupBy.length !== 0 ? null : Draggable.RowActionsCell}
           rowRenderer={<RowRenderer onRowDrop={this.onRowReorder} />}
           rowsCount={this.getSize()}
-          rowGroupRenderer={(props) => {
+          rowGroupRenderer={props => {
             let treeDepth = props.treeDepth || 0;
             let marginLeft = treeDepth * 20;
 
             let style = {
-              height: '50px',
-              border: '1px solid #dddddd',
-              paddingTop: '15px',
-              paddingLeft: '5px'
+              height: "50px",
+              border: "1px solid #dddddd",
+              paddingTop: "15px",
+              paddingLeft: "5px"
             };
 
-            let onKeyDown = (e) => {
-              if (e.key === 'ArrowLeft') return props.onRowExpandToggle(false);
-              if (e.key === 'ArrowRight') return props.onRowExpandToggle(true);
-              if (e.key === 'Enter') return props.onRowExpandToggle(!props.isExpanded);
-            }
+            let onKeyDown = e => {
+              if (e.key === "ArrowLeft") return props.onRowExpandToggle(false);
+              if (e.key === "ArrowRight") return props.onRowExpandToggle(true);
+              if (e.key === "Enter") return props.onRowExpandToggle(!props.isExpanded);
+            };
             return (
               <div style={style} onKeyDown={onKeyDown} tabIndex={0}>
-                <span className="row-expand-icon pl-5 pr-5"
-                  style={{ float: 'left', marginLeft: marginLeft, cursor: 'pointer' }}
-                  onClick={props.onRowExpandClick} >
-                  {props.isExpanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}
+                <span className="row-expand-icon pl-5 pr-5" style={{ float: "left", marginLeft: marginLeft, cursor: "pointer" }} onClick={props.onRowExpandClick}>
+                  {props.isExpanded ? String.fromCharCode("9660") : String.fromCharCode("9658")}
                 </span>
                 <span className="pl-5">
-                  <strong> {props.name}</strong>
+                  <strong>
+                    {" "}{props.name}
+                  </strong>
                 </span>
               </div>
             );
@@ -427,16 +417,14 @@ class DataGrid extends Component {
           }}
           toolbar={
             <AdvancedToolbar>
-              <GroupedColumnsPanel groupBy={this.state.groupBy}
-                onColumnGroupAdded={this.onColumnGroupAdded}
-                onColumnGroupDeleted={this.onColumnGroupDeleted} />
+              <GroupedColumnsPanel groupBy={this.state.groupBy} onColumnGroupAdded={this.onColumnGroupAdded} onColumnGroupDeleted={this.onColumnGroupDeleted} />
             </AdvancedToolbar>
           }
-        ></ReactDataGrid >
-      </Draggable.Container >
+        />
+      </Draggable.Container>
     );
   }
-};
+}
 
 DataGrid.defaultProps = {
   fields: [
@@ -452,8 +440,8 @@ DataGrid.defaultProps = {
   height: 300,
   // selectedKeys: [],
   // onRowSelectionChange: (selectedKeys) => { },
-  onRowUpdate: (currentRow, updated) => { },
-  onRowReorder: (draggedRows, rowTarget, orderedRows) => { },
-}
+  onRowUpdate: (currentRow, updated) => {},
+  onRowReorder: (draggedRows, rowTarget, orderedRows) => {}
+};
 
 export default DataGrid;

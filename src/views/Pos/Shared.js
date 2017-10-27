@@ -33,29 +33,6 @@ exports.prepareDocType = function({ tableName }) {
     gridSize: 6,
     required: true
   });
-  headerFields.line1.push({
-    name: "DOCSERIES",
-    label: "Série",
-    type: "combo",
-    api: "/api/cbo/nnm1/" + objType,
-    gridSize: 4,
-    required: true
-  });
-  headerFields.line1.push({
-    name: "TAXDATE",
-    label: "Data Documento",
-    type: "date",
-    gridSize: 2,
-    required: true
-  });
-  headerFields.line1.push({
-    name: "DOCDUEDATE",
-    label: dueDateLabel,
-    type: "date",
-    gridSize: 2,
-    required: true,
-    savedEditable: true
-  });
   headerFields.line2 = [];
   if ("15,16,17, 20,21,22".indexOf(objType) > -1) {
     //Encomendas/Entregas/Devoluções
@@ -75,13 +52,6 @@ exports.prepareDocType = function({ tableName }) {
       gridSize: 2
     });
   }
-  headerFields.line2.push({
-    name: "CONTACT",
-    label: contactLabel,
-    type: "combo",
-    api: "/api/cbo/ocpr/<CARDCODE>",
-    gridSize: 2
-  });
   headerFields.line2.push({
     name: "NUMATCARD",
     label: numatcardLabel,
@@ -154,8 +124,8 @@ exports.prepareDocType = function({ tableName }) {
     name: "VATGROUP",
     label: "IVA",
     type: "vatpercent",
-    width: 70,
-    editable: true
+    width: 40,
+    editable: false
   });
 
   return {
