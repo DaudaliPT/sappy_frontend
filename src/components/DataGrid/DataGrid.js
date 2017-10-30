@@ -28,6 +28,7 @@ class DataGrid extends Component {
     this.getSelectedKeys = this.getSelectedKeys.bind(this);
     this.getSelectedRows = this.getSelectedRows.bind(this);
     this.scrollToRow = this.scrollToRow.bind(this);
+    this.focusCell = this.focusCell.bind(this);
 
     this.state = this.createStateFromProps(props);
   }
@@ -58,7 +59,7 @@ class DataGrid extends Component {
   }
 
   getSelectedRows() {
-    let selectedKeys = this.getSelectedKeys();
+    let selectedKeys = [...this.getSelectedKeys()];
 
     // let rows = this.state.rows.filter(row => selectedKeys.indexOf(row[this.props.rowKey]))
     let selectedRows = Selectors.getSelectedRowsByKey({ rowKey: this.props.rowKey, selectedKeys: selectedKeys, rows: this.state.rows });
@@ -66,7 +67,7 @@ class DataGrid extends Component {
   }
 
   onRowsSelected(rows) {
-    let selectedKeys = this.getSelectedKeys();
+    let selectedKeys = [...this.getSelectedKeys()];
     rows.forEach(r => {
       if (r.row && r.row.__metaData && r.row.__metaData.isGroup) return;
       selectedKeys.push(r.row[this.props.rowKey]);
@@ -123,12 +124,12 @@ class DataGrid extends Component {
   }
 
   focusCell({ rowIdx, idx }) {
+    let that = this;
     let ll = document.activeElement;
     setTimeout(() => {
       var $e = $(".react-grid-Row .editable-col");
       $e[0].focus();
-      this.thisComponent.onSelect({ rowIdx, idx });
-      this.thisComponent.checkFocus();
+      that.thisComponent.onSelect({ rowIdx, idx });
     }, 10);
   }
 
