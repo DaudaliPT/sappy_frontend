@@ -1,4 +1,3 @@
-
 import React, { Component } from "react";
 import { Button, Badge } from "reactstrap";
 import { hashHistory } from "react-router";
@@ -7,8 +6,8 @@ const {
   ToolsPanel: { AdvancedToolbar: Toolbar, GroupedColumnsPanel },
   Data: { Selectors },
   Draggable: { Container: DraggableContainer }
-} = require('react-data-grid/packages/react-data-grid-addons/dist/react-data-grid-addons');
-import ReactDataGrid from 'react-data-grid/packages/react-data-grid/dist/react-data-grid';
+} = require("react-data-grid/packages/react-data-grid-addons/dist/react-data-grid-addons");
+import ReactDataGrid from "react-data-grid/packages/react-data-grid/dist/react-data-grid";
 
 import axios from "axios";
 import uuid from "uuid/v4";
@@ -32,13 +31,11 @@ const CustomToolbar = React.createClass({
   render() {
     return (
       <Toolbar>
-        <GroupedColumnsPanel groupBy={this.props.groupBy}
-          onColumnGroupAdded={this.props.onColumnGroupAdded}
-          onColumnGroupDeleted={this.props.onColumnGroupDeleted} />
-      </Toolbar>);
+        <GroupedColumnsPanel groupBy={this.props.groupBy} onColumnGroupAdded={this.props.onColumnGroupAdded} onColumnGroupDeleted={this.props.onColumnGroupDeleted} />
+      </Toolbar>
+    );
   }
 });
-
 
 class IntFormatter extends Component {
   render() {
@@ -64,23 +61,37 @@ class PriceFormatter extends Component {
 
 const HeaderAlignRight = ({ column }) => {
   if (column.editable) {
-    return <div style={{ textAlign: "right" }}> <strong>{column.name}</strong> </div>;
+    return (
+      <div style={{ textAlign: "right" }}>
+        {" "}<strong>{column.name}</strong>{" "}
+      </div>
+    );
   } else {
-    return <div style={{ textAlign: "right" }}> {column.name} </div>;
+    return (
+      <div style={{ textAlign: "right" }}>
+        {" "}{column.name}{" "}
+      </div>
+    );
   }
 };
 
-
-
 class SimpleFormatter extends Component {
   render() {
-    return <div> {this.props.value || ""}</div>;
+    return (
+      <div>
+        {" "}{this.props.value || ""}
+      </div>
+    );
   }
 }
 
 class DateFormatter extends Component {
   render() {
-    return <div> {this.props.value ? sappy.format.date(this.props.value) : ''}</div>;
+    return (
+      <div>
+        {" "}{this.props.value ? sappy.format.date(this.props.value) : ""}
+      </div>
+    );
   }
 }
 class DescritptionFormatter extends Component {
@@ -93,11 +104,23 @@ class DescritptionFormatter extends Component {
           if (ix === 0) {
             return item;
           } else if (item === "MP") {
-            return <Badge key={uuid()} color="primary" pill>{item}</Badge>;
+            return (
+              <Badge key={uuid()} color="primary" pill>
+                {item}
+              </Badge>
+            );
           } else if (item === "PV") {
-            return <Badge key={uuid()} color="success" pill>{item}</Badge>;
+            return (
+              <Badge key={uuid()} color="success" pill>
+                {item}
+              </Badge>
+            );
           } else {
-            return <Badge key={uuid()} color="danger" pill>{item}</Badge>;
+            return (
+              <Badge key={uuid()} color="danger" pill>
+                {item}
+              </Badge>
+            );
           }
         });
       }
@@ -113,10 +136,10 @@ class DescritptionFormatter extends Component {
 
 class ItemCodeFormater extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       currentModal: null
-    }
+    };
   }
   render() {
     let that = this;
@@ -129,20 +152,25 @@ class ItemCodeFormater extends Component {
       });
     };
 
-    return <div     >
-      <i className="icon fa-arrow-circle-right" aria-hidden="true" onClick={e => {
-        that.setState({
-          currentModal: <EditModal toggleModal={toggleModal} itemcode={itemCode} />
-        });
-      }} />
-      {" "}
-      {this.props.value || ""}
-      {this.state.currentModal}
-    </div>;
+    return (
+      <div>
+        <i
+          className="icon fa-arrow-circle-right"
+          aria-hidden="true"
+          onClick={e => {
+            that.setState({
+              currentModal: <EditModal toggleModal={toggleModal} itemcode={itemCode} />
+            });
+          }}
+        />{" "}
+        {this.props.value || ""}
+        {this.state.currentModal}
+      </div>
+    );
   }
 }
 
-const getinitialState = (props) => {
+const getinitialState = props => {
   return {
     currentModal: null,
     loading: props.params.id ? true : false,
@@ -158,7 +186,7 @@ const getinitialState = (props) => {
     expandedRows: {},
     rows: []
   };
-}
+};
 class DocAtualizacaoPrecos extends Component {
   constructor(props) {
     super(props);
@@ -202,24 +230,22 @@ class DocAtualizacaoPrecos extends Component {
         width: 230,
         formatter: ItemCodeFormater,
         getRowMetaData: row => row
-      }
+      };
     }
 
     return [
       { key: "LINENUM", name: "#", width: 40, formatter: SimpleFormatter },
       itemCodeCol,
-      { key: "ITEM_NAME_WITH_TAGS", name: "Descrição", width: 400, formatter: DescritptionFormatter },
+      { key: "ITEM_NAME_TAGS", name: "Descrição", width: 400, formatter: DescritptionFormatter },
       { key: "STOCK", name: "Stock", width: 100, formatter: IntFormatter, headerRenderer: HeaderAlignRight },
 
       { key: "DATA_ULTIMA_ALT", name: "Data At.", width: 100, formatter: DateFormatter },
-      { key: "CURRENT_PRICE", name: "P Cash", width: 100, formatter: PriceFormatter, headerRenderer: HeaderAlignRight },
+      { key: "CURRENT_PRICE", name: "P Cash", width: 100, formatter: PriceFormatter, headerRenderer: HeaderAlignRight }
     ];
   }
 
-
   componentWillReceiveProps(nextProps) {
-    if (this.props.params.id !== nextProps.params.id)
-      this.setState(getinitialState(nextProps), this.loadDoc);;
+    if (this.props.params.id !== nextProps.params.id) this.setState(getinitialState(nextProps), this.loadDoc);
   }
 
   onMoveTo(nextORprevious) {
@@ -228,8 +254,7 @@ class DocAtualizacaoPrecos extends Component {
       url: `/api/etiq/doc/${this.state.docData.ID}/${nextORprevious}`
     })
       .then(result => {
-        if (result.data)
-          hashHistory.push("/inv/etiq/doc/" + result.data);
+        if (result.data) hashHistory.push("/inv/etiq/doc/" + result.data);
       })
       .catch(error => sappy.showError(error, "Erro ao obter dados"));
   }
@@ -238,15 +263,14 @@ class DocAtualizacaoPrecos extends Component {
     let that = this;
     axios
       .get(`api/reports/LayoutCode/SAPPY001`)
-      .then(function (result) {
+      .then(function(result) {
         that.setState({
           defaultLayoutCode: result.data.LayoutCode
         });
       })
-      .catch(function (error) {
-        if (!error.__CANCEL__) sappy.showError(error, "Api error")
+      .catch(function(error) {
+        if (!error.__CANCEL__) sappy.showError(error, "Api error");
       });
-
 
     let keyBuffer = "";
 
@@ -264,7 +288,7 @@ class DocAtualizacaoPrecos extends Component {
           keyBuffer += e.key;
         }
 
-        scannerPerformSearchTimeout = setTimeout(function () {
+        scannerPerformSearchTimeout = setTimeout(function() {
           that.setState(
             {
               searchText: keyBuffer,
@@ -291,14 +315,16 @@ class DocAtualizacaoPrecos extends Component {
     if (this.props.params.id) {
       this.serverRequest = axios
         .get(`/api/etiq/doc/${this.props.params.id}`)
-        .then(function (result) {
+        .then(function(result) {
           let docData = result.data;
-          that.setState({
-            loading: false,
-            docData,
-            rows: [...docData.LINES]
-          }
-            , that.calcSearchGridH);
+          that.setState(
+            {
+              loading: false,
+              docData,
+              rows: [...docData.LINES]
+            },
+            that.calcSearchGridH
+          );
         })
         .catch(error => sappy.showError(error, "Erro ao obter dados"));
     }
@@ -330,7 +356,7 @@ class DocAtualizacaoPrecos extends Component {
         searchText: e.target.value,
         totalInfo: { Total: 0 }
       },
-      function () {
+      function() {
         //prevent sending to server multime requestes qhen typing
         if (that.lastTxtSearchTimer) clearTimeout(that.lastTxtSearchTimer);
         that.lastTxtSearchTimer = setTimeout(that.findAndGetFirstRows, 500);
@@ -361,18 +387,18 @@ class DocAtualizacaoPrecos extends Component {
           that.ensureDocHeaderExists(() => {
             that.createDocLines([listItems[0].ItemCode]);
           });
-          that.setState({ searchText: "" })
+          that.setState({ searchText: "" });
         } else if (found > 1) {
           that.setState({
-            currentModal: <ModalSearchOitm toggleModal={this.handleModalSearchClose} searchText={this.state.searchText} />
-            , searchText: ""
+            currentModal: <ModalSearchOitm toggleModal={this.handleModalSearchClose} searchText={this.state.searchText} />,
+            searchText: ""
           });
         } else {
         }
       })
-      .catch(function (error) {
-        if (!error.__CANCEL__) sappy.showError(error, "Api error")
-        that.setState({ searchText: "" })
+      .catch(function(error) {
+        if (!error.__CANCEL__) sappy.showError(error, "Api error");
+        that.setState({ searchText: "" });
       });
   }
 
@@ -391,7 +417,7 @@ class DocAtualizacaoPrecos extends Component {
     } else {
       this.serverRequest = axios
         .post(`/api/etiq/doc`)
-        .then(function (result) {
+        .then(function(result) {
           let docData = that.state.docData;
           docData = { ...docData, ...result.data };
           that.setState({ docData, rows: [] });
@@ -406,7 +432,7 @@ class DocAtualizacaoPrecos extends Component {
     let that = this;
     this.serverRequest = axios
       .post(`/api/etiq/doc/${this.state.docData.ID}/lines`, { itemCodes })
-      .then(function (result) {
+      .then(function(result) {
         that.setState({
           rows: result.data,
           searchText: "",
@@ -420,7 +446,6 @@ class DocAtualizacaoPrecos extends Component {
     // let that = this;
     // debugger;
   }
-
 
   handleModalSearchClose(selectedItems) {
     let that = this;
@@ -442,7 +467,6 @@ class DocAtualizacaoPrecos extends Component {
     this.setState({ selectedIndexes: this.state.selectedIndexes.filter(i => rowIndexes.indexOf(i) === -1) });
   }
 
-
   getRows() {
     let rows = Selectors.getRows(this.state);
     return rows;
@@ -457,17 +481,14 @@ class DocAtualizacaoPrecos extends Component {
     return this.getRows().length;
   }
 
-
-
   onColumnGroupAdded(colName) {
-
     let documentoBloqueado = this.state.docData.DOCNUM > 0;
     let baseadoEmDocumentos = this.state.docData.DOCS && this.state.docData.DOCS.length !== 0;
 
-    let columns = this.getColumns({ allowEdit: !documentoBloqueado, baseadoEmDocumentos })
+    let columns = this.getColumns({ allowEdit: !documentoBloqueado, baseadoEmDocumentos });
     let columnGroups = this.state.groupBy.slice(0);
-    let activeColumn = columns.find((c) => c.key === colName)
-    let isNotInGroups = columnGroups.find((c) => activeColumn.key === c.name) == null;
+    let activeColumn = columns.find(c => c.key === colName);
+    let isNotInGroups = columnGroups.find(c => activeColumn.key === c.name) == null;
     if (isNotInGroups) {
       columnGroups.push({ key: activeColumn.key, name: activeColumn.name });
     }
@@ -476,8 +497,8 @@ class DocAtualizacaoPrecos extends Component {
   }
 
   onColumnGroupDeleted(name) {
-    let columnGroups = this.state.groupBy.filter(function (g) {
-      return typeof g === 'string' ? g !== name : g.key !== name;
+    let columnGroups = this.state.groupBy.filter(function(g) {
+      return typeof g === "string" ? g !== name : g.key !== name;
     });
     this.setState({ groupBy: columnGroups });
   }
@@ -494,9 +515,7 @@ class DocAtualizacaoPrecos extends Component {
     let documentoBloqueado = this.state.docData.DOCNUM > 0;
     let baseadoEmDocumentos = this.state.docData.DOCS && this.state.docData.DOCS.length !== 0;
 
-
-    let cols = this.getColumns({ allowEdit: !documentoBloqueado, baseadoEmDocumentos })
-
+    let cols = this.getColumns({ allowEdit: !documentoBloqueado, baseadoEmDocumentos });
 
     // var that = this;
     let rowSelection = {
@@ -518,19 +537,19 @@ class DocAtualizacaoPrecos extends Component {
           icon: "icon fa-print",
           visible: documentoBloqueado,
           onClick: e => {
-
             let docNumArray = [this.state.docData.DOCNUM];
 
             this.setState({
               currentModal: (
                 <ModalConfirmPrint
-                  setCurrentModal={({ currentModal }) => { this.setState({ currentModal }); }}
+                  setCurrentModal={({ currentModal }) => {
+                    this.setState({ currentModal });
+                  }}
                   defaultLayoutCode={this.state.defaultLayoutCode}
                   docNumArray={docNumArray}
                 />
               )
             });
-
           }
         },
         {
@@ -547,7 +566,7 @@ class DocAtualizacaoPrecos extends Component {
                     if (result === "CONFIRMADO") {
                       this.serverRequest = axios
                         .delete(`/api/etiq/doc/${this.state.docData.ID}`)
-                        .then(function (result) {
+                        .then(function(result) {
                           hashHistory.goBack();
                         })
                         .catch(error => sappy.showError(error, "Erro ao apagar dados"));
@@ -571,7 +590,7 @@ class DocAtualizacaoPrecos extends Component {
           visible: !documentoBloqueado && this.state.selectedIndexes.length > 0,
           onClick: e => {
             let rows = that.getRows();
-            let LINENUMS = that.state.selectedIndexes.map(i => rows[i].LINENUM)
+            let LINENUMS = that.state.selectedIndexes.map(i => rows[i].LINENUM);
 
             this.setState({
               currentModal: (
@@ -583,15 +602,15 @@ class DocAtualizacaoPrecos extends Component {
                         .post(`/api/etiq/doc/${this.state.docData.ID}/deletelines`, {
                           Lines: LINENUMS
                         })
-                        .then(function (result) {
+                        .then(function(result) {
                           let rows = that.getRows();
 
                           LINENUMS.forEach(LINENUM => {
                             let ix = rows.findIndex(r => r.LINENUM === LINENUM);
-                            if (ix >= 0) rows.splice(ix, 1)
-                          })
+                            if (ix >= 0) rows.splice(ix, 1);
+                          });
 
-                          that.setState({ rows, selectedIndexes: [] })
+                          that.setState({ rows, selectedIndexes: [] });
                         })
                         .catch(error => sappy.showError(error, "Erro ao apagar linhas"));
                     }
@@ -625,30 +644,26 @@ class DocAtualizacaoPrecos extends Component {
           onClick: e => {
             this.setState({
               currentModal: (
-
                 <ModalMessageConfirm
                   toggleModal={result => {
                     that.setState({ currentModal: null });
                     if (result === "CONFIRMADO") {
                       that.serverRequest = axios
                         .post(`/api/etiq/doc/${that.state.docData.ID}/confirm`)
-                        .then(function (result) {
-
-
+                        .then(function(result) {
                           let docNumArray = [result.data.DOCNUM];
 
                           that.setState({
                             currentModal: (
                               <ModalConfirmPrint
                                 setCurrentModal={({ currentModal }) => {
-                                  hashHistory.push('/inv/etiq')
+                                  hashHistory.push("/inv/etiq");
                                 }}
                                 defaultLayoutCode={that.state.defaultLayoutCode}
                                 docNumArray={docNumArray}
                               />
                             )
                           });
-
                         })
                         .catch(error => sappy.showError(error, "Erro ao confirmar documento"));
                     }
@@ -660,8 +675,6 @@ class DocAtualizacaoPrecos extends Component {
                   color="success"
                   moreInfo="Se continuar irá concluir este documento."
                 />
-
-
               )
             });
           }
@@ -689,7 +702,7 @@ class DocAtualizacaoPrecos extends Component {
             </div>
           );
         } else {
-          return null
+          return null;
         }
       };
 
@@ -705,8 +718,9 @@ class DocAtualizacaoPrecos extends Component {
                   <span>
                     <i className={action.icon} aria-hidden="true" />
 
-                    <span className="hidden-sm-down">  {action.name}</span>
-
+                    <span className="hidden-sm-down">
+                      {" "}{action.name}
+                    </span>
                   </span>
                 </button>
               );
@@ -716,48 +730,41 @@ class DocAtualizacaoPrecos extends Component {
       );
     };
 
-    let header = <div>
-      <div className="row">
-        <div className="col-lg-8">
-          <TextBox name="Tipo" label="Tipo:" disabled={true} value={this.state.docData.OBSERVACOES} />
-        </div>
-        <div className="col-lg-4">
-
-          <div className="row">
-            <div className="col-6">
-              <TextBox
-                name="Data"
-                label="Data:"
-                disabled={true}
-                value={sappy.format.datetime2(this.state.docData.CONFIRMED || this.state.docData.DATA)}
-              />
+    let header = (
+      <div>
+        <div className="row">
+          <div className="col-lg-8">
+            <TextBox name="Tipo" label="Tipo:" disabled={true} value={this.state.docData.OBSERVACOES} />
+          </div>
+          <div className="col-lg-4">
+            <div className="row">
+              <div className="col-6">
+                <TextBox name="Data" label="Data:" disabled={true} value={sappy.format.datetime2(this.state.docData.CONFIRMED || this.state.docData.DATA)} />
+              </div>
+              <div className="col-6">
+                <TextBox name="Numero" label="Numero:" disabled={true} value={this.state.docData.DOCNUM || (this.state.docData.ID || "novo") + " (draft)"} />
+              </div>
             </div>
-            <div className="col-6">
-              <TextBox
-                name="Numero"
-                label="Numero:"
-                disabled={true}
-                value={this.state.docData.DOCNUM || ((this.state.docData.ID || "novo") + " (draft)")}
-              />
-            </div>
-
           </div>
         </div>
       </div>
-    </div>;
+    );
     return (
       // <div className="">
-      (
-        <div className="page">
-
-          <div className="page-header container-fluid">
-            <div className="row">
-              <div className="col-xl-8 col-md-4">
-                <h5 className="page-title">Impressão de etiquetas {this.state.docData.DOCNUM && this.state.docData.DOCNUM} </h5>
-              </div>
-              <div className="col-xl-4 col-md-8">
-                <div className="sappy-action-bar animation-slide-left">
-                  <Button outline className="btn-md btn-flat" onClick={e => {
+      <div className="page">
+        <div className="page-header container-fluid">
+          <div className="row">
+            <div className="col-xl-8 col-md-4">
+              <h5 className="page-title">
+                Impressão de etiquetas {this.state.docData.DOCNUM && this.state.docData.DOCNUM}{" "}
+              </h5>
+            </div>
+            <div className="col-xl-4 col-md-8">
+              <div className="sappy-action-bar animation-slide-left">
+                <Button
+                  outline
+                  className="btn-md btn-flat"
+                  onClick={e => {
                     this.setState({
                       currentModal: (
                         <ModalMessageConfirm
@@ -766,8 +773,7 @@ class DocAtualizacaoPrecos extends Component {
                             if (result === "CONFIRMADO") {
                               this.serverRequest = axios
                                 .post(`/api/etiq/doc/${this.state.docData.ID}/clone`)
-                                .then(function (result) {
-
+                                .then(function(result) {
                                   hashHistory.push("/inv/etiq/doc/" + result.data.newID);
                                 })
                                 .catch(error => sappy.showError(error, "Erro ao duplicar dados"));
@@ -782,62 +788,57 @@ class DocAtualizacaoPrecos extends Component {
                         />
                       )
                     });
-                  }}>
-                    <i className="icon wb-copy" />
-                    <span className="hidden-sm-down"> </span>
-                  </Button>
-                  <Button outline className="btn-md btn-flat" onClick={e => this.onMoveTo('previous')}>
-                    <i className="icon wb-arrow-left" />
-                    <span className="hidden-sm-down"> </span>
-                  </Button>
-                  <Button outline className="btn-md btn-flat" onClick={e => this.onMoveTo('next')}>
-                    <i className="icon wb-arrow-right" />
-                    <span className="hidden-sm-down"> </span>
-                  </Button>
-
-                </div>
+                  }}
+                >
+                  <i className="icon wb-copy" />
+                  <span className="hidden-sm-down"> </span>
+                </Button>
+                <Button outline className="btn-md btn-flat" onClick={e => this.onMoveTo("previous")}>
+                  <i className="icon wb-arrow-left" />
+                  <span className="hidden-sm-down"> </span>
+                </Button>
+                <Button outline className="btn-md btn-flat" onClick={e => this.onMoveTo("next")}>
+                  <i className="icon wb-arrow-right" />
+                  <span className="hidden-sm-down"> </span>
+                </Button>
               </div>
             </div>
-
           </div>
-          {/*<!-- Forum Content -->*/}
-          {/*<div className="page-main">*/}
-          {this.state.docData.DOCNUM && <div className="panel">
+        </div>
+        {/*<!-- Forum Content -->*/}
+        {/*<div className="page-main">*/}
+        {this.state.docData.DOCNUM &&
+          <div className="panel">
             {header}
           </div>}
 
-          {/*<!-- Forum Content -->*/}
-          <div className="panel">
-            <div>
-              <DraggableContainer>
-
-                <ReactDataGrid
-                  ref={node => this.grid = node}
-                  enableCellSelect={true}
-                  columns={cols}
-                  rowGetter={this.getRowAt}
-                  rowsCount={this.getSize()}
-                  minHeight={this.state.searchGridH}
-                  onCellClick={this.handleOnCellClick}
-                  rowSelection={rowSelection}
-
-                  enableDragAndDrop={true}
-                  onRowExpandToggle={this.onRowExpandToggle}
-                  toolbar={<CustomToolbar groupBy={this.state.groupBy} onColumnGroupAdded={this.onColumnGroupAdded} onColumnGroupDeleted={this.onColumnGroupDeleted} />}
-                ></ReactDataGrid>
-              </DraggableContainer>
-            </div>
-
-            {renderActions()}
-
-            {this.state.currentModal}
+        {/*<!-- Forum Content -->*/}
+        <div className="panel">
+          <div>
+            <DraggableContainer>
+              <ReactDataGrid
+                ref={node => (this.grid = node)}
+                enableCellSelect={true}
+                columns={cols}
+                rowGetter={this.getRowAt}
+                rowsCount={this.getSize()}
+                minHeight={this.state.searchGridH}
+                onCellClick={this.handleOnCellClick}
+                rowSelection={rowSelection}
+                enableDragAndDrop={true}
+                onRowExpandToggle={this.onRowExpandToggle}
+                toolbar={<CustomToolbar groupBy={this.state.groupBy} onColumnGroupAdded={this.onColumnGroupAdded} onColumnGroupDeleted={this.onColumnGroupDeleted} />}
+              />
+            </DraggableContainer>
           </div>
+
+          {renderActions()}
+
+          {this.state.currentModal}
         </div>
-      )
+      </div>
     );
   }
 }
-
-
 
 export default DocAtualizacaoPrecos;

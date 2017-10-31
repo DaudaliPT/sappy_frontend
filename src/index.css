@@ -87,7 +87,7 @@ body.site-navbar-small {
   margin-top: 1rem;
 }
 
-.badge-pill {
+.float-right {
   float: right !important;
 }
 
@@ -683,7 +683,7 @@ textarea {
 }
 
 .ReactVirtualized__Grid__innerScrollContainer {
-  background: transparent;
+  background: #fff !important;
 }
 
 .popover td {

@@ -1,4 +1,3 @@
-
 import React, { Component } from "react";
 import { Button, Badge } from "reactstrap";
 import { hashHistory } from "react-router";
@@ -7,10 +6,10 @@ const {
   ToolsPanel: { AdvancedToolbar: Toolbar, GroupedColumnsPanel },
   Data: { Selectors },
   Draggable: { Container: DraggableContainer }
-} = require('react-data-grid/packages/react-data-grid-addons/dist/react-data-grid-addons');
-import ReactDataGrid from 'react-data-grid/packages/react-data-grid/dist/react-data-grid';
+} = require("react-data-grid/packages/react-data-grid-addons/dist/react-data-grid-addons");
+import ReactDataGrid from "react-data-grid/packages/react-data-grid/dist/react-data-grid";
 
-import { Popover, PopoverContent } from 'reactstrap';
+import { Popover, PopoverContent } from "reactstrap";
 import axios from "axios";
 import uuid from "uuid/v4";
 import SearchBar from "./SearchBar.js";
@@ -35,15 +34,12 @@ const CustomToolbar = React.createClass({
     return (
       <div className="hidden-xxl-down">
         <Toolbar>
-          <GroupedColumnsPanel groupBy={this.props.groupBy}
-            onColumnGroupAdded={this.props.onColumnGroupAdded}
-            onColumnGroupDeleted={this.props.onColumnGroupDeleted} />
+          <GroupedColumnsPanel groupBy={this.props.groupBy} onColumnGroupAdded={this.props.onColumnGroupAdded} onColumnGroupDeleted={this.props.onColumnGroupDeleted} />
         </Toolbar>
-      </div>);
+      </div>
+    );
   }
 });
-
-
 
 class CheckboxFormatter extends Component {
   render() {
@@ -51,7 +47,7 @@ class CheckboxFormatter extends Component {
     let checkboxName = "checkbox" + this.props.rowIdx;
     let disabled = this.props.column.cellClass === "locked-col"; //por que editable é colocado a false para não permiteir escrever na textbox da coluna
     return (
-      <div className="react-grid-checkbox-container checkbox-align" >
+      <div className="react-grid-checkbox-container checkbox-align">
         <input className="react-grid-checkbox" type="checkbox" name={checkboxName} checked={checked} disabled={disabled} />
         <label htmlFor={checkboxName} className="react-grid-checkbox-label" />
       </div>
@@ -72,12 +68,12 @@ class IntFormatter extends Component {
 
 class UPCPriceFormatter extends Component {
   constructor(props) {
-    super(props)
+    super(props);
 
-    this.hoverTimeOutHandle = 0
+    this.hoverTimeOutHandle = 0;
     this.state = {
       currentPopover: null
-    }
+    };
   }
   render() {
     let that = this;
@@ -87,39 +83,60 @@ class UPCPriceFormatter extends Component {
     let LAST_PRECO = 0;
 
     if (row.PREV_PRECO) PREV_PRECO = sappy.getNum(sappy.format.price(row.PREV_PRECO));
-    if (row.LAST_PRECO) LAST_PRECO = sappy.getNum(sappy.format.price(row.LAST_PRECO))
+    if (row.LAST_PRECO) LAST_PRECO = sappy.getNum(sappy.format.price(row.LAST_PRECO));
 
     if (PREV_PRECO > LAST_PRECO)
-      classes = <span className="float-left" style={{ color: "green" }}><i className="icon wb-graph-down" /></span>;
+      classes = (
+        <span className="float-left" style={{ color: "green" }}>
+          <i className="icon wb-graph-down" />
+        </span>
+      );
     if (PREV_PRECO === LAST_PRECO)
-      classes = <span className="float-left" style={{ color: "lightgrey" }}><i className="icon wb-arrow-right" /></span>;
-    if (PREV_PRECO < LAST_PRECO) classes = <span className="float-left" style={{ color: "red" }}><i className="icon wb-graph-up" /></span>;
+      classes = (
+        <span className="float-left" style={{ color: "lightgrey" }}>
+          <i className="icon wb-arrow-right" />
+        </span>
+      );
+    if (PREV_PRECO < LAST_PRECO)
+      classes = (
+        <span className="float-left" style={{ color: "red" }}>
+          <i className="icon wb-graph-up" />
+        </span>
+      );
 
     const formatedValue = sappy.format.price(this.props.value);
     return (
-      <div style={{ textAlign: "right" }} id={"upc" + row.LINENUM}
+      <div
+        style={{ textAlign: "right" }}
+        id={"upc" + row.LINENUM}
         onMouseLeave={e => {
-          if (that.hoverTimeOutHandle) clearTimeout(that.hoverTimeOutHandle)
-          that.setState({ currentPopover: null })
+          if (that.hoverTimeOutHandle) clearTimeout(that.hoverTimeOutHandle);
+          that.setState({ currentPopover: null });
         }}
         onMouseEnter={e => {
-          if (that.hoverTimeOutHandle) clearTimeout(that.hoverTimeOutHandle)
-          that.setState({ currentPopover: null })
+          if (that.hoverTimeOutHandle) clearTimeout(that.hoverTimeOutHandle);
+          that.setState({ currentPopover: null });
 
-          that.hoverTimeOutHandle = setTimeout(function () {
+          that.hoverTimeOutHandle = setTimeout(function() {
             if (that.hoverServerRequest && that.hoverServerRequest.abort) that.hoverServerRequest.abort();
             that.hoverServerRequest = axios({ method: "get", url: `api/prod/info/${row.ITEM_CODE}/upc` })
               .then(result => {
-                let content = []
+                let content = [];
 
                 if (result.data.length === 0)
-                  content.push(<tr><td>Nenhum histórico</td></tr>)
+                  content.push(
+                    <tr>
+                      <td>Nenhum histórico</td>
+                    </tr>
+                  );
                 else {
-                  content.push(<tr >
-                    <td>Data</td>
-                    <td>Fornecedor</td>
-                    <td>Preço</td>
-                  </tr>)
+                  content.push(
+                    <tr>
+                      <td>Data</td>
+                      <td>Fornecedor</td>
+                      <td>Preço</td>
+                    </tr>
+                  );
                   result.data.forEach(popuprow => {
                     let preco = "";
                     if (sappy.getNum(popuprow.PRCNET) !== 0) {
@@ -128,34 +145,53 @@ class UPCPriceFormatter extends Component {
                       preco = sappy.format.price(popuprow.PRCLIQ, 3);
                     }
 
-                    content.push(<tr >
-                      <td>{sappy.format.date(popuprow.DocDate)}</td>
-                      <td style={{ maxWidth: "130px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{popuprow.CardName}</td>
-                      <td>{preco}</td>
-                    </tr>)
+                    content.push(
+                      <tr>
+                        <td>
+                          {sappy.format.date(popuprow.DocDate)}
+                        </td>
+                        <td style={{ maxWidth: "130px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                          {popuprow.CardName}
+                        </td>
+                        <td>
+                          {preco}
+                        </td>
+                      </tr>
+                    );
                   });
                 }
 
                 let target = "upc" + row.LINENUM;
                 let $le = $("#" + target);
-                if ($le.length === 0) return console.log("popover ignored because element does not exists anymore")
+                if ($le.length === 0) return console.log("popover ignored because element does not exists anymore");
 
                 that.setState({
-                  currentPopover:
-                  <Popover isOpen={true} target={target} toggle={this.togglePopover} placement="left" onMouseLeave={e => { that.setState({ currentPopover: null }) }}>
-                    <PopoverContent><table>{content}</table></PopoverContent>
-                  </Popover>
-                })
-
+                  currentPopover: (
+                    <Popover
+                      isOpen={true}
+                      target={target}
+                      toggle={this.togglePopover}
+                      placement="left"
+                      onMouseLeave={e => {
+                        that.setState({ currentPopover: null });
+                      }}
+                    >
+                      <PopoverContent>
+                        <table>
+                          {content}
+                        </table>
+                      </PopoverContent>
+                    </Popover>
+                  )
+                });
               })
               .catch(error => sappy.showError(error, "Erro ao obter dados"));
           }, 300);
-        }} >
-
+        }}
+      >
         {this.state.currentPopover}
         {classes}
         {formatedValue}
-
       </div>
     );
   }
@@ -171,11 +207,23 @@ class NEW_PRICE_Formatter extends Component {
     if (this.props.dependentValues.NEW_PRICE) NEW_PRICE = sappy.getNum(sappy.format.price(this.props.dependentValues.NEW_PRICE));
 
     if (CURRENT_PRICE > NEW_PRICE)
-      classes = <span className="float-left" style={{ color: "green" }}><i className="icon wb-graph-down" /></span>;
+      classes = (
+        <span className="float-left" style={{ color: "green" }}>
+          <i className="icon wb-graph-down" />
+        </span>
+      );
     if (CURRENT_PRICE === NEW_PRICE)
-      classes = <span className="float-left" style={{ color: "lightgrey" }}><i className="icon wb-arrow-right" /></span>;
+      classes = (
+        <span className="float-left" style={{ color: "lightgrey" }}>
+          <i className="icon wb-arrow-right" />
+        </span>
+      );
     if (CURRENT_PRICE < NEW_PRICE)
-      classes = <span className="float-left" style={{ color: "red" }}><i className="icon wb-graph-up" /></span>;
+      classes = (
+        <span className="float-left" style={{ color: "red" }}>
+          <i className="icon wb-graph-up" />
+        </span>
+      );
 
     const formatedValue = sappy.format.price(this.props.value);
     return (
@@ -200,9 +248,17 @@ class PriceFormatter extends Component {
 
 const HeaderAlignRight = ({ column }) => {
   if (column.editable) {
-    return <div style={{ textAlign: "right" }}> <strong>{column.name}</strong> </div>;
+    return (
+      <div style={{ textAlign: "right" }}>
+        {" "}<strong>{column.name}</strong>{" "}
+      </div>
+    );
   } else {
-    return <div style={{ textAlign: "right" }}> {column.name} </div>;
+    return (
+      <div style={{ textAlign: "right" }}>
+        {" "}{column.name}{" "}
+      </div>
+    );
   }
 };
 
@@ -219,13 +275,21 @@ class PercentFormatter extends Component {
 
 class SimpleFormatter extends Component {
   render() {
-    return <div> {this.props.value || ""}</div>;
+    return (
+      <div>
+        {" "}{this.props.value || ""}
+      </div>
+    );
   }
 }
 
 class DateFormatter extends Component {
   render() {
-    return <div> {this.props.value ? sappy.format.date(this.props.value) : ''}</div>;
+    return (
+      <div>
+        {" "}{this.props.value ? sappy.format.date(this.props.value) : ""}
+      </div>
+    );
   }
 }
 class DescritptionFormatter extends Component {
@@ -238,11 +302,23 @@ class DescritptionFormatter extends Component {
           if (ix === 0) {
             return item;
           } else if (item === "MP") {
-            return <Badge key={uuid()} color="primary" pill>{item}</Badge>;
+            return (
+              <Badge key={uuid()} color="primary" pill>
+                {item}
+              </Badge>
+            );
           } else if (item === "PV") {
-            return <Badge key={uuid()} color="success" pill>{item}</Badge>;
+            return (
+              <Badge key={uuid()} color="success" pill>
+                {item}
+              </Badge>
+            );
           } else {
-            return <Badge key={uuid()} color="danger" pill>{item}</Badge>;
+            return (
+              <Badge key={uuid()} color="danger" pill>
+                {item}
+              </Badge>
+            );
           }
         });
       }
@@ -258,10 +334,10 @@ class DescritptionFormatter extends Component {
 
 class ItemCodeFormater extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       currentModal: null
-    }
+    };
   }
   render() {
     let that = this;
@@ -274,22 +350,25 @@ class ItemCodeFormater extends Component {
       });
     };
 
-    return <div     >
-      <i className="icon fa-arrow-circle-right" aria-hidden="true" onClick={e => {
-        that.setState({
-          currentModal: <EditModal toggleModal={toggleModal} itemcode={itemCode} />
-        });
-      }} />
-      {" "}
-      {this.props.value || ""}
-      {this.state.currentModal}
-    </div>;
+    return (
+      <div>
+        <i
+          className="icon fa-arrow-circle-right"
+          aria-hidden="true"
+          onClick={e => {
+            that.setState({
+              currentModal: <EditModal toggleModal={toggleModal} itemcode={itemCode} />
+            });
+          }}
+        />{" "}
+        {this.props.value || ""}
+        {this.state.currentModal}
+      </div>
+    );
   }
 }
 
-const getinitialState = (props) => {
-
-
+const getinitialState = props => {
   let locationState = props.location.state || {};
 
   return {
@@ -307,7 +386,7 @@ const getinitialState = (props) => {
     expandedRows: {},
     rows: []
   };
-}
+};
 
 class DocAtualizacaoPrecos extends Component {
   constructor(props) {
@@ -353,14 +432,14 @@ class DocAtualizacaoPrecos extends Component {
         width: 230,
         formatter: ItemCodeFormater,
         getRowMetaData: row => row
-      }
+      };
     }
 
     return [
       { key: "LINENUM", name: "#", width: 40, formatter: SimpleFormatter },
       itemCodeCol,
       { key: "Origem", name: "", draggable: true, width: 1 },
-      { key: "ITEM_NAME_WITH_TAGS", name: "Descrição", width: 400, formatter: DescritptionFormatter },
+      { key: "ITEM_NAME_TAGS", name: "Descrição", width: 400, formatter: DescritptionFormatter },
       { key: "STOCK", name: "Stock", width: 100, formatter: IntFormatter, headerRenderer: HeaderAlignRight },
       // {key: "UPC_NETNET", name: "Pr NET Ant", width: 100, formatter: PriceFormatter },
       // {key: "PREV_DOCDATE", name: "DT-1", width: 100, formatter: SimpleFormatter },
@@ -453,8 +532,7 @@ class DocAtualizacaoPrecos extends Component {
     let locationState = this.props.location.state || {};
     let nextlocationState = nextProps.location.state || {};
 
-    if (locationState.id !== nextlocationState.id)
-      this.setState(getinitialState(nextProps), this.loadDoc);;
+    if (locationState.id !== nextlocationState.id) this.setState(getinitialState(nextProps), this.loadDoc);
   }
 
   onMoveTo(nextORprevious) {
@@ -463,8 +541,7 @@ class DocAtualizacaoPrecos extends Component {
       url: `/api/precos/doc/${this.state.docData.ID}/${nextORprevious}`
     })
       .then(result => {
-        if (result.data)
-          hashHistory.push({ pathname: "/inv/prices/doc", state: { id: result.data } });
+        if (result.data) hashHistory.push({ pathname: "/inv/prices/doc", state: { id: result.data } });
       })
       .catch(error => sappy.showError(error, "Erro ao obter dados"));
   }
@@ -473,15 +550,14 @@ class DocAtualizacaoPrecos extends Component {
     let that = this;
     axios
       .get(`api/reports/LayoutCode/SAPPY001`)
-      .then(function (result) {
+      .then(function(result) {
         that.setState({
           defaultLayoutCode: result.data.LayoutCode
         });
       })
-      .catch(function (error) {
-        if (!error.__CANCEL__) sappy.showError(error, "Api error")
+      .catch(function(error) {
+        if (!error.__CANCEL__) sappy.showError(error, "Api error");
       });
-
 
     let keyBuffer = "";
 
@@ -499,7 +575,7 @@ class DocAtualizacaoPrecos extends Component {
           keyBuffer += e.key;
         }
 
-        scannerPerformSearchTimeout = setTimeout(function () {
+        scannerPerformSearchTimeout = setTimeout(function() {
           that.setState(
             {
               searchText: keyBuffer,
@@ -523,19 +599,21 @@ class DocAtualizacaoPrecos extends Component {
 
   loadDoc() {
     let that = this;
-    let locationState = this.props.location.state || {}
+    let locationState = this.props.location.state || {};
     if (locationState.id) {
       this.serverRequest = axios
         .get(`/api/precos/doc/${locationState.id}`)
-        .then(function (result) {
+        .then(function(result) {
           let docData = result.data;
-          that.setState({
-            loading: false,
-            docData,
-            rows: [...docData.LINES],
-            groupBy: docData.DOCS.length > 0 ? [{ key: "Origem", name: "Grupo" }] : []
-          }
-            , that.calcSearchGridH);
+          that.setState(
+            {
+              loading: false,
+              docData,
+              rows: [...docData.LINES],
+              groupBy: docData.DOCS.length > 0 ? [{ key: "Origem", name: "Grupo" }] : []
+            },
+            that.calcSearchGridH
+          );
         })
         .catch(error => sappy.showError(error, "Erro ao obter dados"));
     }
@@ -567,7 +645,7 @@ class DocAtualizacaoPrecos extends Component {
         searchText: e.target.value,
         totalInfo: { Total: 0 }
       },
-      function () {
+      function() {
         //prevent sending to server multime requestes qhen typing
         if (that.lastTxtSearchTimer) clearTimeout(that.lastTxtSearchTimer);
         that.lastTxtSearchTimer = setTimeout(that.findAndGetFirstRows, 500);
@@ -598,18 +676,18 @@ class DocAtualizacaoPrecos extends Component {
           that.ensureDocHeaderExists(() => {
             that.createDocLines([listItems[0].ItemCode]);
           });
-          that.setState({ searchText: "" })
+          that.setState({ searchText: "" });
         } else if (found > 1) {
           that.setState({
-            currentModal: <ModalSearchOitm toggleModal={this.handleModalSearchClose} searchText={this.state.searchText} />
-            , searchText: ""
+            currentModal: <ModalSearchOitm toggleModal={this.handleModalSearchClose} searchText={this.state.searchText} />,
+            searchText: ""
           });
         } else {
         }
       })
-      .catch(function (error) {
-        if (!error.__CANCEL__) sappy.showError(error, "Api error")
-        that.setState({ searchText: "" })
+      .catch(function(error) {
+        if (!error.__CANCEL__) sappy.showError(error, "Api error");
+        that.setState({ searchText: "" });
       });
   }
 
@@ -628,7 +706,7 @@ class DocAtualizacaoPrecos extends Component {
     } else {
       this.serverRequest = axios
         .post(`/api/precos/doc`)
-        .then(function (result) {
+        .then(function(result) {
           let docData = that.state.docData;
           docData = { ...docData, ...result.data };
           that.setState({ docData, rows: [] });
@@ -643,7 +721,7 @@ class DocAtualizacaoPrecos extends Component {
     let that = this;
     this.serverRequest = axios
       .post(`/api/precos/doc/${this.state.docData.ID}/lines`, { itemCodes })
-      .then(function (result) {
+      .then(function(result) {
         that.setState({
           rows: result.data,
           searchText: "",
@@ -666,7 +744,7 @@ class DocAtualizacaoPrecos extends Component {
     let colUpdated = Object.keys(updated)[0];
     let newValue = updated[colUpdated];
 
-    if (newValue.replace) updated[colUpdated] = newValue.replace(',', '.');
+    if (newValue.replace) updated[colUpdated] = newValue.replace(",", ".");
 
     for (var index = fromRow; index <= toRow; index++) {
       let ix = index;
@@ -674,13 +752,13 @@ class DocAtualizacaoPrecos extends Component {
 
       this.serverRequest = axios
         .patch(`/api/precos/doc/${this.state.docData.ID}/line/${currentRow.LINENUM}`, { ...updated })
-        .then(function (result) {
+        .then(function(result) {
           let rows = that.getRows();
           let row = rows[ix];
           let rows_orig = [...that.state.rows];
           let row_orig = rows_orig.find(r => r.LINENUM === row.LINENUM);
 
-          Object.assign(row_orig, result.data);// = result.data;
+          Object.assign(row_orig, result.data); // = result.data;
           that.setState({ rows_orig });
         })
         .catch(error => sappy.showError(error, "Erro ao gravar linha"));
@@ -707,7 +785,6 @@ class DocAtualizacaoPrecos extends Component {
     this.setState({ selectedIndexes: this.state.selectedIndexes.filter(i => rowIndexes.indexOf(i) === -1) });
   }
 
-
   getRows() {
     let rows = Selectors.getRows(this.state);
     return rows;
@@ -722,17 +799,14 @@ class DocAtualizacaoPrecos extends Component {
     return this.getRows().length;
   }
 
-
-
   onColumnGroupAdded(colName) {
-
     let documentoBloqueado = this.state.docData.DOCNUM > 0;
     let baseadoEmDocumentos = this.state.docData.DOCS && this.state.docData.DOCS.length !== 0;
 
-    let columns = this.getColumns({ allowEdit: !documentoBloqueado, baseadoEmDocumentos })
+    let columns = this.getColumns({ allowEdit: !documentoBloqueado, baseadoEmDocumentos });
     let columnGroups = this.state.groupBy.slice(0);
-    let activeColumn = columns.find((c) => c.key === colName)
-    let isNotInGroups = columnGroups.find((c) => activeColumn.key === c.name) == null;
+    let activeColumn = columns.find(c => c.key === colName);
+    let isNotInGroups = columnGroups.find(c => activeColumn.key === c.name) == null;
     if (isNotInGroups) {
       columnGroups.push({ key: activeColumn.key, name: activeColumn.name });
     }
@@ -741,8 +815,8 @@ class DocAtualizacaoPrecos extends Component {
   }
 
   onColumnGroupDeleted(name) {
-    let columnGroups = this.state.groupBy.filter(function (g) {
-      return typeof g === 'string' ? g !== name : g.key !== name;
+    let columnGroups = this.state.groupBy.filter(function(g) {
+      return typeof g === "string" ? g !== name : g.key !== name;
     });
     this.setState({ groupBy: columnGroups });
   }
@@ -760,9 +834,7 @@ class DocAtualizacaoPrecos extends Component {
     let documentoBloqueado = this.state.docData.DOCNUM > 0;
     let baseadoEmDocumentos = this.state.docData.DOCS && this.state.docData.DOCS.length !== 0;
 
-
-    let cols = this.getColumns({ allowEdit: !documentoBloqueado, baseadoEmDocumentos })
-
+    let cols = this.getColumns({ allowEdit: !documentoBloqueado, baseadoEmDocumentos });
 
     // var that = this;
     let rowSelection = {
@@ -784,19 +856,19 @@ class DocAtualizacaoPrecos extends Component {
           icon: "icon fa-print",
           visible: documentoBloqueado,
           onClick: e => {
-
             let docNumArray = [this.state.docData.DOCNUM];
 
             this.setState({
               currentModal: (
                 <ModalConfirmPrint
-                  setCurrentModal={({ currentModal }) => { this.setState({ currentModal }); }}
+                  setCurrentModal={({ currentModal }) => {
+                    this.setState({ currentModal });
+                  }}
                   defaultLayoutCode={this.state.defaultLayoutCode}
                   docNumArray={docNumArray}
                 />
               )
             });
-
           }
         },
         {
@@ -813,7 +885,7 @@ class DocAtualizacaoPrecos extends Component {
                     if (result === "CONFIRMADO") {
                       this.serverRequest = axios
                         .delete(`/api/precos/doc/${this.state.docData.ID}`)
-                        .then(function (result) {
+                        .then(function(result) {
                           hashHistory.goBack();
                         })
                         .catch(error => sappy.showError(error, "Erro ao apagar dados"));
@@ -837,7 +909,7 @@ class DocAtualizacaoPrecos extends Component {
           visible: !documentoBloqueado && this.state.selectedIndexes.length > 0,
           onClick: e => {
             let rows = that.getRows();
-            let LINENUMS = that.state.selectedIndexes.map(i => rows[i].LINENUM)
+            let LINENUMS = that.state.selectedIndexes.map(i => rows[i].LINENUM);
 
             this.setState({
               currentModal: (
@@ -849,15 +921,15 @@ class DocAtualizacaoPrecos extends Component {
                         .post(`/api/precos/doc/${this.state.docData.ID}/deletelines`, {
                           Lines: LINENUMS
                         })
-                        .then(function (result) {
+                        .then(function(result) {
                           let rows = that.getRows();
 
                           LINENUMS.forEach(LINENUM => {
                             let ix = rows.findIndex(r => r.LINENUM === LINENUM);
-                            if (ix >= 0) rows.splice(ix, 1)
-                          })
+                            if (ix >= 0) rows.splice(ix, 1);
+                          });
 
-                          that.setState({ rows, selectedIndexes: [] })
+                          that.setState({ rows, selectedIndexes: [] });
                         })
                         .catch(error => sappy.showError(error, "Erro ao apagar linhas"));
                     }
@@ -896,8 +968,8 @@ class DocAtualizacaoPrecos extends Component {
 
             this.setState({
               currentModal: (
-                <ModalConfirmDoc temUpdates={temUpdates}
-
+                <ModalConfirmDoc
+                  temUpdates={temUpdates}
                   toggleModal={(result, modalState) => {
                     this.setState({ currentModal: null });
                     if (result === "CONFIRMADO") {
@@ -906,7 +978,7 @@ class DocAtualizacaoPrecos extends Component {
                           imediatamente: modalState.imediatamente,
                           data: modalState.data
                         })
-                        .then(function (result) {
+                        .then(function(result) {
                           hashHistory.goBack();
                         })
                         .catch(error => sappy.showError(error, "Erro ao confirmar documento"));
@@ -940,7 +1012,7 @@ class DocAtualizacaoPrecos extends Component {
             </div>
           );
         } else {
-          return null
+          return null;
         }
       };
 
@@ -956,8 +1028,9 @@ class DocAtualizacaoPrecos extends Component {
                   <span>
                     <i className={action.icon} aria-hidden="true" />
 
-                    <span className="hidden-sm-down">  {action.name}</span>
-
+                    <span className="hidden-sm-down">
+                      {" "}{action.name}
+                    </span>
                   </span>
                 </button>
               );
@@ -967,48 +1040,41 @@ class DocAtualizacaoPrecos extends Component {
       );
     };
 
-    let header = <div>
-      <div className="row">
-        <div className="col-lg-8">
-          <TextBox name="Tipo" label="Tipo:" disabled={true} value={this.state.docData.OBSERVACOES} />
-        </div>
-        <div className="col-lg-4">
-
-          <div className="row">
-            <div className="col-6">
-              <TextBox
-                name="Data"
-                label="Data:"
-                disabled={true}
-                value={sappy.format.datetime2(this.state.docData.CONFIRMED || this.state.docData.DATA)}
-              />
+    let header = (
+      <div>
+        <div className="row">
+          <div className="col-lg-8">
+            <TextBox name="Tipo" label="Tipo:" disabled={true} value={this.state.docData.OBSERVACOES} />
+          </div>
+          <div className="col-lg-4">
+            <div className="row">
+              <div className="col-6">
+                <TextBox name="Data" label="Data:" disabled={true} value={sappy.format.datetime2(this.state.docData.CONFIRMED || this.state.docData.DATA)} />
+              </div>
+              <div className="col-6">
+                <TextBox name="Numero" label="Numero:" disabled={true} value={this.state.docData.DOCNUM || (this.state.docData.ID || "novo") + " (draft)"} />
+              </div>
             </div>
-            <div className="col-6">
-              <TextBox
-                name="Numero"
-                label="Numero:"
-                disabled={true}
-                value={this.state.docData.DOCNUM || ((this.state.docData.ID || "novo") + " (draft)")}
-              />
-            </div>
-
           </div>
         </div>
       </div>
-    </div>;
+    );
     return (
       // <div className="">
-      (
-        <div className="page">
-
-          <div className="page-header container-fluid">
-            <div className="row">
-              <div className="col-xl-8 col-md-4">
-                <h5 className="page-title">Atualização de preços {this.state.docData.DOCNUM && this.state.docData.DOCNUM} </h5>
-              </div>
-              <div className="col-xl-4 col-md-8">
-                <div className="sappy-action-bar animation-slide-left">
-                  <Button outline className="btn-md btn-flat" onClick={e => {
+      <div className="page">
+        <div className="page-header container-fluid">
+          <div className="row">
+            <div className="col-xl-8 col-md-4">
+              <h5 className="page-title">
+                Atualização de preços {this.state.docData.DOCNUM && this.state.docData.DOCNUM}{" "}
+              </h5>
+            </div>
+            <div className="col-xl-4 col-md-8">
+              <div className="sappy-action-bar animation-slide-left">
+                <Button
+                  outline
+                  className="btn-md btn-flat"
+                  onClick={e => {
                     this.setState({
                       currentModal: (
                         <ModalMessageConfirm
@@ -1017,7 +1083,7 @@ class DocAtualizacaoPrecos extends Component {
                             if (result === "CONFIRMADO") {
                               this.serverRequest = axios
                                 .post(`/api/precos/doc/${this.state.docData.ID}/clone`)
-                                .then(function (result) {
+                                .then(function(result) {
                                   hashHistory.push({ pathname: "/inv/prices/doc", state: { id: result.data.newID } });
                                 })
                                 .catch(error => sappy.showError(error, "Erro ao duplicar dados"));
@@ -1032,92 +1098,90 @@ class DocAtualizacaoPrecos extends Component {
                         />
                       )
                     });
-                  }}>
-                    <i className="icon wb-copy" />
-                    <span className="hidden-sm-down"> </span>
-                  </Button>
-                  <Button outline className="btn-md btn-flat" onClick={e => this.onMoveTo('previous')}>
-                    <i className="icon wb-arrow-left" />
-                    <span className="hidden-sm-down"> </span>
-                  </Button>
-                  <Button outline className="btn-md btn-flat" onClick={e => this.onMoveTo('next')}>
-                    <i className="icon wb-arrow-right" />
-                    <span className="hidden-sm-down"> </span>
-                  </Button>
-
-                </div>
+                  }}
+                >
+                  <i className="icon wb-copy" />
+                  <span className="hidden-sm-down"> </span>
+                </Button>
+                <Button outline className="btn-md btn-flat" onClick={e => this.onMoveTo("previous")}>
+                  <i className="icon wb-arrow-left" />
+                  <span className="hidden-sm-down"> </span>
+                </Button>
+                <Button outline className="btn-md btn-flat" onClick={e => this.onMoveTo("next")}>
+                  <i className="icon wb-arrow-right" />
+                  <span className="hidden-sm-down"> </span>
+                </Button>
               </div>
             </div>
-
           </div>
-          {/*<!-- Forum Content -->*/}
-          {/*<div className="page-main">*/}
-          {this.state.docData.DOCNUM && <div className="panel">
+        </div>
+        {/*<!-- Forum Content -->*/}
+        {/*<div className="page-main">*/}
+        {this.state.docData.DOCNUM &&
+          <div className="panel">
             {header}
           </div>}
 
-          {/*<!-- Forum Content -->*/}
-          <div className="panel">
-            <div>
-              <DraggableContainer>
+        {/*<!-- Forum Content -->*/}
+        <div className="panel">
+          <div>
+            <DraggableContainer>
+              <ReactDataGrid
+                ref={node => (this.grid = node)}
+                enableCellSelect={true}
+                columns={cols}
+                rowGetter={this.getRowAt}
+                rowsCount={this.getSize()}
+                minHeight={this.state.searchGridH}
+                onGridRowsUpdated={this.handleGridRowsUpdated}
+                onCellClick={this.handleOnCellClick}
+                rowSelection={rowSelection}
+                rowGroupRenderer={props => {
+                  let treeDepth = props.treeDepth || 0;
+                  let marginLeft = treeDepth * 20;
 
-                <ReactDataGrid
-                  ref={node => this.grid = node}
-                  enableCellSelect={true}
-                  columns={cols}
-                  rowGetter={this.getRowAt}
-                  rowsCount={this.getSize()}
-                  minHeight={this.state.searchGridH}
-                  onGridRowsUpdated={this.handleGridRowsUpdated}
-                  onCellClick={this.handleOnCellClick}
-                  rowSelection={rowSelection}
-                  rowGroupRenderer={(props) => {
-                    let treeDepth = props.treeDepth || 0;
-                    let marginLeft = treeDepth * 20;
+                  let style = {
+                    height: "50px",
+                    border: "1px solid #dddddd",
+                    paddingTop: "15px",
+                    paddingLeft: "5px"
+                  };
 
-                    let style = {
-                      height: '50px',
-                      border: '1px solid #dddddd',
-                      paddingTop: '15px',
-                      paddingLeft: '5px'
-                    };
+                  let onKeyDown = e => {
+                    if (e.key === "ArrowLeft") return props.onRowExpandToggle(false);
+                    if (e.key === "ArrowRight") return props.onRowExpandToggle(true);
+                    if (e.key === "Enter") return props.onRowExpandToggle(!props.isExpanded);
+                  };
 
-                    let onKeyDown = (e) => {
-                      if (e.key === 'ArrowLeft') return props.onRowExpandToggle(false);
-                      if (e.key === 'ArrowRight') return props.onRowExpandToggle(true);
-                      if (e.key === 'Enter') return props.onRowExpandToggle(!props.isExpanded);
-                    }
+                  /* let text = props.name.split('|')[0]; */
+                  let linkType = props.name.split("|")[1];
+                  let linkEntry = props.name.split("|")[2];
 
-
-                    /* let text = props.name.split('|')[0]; */
-                    let linkType = props.name.split('|')[1];
-                    let linkEntry = props.name.split('|')[2];
-
-                    return (
-                      <div style={style} onKeyDown={onKeyDown} tabIndex={0}>
-                        <span className="row-expand-icon" style={{ float: 'left', marginLeft: marginLeft, cursor: 'pointer' }} onClick={props.onRowExpandClick} >{props.isExpanded ? String.fromCharCode('9660') : String.fromCharCode('9658')}</span>
-                        <strong>{props.columnGroupName}:                                {sappy.GetLinkTo(linkType, linkEntry)}                          {props.name}</strong>
-                      </div>
-                    );
-                  }}
-
-                  enableDragAndDrop={true}
-                  onRowExpandToggle={this.onRowExpandToggle}
-                  toolbar={<CustomToolbar groupBy={this.state.groupBy} onColumnGroupAdded={this.onColumnGroupAdded} onColumnGroupDeleted={this.onColumnGroupDeleted} />}
-                ></ReactDataGrid>
-              </DraggableContainer>
-            </div>
-
-            {renderActions()}
-
-            {this.state.currentModal}
+                  return (
+                    <div style={style} onKeyDown={onKeyDown} tabIndex={0}>
+                      <span className="row-expand-icon" style={{ float: "left", marginLeft: marginLeft, cursor: "pointer" }} onClick={props.onRowExpandClick}>
+                        {props.isExpanded ? String.fromCharCode("9660") : String.fromCharCode("9658")}
+                      </span>
+                      <strong>
+                        {props.columnGroupName}: {sappy.GetLinkTo(linkType, linkEntry)} {props.name}
+                      </strong>
+                    </div>
+                  );
+                }}
+                enableDragAndDrop={true}
+                onRowExpandToggle={this.onRowExpandToggle}
+                toolbar={<CustomToolbar groupBy={this.state.groupBy} onColumnGroupAdded={this.onColumnGroupAdded} onColumnGroupDeleted={this.onColumnGroupDeleted} />}
+              />
+            </DraggableContainer>
           </div>
-        </div >
-      )
+
+          {renderActions()}
+
+          {this.state.currentModal}
+        </div>
+      </div>
     );
   }
 }
-
-
 
 export default DocAtualizacaoPrecos;

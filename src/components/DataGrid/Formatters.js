@@ -32,6 +32,12 @@ class DefaultFormater extends Component {
       };
     }
 
+    let getCellStyle = this.props.column.getCellStyle;
+    let classes = "";
+    if (getCellStyle && typeof getCellStyle === "function") {
+      classes = getCellStyle(this.props);
+    }
+
     let formatedValue;
 
     if (type === "quantity") formatedValue = value === null ? null : sappy.format.quantity(sappy.getNum(value));
@@ -44,7 +50,7 @@ class DefaultFormater extends Component {
     if ("quantity,price,amount,integer".indexOf(type) > -1) style.textAlign = "right";
 
     return (
-      <div id={divID} style={style} title={hover ? "" : value} onMouseLeave={onMouseLeave} onMouseEnter={onMouseEnter}>
+      <div id={divID} className={classes} style={style} title={hover ? "" : value} onMouseLeave={onMouseLeave} onMouseEnter={onMouseEnter}>
         {onLinkClick && <i className="icon fa-arrow-circle-right" aria-hidden="true" onClick={e => onLinkClick(this.props)} />}
         {onLinkClick && " "}
         {formatedValue}
@@ -195,34 +201,73 @@ class VatPercentFormatter extends Component {
 
 class TagsFormatter extends Component {
   render() {
-    let tagsValue = this.props.value;
-    let dependentValues = this.props.dependentValues || {};
-    if (dependentValues.hasOwnProperty(this.props.column.key + "_WITH_TAGS")) {
-      tagsValue = dependentValues[this.props.column.key + "_WITH_TAGS"];
-    }
+    let key = this.props.column.key;
 
-    const badges = tagsValue.split("|");
+    let value = this.props.value;
+    let dependentValues = this.props.dependentValues || {};
+    let countValue = dependentValues[key + "_COUNT"];
+    let alertValue = dependentValues[key + "_ALERT"];
+    let tagsValue = dependentValues[key + "_TAGS"] || "";
+
+    const renderCount = () => {
+      if (countValue > 1) {
+        return (
+          <span
+            key={uuid()}
+            style={{
+              paddingLeft: "5px",
+              color: "rgba(236, 140, 50, 0.5)",
+              position: "relative",
+              top: "-5px",
+              fontSize: ".8rem",
+              fontWeight: "500"
+            }}
+          >
+            (x{countValue})
+          </span>
+        );
+      }
+      return null;
+    };
+
+    const renderAlert = () => {
+      if (alertValue) {
+        return (
+          <span
+            key={uuid()}
+            style={{
+              paddingLeft: "5px",
+              color: "rgba(236, 140, 50, 0.9)",
+              fontSize: "1.3rem"
+            }}
+            title={alertValue}
+          >
+            <i className="icon fa-warning" />
+          </span>
+        );
+      }
+      return null;
+    };
 
     const renderBadges = () => {
+      const badges = tagsValue.split("|");
       if (badges.map) {
         return badges.map((item, ix) => {
-          if (ix === 0) {
-            return item;
-          } else if (item === "MP") {
+          if (item === "MP") {
             return (
-              <Badge key={uuid()} color="primary" pill>
+              <Badge key={uuid()} color="primary" pill className="float-right">
                 {item}
               </Badge>
             );
           } else if (item === "PV") {
             return (
-              <Badge key={uuid()} color="success" pill>
+              <Badge key={uuid()} color="success" pill className="float-right">
                 {item}
               </Badge>
             );
           } else {
             return (
-              <Badge key={uuid()} color="danger" pill>
+              <Badge key={uuid()} color="danger" pill className="float-right">
                 {item}
               </Badge>
             );
@@ -233,6 +278,9 @@ class TagsFormatter extends Component {
 
     return (
       <div>
+        {value}
+        {renderCount()}
+        {renderAlert()}
         {renderBadges()}
       </div>
     );

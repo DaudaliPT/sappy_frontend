@@ -113,7 +113,7 @@ import axios from "axios";
         // Se 0 a z    [0-9] e [A-Z] e [a-z]
         if (e.which >= 48 && e.which <= 122) {
           charBuffer.push(String.fromCharCode(e.which));
-          console.log(e.which + ":" + charBuffer.join("|"));
+          // console.log(e.which + ":" + charBuffer.join("|"));
 
           if (timeOutHandler) {
             clearTimeout(timeOutHandler);
@@ -125,6 +125,7 @@ import axios from "axios";
           }, 50);
         } else {
           charBuffer = []; //clear buffer
+          isHuman = true;
         }
       },
       useCapturingFase

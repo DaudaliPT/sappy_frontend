@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ReactDataGrid from "react-data-grid/packages/react-data-grid/dist/react-data-grid";
+import ReactDataGrid, { Cell } from "react-data-grid/packages/react-data-grid/dist/react-data-grid";
 const sappy = window.sappy;
 const $ = window.$;
 import HeaderAlignRight from "./HeaderAlignRight";
@@ -7,8 +7,6 @@ import Formatters from "./Formatters";
 import Editors from "./Editors";
 
 const { ToolsPanel: { AdvancedToolbar, GroupedColumnsPanel }, Data: { Selectors }, Draggable } = require("react-data-grid/packages/react-data-grid-addons/dist/react-data-grid-addons");
-
-const RowRenderer = Draggable.DropTargetRowContainer(ReactDataGrid.Row);
 
 class DataGrid extends Component {
   constructor(props) {
@@ -29,6 +27,17 @@ class DataGrid extends Component {
     this.getSelectedRows = this.getSelectedRows.bind(this);
     this.scrollToRow = this.scrollToRow.bind(this);
     this.focusCell = this.focusCell.bind(this);
+
+    let that = this;
+    class myRowRenderer extends Component {
+      render() {
+        let extraClasses = "";
+        if (that.props.getRowStyle) extraClasses = that.props.getRowStyle(this.props);
+        return <ReactDataGrid.Row {...this.props} extraClasses={extraClasses} />;
+      }
+    }
+
+    this.RowRenderer = Draggable.DropTargetRowContainer(myRowRenderer);
 
     this.state = this.createStateFromProps(props);
   }
@@ -127,9 +136,9 @@ class DataGrid extends Component {
     let that = this;
     let ll = document.activeElement;
     setTimeout(() => {
-      var $e = $(".react-grid-Row .editable-col");
-      $e[0].focus();
-      that.thisComponent.onSelect({ rowIdx, idx });
+      var $e = $(".react-grid-Row .react-grid-Cell");
+      $e[idx].focus();
+      that.thisComponent.onSelect({ rowIdx, idx: idx + 1 });
     }, 10);
   }
 
@@ -144,15 +153,17 @@ class DataGrid extends Component {
 
     let ret = props.fields.map((field, ix) => {
       let editable = props.disabled ? false : field.editable;
+      let cellClass = editable ? "editable-col" : "locked-col";
       let col = {
         key: field.name,
         name: field.label,
         width: field.width || 100,
         condition: field.condition,
+        getCellStyle: field.getCellStyle,
         hover: field.hover,
         editable,
         editor: editable ? Editors.Default : null,
-        cellClass: editable ? "editable-col" : "locked-col",
+        cellClass,
         formatter: Formatters.Default,
         onLinkClick: field.onLinkClick,
         getRowMetaData: row => row,
@@ -375,6 +386,7 @@ class DataGrid extends Component {
   }
 
   render() {
+    let RowRenderer = this.RowRenderer;
     return (
       <Draggable.Container>
         <ReactDataGrid

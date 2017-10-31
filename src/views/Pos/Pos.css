@@ -119,6 +119,17 @@
   color: #dedede;
 }
 
+.pos .ReactVirtualized__Grid__innerScrollContainer {
+  background: transparent !important;
+}
+.has-promo {
+  background-color: rgba(70, 190, 138, 0.2) !important;
+  color: rgba(120, 240, 188, 1) !important;
+}
+.bellow-cost {
+  color: rgb(237, 103, 99) !important;
+}
+
 .posMenu-action {
   width: 25%;
   height: 80%;
@@ -269,8 +280,8 @@
   color: #fefefe !important;
 }
 
-.pos .react-grid-Cell.pinHeader-col {
-  color: #fefefe !important;
+.pos .react-grid-Cell.editable-col {
+  color: inherit !important;
   font-weight: 500;
 }
 

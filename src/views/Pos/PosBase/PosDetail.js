@@ -26,8 +26,16 @@ class PosDetail extends PureComponent {
               ref="grid"
               height={this.props.height}
               fields={this.props.fields}
-              disabled={this.props.docData.DOCNUM > 0 ? true : false}
+              disabled={false}
               rows={LINES}
+              getRowStyle={props => {
+                let row = props.row;
+                let classes = "";
+                if (row.IDPROMO) classes += "has-promo";
+                // if (sappy.getNum(row.AvgPrice) * sappy.getNum(row.QTSTK) > sappy.getNum(row.LINETOTAL)) classes += " bellow-cost";
+
+                return classes;
+              }}
               onRowUpdate={this.props.onRowUpdate}
               onRowSelectionChange={this.props.onRowSelectionChange}
               selectedKeys={this.props.selectedKeys}

@@ -20,12 +20,7 @@ class PosHeader extends Component {
         Object.keys(this.props.docData).forEach(field => (route = route.replace("<" + field + ">", this.props.docData[field])));
       }
 
-      let enabled = true;
-      if (this.props.docData.DOCNUM > 0) {
-        enabled = this.props.pinHeader && headerField.savedPinHeader;
-      } else {
-        enabled = !headerField.disabled;
-      }
+      let enabled = !headerField.disabled;
 
       let commonProps = {
         name: headerField.name,

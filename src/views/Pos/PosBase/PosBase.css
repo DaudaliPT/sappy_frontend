@@ -4,8 +4,8 @@
   top: 0;
   bottom: 0;
   right: 0;
-  width: 90%;
-  height: calc(100% - 95px);
+  width: calc(100% - 30px);
+  height: calc(100% - 30px);
   overflow-y: auto;
   margin: auto;
   /* animation */
@@ -29,6 +29,7 @@
   /* letter-spacing: 1px; */
   color: rgba(255, 255, 255, 0.5) !important;
 }
+
 #posFooter {
   background: rgba(32, 46, 55, 0.9);
   padding: 0px 19px !important;

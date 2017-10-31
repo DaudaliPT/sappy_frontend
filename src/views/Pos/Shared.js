@@ -53,9 +53,9 @@ exports.prepareDocType = function({ tableName }) {
     });
   }
   headerFields.line2.push({
-    name: "NUMATCARD",
-    label: numatcardLabel,
-    type: "text",
+    name: "TAXDATE",
+    label: "Data",
+    type: "date",
     gridSize: 2,
     required: false
   });
@@ -66,41 +66,54 @@ exports.prepareDocType = function({ tableName }) {
     gridSize: 5
   });
 
+  let getCellStyle = props => {
+    let { column, dependentValues, rowIdx, value } = props;
+    let classes = "";
+    if (sappy.getNum(dependentValues.PRICE_CHANGED)) classes += " bellow-cost";
+
+    return classes;
+  };
+
   let detailFields = [];
   detailFields.push({
     name: "ITEMNAME",
     label: "Descrição",
     type: "tags",
     width: 400,
-    editable: false
+    editable: false,
+    getCellStyle
   });
   detailFields.push({
     name: "QTCX",
     label: "Cx",
     type: "quantity",
     width: 60,
-    editable: true
+    editable: true,
+    getCellStyle
   });
   detailFields.push({
     name: "QTPK",
     label: "Pk",
     type: "quantity",
     width: 60,
-    editable: true
+    editable: true,
+    getCellStyle
   });
   detailFields.push({
     name: "QTSTK",
     label: "Qtd",
     type: "quantity",
     width: 60,
-    editable: true
+    editable: true,
+    getCellStyle
   });
   detailFields.push({
     name: "QTBONUS",
     label: "Qt.Bónus",
     type: "bonus",
     width: 120,
-    editable: true
+    editable: true,
+    getCellStyle
   });
   detailFields.push({
     name: "PRICE",
@@ -108,21 +121,24 @@ exports.prepareDocType = function({ tableName }) {
     type: "price",
     width: 70,
     editable: true,
-    hover: priceHover
+    hover: priceHover,
+    getCellStyle
   });
   detailFields.push({
     name: "USER_DISC",
     label: "Descontos",
     type: "text",
     width: 120,
-    editable: true
+    editable: true,
+    getCellStyle
   });
   detailFields.push({
     name: "VATGROUP",
     label: "IVA",
     type: "vatpercent",
     width: 40,
-    editable: false
+    editable: false,
+    getCellStyle
   });
 
   return {

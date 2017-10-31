@@ -68,7 +68,7 @@ class PosBase extends Component {
     let docHeight = $("#pos").height();
     let detailsTop = $("#posDetail").position().top;
     let detail = { ...this.state.detail };
-    detail.height = docHeight - detailsTop - 36;
+    detail.height = docHeight - detailsTop - 70;
 
     this.setState({ detail });
   }
@@ -269,10 +269,11 @@ class PosBase extends Component {
           let newDocData = { ...that.state.docData, ...result.data };
 
           that.setState({ docData: newDocData }, () => {
-            //scroll to end
-            that.refs.PosDetail.focusCell({ rowIdx: 0, idx: 2 });
-            // var $e = $(".react-grid-Row :nth-child(2).editable-col");
-            // $e[0].focus();
+            let idx = 0;
+            that.refs.PosDetail.props.fields.forEach((f, i) => {
+              if (f.name === "QTCX") idx = i;
+            });
+            that.refs.PosDetail.focusCell({ rowIdx: 0, idx });
           });
           if (callback) callback();
         })

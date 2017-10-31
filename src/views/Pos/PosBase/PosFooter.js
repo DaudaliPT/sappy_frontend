@@ -6,8 +6,7 @@ const sappy = window.sappy;
 class PosFooter extends Component {
   render() {
     let docData = this.props.docData || {};
-    let allowAddLines = docData.DOCNUM > 0 ? false : true;
-    // let pinHeader = docData.DOCNUM > 0 ? this.props.pinHeader : true;
+    let allowAddLines = docData.ID > 0 ? true : false;
     let loaded = !this.props.loading;
 
     let renderActions = () => {
