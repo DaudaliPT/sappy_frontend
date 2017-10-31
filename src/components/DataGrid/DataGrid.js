@@ -7,6 +7,8 @@ import Formatters from "./Formatters";
 import Editors from "./Editors";
 
 const { ToolsPanel: { AdvancedToolbar, GroupedColumnsPanel }, Data: { Selectors }, Draggable } = require("react-data-grid/packages/react-data-grid-addons/dist/react-data-grid-addons");
+// We want to capture the event before any thing else
+let useCapturingFase = true; // see https://www.quirksmode.org/js/events_order.html
 
 class DataGrid extends Component {
   constructor(props) {
@@ -295,6 +297,51 @@ class DataGrid extends Component {
                   fromRow: args.rowIdx,
                   toRow: args.rowIdx,
                   updated: { BONUS_NAP: currentValue }
+                });
+              }
+            }
+          };
+        }
+      } else if (field.type.startsWith("pkpos")) {
+        let parts = field.type.split("|");
+        // let type = parts[0];
+        col.color = parts[1];
+        col.valueON = parts[2];
+        col.valueOFF = parts[3];
+        col.formatter = Formatters.Pkpos;
+        if (editable) {
+          col.events = {
+            onClick: (ev, args) => {
+              let currentRow = this.getRowAt(args.rowIdx);
+
+              if (sappy.getNum(currentRow.QTPK) !== 0) {
+                ev.preventDefault();
+                ev.stopPropagation();
+
+                let currentValue = currentRow["QTPK"];
+                let defaultValue = currentRow["QTPK_ORIGINAL"];
+                currentValue = currentValue > 1 ? 1 : defaultValue;
+                that.handleGridRowsUpdated({
+                  fromRow: args.rowIdx,
+                  toRow: args.rowIdx,
+                  updated: { QTPK: currentValue }
+                });
+              }
+            },
+            onKeyDown: (ev, args) => {
+              let currentRow = this.getRowAt(args.rowIdx);
+              if (sappy.getNum(currentRow.QTPK) !== 0 && ev.keyCode === 32) {
+                ev.preventDefault();
+                ev.stopPropagation();
+
+                let currentRow = this.getRowAt(args.rowIdx);
+                let currentValue = currentRow["QTPK"];
+                let defaultValue = currentRow["QTPK_ORIGINAL"];
+                currentValue = currentValue > 1 ? 1 : defaultValue;
+                that.handleGridRowsUpdated({
+                  fromRow: args.rowIdx,
+                  toRow: args.rowIdx,
+                  updated: { QTPK: currentValue }
                 });
               }
             }

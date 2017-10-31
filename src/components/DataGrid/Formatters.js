@@ -94,6 +94,23 @@ class BonusFormatter extends Component {
     );
   }
 }
+class PkposFormatter extends Component {
+  render() {
+    let value = sappy.getNum(this.props.value);
+    let checkedAPswitch = value > 1;
+    let color = checkedAPswitch ? "dark" : "default";
+    let ON = "PK" + value;
+    let OFF = "UN";
+    return (
+      <div className="switch large">
+        <input type="checkbox" checked={checkedAPswitch} />
+        <span className={"slider sm " + color}>
+          {checkedAPswitch ? ON : OFF}{" "}
+        </span>
+      </div>
+    );
+  }
+}
 
 class DiscountFormatter extends Component {
   render() {
@@ -296,6 +313,7 @@ let Formatters = {
   Switch: SwitchFormatter,
   Flag: FlagFormatter,
   Discount: DiscountFormatter,
-  Bonus: BonusFormatter
+  Bonus: BonusFormatter,
+  Pkpos: PkposFormatter
 };
 export default Formatters;

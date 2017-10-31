@@ -80,49 +80,48 @@ exports.prepareDocType = function({ tableName }) {
     label: "Descrição",
     type: "tags",
     width: 400,
-    editable: false,
-    getCellStyle
+    editable: false
   });
   detailFields.push({
     name: "QTCX",
     label: "Cx",
     type: "quantity",
     width: 60,
-    editable: true,
-    getCellStyle
+    editable: true
   });
   detailFields.push({
     name: "QTPK",
     label: "Pk",
-    type: "quantity",
-    width: 60,
-    editable: true,
-    getCellStyle
+    type: "pkpos",
+    width: 100,
+    editable: true
   });
   detailFields.push({
     name: "QTSTK",
     label: "Qtd",
     type: "quantity",
     width: 60,
-    editable: true,
-    getCellStyle
+    editable: true
   });
   detailFields.push({
     name: "QTBONUS",
     label: "Qt.Bónus",
     type: "bonus",
-    width: 120,
-    editable: true,
-    getCellStyle
+    width: 100,
+    editable: true
   });
   detailFields.push({
     name: "PRICE",
     label: "Preço",
     type: "price",
-    width: 70,
+    width: 80,
     editable: true,
     hover: priceHover,
-    getCellStyle
+    getCellStyle: props => {
+      let classes = "";
+      if (props.dependentValues.PRICE_CHANGEDBY) classes += " has-been-changed";
+      return classes;
+    }
   });
   detailFields.push({
     name: "USER_DISC",
@@ -130,15 +129,18 @@ exports.prepareDocType = function({ tableName }) {
     type: "text",
     width: 120,
     editable: true,
-    getCellStyle
+    getCellStyle: props => {
+      let classes = "";
+      if (props.dependentValues.DISC_CHANGEDBY) classes += " has-been-changed";
+      return classes;
+    }
   });
   detailFields.push({
     name: "VATGROUP",
     label: "IVA",
     type: "vatpercent",
     width: 40,
-    editable: false,
-    getCellStyle
+    editable: false
   });
 
   return {

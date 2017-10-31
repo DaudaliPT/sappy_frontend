@@ -130,6 +130,13 @@
   color: rgb(237, 103, 99) !important;
 }
 
+.has-been-changed {
+  border: 1px solid rgba(237, 103, 99, 0.2) !important;
+  height: 24px;
+  background-color: rgba(237, 103, 99, 0.1) !important;
+  color: rgba(237, 103, 99, 1) !important;
+}
+
 .posMenu-action {
   width: 25%;
   height: 80%;
@@ -282,7 +289,8 @@
 
 .pos .react-grid-Cell.editable-col {
   color: inherit !important;
-  font-weight: 500;
+
+  /* color: rgba(255, 255, 255, 1) !important; */
 }
 
 .pos .byusVirtualRowContainer:hover {

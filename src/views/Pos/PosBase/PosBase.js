@@ -201,6 +201,9 @@ class PosBase extends Component {
     let that = this;
     if (this.props.onRowChange) updated = this.props.onRowChange(currentRow, updated);
 
+    if (updated.hasOwnProperty("PRICE")) updated.PRICE_CHANGEDBY = sappy.sessionInfo.user.NAME;
+    if (updated.hasOwnProperty("USER_DISC")) updated.DISC_CHANGEDBY = sappy.sessionInfo.user.NAME;
+
     this.serverRequest = axios
       .patch(`${this.props.apiDocsNew}/${this.state.docData.ID}/line/${currentRow.LINENUM}`, { ...updated })
       .then(function(result) {
