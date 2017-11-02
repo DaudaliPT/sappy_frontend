@@ -2,9 +2,13 @@ import React, { Component } from "react";
 import { TextBox, TextBoxNumeric, ComboBox, Date, Toggle, Flag, Truck } from "../../../Inputs";
 import { Button } from "reactstrap";
 import Panel from "../../../components/Panel";
+const sappy = window.sappy;
 
 class PosHeader extends Component {
   render() {
+    let sessionInfo = sappy.sessionInfo || {};
+    var user = sessionInfo.user || {};
+    var company = sessionInfo.company || {};
     let that = this;
     let getProperInputForField = headerField => {
       if (!headerField) return null;
@@ -94,12 +98,21 @@ class PosHeader extends Component {
 
     return (
       <div id="posHeader">
-        <div className="posTitle">
+        <h4 className="posTitle">
           {title}
-        </div>
+        </h4>
+
         <div className="actions" />
         <div className="fields">
           {renderHeaderFields()}
+        </div>
+
+        <div className="userMenu">
+          <span className="avatar avatar-online">
+            <img src="img/avatar_male.png" alt="..." />
+            {/* <i className="icon md-account" aria-hidden="true" /> */}
+            <i />
+          </span>
         </div>
       </div>
     );

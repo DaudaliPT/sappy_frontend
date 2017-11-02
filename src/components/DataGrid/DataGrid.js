@@ -305,45 +305,29 @@ class DataGrid extends Component {
       } else if (field.type.startsWith("pkpos")) {
         let parts = field.type.split("|");
         // let type = parts[0];
+        col.headerRenderer = HeaderAlignRight;
         col.color = parts[1];
         col.valueON = parts[2];
         col.valueOFF = parts[3];
         col.formatter = Formatters.Pkpos;
         if (editable) {
-          col.events = {
-            onClick: (ev, args) => {
-              let currentRow = this.getRowAt(args.rowIdx);
+          col.btnClick = (ev, args) => {
+            ev.preventDefault();
+            ev.stopPropagation();
+            let currentRow = this.getRowAt(args.rowIdx);
 
-              if (sappy.getNum(currentRow.QTPK) !== 0) {
-                ev.preventDefault();
-                ev.stopPropagation();
+            if (sappy.getNum(currentRow.QTPK) !== 0) {
+              ev.preventDefault();
+              ev.stopPropagation();
 
-                let currentValue = currentRow["QTPK"];
-                let defaultValue = currentRow["QTPK_ORIGINAL"];
-                currentValue = currentValue > 1 ? 1 : defaultValue;
-                that.handleGridRowsUpdated({
-                  fromRow: args.rowIdx,
-                  toRow: args.rowIdx,
-                  updated: { QTPK: currentValue }
-                });
-              }
-            },
-            onKeyDown: (ev, args) => {
-              let currentRow = this.getRowAt(args.rowIdx);
-              if (sappy.getNum(currentRow.QTPK) !== 0 && ev.keyCode === 32) {
-                ev.preventDefault();
-                ev.stopPropagation();
-
-                let currentRow = this.getRowAt(args.rowIdx);
-                let currentValue = currentRow["QTPK"];
-                let defaultValue = currentRow["QTPK_ORIGINAL"];
-                currentValue = currentValue > 1 ? 1 : defaultValue;
-                that.handleGridRowsUpdated({
-                  fromRow: args.rowIdx,
-                  toRow: args.rowIdx,
-                  updated: { QTPK: currentValue }
-                });
-              }
+              let currentValue = currentRow["QTPK"];
+              let defaultValue = currentRow["QTPK_ORIGINAL"];
+              currentValue = currentValue > 1 ? 1 : defaultValue;
+              that.handleGridRowsUpdated({
+                fromRow: args.rowIdx,
+                toRow: args.rowIdx,
+                updated: { QTPK: currentValue }
+              });
             }
           };
         }

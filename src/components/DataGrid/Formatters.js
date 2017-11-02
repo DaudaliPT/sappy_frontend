@@ -96,17 +96,19 @@ class BonusFormatter extends Component {
 }
 class PkposFormatter extends Component {
   render() {
-    let value = sappy.getNum(this.props.value);
+    let props = this.props;
+    let value = sappy.getNum(props.value);
+
     let checkedAPswitch = value > 1;
-    let color = checkedAPswitch ? "dark" : "default";
-    let ON = "PK" + value;
+    let color = checkedAPswitch ? "success" : "danger";
+    let ON = "PK";
     let OFF = "UN";
     return (
-      <div className="switch large">
-        <input type="checkbox" checked={checkedAPswitch} />
-        <span className={"slider sm " + color}>
-          {checkedAPswitch ? ON : OFF}{" "}
-        </span>
+      <div style={{ textAlign: "right" }}>
+        <button className={"btn btn-sm btn-" + color + " float-left font-size-10"} style={{ lineHeight: "1.4rem", width: "25px" }} onClick={e => props.column.btnClick(e, props)}>
+          {checkedAPswitch ? ON : OFF}
+        </button>
+        {value}
       </div>
     );
   }

@@ -79,7 +79,7 @@ exports.prepareDocType = function({ tableName }) {
   let detailFields = [
     { name: "ITEMNAME", label: "Descrição", type: "tags", width: 400, editable: false },
     { name: "QTCX", label: "Cx", type: "quantity", width: 60, editable: true },
-    { name: "QTPK", label: "Pk", type: "pkpos", width: 100, editable: true },
+    { name: "QTPK", label: "Pk", type: "pkpos", width: 60, editable: true },
     { name: "QTSTK", label: "Qtd", type: "quantity", width: 60, editable: true },
     { name: "QTBONUS", label: "Qt.Bónus", type: "bonus", width: 100, editable: true },
     {

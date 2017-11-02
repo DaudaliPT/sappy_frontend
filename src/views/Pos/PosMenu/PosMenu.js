@@ -56,7 +56,7 @@ class Inicio extends Component {
           let color = item.split("_")[0];
           let text = item.split("_")[1];
           return (
-            <Badge key={uuid()} color={color} pill>
+            <Badge key={uuid()} color={color} pill className="float-right">
               {text}
             </Badge>
           );
