@@ -13,14 +13,12 @@ exports.prepareDocType = function({ tableName }) {
   let contactLabel = "";
   let dueDateLabel = "15,16,17, 20,21,22".indexOf(objType) > -1 ? "Data Entrega" : "Data Vencimento"; //Encomendas/Entregas/Devoluções
   let footerLimitSearchCondition = "";
-  let priceHover = {};
   let numatcardLabel = "";
 
   cardCodeLabel = "Cliente";
   cardCodeApi = "/api/cbo/ocrd/c";
   contactLabel = "Contato";
   footerLimitSearchCondition = "";
-  priceHover = {};
   numatcardLabel = "Ref. Cliente";
 
   let headerFields = {};
@@ -30,40 +28,44 @@ exports.prepareDocType = function({ tableName }) {
     label: cardCodeLabel,
     type: "combo",
     api: cardCodeApi,
-    gridSize: 6,
+    gridSize: 5,
     required: true
   });
-  headerFields.line2 = [];
   if ("15,16,17, 20,21,22".indexOf(objType) > -1) {
     //Encomendas/Entregas/Devoluções
-    headerFields.line2.push({
+    headerFields.line1.push({
       name: "SHIPADDR",
       label: "Morada Envio",
       type: "combo",
       api: "/api/cbo/crd1/<CARDCODE>/s",
-      gridSize: 4
+      gridSize: 5
     });
   } else {
-    headerFields.line2.push({
+    headerFields.line1.push({
       name: "BILLADDR",
       label: "Morada Faturação",
       type: "combo",
       api: "/api/cbo/crd1/<CARDCODE>/b",
-      gridSize: 2
+      gridSize: 5
     });
   }
-  headerFields.line2.push({
-    name: "TAXDATE",
-    label: "Data",
-    type: "date",
-    gridSize: 2,
-    required: false
-  });
+
+  headerFields.line1.push({ name: "DISTRIBUICAO", label: "Distribuição", type: "truck|warning", gridSize: 1, savedEditable: true });
+  headerFields.line1.push({ name: "HAPPYDAY", label: "Happy Day", type: "bool", gridSize: 1, savedEditable: true });
+
+  headerFields.line2 = [];
+
   headerFields.line2.push({
     name: "COMMENTS",
     label: "Observações",
     type: "text",
-    gridSize: 5
+    gridSize: 6
+  });
+  headerFields.line2.push({
+    name: "MATRICULA",
+    label: "Matricula",
+    type: "text",
+    gridSize: 2
   });
 
   let getCellStyle = props => {
@@ -74,77 +76,40 @@ exports.prepareDocType = function({ tableName }) {
     return classes;
   };
 
-  let detailFields = [];
-  detailFields.push({
-    name: "ITEMNAME",
-    label: "Descrição",
-    type: "tags",
-    width: 400,
-    editable: false
-  });
-  detailFields.push({
-    name: "QTCX",
-    label: "Cx",
-    type: "quantity",
-    width: 60,
-    editable: true
-  });
-  detailFields.push({
-    name: "QTPK",
-    label: "Pk",
-    type: "pkpos",
-    width: 100,
-    editable: true
-  });
-  detailFields.push({
-    name: "QTSTK",
-    label: "Qtd",
-    type: "quantity",
-    width: 60,
-    editable: true
-  });
-  detailFields.push({
-    name: "QTBONUS",
-    label: "Qt.Bónus",
-    type: "bonus",
-    width: 100,
-    editable: true
-  });
-  detailFields.push({
-    name: "PRICE",
-    label: "Preço",
-    type: "price",
-    width: 80,
-    editable: true,
-    hover: priceHover,
-    getCellStyle: props => {
-      let classes = "";
-      if (props.dependentValues.PRICE_CHANGEDBY) classes += " has-been-changed";
-      return classes;
-    }
-  });
-  detailFields.push({
-    name: "USER_DISC",
-    label: "Descontos",
-    type: "text",
-    width: 120,
-    editable: true,
-    getCellStyle: props => {
-      let classes = "";
-      if (props.dependentValues.DISC_CHANGEDBY) classes += " has-been-changed";
-      return classes;
-    }
-  });
-  detailFields.push({
-    name: "VATGROUP",
-    label: "IVA",
-    type: "vatpercent",
-    width: 40,
-    editable: false
-  });
+  let detailFields = [
+    { name: "ITEMNAME", label: "Descrição", type: "tags", width: 400, editable: false },
+    { name: "QTCX", label: "Cx", type: "quantity", width: 60, editable: true },
+    { name: "QTPK", label: "Pk", type: "pkpos", width: 100, editable: true },
+    { name: "QTSTK", label: "Qtd", type: "quantity", width: 60, editable: true },
+    { name: "QTBONUS", label: "Qt.Bónus", type: "bonus", width: 100, editable: true },
+    {
+      name: "PRICE",
+      label: "Preço",
+      type: "price",
+      width: 80,
+      editable: true,
+      getCellStyle: props => {
+        let classes = "";
+        if (props.dependentValues.PRICE_CHANGEDBY) classes += " has-been-changed";
+        return classes;
+      }
+    },
+    {
+      name: "USER_DISC",
+      label: "Descontos",
+      type: "text",
+      width: 120,
+      editable: true,
+      getCellStyle: props => {
+        let classes = "";
+        if (props.dependentValues.DISC_CHANGEDBY) classes += " has-been-changed";
+        return classes;
+      }
+    },
+    { name: "VATGROUP", label: "IVA", type: "vatpercent", width: 40, editable: false }
+  ];
 
   return {
-    priceHover,
     propsToPosBase: {
       tableName,
       objType,

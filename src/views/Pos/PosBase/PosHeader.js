@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { TextBox, TextBoxNumeric, ComboBox, Date, Toggle, Flag } from "../../../Inputs";
+import { TextBox, TextBoxNumeric, ComboBox, Date, Toggle, Flag, Truck } from "../../../Inputs";
 import { Button } from "reactstrap";
 import Panel from "../../../components/Panel";
 
@@ -43,6 +43,9 @@ class PosHeader extends Component {
       else if (headerField.type.startsWith("flag")) {
         let color = headerField.type.split("|")[1];
         input = <Flag {...commonProps} color={color} />;
+      } else if (headerField.type.startsWith("truck")) {
+        let color = headerField.type.split("|")[1];
+        input = <Truck {...commonProps} color={color} />;
       }
 
       return (

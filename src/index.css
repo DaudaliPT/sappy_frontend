@@ -1251,10 +1251,12 @@ div.flag > .icon[class*="ion-"] {
   line-height: 1.5;
   text-align: center !important;
 }
-
-div.flag > .icon {
-  font-size: 2.4rem !important;
+div.flag > .icon[class*="fa-"] {
+  font-size: 1.5rem !important;
+  line-height: 1.5;
+  text-align: center !important;
 }
+
 div.flag > i.icon:hover {
   color: rgb(98, 168, 234) !important;
 }

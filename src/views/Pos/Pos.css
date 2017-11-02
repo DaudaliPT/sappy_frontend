@@ -275,6 +275,10 @@
   color: #fefefe !important;
 }
 
+.pos .flag > i.icon.inactive {
+  color: rgba(32, 46, 55, 0.9) !important;
+}
+
 .pos .Select-placeholder {
   color: #555 !important;
 }
