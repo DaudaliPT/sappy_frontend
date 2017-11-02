@@ -90,28 +90,34 @@ class Inicio extends Component {
         {!this.state.showRetomar &&
           <div className="posMenu-actions">
             <div className="posMenu-action">
-              <button className="btn btn-block btn-dark btn-outline btn-round" onClick={e => hashHistory.push("/pos/Ordr")}>
-                <i className="icon wb-plus" />
+              <button className="btn btn-block" onClick={e => hashHistory.push("/pos/Oqut")}>
+                <i className="icon pe-shopbag" />
+                <br /> <span>Cotações</span>
+              </button>
+            </div>
+            <div className="posMenu-action">
+              <button className="btn btn-block" onClick={e => hashHistory.push("/pos/Ordr")}>
+                <i className="icon pe-note2" />
                 <br /> <span>Encomenda de Cliente</span>
               </button>
             </div>
             <div className="posMenu-action">
-              <button className="btn btn-block btn-dark btn-outline btn-round" onClick={e => hashHistory.push("/pos/Oinv")}>
-                <i className="icon wb-plus" />
+              <button className="btn btn-block" onClick={e => hashHistory.push("/pos/Oinv")}>
+                <i className="icon pe-cart" />
                 <br />
                 <span>Fatura a Cliente</span>
               </button>
             </div>
             <div className="posMenu-action">
-              <button className="btn btn-block btn-dark btn-outline btn-round" onClick={e => hashHistory.push("/pos/Orin")}>
-                <i className="icon wb-plus" />
+              <button className="btn btn-block" onClick={e => hashHistory.push("/pos/Orin")}>
+                <i className="icon pe-scissors" />
                 <br />
                 <span>Nota Crédito a Cliente</span>
               </button>
             </div>
             <div className="posMenu-action">
-              <button className="btn btn-block btn-dark btn-outline btn-round" onClick={e => hashHistory.push("/pos/Odln")}>
-                <i className="icon wb-plus" />
+              <button className="btn btn-block" onClick={e => hashHistory.push("/pos/Odln")}>
+                <i className="icon pe-download" />
                 <br />
                 <span>Saída de Mercadoria </span>
               </button>
@@ -120,7 +126,7 @@ class Inicio extends Component {
         <div className={"posMenu-actions2 " + (this.state.showRetomar ? "open" : "")}>
           {!this.state.showRetomar &&
             <div className="posMenu-action">
-              <button className="btn btn-block btn-dark btn-outline btn-round" onClick={e => that.setState({ showRetomar: !that.state.showRetomar })}>
+              <button className="btn btn-block" onClick={e => that.setState({ showRetomar: !that.state.showRetomar })}>
                 <i className="icon fa-angle-up" />
                 <br /> <span>Documentos em curso</span>
               </button>

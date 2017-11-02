@@ -9,11 +9,7 @@ class PosHeader extends Component {
     let getProperInputForField = headerField => {
       if (!headerField) return null;
       let classNames = "col-3  col-sm-2 col-lg-1 col-xl-1 col-xxl-1 px-5";
-      if (headerField.gridSize === 2) classNames = "col-6 col-sm-4 col-lg-2 col-xl-2 col-xxl-2 px-5";
-      if (headerField.gridSize === 4) classNames = "col-12 col-sm-4 col-lg-2 col-xl-2 col-xxl-2 px-5";
-      if (headerField.gridSize === 5) classNames = "col-9          col-lg-5 col-xl-5 col-xxl-5 px-5"; // esepecial para obeservações e Inconf
-      if (headerField.gridSize === 6) classNames = "col-12          col-lg-6                    px-5";
-      if (headerField.gridSize === 12) classNames = "col-12                                     px-5";
+      classNames = "col-" + headerField.gridSize + " px-5";
 
       let route = headerField.api;
       if (route && route.indexOf("<") > -1) {
@@ -98,15 +94,13 @@ class PosHeader extends Component {
 
     return (
       <div id="posHeader">
-        <Panel
-          title={title}
-          colapsedInfo={this.props.docData.CARDCODE && " (" + this.props.docData.CARDCODE + " - " + this.props.docData.CARDNAME + ")"}
-          expanded={this.props.expanded}
-          onToogleExpand={this.props.toggleHeader}
-          actions={headerActions}
-        >
+        <div className="posTitle">
+          {title}
+        </div>
+        <div className="actions" />
+        <div className="fields">
           {renderHeaderFields()}
-        </Panel>
+        </div>
       </div>
     );
   }

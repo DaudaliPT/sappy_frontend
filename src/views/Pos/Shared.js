@@ -28,7 +28,7 @@ exports.prepareDocType = function({ tableName }) {
     label: cardCodeLabel,
     type: "combo",
     api: cardCodeApi,
-    gridSize: 5,
+    gridSize: 8,
     required: true
   });
   if ("15,16,17, 20,21,22".indexOf(objType) > -1) {
@@ -38,7 +38,7 @@ exports.prepareDocType = function({ tableName }) {
       label: "Morada Envio",
       type: "combo",
       api: "/api/cbo/crd1/<CARDCODE>/s",
-      gridSize: 5
+      gridSize: 4
     });
   } else {
     headerFields.line1.push({
@@ -46,27 +46,27 @@ exports.prepareDocType = function({ tableName }) {
       label: "Morada Faturação",
       type: "combo",
       api: "/api/cbo/crd1/<CARDCODE>/b",
-      gridSize: 5
+      gridSize: 4
     });
   }
 
-  headerFields.line1.push({ name: "DISTRIBUICAO", label: "Distribuição", type: "truck|warning", gridSize: 1, savedEditable: true });
-  headerFields.line1.push({ name: "HAPPYDAY", label: "Happy Day", type: "bool", gridSize: 1, savedEditable: true });
+  // headerFields.line1.push({ name: "DISTRIBUICAO", label: "Distribuição", type: "truck|warning", gridSize: 1, savedEditable: true });
+  // headerFields.line1.push({ name: "HAPPYDAY", label: "Happy Day", type: "bool", gridSize: 1, savedEditable: true });
 
-  headerFields.line2 = [];
+  // headerFields.line2 = [];
 
-  headerFields.line2.push({
-    name: "COMMENTS",
-    label: "Observações",
-    type: "text",
-    gridSize: 6
-  });
-  headerFields.line2.push({
-    name: "MATRICULA",
-    label: "Matricula",
-    type: "text",
-    gridSize: 2
-  });
+  // headerFields.line2.push({
+  //   name: "COMMENTS",
+  //   label: "Observações",
+  //   type: "text",
+  //   gridSize: 6
+  // });
+  // headerFields.line2.push({
+  //   name: "MATRICULA",
+  //   label: "Matricula",
+  //   type: "text",
+  //   gridSize: 2
+  // });
 
   let getCellStyle = props => {
     let { column, dependentValues, rowIdx, value } = props;

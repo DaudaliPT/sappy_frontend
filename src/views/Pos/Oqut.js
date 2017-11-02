@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import PosBase from "./PosBase";
 import Shared from "./Shared";
-export default class Opch extends Component {
+
+export default class Oqut extends Component {
   constructor(props) {
     super(props);
 
-    this.prepared = Shared.prepareDocType({ tableName: "odln" });
+    this.prepared = Shared.prepareDocType({ tableName: "oqut" });
   }
 
   render() {

@@ -63,6 +63,7 @@ class App extends Component {
           <Route path="/" name="Main" component={Full} children={buildedRoutes} onEnter={this.requireAuth} />
           <Route path="/pos" name="Pos" component={PosContainer} onEnter={this.requireAuth}>
             <IndexRoute component={Pos.PosMenu} />
+            <Route path="/pos/oqut" name="." component={Pos.Oqut} />
             <Route path="/pos/ordr" name="." component={Pos.Ordr} />
             <Route path="/pos/oinv" name="." component={Pos.Oinv} />
             <Route path="/pos/orin" name="." component={Pos.Orin} />

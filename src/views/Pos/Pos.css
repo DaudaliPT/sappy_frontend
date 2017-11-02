@@ -9,11 +9,7 @@
   margin: 0;
   padding: 0;
 
-  background: url('./posbackground2.jpg') no-repeat center center fixed;
-  -moz-background-size: cover;
-  -webkit-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
+  background-color: rgb(98, 168, 234);
 }
 
 .company-logo {
@@ -32,27 +28,14 @@
   height: auto;
   border: 0 none;
   border-radius: 1000px;
-
   -webkit-filter: sepia(10%) opacity(80%);
   filter: sepia(10%) opacity(80%);
-
-  /* Animação */
-  transition-timing-function: ease-out;
-  -webkit-animation-name: fade;
-  -o-animation-name: fade;
-  animation-name: fade;
-  -webkit-animation-duration: 5s;
-  -o-animation-duration: 5s;
-  animation-duration: 5s;
 }
+
 .posMenu-actions {
   display: flex;
   justify-content: center;
   align-items: center;
-
-  background: rgba(32, 46, 55, 0.3) !important;
-  box-shadow: 5px 5px 15px 5px rgba(32, 46, 55, 0.1);
-  border-radius: 1000px;
   position: absolute;
   width: 80%;
   height: 15%;
@@ -60,15 +43,6 @@
   left: 0;
   right: 0;
   margin: 0px auto;
-
-  /* Animação */
-  transition-timing-function: linear;
-  -webkit-animation-name: zoom-in;
-  -o-animation-name: zoom-in;
-  animation-name: zoom-in;
-  -webkit-animation-duration: 1s;
-  -o-animation-duration: 1s;
-  animation-duration: 1s;
 }
 .posMenu-actions2 {
   display: flex;
@@ -84,15 +58,6 @@
   left: 0;
   right: 0;
   margin: 0px auto;
-
-  /* Animação */
-  transition-timing-function: linear;
-  -webkit-animation-name: zoom-in;
-  -o-animation-name: zoom-in;
-  animation-name: zoom-in;
-  -webkit-animation-duration: 1s;
-  -o-animation-duration: 1s;
-  animation-duration: 1s;
 }
 
 .posMenu-actions2.open {
@@ -103,16 +68,32 @@
 .posMenu-actions2.open > .sappy-panel {
   width: 100%;
   padding: 30px;
+}
 
-  /* Animação */
-  transform-origin: center bottom;
-  transition-timing-function: linear;
-  -webkit-animation-name: zoom-in;
-  -o-animation-name: zoom-in;
-  animation-name: zoom-in;
-  -webkit-animation-duration: 1s;
-  -o-animation-duration: 1s;
-  animation-duration: 1s;
+.posMenu-action {
+  width: 25%;
+  height: 80%;
+  margin: 1%;
+}
+.posMenu-action > .btn {
+  border-radius: 15px;
+  /* font-size: 1.3rem; */
+  font-weight: 400 !important;
+  background: rgba(241, 244, 245, 0.8) !important;
+  color: rgba(32, 46, 55, 0.5) !important;
+  text-shadow: 2px 2px 4px rgba(32, 46, 55, 0.3);
+  height: 100% !important;
+  border: none;
+}
+.posMenu-action > .btn:hover {
+  background: rgba(241, 244, 245, 1) !important;
+  border: 3px solid rgba(232, 246, 255, 0.3) !important;
+  box-shadow: 2px 2px 1px rgba(232, 246, 255, 0.3);
+}
+.posMenu-action i {
+  padding-bottom: 5%;
+  font-size: 2.4rem;
+  text-shadow: 2px 2px 4px rgba(32, 46, 55, 0.3);
 }
 
 .pos .byusVirtualRow {
@@ -123,39 +104,25 @@
   background: transparent !important;
 }
 .has-promo {
-  background-color: rgba(70, 190, 138, 0.2) !important;
-  color: rgba(120, 240, 188, 1) !important;
+  background-color: rgba(70, 190, 138, 0.1) !important;
+  color: rgba(0, 120, 68, 1) !important;
 }
 .bellow-cost {
   color: rgb(237, 103, 99) !important;
 }
 
-.has-been-changed {
-  border: 1px solid rgba(237, 103, 99, 0.2) !important;
-  height: 24px;
-  background-color: rgba(237, 103, 99, 0.1) !important;
-  color: rgba(237, 103, 99, 1) !important;
+.has-been-changed:before {
+  color: rgba(32, 46, 55, 0.4);
+  font-family: "Font Awesome" !important;
+  content: "\f09c"; /*fa-unlock*/
+  font-size: 0.8rem;
+  position: relative;
+  padding-right: 5px;
 }
 
-.posMenu-action {
-  width: 25%;
-  height: 80%;
-  margin: 1%;
-}
-.posMenu-action > .btn {
-  font-size: 1.3rem;
-  font-weight: 500 !important;
-  color: #dedede !important;
-  text-shadow: 4px 4px 8px rgba(32, 46, 55, 0.8);
-  height: 100% !important;
-  border: none;
-}
-.posMenu-action > .btn:hover {
-  background: rgba(32, 46, 55, 0.2) !important;
-  border: 3px solid rgba(232, 246, 255, 0.3) !important;
-}
-.posMenu-action i {
-  padding-bottom: 2%;
+.has-been-changed[style*="text-align: right"]:before {
+  position: absolute;
+  left: 1px;
 }
 
 #bg {
@@ -191,139 +158,4 @@
   max-width: 100%;
   max-height: 100%;
   overflow: auto;
-}
-
-.pos .sappy-panel {
-  background: rgba(32, 46, 55, 0.9) !important;
-}
-.pos .sappy-panel .title .text {
-  color: #dedede;
-}
-
-.pos .sappy-panel > .title > .moreinfo {
-  color: #dedede;
-}
-.pos [data-tip]:before {
-  color: #dedede;
-}
-
-/* --------------------------------------------------------------------------- */
-.pos input,
-.pos optgroup,
-.pos select,
-.pos textarea,
-.pos .Select-control,
-.pos .form-control {
-  color: #fefefe !important;
-  /* font-family: "Abel"; */
-  /* letter-spacing: 1px; */
-
-  border: 1px solid #555 !important;
-  border-top-color: #555 !important;
-  border-right-color: #555 !important;
-  border-bottom-color: #555 !important;
-  border-left-color: #555 !important;
-}
-
-.pos .Select-control input,
-.pos .tokenfield input {
-  border: none !important;
-  border-top-color: none !important;
-  border-right-color: none !important;
-  border-bottom-color: none !important;
-  border-left-color: none !important;
-}
-
-.pos .tokenfield > .token {
-  background-color: rgba(232, 246, 255, 0.1) !important;
-  border: 1px solid rgba(232, 246, 255, 0.3) !important;
-}
-.pos .tokenfield > .token > a {
-  color: #fefefe !important;
-}
-
-.pos .Select-value,
-.pos .Select {
-  color: #fefefe !important;
-  /* letter-spacing: 1px; */
-  /* font-family: "Abel"; */
-}
-.pos .form-control,
-.pos .Select-control {
-  background-color: rgba(32, 46, 55, 0.7) !important;
-  color: #fefefe !important;
-}
-.pos .Select.is-disabled > .Select-control {
-  background-color: rgba(32, 46, 55, 0.7) !important;
-}
-.pos .Select-value-label {
-  color: #fefefe !important;
-}
-.pos .Select-menu-outer {
-  background-color: rgb(32, 46, 55) !important;
-}
-
-.pos .ReactVirtualized__List {
-  /* background-color: rgba(32, 46, 55, 0.7) !important; */
-}
-.pos .ReactVirtualized__List:focus {
-  /* background-color: rgba(32, 46, 55, 0.7) !important; */
-}
-
-.pos .VirtualizedSelectOption {
-  background-color: rgba(32, 46, 55, 0.7) !important;
-  color: #fefefe !important;
-}
-
-.pos .flag > i.icon.inactive {
-  color: rgba(32, 46, 55, 0.9) !important;
-}
-
-.pos .Select-placeholder {
-  color: #555 !important;
-}
-.pos .Select--single > .Select-control .Select-value {
-  color: #fefefe !important;
-}
-
-.pos .react-grid-Header,
-.pos .react-grid-Main {
-  color: #fefefe !important;
-}
-
-.pos .react-grid-Cell.editable-col {
-  color: inherit !important;
-
-  /* color: rgba(255, 255, 255, 1) !important; */
-}
-
-.pos .byusVirtualRowContainer:hover {
-  background-color: rgba(32, 46, 55, 0.9) !important;
-}
-.pos .byusVirtualRow {
-  border-bottom: 1px solid #555;
-}
-
-.pos .byusVirtualRowContainer > .sappy-selected-row {
-  background-color: rgba(232, 246, 255, 0.1) !important;
-  font-weight: 400 !important;
-}
-
-.pos .byusVirtualRowContainer > .sappy-selected-row .secondrow {
-  color: #a3afb7 !important;
-}
-.pos .nav-tabs {
-  border-bottom: 1px solid #555;
-}
-.pos .react-grid-Row.row-selected {
-  background-color: rgba(232, 246, 255, 0.1) !important;
-}
-
-.pos .react-grid-checkbox:checked + .react-grid-checkbox-label:before {
-  background: #777 !important;
-  color: #f3f7f9 !important;
-}
-
-.pos .react-grid-Cell {
-  border-bottom: 1px solid #555 !important;
 }

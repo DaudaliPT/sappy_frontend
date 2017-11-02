@@ -65,10 +65,11 @@ class PosBase extends Component {
   }
 
   recalcComponentsHeight() {
-    let docHeight = $("#pos").height();
+    // let docHeight = $("#pos").height();
     let detailsTop = $("#posDetail").position().top;
+    let footerTop = $("#posFooter").position().top;
     let detail = { ...this.state.detail };
-    detail.height = docHeight - detailsTop - 70;
+    detail.height = footerTop - detailsTop - 45;
 
     this.setState({ detail });
   }

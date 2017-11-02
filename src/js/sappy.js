@@ -1,24 +1,23 @@
 import React from "react";
 import accounting from "./accountingjs";
-import moment from 'moment';
+import moment from "moment";
 import barcodes from "./sappy_barcodes";
 
 // sappy namespace
-(function (sappy) {
+(function(sappy) {
   // Public Property
   sappy.author = "Urbino Pescada";
 
   sappy.isEqual = (val1, val2) => {
-    if ((val1 === null || typeof val1 === "undefined")
-      && (val2 === null || typeof val2 === "undefined")) return true;
+    if ((val1 === null || typeof val1 === "undefined") && (val2 === null || typeof val2 === "undefined")) return true;
 
-    if (!val1 && !val2) return true
+    if (!val1 && !val2) return true;
 
-    return (val1 === val2)
-  }
+    return val1 === val2;
+  };
   sappy.isDiferent = (val1, val2) => !sappy.isEqual(val1, val2);
 
-  sappy.parseBackendError = function (costumMsg, err) {
+  sappy.parseBackendError = function(costumMsg, err) {
     var msg = err.message;
     if (err.response && err.response.data) {
       if (err.response.data.message) msg += " -> " + err.response.data.message;
@@ -32,8 +31,6 @@ import barcodes from "./sappy_barcodes";
 
   sappy.barcodes = barcodes;
   sappy.barcodes.init(sappy);
-
-
 
   // Settings object that controls default parameters for library methods:
   accounting.settings = {
@@ -74,9 +71,9 @@ import barcodes from "./sappy_barcodes";
         precision: 0 // default precision on numbers is 0
       }
     };
-  }
+  };
 
-  sappy.replaceAll = function (str, find, replace) {
+  sappy.replaceAll = function(str, find, replace) {
     let start = str.indexOf(find);
 
     while (start > -1) {
@@ -87,29 +84,29 @@ import barcodes from "./sappy_barcodes";
   };
 
   let getDateFormat = () => {
-    let sapFormat
+    let sapFormat;
 
     // formatos do sap b1
-    if (sappy.sessionInfo.company.oadm.DateFormat === "0") sapFormat = "DD/MM/YY"
-    if (sappy.sessionInfo.company.oadm.DateFormat === "1") sapFormat = "DD/MM/YYYY"
-    if (sappy.sessionInfo.company.oadm.DateFormat === "2") sapFormat = "MM/DD/YY"
-    if (sappy.sessionInfo.company.oadm.DateFormat === "3") sapFormat = "MM/DD/YYYY"
-    if (sappy.sessionInfo.company.oadm.DateFormat === "4") sapFormat = "YYYY/MM/DD"
-    if (sappy.sessionInfo.company.oadm.DateFormat === "5") sapFormat = "DD/MMM/YYYY"
-    if (sappy.sessionInfo.company.oadm.DateFormat === "6") sapFormat = "AA/MM/DD"
+    if (sappy.sessionInfo.company.oadm.DateFormat === "0") sapFormat = "DD/MM/YY";
+    if (sappy.sessionInfo.company.oadm.DateFormat === "1") sapFormat = "DD/MM/YYYY";
+    if (sappy.sessionInfo.company.oadm.DateFormat === "2") sapFormat = "MM/DD/YY";
+    if (sappy.sessionInfo.company.oadm.DateFormat === "3") sapFormat = "MM/DD/YYYY";
+    if (sappy.sessionInfo.company.oadm.DateFormat === "4") sapFormat = "YYYY/MM/DD";
+    if (sappy.sessionInfo.company.oadm.DateFormat === "5") sapFormat = "DD/MMM/YYYY";
+    if (sappy.sessionInfo.company.oadm.DateFormat === "6") sapFormat = "AA/MM/DD";
 
-    sapFormat = sappy.replaceAll(sapFormat, "/", sappy.sessionInfo.company.oadm.DateSep)
-    return sapFormat
-  }
+    sapFormat = sappy.replaceAll(sapFormat, "/", sappy.sessionInfo.company.oadm.DateSep);
+    return sapFormat;
+  };
 
   sappy.accounting = accounting;
   sappy.moment = moment;
   sappy.unformat = {
     number: accounting.unformat,
     date: value => {
-      if (!value) return null
+      if (!value) return null;
 
-      const HANA_DEFAULT_DATE_FORMAT = 'YYYY-MM-DD';
+      const HANA_DEFAULT_DATE_FORMAT = "YYYY-MM-DD";
       if (value._isAMomentObject) return value.format(HANA_DEFAULT_DATE_FORMAT);
 
       if (typeof value === "string" && value.indexOf("T") === 10) {
@@ -118,21 +115,21 @@ import barcodes from "./sappy_barcodes";
 
       let sapFormat = getDateFormat();
 
-      let getMask = (str => {
-        let arr = str.split('').map(c => {
+      let getMask = str => {
+        let arr = str.split("").map(c => {
           if (c >= "0" && c <= "9") return "_";
           if (c >= "A" && c <= "Z") return "_";
           if (c >= "a" && c <= "z") return "_";
           return c;
-        })
-        return arr.join('')
-      })
+        });
+        return arr.join("");
+      };
 
-      let findSeparator = (str => {
-        return str.split('').find(c => {
-          return (c === '.') || (c === ',') || (c === '-') || (c === '/');
-        })
-      })
+      let findSeparator = str => {
+        return str.split("").find(c => {
+          return c === "." || c === "," || c === "-" || c === "/";
+        });
+      };
 
       let sapFormatMask = getMask(sapFormat);
       let defaultMask = getMask(HANA_DEFAULT_DATE_FORMAT);
@@ -141,92 +138,88 @@ import barcodes from "./sappy_barcodes";
       if (valueMask === defaultMask) {
         let d = moment(value, HANA_DEFAULT_DATE_FORMAT);
         if (d.isValid()) return d.format(HANA_DEFAULT_DATE_FORMAT);
-
       } else if (valueMask === sapFormatMask) {
         let d = moment(value, sapFormat);
         if (d.isValid()) return d.format(HANA_DEFAULT_DATE_FORMAT);
-
       } else {
         if (value === "." || value === "0") {
           return moment().format(HANA_DEFAULT_DATE_FORMAT);
-
         } else if (value.length > 0) {
           let day, month, year;
-          let sep = findSeparator(value)
+          let sep = findSeparator(value);
           if (sep) {
-            let parts = value.split(sep)
-            day = parts[0]
-            month = parts[1]
-            year = parts[2]
+            let parts = value.split(sep);
+            day = parts[0];
+            month = parts[1];
+            year = parts[2];
           } else if (value.length > 2) {
             day = value.substring(0, 2);
             month = value.substring(2, 4);
             year = value.substring(4);
           } else {
-            day = value
+            day = value;
           }
 
-          if ((day || month || year) === false) return null
+          if ((day || month || year) === false) return null;
 
           let d = moment();
-          if (day && !isNaN(day)) d.set('date', parseInt(day, 10));
-          if (month && !isNaN(month)) d.set('month', parseInt(month, 10) - 1);// -1, because is base0
+          if (day && !isNaN(day)) d.set("date", parseInt(day, 10));
+          if (month && !isNaN(month)) d.set("month", parseInt(month, 10) - 1); // -1, because is base0
           if (year && !isNaN(year)) {
-            year = parseInt(year, 10)
+            year = parseInt(year, 10);
             if (year < 2000) year += 2000;
-            d.set('year', year);
+            d.set("year", year);
           }
           return d.format(HANA_DEFAULT_DATE_FORMAT);
         }
       }
-      return null
+      return null;
     }
-  }
-
+  };
 
   function addDecimals(value, decimals) {
-    let num = value.toString().split('e')[0]
-    let exp = sappy.getNum(value.toString().split('e')[1])
-    return Number(num + 'e' + (exp + decimals));
+    let num = value.toString().split("e")[0];
+    let exp = sappy.getNum(value.toString().split("e")[1]);
+    return Number(num + "e" + (exp + decimals));
   }
   sappy.round = (value, decimals) => {
     let sign = value >= 0 ? 1 : -1;
     let val = value * sign; //passar valores negativos a positivos, para que o round funcione bem nos negativos
 
     let ret = sign * addDecimals(Math.round(addDecimals(val, decimals)), -1 * decimals);
-    if (isNaN(ret)) console.log(`sappy.round = (${val}, ${decimals}) returned NaN`)
+    if (isNaN(ret)) console.log(`sappy.round = (${val}, ${decimals}) returned NaN`);
     return ret;
-  }
+  };
 
-  sappy.evaluateNumericExpression = (value) => {
-    if (typeof value !== "string") return value
+  sappy.evaluateNumericExpression = value => {
+    if (typeof value !== "string") return value;
 
-    let chars = value.split('');
+    let chars = value.split("");
     let hasOperators = false;
     let hasInvalidChars = false;
 
     chars.forEach(c => {
-      if ('., %€'.indexOf(c) > -1) return;//ignore this
-      if ('+-*/^()'.indexOf(c) > -1) return hasOperators = true;
+      if ("., %€".indexOf(c) > -1) return; //ignore this
+      if ("+-*/^()".indexOf(c) > -1) return (hasOperators = true);
       let charCode = c.charCodeAt(0);
-      if (charCode < 48 || charCode > 57) return hasInvalidChars = true;
+      if (charCode < 48 || charCode > 57) return (hasInvalidChars = true);
     });
 
-    if (hasInvalidChars) return sappy.showToastr({ color: "danger", msg: "'" + value + "' não é uma expressão válida" })
+    if (hasInvalidChars) return sappy.showToastr({ color: "danger", msg: "'" + value + "' não é uma expressão válida" });
     if (hasOperators) {
       try {
-        value = sappy.replaceAll(value, ',', '.'); //tratar virgulas como separadores decimais
-        value = sappy.replaceAll(value, '€', ''); //ignorar estes simbolos
-        value = sappy.replaceAll(value, '%', '');//ignorar estes simbolos
+        value = sappy.replaceAll(value, ",", "."); //tratar virgulas como separadores decimais
+        value = sappy.replaceAll(value, "€", ""); //ignorar estes simbolos
+        value = sappy.replaceAll(value, "%", ""); //ignorar estes simbolos
         // eslint-disable-next-line
-        return eval(value)
+        return eval(value);
       } catch (error) {
-        return sappy.showToastr({ color: "danger", msg: "'" + value + "' não é uma expressão válida: " + error.message })
+        return sappy.showToastr({ color: "danger", msg: "'" + value + "' não é uma expressão válida: " + error.message });
       }
     } else {
-      return sappy.getNum(value)
+      return sappy.getNum(value);
     }
-  }
+  };
 
   function getSetting(settingId) {
     let tab = settingId.split(".")[0];
@@ -234,33 +227,40 @@ import barcodes from "./sappy_barcodes";
     let name = settingId.split(".")[2];
     let settings = sappy.sessionInfo.company.settings;
 
-    let setting
+    let setting;
     try {
-      setting = settings[tab].settings[title].settings[name]
+      setting = settings[tab].settings[title].settings[name];
     } catch (error) {
-      sappy.showToastr({ color: "danger", settingId, title: "Definição não existe:" })
+      sappy.showToastr({ color: "danger", settingId, title: "Definição não existe:" });
     }
 
-    return setting || {}
+    return setting || {};
   }
 
   sappy.getSettings = settingIds => {
-    let ret = {}
-    let hasMissingValues = false
-    let msg = []
+    let ret = {};
+    let hasMissingValues = false;
+    let msg = [];
 
     settingIds.forEach(settingId => {
-      let setting = getSetting(settingId)
+      let setting = getSetting(settingId);
       if (!setting.rawValue) {
-        hasMissingValues = true
-        msg.push(<li>{setting.name}<small> ({setting.id})</small></li>)
+        hasMissingValues = true;
+        msg.push(
+          <li>
+            {setting.name}
+            <small>
+              {" "}({setting.id})
+            </small>
+          </li>
+        );
       } else {
-        ret[settingId] = setting.rawValue
+        ret[settingId] = setting.rawValue;
       }
-    })
-    if (hasMissingValues) sappy.showToastr({ color: "danger", msg, title: "Verifique as definições" })
-    return ret
-  }
+    });
+    if (hasMissingValues) sappy.showToastr({ color: "danger", msg, title: "Verifique as definições" });
+    return ret;
+  };
 
   sappy.getNum = value => {
     let ret = 0;
@@ -269,59 +269,58 @@ import barcodes from "./sappy_barcodes";
     if (value === "") return 0;
 
     if (typeof value === "string")
-      if (value.indexOf(".") > -1 && value.indexOf(",") === -1)
-        ret = parseFloat(value);
-      else
-        ret = sappy.unformat.number(value);
-    else
-      ret = parseFloat(value);
+      if (value.indexOf(".") > -1 && value.indexOf(",") === -1) ret = parseFloat(value);
+      else ret = sappy.unformat.number(value);
+    else ret = parseFloat(value);
 
     if (isNaN(ret)) return 0;
     if (typeof ret === "number") return ret;
-    return 0
-  }
+    return 0;
+  };
 
-  sappy.padZeros = (number, digits) => ('0'.repeat(digits) + sappy.getNum(number).toString()).slice(-digits);
+  sappy.padZeros = (number, digits) => ("0".repeat(digits) + sappy.getNum(number).toString()).slice(-digits);
 
-  sappy.parseUserDisc = (value) => {
-    value = value || '';
+  sappy.parseUserDisc = value => {
+    value = value || "";
     let DISC_SUC = [];
     let DISC_UN = [];
     let DISC_VAL = [];
 
-    value.split('+').map(part => {
-      if (part.indexOf('.') > -1 && part.indexOf(',') > -1) {
-        //tem pontos e virgulas, remover o que for o separador de milhares 
-        part = sappy.replaceAll(part, sappy.sessionInfo.company.oadm.ThousSep, "")
+    value.split("+").map(part => {
+      if (part.indexOf(".") > -1 && part.indexOf(",") > -1) {
+        //tem pontos e virgulas, remover o que for o separador de milhares
+        part = sappy.replaceAll(part, sappy.sessionInfo.company.oadm.ThousSep, "");
       }
 
       if (part.toUpperCase() === "BONUS") {
         DISC_SUC[0] = 100;
-      } else if (part.indexOf('€/un') > -1 || part.indexOf('eu') > -1 || part.indexOf('EU') > -1 || part.indexOf('u') > -1 || part.indexOf('U') > -1) {
-        part = part.replace('€/un', '').replace('eu', '').replace('EU', '').replace('u', '').replace('U', '');
+      } else if (part.indexOf("€/un") > -1 || part.indexOf("eu") > -1 || part.indexOf("EU") > -1 || part.indexOf("u") > -1 || part.indexOf("U") > -1) {
+        part = part.replace("€/un", "").replace("eu", "").replace("EU", "").replace("u", "").replace("U", "");
         let d = sappy.getNum(part);
-        if (d) DISC_UN[DISC_UN.length] = d
-      } else if (part.indexOf('€') > -1 || part.indexOf('e') > -1 || part.indexOf('E') > -1 || part.indexOf('v') > -1 || part.indexOf('V') > -1 || part.indexOf('t') > -1 || part.indexOf('T') > -1) {
-        part = part.replace('€', '').replace('e', '').replace('E', '').replace('v', '').replace('V', '').replace('t', '').replace('T', '');
+        if (d) DISC_UN[DISC_UN.length] = d;
+      } else if (part.indexOf("€") > -1 || part.indexOf("e") > -1 || part.indexOf("E") > -1 || part.indexOf("v") > -1 || part.indexOf("V") > -1 || part.indexOf("t") > -1 || part.indexOf("T") > -1) {
+        part = part.replace("€", "").replace("e", "").replace("E", "").replace("v", "").replace("V", "").replace("t", "").replace("T", "");
         let d = sappy.getNum(part);
-        if (d) DISC_VAL[DISC_VAL.length] = d
+        if (d) DISC_VAL[DISC_VAL.length] = d;
       } else {
         let d = sappy.getNum(part);
         if (d <= 100) DISC_SUC[DISC_SUC.length] = d;
         else DISC_VAL[DISC_VAL.length] = d;
       }
-    })
+    });
 
     let DiscountPercent = 100;
-    DISC_SUC.forEach(DSUC => DiscountPercent -= (DiscountPercent * DSUC / 100));
-    DiscountPercent = 100 - (DiscountPercent * 100 / 100);
-    if (DiscountPercent > 100) { DiscountPercent = 100; }
+    DISC_SUC.forEach(DSUC => (DiscountPercent -= DiscountPercent * DSUC / 100));
+    DiscountPercent = 100 - DiscountPercent * 100 / 100;
+    if (DiscountPercent > 100) {
+      DiscountPercent = 100;
+    }
 
     let DiscountUn = 0;
-    DISC_UN.forEach(DUN => DiscountUn += DUN);
+    DISC_UN.forEach(DUN => (DiscountUn += DUN));
 
     let DiscountVal = 0;
-    DISC_VAL.forEach(DVAL => DiscountVal += DVAL);
+    DISC_VAL.forEach(DVAL => (DiscountVal += DVAL));
 
     return {
       DISC_SUC,
@@ -330,9 +329,9 @@ import barcodes from "./sappy_barcodes";
       DiscountPercent,
       DiscountUn,
       DiscountVal
-    }
-  }
-  sappy.formatUserDisc = (parsed) => {
+    };
+  };
+  sappy.formatUserDisc = parsed => {
     parsed = parsed || {};
     let DISC_SUC = parsed.DISC_SUC || [];
     let DISC_UN = parsed.DISC_UN || [];
@@ -340,78 +339,78 @@ import barcodes from "./sappy_barcodes";
 
     let formatted = "";
     if (parsed.DiscountPercent === 100) {
-      formatted = "BONUS"
+      formatted = "BONUS";
     } else {
-      DISC_SUC.filter(item => !!item).forEach(DSUC => formatted += (formatted ? " + " : "") + DSUC.toString().replace('.', sappy.sessionInfo.company.oadm.DecSep) + '%');
-      DISC_UN.filter(item => !!item).forEach(DUN => formatted += (formatted ? " + " : "") + sappy.format.price(DUN) + '/un');
-      DISC_VAL.filter(item => !!item).forEach(DVAL => formatted += (formatted ? " + " : "") + sappy.format.amount(DVAL));
+      DISC_SUC.filter(item => !!item).forEach(DSUC => (formatted += (formatted ? " + " : "") + DSUC.toString().replace(".", sappy.sessionInfo.company.oadm.DecSep) + "%"));
+      DISC_UN.filter(item => !!item).forEach(DUN => (formatted += (formatted ? " + " : "") + sappy.format.price(DUN) + "/un"));
+      DISC_VAL.filter(item => !!item).forEach(DVAL => (formatted += (formatted ? " + " : "") + sappy.format.amount(DVAL)));
     }
-    return formatted
-  }
+    return formatted;
+  };
 
   sappy.format = {
-    price: (value) => {
+    price: value => {
       let decimals = sappy.sessionInfo.company.oadm.PriceDec;
-      if (typeof value === 'string') value = parseFloat(value);
-      return accounting.formatMoney(value, null, decimals);
+
+      if (typeof value === "string") value = parseFloat(value);
+      // return accounting.formatMoney(value, null, decimals);
+      return accounting.formatMoney(value, null, 3);
     },
-    amount: (value) => {
+    amount: value => {
       let decimals = sappy.sessionInfo.company.oadm.SumDec;
-      if (typeof value === 'string') value = parseFloat(value);
+      if (typeof value === "string") value = parseFloat(value);
       return accounting.formatMoney(value, null, decimals);
     },
-    saprate: (value) => {
+    saprate: value => {
       let decimals = sappy.sessionInfo.company.oadm.RateDec;
-      if (typeof value === 'string') value = parseFloat(value);
+      if (typeof value === "string") value = parseFloat(value);
       return accounting.formatMoney(value, "%", decimals);
     },
-    percent: (value) => {
+    percent: value => {
       let decimals = 2;
-      if (typeof value === 'string') value = parseFloat(value);
+      if (typeof value === "string") value = parseFloat(value);
       return accounting.formatMoney(value, "%", decimals);
     },
-    integer: (value) => {
+    integer: value => {
       let decimals = 0;
-      if (typeof value === 'string') value = parseFloat(value);
+      if (typeof value === "string") value = parseFloat(value);
       return accounting.formatNumber(value, decimals);
     },
-    quantity: (value) => {
+    quantity: value => {
       let decimals = sappy.sessionInfo.company.oadm.QtyDec;
-      if (typeof value === 'string') value = parseFloat(value);
+      if (typeof value === "string") value = parseFloat(value);
       let ret = accounting.formatNumber(value, decimals);
 
       //remover os separador decimal e as decimas quando não são relevantes
-      ret = ret.replace(
-        sappy.sessionInfo.company.oadm.DecSep + '000000'.substring(0, sappy.sessionInfo.company.oadm.QtyDec)
-        , '')
+      ret = ret.replace(sappy.sessionInfo.company.oadm.DecSep + "000000".substring(0, sappy.sessionInfo.company.oadm.QtyDec), "");
 
       return ret;
     },
     date: value => {
-      if (!value) return ""
+      if (!value) return "";
       let sapFormat = getDateFormat();
-      let d = moment(value)
+      let d = moment(value);
       if (d.isValid()) return d.format(sapFormat);
       return "";
     },
     datetime: value => {
-      if (!value) return ""
+      if (!value) return "";
       let sapFormat = getDateFormat();
-      let d = moment(value)
+      let d = moment(value);
       if (d.isValid()) return d.format(sapFormat + " HH:mm:ss");
       return "";
     },
     datetime2: value => {
-      if (!value) return ""
+      if (!value) return "";
       let sapFormat = getDateFormat();
-      let d = moment(value)
+      let d = moment(value);
       if (d.isValid()) return d.format(sapFormat + " HH:mm");
       return "";
     },
     YYYY_MM_DD: value => {
       let parsedDate;
 
-      if (!value) return '';
+      if (!value) return "";
       if (value instanceof Date) {
         parsedDate = value;
       } else {
@@ -427,8 +426,6 @@ import barcodes from "./sappy_barcodes";
       return year + "-" + month + "-" + day;
     }
   };
-
-
 
   sappy.CrystalReports = {
     DefaultValueSortMethod: { BasedOnValue: 0, BasedOnDescription: 1 },
@@ -473,16 +470,15 @@ import barcodes from "./sappy_barcodes";
     DiscreteOrRangeKind: { DiscreteValue: 0, RangeValue: 1, DiscreteAndRangeValue: 2 }
   };
 
-
   sappy.b1 = {};
-  sappy.b1.getBoRcptInvTypes = (transType) => {
+  sappy.b1.getBoRcptInvTypes = transType => {
     let t = sappy.getNum(transType);
     if (t === -3) return "it_ClosingBalance";
     if (t === -1) return "it_AllTransactions";
     if (t === -2) return "it_OpeningBalance";
     if (t === 13) return "it_Invoice";
     if (t === 14) return "it_CredItnote";
-    if (t === 15) return "it_TaxInvoice"
+    if (t === 15) return "it_TaxInvoice";
     if (t === 16) return "it_Return";
     if (t === 18) return "it_PurchaseInvoice";
     if (t === 19) return "it_PurchaseCreditNote";
@@ -504,8 +500,8 @@ import barcodes from "./sappy_barcodes";
     if (t === 165) return "it_ARCorrectionInvoice ";
     if (t === 203) return "it_DownPayment ";
     if (t === 204) return "it_PurchaseDownPayment ";
-    return ""
-  }
+    return "";
+  };
 
   sappy.b1.sapObjectInfo = ({ tableName, objectCode } = {}) => {
     let objData = [
@@ -591,8 +587,7 @@ import barcodes from "./sappy_barcodes";
     ];
 
     return objData.find(item => {
-      return item.tableName === (tableName || '').toUpperCase()
-        || item.objectCode.toString() === (objectCode || '').toString();
+      return item.tableName === (tableName || "").toUpperCase() || item.objectCode.toString() === (objectCode || "").toString();
     });
   };
 
