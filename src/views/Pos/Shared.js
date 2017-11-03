@@ -8,13 +8,14 @@ exports.prepareDocType = function({ tableName }) {
   let objType = objInfo.objectCode.toString();
   let title = objInfo.description;
 
-  let cardCodeLabel = "";
-  let cardCodeApi = "";
+  let cardCodeLabel = "Cliente";
+  let cardCodeApi = "/api/cbo/ocrd/c";
   let footerLimitSearchCondition = "";
-
-  cardCodeLabel = "Cliente";
-  cardCodeApi = "/api/cbo/ocrd/c";
-  footerLimitSearchCondition = "";
+  let footerSearchType = "oitm";
+  if ("14".indexOf(objType) > -1) {
+    footerLimitSearchCondition = `FACT."CardCode"='<CARDCODE>' AND FACT."PayToCode"='<BILLADDR>'`;
+    footerSearchType = "vnddev";
+  }
 
   let headerFields = {};
   headerFields.line1 = [];
@@ -92,8 +93,8 @@ exports.prepareDocType = function({ tableName }) {
       headerFields,
       detailFields,
       apiDocsNew: `/api/docs/new/${tableName}`,
-      footerSearchType: "oitm",
-      footerSearchShowCatNum: true,
+      footerSearchType,
+      footerSearchShowCatNum: false,
       footerLimitSearchCondition
     }
   };

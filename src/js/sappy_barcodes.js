@@ -8,6 +8,7 @@ import axios from "axios";
   var charBuffer = [];
   var barcodeBuffer = [];
   var currentCallback;
+  var currentBarcodeApiUrl;
   var processing = false;
   var sappy = null; // só será preenchido no init(sappy)
   var withError = false;
@@ -18,18 +19,19 @@ import axios from "axios";
     console.log("acknowledgePopupMsg");
   }
   function showBarCodeError(title, moreInfo) {
+    sappy.playBadInputSound();
+
     withError = true;
     sappy.showWarning({
       title,
       moreInfo,
-      playBadInput: true,
       onClose: acknowledgePopupMsg
     });
   }
 
   function validate(barcode) {
     axios
-      .get("/api/search/oitm/bc/" + encodeURIComponent(barcode))
+      .get(currentBarcodeApiUrl + encodeURIComponent(barcode))
       .then(result => {
         var listItems = result.data;
         let found = listItems.length;
@@ -48,10 +50,16 @@ import axios from "axios";
             barcodeBuffer = [];
             processing = true;
             // console.log("call " + bcToProcess);
-            currentCallback(bcToProcess);
+            currentCallback({ barcodes: bcToProcess, hasMany: false });
           }
         } else if (found > 1) {
-          showBarCodeError("Múltiplos registos", "Foram encontrados vários registos ao procurar por '" + barcode + "'");
+          if (processing) {
+            showBarCodeError("Múltiplos registos", "Foram encontrados vários registos ao procurar por '" + barcode + "'");
+          } else {
+            // não interfere com o buffer
+            sappy.playBadInputSound();
+            currentCallback({ barcodes: [barcode], hasMany: true });
+          }
         } else {
           showBarCodeError("Nada encontrado", "Não foi possivel encontrar ao procurar por '" + barcode + "'");
         }
@@ -132,8 +140,9 @@ import axios from "axios";
     );
   };
 
-  lib.onRead = function(callback) {
+  lib.onRead = function(callback, barcodeApiUrl) {
     currentCallback = callback;
+    currentBarcodeApiUrl = barcodeApiUrl;
   };
 
   lib.notifyBarcodesProcessed = function() {
@@ -145,7 +154,7 @@ import axios from "axios";
       barcodeBuffer = [];
       processing = true;
       // console.log("call queue " + bcToProcess)
-      currentCallback(bcToProcess);
+      currentCallback({ barcodes: bcToProcess, hasMany: false });
     }
   };
 

@@ -2,80 +2,55 @@ import React, { Component } from "react";
 import axios from "axios";
 
 const sappy = window.sappy;
-import ModalOitm from './ModalOitm';
+import ModalOitm from "./ModalOitm";
+import VendDev from "./VendDev";
 
 class SearchAndChoose extends Component {
   constructor(props) {
-    super(props)
+    super(props);
 
-    this.handleModalSearchClose = this.handleModalSearchClose.bind(this)
-    this.handleOnChange_txtSearch = this.handleOnChange_txtSearch.bind(this)
-    this.handleOnKeyDown_txtSearch = this.handleOnKeyDown_txtSearch.bind(this)
-    this.openSearchModal = this.openSearchModal.bind(this)
-    this.handleBarcodeRead = this.handleBarcodeRead.bind(this)
+    this.handleModalSearchClose = this.handleModalSearchClose.bind(this);
+    this.handleOnChange_txtSearch = this.handleOnChange_txtSearch.bind(this);
+    this.handleOnKeyDown_txtSearch = this.handleOnKeyDown_txtSearch.bind(this);
+    this.openSearchModal = this.openSearchModal.bind(this);
+    this.handleBarcodeRead = this.handleBarcodeRead.bind(this);
 
     this.state = {
       searchText: "",
       currentModal: null
-    }
+    };
   }
 
   componentDidMount() {
-    sappy.barcodes.onRead(this.handleBarcodeRead);
+    let barcodeApiUrl = "";
+    if (this.props.searchType === "oitm") barcodeApiUrl = ModalOitm.barcodeApiUrl;
+    else if (this.props.searchType === "vnddev") barcodeApiUrl = VendDev.barcodeApiUrl;
+    else sappy.showError(this.props.searchType, "Tipo de pesquisa desconhecido");
+
+    sappy.barcodes.onRead(this.handleBarcodeRead, barcodeApiUrl);
   }
 
   componentWillUnmount() {
     sappy.barcodes.onRead(null);
   }
 
-  handleBarcodeRead(barcodes) {
-    // let that = this;
-    // let barcodeApiUrl = ""
-    // if (this.props.searchType === "oitm") barcodeApiUrl = ModalOitm.barcodeApiUrl;
-    // else sappy.showError(this.props.searchType, "Tipo de pesquisa desconhecido")
-
-    this.setState({ searchText: "" })
-
-    this.props.onReturnSelectItems({
-      barcodes: barcodes,
-      callback: sappy.barcodes.notifyBarcodesProcessed
-    });
-    // that.setState({ searchText: "" })
-
-
-    // if (barcodeApiUrl) {
-    //   axios
-    //     .get(barcodeApiUrl + barcode)
-    //     .then(result => {
-    //       var listItems = result.data;
-    //       let found = listItems.length;
-
-    //       if (found === 1) {
-    //         let selectedItems = [listItems[0].ItemCode];
-    //         this.props.onReturnSelectItems({
-    //           [selectedItems],
-    //           callback: sappy.barcodes.notifyBarcodesProcessed
-    //         });
-    //         that.setState({ searchText: "" })
-    //       } else if (found > 1) {
-    //         that.setState({ searchText: barcode }, that.openSearchModal);
-    //       } else {
-    //         that.setState({ searchText: "" })
-    //         sappy.showWarning({ title: "Nada encontrado", moreInfo: "Não foi possivel encontrar ao procurar por '" + barcode + "'", playBadInput: true })
-    //       }
-    //     })
-    //     .catch(function (error) {
-    //       sappy.barcodes.notifyBarcodesProcessed();
-    //       if (!error.__CANCEL__) sappy.showError(error, "Api error")
-    //       that.setState({ searchText: "" })
-    //     });
-    // }
+  handleBarcodeRead({ barcodes, hasMany } = {}) {
+    if (hasMany) {
+      this.setState({ searchText: barcodes[0] }, this.performSearch);
+    } else {
+      this.setState({ searchText: "" });
+      this.props.onReturnSelectItems({
+        barcodes: barcodes,
+        callback: sappy.barcodes.notifyBarcodesProcessed
+      });
+    }
   }
 
   handleModalSearchClose(selectedItems) {
     this.setState({ currentModal: null });
     this.props.onReturnSelectItems({ selectedItems });
   }
+
   handleOnChange_txtSearch(e) {
     e.preventDefault();
 
@@ -89,31 +64,43 @@ class SearchAndChoose extends Component {
     }
   }
 
-
   openSearchModal() {
     let currentModal = null;
     if (this.props.searchType === "oitm")
-      currentModal = <ModalOitm
-        toggleModal={this.handleModalSearchClose}
-        limitSearch={this.props.limitSearch}
-        showCatNum={this.props.showCatNum}
-        limitSearchCondition={this.props.limitSearchCondition}
-        onToogleLimitSearch={this.props.onToogleLimitSearch}
-        searchText={this.state.searchText} />
-
-    else sappy.showError(this.props.searchType, "Tipo de pesquisa desconhecido")
+      currentModal = (
+        <ModalOitm
+          toggleModal={this.handleModalSearchClose}
+          limitSearch={this.props.limitSearch}
+          showCatNum={this.props.showCatNum}
+          limitSearchCondition={this.props.limitSearchCondition}
+          onToogleLimitSearch={this.props.onToogleLimitSearch}
+          searchText={this.state.searchText}
+        />
+      );
+    else if (this.props.searchType === "vnddev")
+      currentModal = (
+        <VendDev
+          toggleModal={this.handleModalSearchClose}
+          limitSearch={this.props.limitSearch}
+          showCatNum={this.props.showCatNum}
+          limitSearchCondition={this.props.limitSearchCondition}
+          onToogleLimitSearch={this.props.onToogleLimitSearch}
+          searchText={this.state.searchText}
+        />
+      );
+    else sappy.showError(this.props.searchType, "Tipo de pesquisa desconhecido");
 
     this.setState({ currentModal, searchText: "" });
   }
 
   performSearch() {
     let that = this;
-    let searchApiUrl = ""
+    let searchApiUrl = "";
     if (this.props.searchType === "oitm") searchApiUrl = ModalOitm.searchApiUrl;
-    else sappy.showError(this.props.searchType, "Tipo de pesquisa desconhecido")
+    else if (this.props.searchType === "vnddev") searchApiUrl = VendDev.searchApiUrl;
+    else sappy.showError(this.props.searchType, "Tipo de pesquisa desconhecido");
 
     if (searchApiUrl) {
-
       let limitSearchCondition = "";
       if (this.props.limitSearch && this.props.limitSearchCondition) limitSearchCondition = this.props.limitSearchCondition;
 
@@ -137,56 +124,48 @@ class SearchAndChoose extends Component {
           if (found === 1) {
             let selectedItems = [listItems[0].ItemCode];
             this.props.onReturnSelectItems({ selectedItems });
-            that.setState({ searchText: "" })
+            that.setState({ searchText: "" });
           } else if (found > 1) {
             that.openSearchModal();
           } else {
-            that.setState({ searchText: "" })
-            sappy.showWarning({ title: "Nada encontrado", moreInfo: "Não foi possivel encontrar ao procurar por '" + searchText + "'" })
+            that.setState({ searchText: "" });
+            sappy.showWarning({ title: "Nada encontrado", moreInfo: "Não foi possivel encontrar ao procurar por '" + searchText + "'" });
           }
         })
-        .catch(function (error) {
-          if (!error.__CANCEL__) sappy.showError(error, "Api error")
-          that.setState({ searchText: "" })
+        .catch(function(error) {
+          if (!error.__CANCEL__) sappy.showError(error, "Api error");
+          that.setState({ searchText: "" });
         });
     }
   }
 
   render() {
-    let that = this
+    let that = this;
     return (
-      <form action="#" role="search" onSubmit={e => e.preventDefault()}      >
+      <form action="#" role="search" onSubmit={e => e.preventDefault()}>
         {this.state.currentModal}
         <div className="input-search input-search-dark">
           <i className="input-search-icon wb-plus" aria-hidden="true" />
 
-          <input className="form-control w-full"
-            autoComplete="off" value={this.state.searchText}
-            onChange={this.handleOnChange_txtSearch}
-            onKeyDown={this.handleOnKeyDown_txtSearch} >
-          </input>
+          <input className="form-control w-full" autoComplete="off" value={this.state.searchText} onChange={this.handleOnChange_txtSearch} onKeyDown={this.handleOnKeyDown_txtSearch} />
 
-
-          <button className="input-search-btn vertical-align-middle" >
+          <button className="input-search-btn vertical-align-middle">
             {this.props.limitSearchCondition &&
-              <i className={"icon " + (this.props.limitSearch ? "ion-ios-funnel active" : "ion-ios-funnel-outline inactive")} aria-hidden="true"
-                onMouseDown={that.props.onToogleLimitSearch} />
-            }
+              <i className={"icon " + (this.props.limitSearch ? "ion-ios-funnel active" : "ion-ios-funnel-outline inactive")} aria-hidden="true" onMouseDown={that.props.onToogleLimitSearch} />}
             <i className="icon wb-menu" aria-hidden="true" onMouseDown={that.openSearchModal} />
           </button>
-
         </div>
-      </form >
+      </form>
     );
   }
 }
 
 SearchAndChoose.defaultProps = {
   searchType: "",
-  onReturnSelectItems: selectedItems => { },
+  onReturnSelectItems: selectedItems => {},
   limitSearch: false,
   limitSearchCondition: "",
   showCatNum: false,
-  onToogleLimitSearch: () => { }
+  onToogleLimitSearch: () => {}
 };
 export default SearchAndChoose;

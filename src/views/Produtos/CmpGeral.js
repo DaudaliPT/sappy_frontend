@@ -6,7 +6,7 @@ var sappy = window.sappy;
 import { TextBox, TextBoxNumeric, ComboBox, Toggle } from "../../Inputs";
 import { hashHistory } from "react-router";
 
-const getInitialState = function (props) {
+const getInitialState = function(props) {
   let Item = props.Item || {};
 
   let supplierCollection = props.supplierCollection || [];
@@ -21,8 +21,8 @@ const getInitialState = function (props) {
 
   let newState = {
     saving: false,
-    ItemCode: props.ItemCode || '',
-    loading: false, // props.ItemCode && true,    
+    ItemCode: props.ItemCode || "",
+    loading: false, // props.ItemCode && true,
     ReadOnly: props.ReadOnly,
     TinhaFamilia1: Item.U_SubFamilia1 ? false : true,
     validationMessages: {
@@ -33,12 +33,12 @@ const getInitialState = function (props) {
     numberOfBarCodes: Item.ItemBarCodeCollection ? Item.ItemBarCodeCollection.length : 1,
     Propriedades,
     supplierCollection,
-    showFabricante: Item.Mainsupplier === "F0585"/*UNAPOR*/,
+    showFabricante: Item.Mainsupplier === "F0585" /*UNAPOR*/,
     U_rsaMargem: Item.U_rsaMargem,
     PrecoCash: Item.ItemPrices && Item.ItemPrices[0].Price
-  }
+  };
   return newState;
-}
+};
 
 class CmpGeral extends Component {
   constructor(props) {
@@ -52,12 +52,10 @@ class CmpGeral extends Component {
     this.state = getInitialState(props);
   }
 
-
   componentWillReceiveProps(nextProps) {
-    let oldItem = this.props.Item || {}
+    let oldItem = this.props.Item || {};
     if (nextProps.Item && oldItem.itemCode !== nextProps.Item.ItemCode) this.setState(getInitialState(nextProps));
     if (this.props.ReadOnly !== nextProps.ReadOnly) this.setState({ ReadOnly: nextProps.ReadOnly });
-
   }
 
   componentWillUnmount() {
@@ -91,18 +89,16 @@ class CmpGeral extends Component {
         Object.assign(Item, { [propertyName]: propertyValue });
       }
     } else if (fieldName === "U_SubFamilia1") {
-      Object.assign(Item, { ItemsGroupCode: formatedValue.U_CodigoFamilia }); // grupo de artigo (herdado da familia1) 
+      Object.assign(Item, { ItemsGroupCode: formatedValue.U_CodigoFamilia }); // grupo de artigo (herdado da familia1)
 
       // Neste ecrã não define a série, já que não pode mudar o código de artigo
-      // Object.assign(Item, { Series: formatedValue.DefaultSeries }); // Default Series  
+      // Object.assign(Item, { Series: formatedValue.DefaultSeries }); // Default Series
       Object.assign(Item, { [fieldName]: val });
-
     } else if (fieldName.indexOf("CodigoBarras_") > -1) {
       let parts = fieldName.split("_"); // CodigoBarras_1_BarCode  ou CodigoBarras_2_FreeText
       let ix = parseInt(parts[1], 10);
       let slField = parts[2];
       let ItemBarCodeCollection = [...Item.ItemBarCodeCollection];
-
 
       if (slField === "Barcode") {
         //validate if in other items
@@ -115,12 +111,11 @@ class CmpGeral extends Component {
           url: `api/prod/new/isUniqueBarcode`
         })
           .then(result => {
-
             if (result.data.length > 0) {
               let validationMessages = that.state.validationMessages;
               validationMessages[fieldName] = "warning|Código ja existe no artigo " + result.data[0].ItemCode;
 
-              that.setState({ validationMessages })
+              that.setState({ validationMessages });
             }
           })
           .catch(error => sappy.showError(error, "Erro ao validar dados"));
@@ -143,12 +138,10 @@ class CmpGeral extends Component {
       }
       // newStateValues = { ...newStateValues };
       Object.assign(Item, { ItemBarCodeCollection });
-
     } else if (fieldName.indexOf("Supplier_") > -1) {
       let parts = fieldName.split("_"); // Supplier_1_CardCode
       let ix = parseInt(parts[1], 10);
       let slField = parts[2];
-
 
       let supplierCollection = [...this.state.supplierCollection];
       let item = supplierCollection[ix];
@@ -157,12 +150,10 @@ class CmpGeral extends Component {
         ItemCode: this.state.ItemCode,
         CardCode: item.CardCode,
         Substitute: item.Substitute
-      }
+      };
 
-      if (slField === "Substitute")
-        validateData.Substitute = val
-      else
-        validateData.CardCode = val
+      if (slField === "Substitute") validateData.Substitute = val;
+      else validateData.CardCode = val;
 
       //validate if in other items
       this.serverRequest = axios({
@@ -171,7 +162,7 @@ class CmpGeral extends Component {
         url: `api/prod/new/isUniqueCatalogNr`
       })
         .then(result => {
-          let valFname = fieldName.replace("CardCode", "Substitute")
+          let valFname = fieldName.replace("CardCode", "Substitute");
           let validationMessages = that.state.validationMessages;
 
           if (result.data.length > 0) {
@@ -179,14 +170,14 @@ class CmpGeral extends Component {
           } else {
             validationMessages[valFname] = "";
           }
-          that.setState({ validationMessages })
+          that.setState({ validationMessages });
         })
         .catch(error => sappy.showError(error, "Erro ao validar dados"));
 
       Object.assign(item, { [slField]: val });
 
       if (ix === 0 && slField === "CardCode") {
-        Object.assign(newStateValues, { showFabricante: val === "F0585"/*UNAPOR*/ });
+        Object.assign(newStateValues, { showFabricante: val === "F0585" /*UNAPOR*/ });
 
         Object.assign(Item, { Mainsupplier: val }); // !!! diferent case in CardCode
       }
@@ -204,8 +195,8 @@ class CmpGeral extends Component {
       ItemPrices[0].Price = val;
       Object.assign(Item, { ItemPrices });
     } else if (fieldName.indexOf("Frozen") > -1) {
-      Item.Valid = val ? 'tNO' : 'tYES'
-      Item.Frozen = val ? 'tYES' : 'tNO'
+      Item.Valid = val ? "tNO" : "tYES";
+      Item.Frozen = val ? "tYES" : "tNO";
     } else {
       Object.assign(Item, { [fieldName]: val });
     }
@@ -231,7 +222,7 @@ class CmpGeral extends Component {
             this.setState({ saving: false }, sappy.showError(error, "Erro ao apagar"));
           });
       });
-    }
+    };
 
     this.setState(
       {
@@ -286,20 +277,16 @@ class CmpGeral extends Component {
 
     this.setState({ validationMessages });
 
-
     if (!haErros) {
       let gravarArtigo = () => {
-
-
         // If barcodes where deleted we need to save that
         let oldBC = that.state.OldItemData.ItemBarCodeCollection;
         let curBC = that.state.Item.ItemBarCodeCollection;
-        let BarCodesToDelete = []
+        let BarCodesToDelete = [];
         oldBC.forEach(bc => {
-          let stillExists = curBC.find(item => item.AbsEntry === bc.AbsEntry)
-          if (!stillExists) BarCodesToDelete.push(bc)
-        })
-
+          let stillExists = curBC.find(item => item.AbsEntry === bc.AbsEntry);
+          if (!stillExists) BarCodesToDelete.push(bc);
+        });
 
         //save
         that.setState({ saving: true }, () => {
@@ -314,13 +301,12 @@ class CmpGeral extends Component {
             url: "api/prod/item"
           })
             .then(result => {
-
-              that.props.onItemSaved(); //notify parent
+              if (that.props.onItemSaved) that.props.onItemSaved(); //notify parent
 
               sappy.showSuccess({
                 title: "Alterações gravadas",
                 moreInfo: `O artigo ${result.data.ItemCode} foi alterado!`
-              })
+              });
             })
             .catch(error => {
               this.setState({ saving: false }, sappy.showError(error, "Erro ao gravar"));
@@ -391,8 +377,7 @@ class CmpGeral extends Component {
 
         let bc = supplierCollection[index] || {};
 
-
-        let label2 = "Código de catálogo"
+        let label2 = "Código de catálogo";
         let label = "Fornecedor";
         if (this.state.showFabricante) label = "Fornecedor/Fabricante";
 
@@ -420,7 +405,7 @@ class CmpGeral extends Component {
                 value={bc.Substitute}
                 disabled={this.state.ReadOnly}
                 onChange={this.onFieldChange}
-                rightButton={this.state.ReadOnly ? "" : (index === 0 ? "+" : "-")}
+                rightButton={this.state.ReadOnly ? "" : index === 0 ? "+" : "-"}
                 onRightButtonClick={this.onClick_AddSupplier}
                 state={this.state.validationMessages[catalogNo_field]}
               />
@@ -481,12 +466,11 @@ class CmpGeral extends Component {
                 value={bc.FreeText}
                 disabled={this.state.ReadOnly}
                 onChange={this.onFieldChange}
-                rightButton={this.state.ReadOnly ? "" : (index === 0 ? "+" : "-")}
+                rightButton={this.state.ReadOnly ? "" : index === 0 ? "+" : "-"}
                 onRightButtonClick={this.onClick_AddBarCode}
                 state={this.state.validationMessages[freetext_field]}
               />
             </div>
-
           </div>
         );
       }
@@ -495,134 +479,127 @@ class CmpGeral extends Component {
     };
 
     let renderLoading = () => {
-      if (!this.state.loading) return null
-      return (<div className="example-loading example-well h-150 vertical-align text-center">
-        <div className="loader vertical-align-middle loader-tadpole" />
-      </div>)
-    }
+      if (!this.state.loading) return null;
+      return (
+        <div className="example-loading example-well h-150 vertical-align text-center">
+          <div className="loader vertical-align-middle loader-tadpole" />
+        </div>
+      );
+    };
 
     let renderContent = () => {
       let hideClass = "";
       if (this.state.loading) hideClass = "hidden-xxl-down";
 
-      return (<div className={"row " + hideClass}>
-        <div className="col-lg-6">
-          <h5 className="section-title">Info Geral</h5>
+      return (
+        <div className={"row " + hideClass}>
+          <div className="col-lg-6">
+            <h5 className="section-title">Info Geral</h5>
 
-          <TextBox
-            name="ItemName"
-            label="Descrição:"
-            disabled={this.state.ReadOnly}
-            placeholder="Introduza a descrição..."
-            state={this.state.validationMessages.ItemName}
-            value={Item.ItemName}
-            onChange={this.onFieldChange}
-          />
+            <TextBox
+              name="ItemName"
+              label="Descrição:"
+              disabled={this.state.ReadOnly}
+              placeholder="Introduza a descrição..."
+              state={this.state.validationMessages.ItemName}
+              value={Item.ItemName}
+              onChange={this.onFieldChange}
+            />
 
-          <ComboBox
-            label="Sub-Família:"
-            placeholder="Selecione a família..."
-            name="U_SubFamilia1"
-            disabled={this.state.TinhaFamilia1 ? this.state.ReadOnly : true}
-            value={Item.U_SubFamilia1}
-            state={this.state.validationMessages.U_SubFamilia1}
-            getOptionsApiRoute="/api/cbo/subfamilia1"
-            onChange={this.onFieldChange}
-          />
-          {renderBarcodes()}
+            <ComboBox
+              label="Sub-Família:"
+              placeholder="Selecione a família..."
+              name="U_SubFamilia1"
+              disabled={this.state.TinhaFamilia1 ? this.state.ReadOnly : true}
+              value={Item.U_SubFamilia1}
+              state={this.state.validationMessages.U_SubFamilia1}
+              getOptionsApiRoute="/api/cbo/subfamilia1"
+              onChange={this.onFieldChange}
+            />
+            {renderBarcodes()}
 
-          <ComboBox
-            label="Propriedades:"
-            placeholder="Propriedades..."
-            name="Propriedades"
-            multi={true}
-            disabled={this.state.ReadOnly}
-            value={this.state.Propriedades}
-            getOptionsApiRoute="/api/cbo/oitg"
-            onChange={this.onFieldChange}
-          />
+            <ComboBox
+              label="Propriedades:"
+              placeholder="Propriedades..."
+              name="Propriedades"
+              multi={true}
+              disabled={this.state.ReadOnly}
+              value={this.state.Propriedades}
+              getOptionsApiRoute="/api/cbo/oitg"
+              onChange={this.onFieldChange}
+            />
 
-          <TextBox
-            type="textarea"
-            name="User_Text"
-            label="Observações:"
-            disabled={this.state.ReadOnly}
-            placeholder="Observações..."
-            value={Item.User_Text || ''}
-            onChange={this.onFieldChange}
-          />
+            <TextBox type="textarea" name="User_Text" label="Observações:" disabled={this.state.ReadOnly} placeholder="Observações..." value={Item.User_Text || ""} onChange={this.onFieldChange} />
+          </div>
+          <div className="col-lg-6">
+            <h5 className="section-title">Compra</h5>
+            <ComboBox
+              name="PurchaseVATGroup"
+              disabled={this.state.ReadOnly}
+              label="IVA para compras:"
+              placeholder="Selecione o IVA para compras..."
+              state={this.state.validationMessages.PurchaseVATGroup}
+              value={Item.PurchaseVATGroup}
+              getOptionsApiRoute="/api/cbo/ovtg/i"
+              onChange={this.onFieldChange}
+            />
 
-        </div>
-        <div className="col-lg-6">
+            {renderSuppliers()}
 
-          <h5 className="section-title">Compra</h5>
-          <ComboBox
-            name="PurchaseVATGroup"
-            disabled={this.state.ReadOnly}
-            label="IVA para compras:"
-            placeholder="Selecione o IVA para compras..."
-            state={this.state.validationMessages.PurchaseVATGroup}
-            value={Item.PurchaseVATGroup}
-            getOptionsApiRoute="/api/cbo/ovtg/i"
-            onChange={this.onFieldChange}
-          />
-
-          {renderSuppliers()}
-
-          <h5 className="section-title">Venda</h5>
-          <ComboBox
-            name="SalesVATGroup"
-            disabled={this.state.ReadOnly}
-            label="IVA para vendas:"
-            placeholder="Selecione o IVA para vendas..."
-            state={this.state.validationMessages.SalesVATGroup}
-            value={Item.SalesVATGroup}
-            getOptionsApiRoute="/api/cbo/ovtg/o"
-            onChange={this.onFieldChange}
-          />
-          <div className="row">
-            <div className="col-6">
-              <TextBoxNumeric
-                valueType="price"
-                disabled={this.state.ReadOnly}
-                label="Preço Cash:"
-                placeholder="Introduza o preço Cash..."
-                state={this.state.validationMessages.PrecoCash}
-                name="PrecoCash"
-                value={this.state.PrecoCash}
-                onChange={this.onFieldChange}
-              />
+            <h5 className="section-title">Venda</h5>
+            <ComboBox
+              name="SalesVATGroup"
+              disabled={this.state.ReadOnly}
+              label="IVA para vendas:"
+              placeholder="Selecione o IVA para vendas..."
+              state={this.state.validationMessages.SalesVATGroup}
+              value={Item.SalesVATGroup}
+              getOptionsApiRoute="/api/cbo/ovtg/o"
+              onChange={this.onFieldChange}
+            />
+            <div className="row">
+              <div className="col-6">
+                <TextBoxNumeric
+                  valueType="price"
+                  disabled={this.state.ReadOnly}
+                  label="Preço Cash:"
+                  placeholder="Introduza o preço Cash..."
+                  state={this.state.validationMessages.PrecoCash}
+                  name="PrecoCash"
+                  value={this.state.PrecoCash}
+                  onChange={this.onFieldChange}
+                />
+              </div>
+              <div className="col-6">
+                <TextBoxNumeric
+                  valueType="percent"
+                  disabled={this.state.ReadOnly}
+                  label="Margem Indicativa:"
+                  placeholder="margem Indicativa..."
+                  name="U_rsaMargem"
+                  value={this.state.U_rsaMargem}
+                  onChange={this.onFieldChange}
+                />
+              </div>
             </div>
-            <div className="col-6">
-              <TextBoxNumeric
-                valueType="percent"
-                disabled={this.state.ReadOnly}
-                label="Margem Indicativa:"
-                placeholder="margem Indicativa..."
-                name="U_rsaMargem"
-                value={this.state.U_rsaMargem}
-                onChange={this.onFieldChange}
-              />
+            <div className="row">
+              <div className="col-6">
+                <Toggle
+                  disabled={this.state.ReadOnly}
+                  label=""
+                  name="Frozen"
+                  contentOFF="Activo"
+                  contentON="Inactivo"
+                  color={Item.Frozen === "tNO" ? "success" : "danger"}
+                  value={Item.Frozen !== "tNO"}
+                  onChange={this.onFieldChange}
+                />
+              </div>
             </div>
           </div>
-          <div className="row">
-            <div className="col-6">
-              <Toggle
-                disabled={this.state.ReadOnly}
-                label=""
-                name="Frozen"
-                contentOFF="Activo"
-                contentON="Inactivo"
-                color={Item.Frozen === "tNO" ? "success" : "danger"}
-                value={Item.Frozen !== "tNO"}
-                onChange={this.onFieldChange}
-              />
-            </div>
-
-          </div>
         </div>
-      </div>)
-    }
+      );
+    };
 
     return (
       <div>
@@ -631,19 +608,16 @@ class CmpGeral extends Component {
           {renderContent()}
         </div>
         <div className="sappy-action-bar animation-slide-left">
-
           {!this.state.ReadOnly &&
             <Button color="danger" disabled={this.state.saving || this.state.loading} onClick={this.onDeleteArtigo}>
               <i className="icon wb-trash" />
               <span className="hidden-sm-down"> Apagar artigo </span>
-            </Button>
-          }
+            </Button>}
           {!this.state.ReadOnly &&
             <Button color="success" disabled={this.state.saving || this.state.loading} onClick={this.onSaveArtigo}>
               <i className="icon wb-check" />
               <span className="hidden-sm-down"> Gravar alterações</span>
-            </Button>
-          }
+            </Button>}
         </div>
       </div>
     );
