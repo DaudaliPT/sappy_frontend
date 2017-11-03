@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { FormGroup, InputGroup } from "reactstrap";
+// import { FormGroup, InputGroup } from "reactstrap";
 import Textbox from "./TextBox";
 var $ = window.$;
 // const sappy = window.sappy;
@@ -12,7 +12,7 @@ class Flag extends Component {
   }
 
   handleToggle() {
-    let that = this;
+    // let that = this;
     if (this.state.opened) {
       // this.setState({ opened: false });
       // o lost focus do campo fará esconder

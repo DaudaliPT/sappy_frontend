@@ -45,7 +45,7 @@ class Inicio extends Component {
   }
 
   render() {
-    var { user, company } = sappy.sessionInfo;
+    // var { user, company } = sappy.sessionInfo;
     var { companyLogo } = this.state;
     let that = this;
 
@@ -75,7 +75,7 @@ class Inicio extends Component {
             </div>
             <div className="row no-gutters secondrow">
               <div className="col-12 text-nowrap">
-                {"Criado em " + sappy.format.datetime(row.DOC_DATETIME) + ". Tem " + row.NR_LINES + (row.NR_LINES == "1" ? " linha" : " linhas")}
+                {"Criado em " + sappy.format.datetime(row.DOC_DATETIME) + ". Tem " + row.NR_LINES + (row.NR_LINES === 1 ? " linha" : " linhas")}
               </div>
             </div>
           </div>

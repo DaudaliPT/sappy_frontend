@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 // import { Button } from "reactstrap";
 
-import { TextBoxNumeric } from "../../../Inputs";
+// import { TextBoxNumeric } from "../../../Inputs";
 const sappy = window.sappy;
 
 class PosFooter extends Component {
   render() {
-    let docData = this.props.docData || {};
+    // let docData = this.props.docData || {};
     let totals = this.props.totals;
 
     return (

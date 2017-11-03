@@ -67,17 +67,33 @@ class ModalCoveredItems extends Component {
       const renderBadges = () => {
         return badges.map((item, ix) => {
           if (item === "MP") {
-            return <Badge key={uuid()} color="primary" pill>{item}</Badge>;
+            return (
+              <Badge key={uuid()} color="primary" pill>
+                {item}
+              </Badge>
+            );
           } else if (item === "PV") {
-            return <Badge key={uuid()} color="success" pill>{item}</Badge>;
+            return (
+              <Badge key={uuid()} color="success" pill>
+                {item}
+              </Badge>
+            );
           } else if (item === "Inactivo") {
-            return <Badge key={uuid()} color="default" pill>{item}</Badge>;
+            return (
+              <Badge key={uuid()} color="default" pill>
+                {item}
+              </Badge>
+            );
           } else {
-            return <Badge key={uuid()} color="danger" pill>{item}</Badge>;
+            return (
+              <Badge key={uuid()} color="danger" pill>
+                {item}
+              </Badge>
+            );
           }
         });
       };
-      let rowId = "row_" + row.ItemCode;
+      // let rowId = "row_" + row.ItemCode;
       let rowStyleClass = "";
       if (row.OnHand < 0) rowStyleClass = "vlist-row-danger";
       if (row.frozenFor === "Y") rowStyleClass = "vlist-row-default";
@@ -85,7 +101,6 @@ class ModalCoveredItems extends Component {
       return (
         <div className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={this.handleRowSelection}>
           <div className="container vertical-align-middle">
-
             {/*large displays*/}
             <div className="row hidden-lg-down">
               {/* <div className="col-1">
@@ -94,21 +109,35 @@ class ModalCoveredItems extends Component {
                   <label htmlFor={rowId} />
                 </span>
               </div> */}
-              <div className="col-2"> {row.ItemCode} </div>
-              <div className="col-5 "> {row.ItemName} <span> {renderBadges()} </span> </div>
-              <div className="col-2"> <span className="float-right">{row.FORMATED_PRICE}</span> </div>
+              <div className="col-2">
+                {" "}{row.ItemCode}{" "}
+              </div>
+              <div className="col-5 ">
+                {" "}{row.ItemName} <span> {renderBadges()} </span>{" "}
+              </div>
+              <div className="col-2">
+                {" "}<span className="float-right">{row.FORMATED_PRICE}</span>{" "}
+              </div>
               <div className="col-2 lastcol">
-                <span className="float-right">{sappy.format.quantity(row.OnHand, 0) + " " + row.InvntryUom}</span>
+                <span className="float-right">
+                  {sappy.format.quantity(row.OnHand, 0) + " " + row.InvntryUom}
+                </span>
               </div>
             </div>
             {/*mobile*/}
             <div className="hidden-xl-up">
               <div className="row">
-                <div className="col text-nowrap"> {row.ItemName} </div>
+                <div className="col text-nowrap">
+                  {" "}{row.ItemName}{" "}
+                </div>
               </div>
               <div className="row secondrow">
-                <div className="col-6 text-nowrap firstcol"> {row.ItemCode} <span> {renderBadges()} </span> </div>
-                <div className="col-3 text-nowrap"> <span className="float-right">{row.FORMATED_PRICE}</span> </div>
+                <div className="col-6 text-nowrap firstcol">
+                  {" "}{row.ItemCode} <span> {renderBadges()} </span>{" "}
+                </div>
+                <div className="col-3 text-nowrap">
+                  {" "}<span className="float-right">{row.FORMATED_PRICE}</span>{" "}
+                </div>
                 <div className="col-3 text-nowrap lastcol">
                   {" "}<span className="float-right">{sappy.format.quantity(row.OnHand, 0)} Un</span>{" "}
                 </div>
@@ -122,7 +151,6 @@ class ModalCoveredItems extends Component {
       <Modal isOpen={true} toggle={this.handleToggleModal} className={"modal-lg modal-success"}>
         <ModalHeader toggle={this.handleToggleModal}>Selecione o documento</ModalHeader>
         <ModalBody>
-
           <SearchPage
             searchPlaceholder="Procurar..."
             searchApiUrl="/api/promocoes/doc/coveredOitm"
@@ -131,7 +159,6 @@ class ModalCoveredItems extends Component {
             renderRow={renderRow}
             renderRowHeight={50}
           />
-
         </ModalBody>
         <ModalFooter>
           {/* <Button color="primary" onClick={this.props.toggleModal}>

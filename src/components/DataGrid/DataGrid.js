@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ReactDataGrid, { Cell } from "react-data-grid/packages/react-data-grid/dist/react-data-grid";
+import ReactDataGrid from "react-data-grid/packages/react-data-grid/dist/react-data-grid";
 const sappy = window.sappy;
 const $ = window.$;
 import HeaderAlignRight from "./HeaderAlignRight";
@@ -7,8 +7,6 @@ import Formatters from "./Formatters";
 import Editors from "./Editors";
 
 const { ToolsPanel: { AdvancedToolbar, GroupedColumnsPanel }, Data: { Selectors }, Draggable } = require("react-data-grid/packages/react-data-grid-addons/dist/react-data-grid-addons");
-// We want to capture the event before any thing else
-let useCapturingFase = true; // see https://www.quirksmode.org/js/events_order.html
 
 class DataGrid extends Component {
   constructor(props) {
@@ -136,7 +134,6 @@ class DataGrid extends Component {
 
   focusCell({ rowIdx, idx }) {
     let that = this;
-    let ll = document.activeElement;
     setTimeout(() => {
       var $e = $(".react-grid-Row .react-grid-Cell");
       $e[idx].focus();

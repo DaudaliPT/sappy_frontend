@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 const sappy = window.sappy;
-const $ = window.$;
-import axios from "axios";
+// const $ = window.$;
+// import axios from "axios";
 import { Badge } from "reactstrap";
 import uuid from "uuid/v4";
 
@@ -20,7 +20,6 @@ class LpContratosCompra extends Component {
     };
   }
 
-
   handleRowClick(docID) {
     // var checkbox = $(e.target).closest(".byusVirtualRow").find(".contacts-checkbox")[0];
 
@@ -33,7 +32,6 @@ class LpContratosCompra extends Component {
   render() {
     let { selectedItems } = this.state;
 
-
     const renderRow = ({ row, index }) => {
       const selected = selectedItems.indexOf(row.ID.toString()) > -1;
 
@@ -42,11 +40,15 @@ class LpContratosCompra extends Component {
         return badges.map((item, ix) => {
           let color = item.split("_")[0];
           let text = item.split("_")[1];
-          return <Badge key={uuid()} color={color} pill>{text}</Badge>;
+          return (
+            <Badge key={uuid()} color={color} pill>
+              {text}
+            </Badge>
+          );
         });
       };
 
-      let rowId = "row_" + row.ID + "#" + (row.NUMERO || 0);
+      // let rowId = "row_" + row.ID + "#" + (row.NUMERO || 0);
       let rowStyleClass = "";
       if (selected) rowStyleClass += " sappy-selected-row";
       if (!row.NUMERO) rowStyleClass += " vlist-row-warning";
@@ -56,9 +58,15 @@ class LpContratosCompra extends Component {
           {/*large displays*/}
           <div className="container vertical-align-middle hidden-sm-down">
             <div className="row">
-              <div className="col-2"> {row.CARDCODE + "-" + sappy.padZeros(row.NUMERO, 3)} </div>
-              <div className="col-6"> {row.CardName + (row.CONTACT_NAME ? `(${row.CONTACT_NAME})` : "")} </div>
-              <div className="col-4 lastcol"> {row.DESCRICAO} {renderBadges()}</div>
+              <div className="col-2">
+                {" "}{row.CARDCODE + "-" + sappy.padZeros(row.NUMERO, 3)}{" "}
+              </div>
+              <div className="col-6">
+                {" "}{row.CardName + (row.CONTACT_NAME ? `(${row.CONTACT_NAME})` : "")}{" "}
+              </div>
+              <div className="col-4 lastcol">
+                {" "}{row.DESCRICAO} {renderBadges()}
+              </div>
             </div>
           </div>
 
@@ -82,9 +90,9 @@ class LpContratosCompra extends Component {
     };
 
     const renderActions = () => {
-      let currentShowActions = this.state.showActions;
+      // let currentShowActions = this.state.showActions;
 
-      let { selectedItems } = this.state;
+      // let { selectedItems } = this.state;
 
       let actions = [
         {
@@ -98,17 +106,8 @@ class LpContratosCompra extends Component {
       return actions;
     };
 
-    return (
-      <BaseLandingPage
-        pageTitle="Contratos de compra"
-        searchPlaceholder="Procurar..."
-        searchApiUrl="api/contratos/"
-        renderRow={renderRow}
-        renderRowHeight={50}
-        actions={renderActions()}
-      />
-    );
+    return <BaseLandingPage pageTitle="Contratos de compra" searchPlaceholder="Procurar..." searchApiUrl="api/contratos/" renderRow={renderRow} renderRowHeight={50} actions={renderActions()} />;
   }
 }
 
-export default LpContratosCompra; 
+export default LpContratosCompra;

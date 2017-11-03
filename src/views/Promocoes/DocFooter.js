@@ -1,8 +1,7 @@
-
 import React, { Component } from "react";
-import { Button } from "reactstrap";
-import SearchAndChoose from '../../components/SearchAndChoose';
-const sappy = window.sappy;
+// import { Button } from "reactstrap";
+import SearchAndChoose from "../../components/SearchAndChoose";
+// const sappy = window.sappy;
 
 class DocFooter extends Component {
   render() {
@@ -13,12 +12,9 @@ class DocFooter extends Component {
       let actions = this.props.actions;
 
       return (
-
         <div id="docFooter-actions">
-          <div className="left">
-          </div>
+          <div className="left" />
           <div className="right">
-
             {actions.map(action => {
               if (!action.visible) return null;
               let btClassName = "btn btn-" + action.color;
@@ -26,7 +22,9 @@ class DocFooter extends Component {
                 <button key={"action_" + action.name} type="button" onClick={action.onClick} className={btClassName}>
                   <span>
                     <i className={action.icon} aria-hidden="true" />
-                    <span className="hidden-sm-down">  {action.name}</span>
+                    <span className="hidden-sm-down">
+                      {" "}{action.name}
+                    </span>
                   </span>
                 </button>
               );
@@ -36,8 +34,9 @@ class DocFooter extends Component {
       );
     };
     return (
-      <nav id="docFooter" className="site-navbar navbar navbar-default navbar-fixed-bottom" >
-        {allowAddLines && loaded &&
+      <nav id="docFooter" className="site-navbar navbar navbar-default navbar-fixed-bottom">
+        {allowAddLines &&
+          loaded &&
           <div className="sappy-search-bar float-left">
             <SearchAndChoose
               searchType={this.props.footerSearchType}
@@ -45,11 +44,11 @@ class DocFooter extends Component {
               limitSearchCondition={this.props.footerLimitSearchCondition}
               showCatNum={this.props.footerSearchShowCatNum}
               onToogleLimitSearch={this.props.onToogleLimitSearch}
-              onReturnSelectItems={this.props.onFooterSearchResult} />
-          </div>
-        }
+              onReturnSelectItems={this.props.onFooterSearchResult}
+            />
+          </div>}
         {renderActions()}
-      </nav >
+      </nav>
     );
   }
 }
@@ -58,10 +57,9 @@ DocFooter.defaultProps = {
   footerSearchType: "",
   footerLimitSearchCondition: "",
   footerSearchShowCatNum: false,
-  onFooterSearchResult: selectedItems => { },
-  onToogleLimitSearch: () => { },
+  onFooterSearchResult: selectedItems => {},
+  onToogleLimitSearch: () => {},
   totals: {}
-}
+};
 
 export default DocFooter;
-

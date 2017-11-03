@@ -286,7 +286,7 @@ import barcodes from "./sappy_barcodes";
     let DISC_UN = [];
     let DISC_VAL = [];
 
-    value.split("+").map(part => {
+    value.split("+").forEach(part => {
       if (part.indexOf(".") > -1 && part.indexOf(",") > -1) {
         //tem pontos e virgulas, remover o que for o separador de milhares
         part = sappy.replaceAll(part, sappy.sessionInfo.company.oadm.ThousSep, "");
@@ -350,7 +350,7 @@ import barcodes from "./sappy_barcodes";
 
   sappy.format = {
     price: value => {
-      let decimals = sappy.sessionInfo.company.oadm.PriceDec;
+      // let decimals = sappy.sessionInfo.company.oadm.PriceDec;
 
       if (typeof value === "string") value = parseFloat(value);
       // return accounting.formatMoney(value, null, decimals);

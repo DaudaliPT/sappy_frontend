@@ -94,7 +94,7 @@ class PosBase extends Component {
   }
 
   togglePinHeader() {
-    let that = this;
+    // let that = this;
     let header = { ...this.state.header };
     header.pinHeader = !header.pinHeader;
     if (header.pinHeader) {

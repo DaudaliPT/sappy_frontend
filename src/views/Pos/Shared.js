@@ -1,5 +1,5 @@
-import React from "react";
-import EditModal from "../Produtos/EditModal";
+// import React from "react";
+// import EditModal from "../Produtos/EditModal";
 const sappy = window.sappy;
 
 exports.prepareDocType = function({ tableName }) {
@@ -10,16 +10,11 @@ exports.prepareDocType = function({ tableName }) {
 
   let cardCodeLabel = "";
   let cardCodeApi = "";
-  let contactLabel = "";
-  let dueDateLabel = "15,16,17, 20,21,22".indexOf(objType) > -1 ? "Data Entrega" : "Data Vencimento"; //Encomendas/Entregas/Devoluções
   let footerLimitSearchCondition = "";
-  let numatcardLabel = "";
 
   cardCodeLabel = "Cliente";
   cardCodeApi = "/api/cbo/ocrd/c";
-  contactLabel = "Contato";
   footerLimitSearchCondition = "";
-  numatcardLabel = "Ref. Cliente";
 
   let headerFields = {};
   headerFields.line1 = [];
@@ -55,29 +50,6 @@ exports.prepareDocType = function({ tableName }) {
   headerFields.icons.push({ name: "HAPPYDAY", label: "", type: "iconToggle", ON: "ion-ios-happy-outline success", OFF: "ion-ios-sad-outline danger" });
   headerFields.icons.push({ name: "MATRICULA", label: "Matricula", gridSize: 6, type: "iconEdit", ON: "fa-truck success", OFF: "fa-truck secondary" });
   headerFields.icons.push({ name: "COMMENTS", label: "Observações", gridSize: 12, type: "iconEdit", ON: "ion-ios-alert primary", OFF: "ion-ios-alert-outline secondary" });
-
-  // headerFields.line2 = [];
-
-  // headerFields.line2.push({
-  //   name: "COMMENTS",
-  //   label: "Observações",
-  //   type: "text",
-  //   gridSize: 6
-  // });
-  // headerFields.line2.push({
-  //   name: "MATRICULA",
-  //   label: "Matricula",
-  //   type: "text",
-  //   gridSize: 2
-  // });
-
-  let getCellStyle = props => {
-    let { column, dependentValues, rowIdx, value } = props;
-    let classes = "";
-    if (sappy.getNum(dependentValues.PRICE_CHANGED)) classes += " bellow-cost";
-
-    return classes;
-  };
 
   let detailFields = [
     { name: "ITEMNAME", label: "Descrição", type: "tags", width: 400, editable: false },

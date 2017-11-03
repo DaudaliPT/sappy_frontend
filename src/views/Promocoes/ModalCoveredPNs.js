@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 var $ = window.$;
-const sappy = window.sappy;
+// const sappy = window.sappy;
 import SearchPage from "../../components/SearchPage";
 
 import { Badge } from "reactstrap";
@@ -67,17 +67,33 @@ class ModalCoveredPNs extends Component {
       const renderBadges = () => {
         return badges.map((item, ix) => {
           if (item === "MP") {
-            return <Badge key={uuid()} color="primary" pill>{item}</Badge>;
+            return (
+              <Badge key={uuid()} color="primary" pill>
+                {item}
+              </Badge>
+            );
           } else if (item === "PV") {
-            return <Badge key={uuid()} color="success" pill>{item}</Badge>;
+            return (
+              <Badge key={uuid()} color="success" pill>
+                {item}
+              </Badge>
+            );
           } else if (item === "Inactivo") {
-            return <Badge key={uuid()} color="default" pill>{item}</Badge>;
+            return (
+              <Badge key={uuid()} color="default" pill>
+                {item}
+              </Badge>
+            );
           } else {
-            return <Badge key={uuid()} color="danger" pill>{item}</Badge>;
+            return (
+              <Badge key={uuid()} color="danger" pill>
+                {item}
+              </Badge>
+            );
           }
         });
       };
-      let rowId = "row_" + row.ItemCode;
+      // let rowId = "row_" + row.ItemCode;
       let rowStyleClass = "";
       if (row.OnHand < 0) rowStyleClass = "vlist-row-danger";
       if (row.frozenFor === "Y") rowStyleClass = "vlist-row-default";
@@ -85,7 +101,6 @@ class ModalCoveredPNs extends Component {
       return (
         <div className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={this.handleRowSelection}>
           <div className="container vertical-align-middle">
-
             {/*large displays*/}
             <div className="row hidden-lg-down">
               {/* <div className="col-1">
@@ -94,13 +109,19 @@ class ModalCoveredPNs extends Component {
                   <label htmlFor={rowId} />
                 </span>
               </div> */}
-              <div className="col-2"> {row.CardCode} </div>
-              <div className="col-9 lastcol "> {row.CardName} <span> {renderBadges()} </span> </div>
+              <div className="col-2">
+                {" "}{row.CardCode}{" "}
+              </div>
+              <div className="col-9 lastcol ">
+                {" "}{row.CardName} <span> {renderBadges()} </span>{" "}
+              </div>
             </div>
             {/*mobile*/}
             <div className="hidden-xl-up">
               <div className="row">
-                <div className="col text-nowrap"> {row.CardCode + " - " + row.CardName} </div>
+                <div className="col text-nowrap">
+                  {" "}{row.CardCode + " - " + row.CardName}{" "}
+                </div>
               </div>
             </div>
           </div>
@@ -111,7 +132,6 @@ class ModalCoveredPNs extends Component {
       <Modal isOpen={true} toggle={this.handleToggleModal} className={"modal-lg modal-success"}>
         <ModalHeader toggle={this.handleToggleModal}>Selecione o documento</ModalHeader>
         <ModalBody>
-
           <SearchPage
             searchPlaceholder="Procurar..."
             searchApiUrl="/api/promocoes/doc/coveredOcrd"
@@ -120,7 +140,6 @@ class ModalCoveredPNs extends Component {
             renderRow={renderRow}
             renderRowHeight={50}
           />
-
         </ModalBody>
         <ModalFooter>
           {/* <Button color="primary" onClick={this.props.toggleModal}>

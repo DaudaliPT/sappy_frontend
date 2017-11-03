@@ -10,7 +10,7 @@ import Pos from "./views/Pos/";
 import Simple from "./containers/Simple/";
 import Login from "./views/Auth/Login/";
 import ForgotPassword from "./views/Auth/ForgotPassword/";
-import UnderConstruction from "./views/UnderConstruction/";
+// import UnderConstruction from "./views/UnderConstruction/";
 import NotFound from "./views/NotFound/";
 
 var sappy = window.sappy;

@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { Router, Route, IndexRoute, hashHistory } from "react-router";
+// import React, { Component } from "react";
+// import { Router, Route, IndexRoute, hashHistory } from "react-router";
 
 import Inicio from "./views/Inicio/";
 import Views from "./views";

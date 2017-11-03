@@ -1,15 +1,15 @@
 import React, { Component } from "react";
 import { TextBox, TextBoxNumeric, ComboBox, Date, Toggle, Flag, IconToggle, IconEdit } from "../../../Inputs";
-import { Button } from "reactstrap";
-import Panel from "../../../components/Panel";
-const sappy = window.sappy;
+// import { Button } from "reactstrap";
+// import Panel from "../../../components/Panel";
+// const sappy = window.sappy;
 
 class PosHeader extends Component {
   render() {
-    let sessionInfo = sappy.sessionInfo || {};
-    var user = sessionInfo.user || {};
-    var company = sessionInfo.company || {};
-    let that = this;
+    // let sessionInfo = sappy.sessionInfo || {};
+    // var user = sessionInfo.user || {};
+    // var company = sessionInfo.company || {};
+    // let that = this;
 
     let getProperInputForField = headerField => {
       if (!headerField) return null;
@@ -101,25 +101,25 @@ class PosHeader extends Component {
       return ret;
     };
 
-    let expandIcon = this.props.expanded ? "wb-minus" : "wb-plus";
-    let editIcon = this.props.pinHeader ? "wb-close" : "wb-edit";
-    let hiddenClass = this.props.expanded ? "" : "hidden-xxl-down";
-    let notHiddenClass = this.props.expanded ? "hidden-xxl-down" : "";
+    // let expandIcon = this.props.expanded ? "wb-minus" : "wb-plus";
+    // let editIcon = this.props.pinHeader ? "wb-close" : "wb-edit";
+    // let hiddenClass = this.props.expanded ? "" : "hidden-xxl-down";
+    // let notHiddenClass = this.props.expanded ? "hidden-xxl-down" : "";
     let title = this.props.title;
     if (this.props.docData.ID > 0) title += " (Rascunho)";
 
-    let headerActions = [
-      {
-        name: "tooglePinHeader",
-        text: "",
-        color: !this.props.pinHeader ? "dark" : "danger",
-        visible: true,
-        icon: "fa-thumb-tack",
-        onClick: e => {
-          that.props.togglePinHeader();
-        }
-      }
-    ];
+    // let headerActions = [
+    //   {
+    //     name: "tooglePinHeader",
+    //     text: "",
+    //     color: !this.props.pinHeader ? "dark" : "danger",
+    //     visible: true,
+    //     icon: "fa-thumb-tack",
+    //     onClick: e => {
+    //       that.props.togglePinHeader();
+    //     }
+    //   }
+    // ];
 
     return (
       <div id="posHeader">

@@ -1,8 +1,8 @@
 import React, { PureComponent } from "react";
 import DataGrid from "../../../components/DataGrid";
-import { TextBox, TextBoxNumeric, ComboBox, Date, Toggle, Flag, Check } from "../../../Inputs";
-import Panel from "../../../components/Panel";
-const sappy = window.sappy;
+// import { TextBox, TextBoxNumeric, ComboBox, Date, Toggle, Flag, Check } from "../../../Inputs";
+// import Panel from "../../../components/Panel";
+// const sappy = window.sappy;
 
 class PosDetail extends PureComponent {
   constructor(props) {

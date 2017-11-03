@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 const sappy = window.sappy;
-const $ = window.$;
-import axios from "axios";
+// const $ = window.$;
+// import axios from "axios";
 import { Badge } from "reactstrap";
 import uuid from "uuid/v4";
 
@@ -24,10 +24,8 @@ class LpPromocoes extends Component {
   }
 
   render() {
-
-    let that = this
+    let that = this;
     let { selectedItems } = this.state;
-
 
     const renderRow = ({ row, index }) => {
       const selected = selectedItems.indexOf(row.ID.toString()) > -1;
@@ -37,11 +35,15 @@ class LpPromocoes extends Component {
         return badges.map((item, ix) => {
           let color = item.split("_")[0];
           let text = item.split("_")[1];
-          return <Badge key={uuid()} color={color} pill>{text}</Badge>;
+          return (
+            <Badge key={uuid()} color={color} pill>
+              {text}
+            </Badge>
+          );
         });
       };
 
-      let rowId = "row_" + row.ID + "#" + (row.NUMERO || 0);
+      // let rowId = "row_" + row.ID + "#" + (row.NUMERO || 0);
       let rowStyleClass = "";
       if (selected) rowStyleClass += " sappy-selected-row";
       if (!row.NUMERO) rowStyleClass += " vlist-row-warning";
@@ -51,12 +53,17 @@ class LpPromocoes extends Component {
           {/*large displays*/}
           <div className="container vertical-align-middle hidden-sm-down">
             <div className="row">
-              <div className="col-1"> {row.NUMERO} </div>
+              <div className="col-1">
+                {" "}{row.NUMERO}{" "}
+              </div>
               <div className="col-8">
-                {row.TIPO === 'P' && <i style={{ color: "#ddd", paddingRight: "5px" }} className="icon fa-tags" />}
-                {row.TIPO === 'F' && <i style={{ color: "#ddd", paddingRight: "5px" }} className="icon fa-newspaper-o" />}
-                {row.DESCRICAO} {renderBadges()}</div>
-              <div className="col-3 lastcol"> {sappy.format.date(row.DATAI) + " a " + sappy.format.date(row.DATAF)}</div>
+                {row.TIPO === "P" && <i style={{ color: "#ddd", paddingRight: "5px" }} className="icon fa-tags" />}
+                {row.TIPO === "F" && <i style={{ color: "#ddd", paddingRight: "5px" }} className="icon fa-newspaper-o" />}
+                {row.DESCRICAO} {renderBadges()}
+              </div>
+              <div className="col-3 lastcol">
+                {" "}{sappy.format.date(row.DATAI) + " a " + sappy.format.date(row.DATAF)}
+              </div>
             </div>
           </div>
 
@@ -73,7 +80,6 @@ class LpPromocoes extends Component {
               </div>
               <div className="row secondrow">
                 <div className="col offset-1 text-nowrap firstcol lastcol" style={{ maxHeight: "25px", overflow: "hidden" }}>
-
                   {sappy.format.date(row.DATAI) + " a " + sappy.format.date(row.DATAF)}
                   {renderBadges()}
                 </div>
@@ -86,7 +92,7 @@ class LpPromocoes extends Component {
 
     const renderActions = () => {
       let showActions = this.state.showActions;
-      let { selectedItems } = this.state;
+      // let { selectedItems } = this.state;
 
       let actions = [
         {
@@ -101,8 +107,7 @@ class LpPromocoes extends Component {
           icon: "icon fa-tags",
           visible: showActions,
           onClick: e => hashHistory.push({ pathname: "/vnd/promocoes/doc", state: { id: null, tipo: "P" } })
-        }
-        ,
+        },
         {
           name: "Folheto",
           color: "success",
@@ -110,23 +115,13 @@ class LpPromocoes extends Component {
           visible: showActions,
           onClick: e => hashHistory.push({ pathname: "/vnd/promocoes/doc", state: { id: null }, tipo: "F" })
         }
-
       ];
 
       return actions;
     };
 
-    return (
-      <BaseLandingPage
-        pageTitle="Promoções"
-        searchPlaceholder="Procurar..."
-        searchApiUrl="api/promocoes/"
-        renderRow={renderRow}
-        renderRowHeight={50}
-        actions={renderActions()}
-      />
-    );
+    return <BaseLandingPage pageTitle="Promoções" searchPlaceholder="Procurar..." searchApiUrl="api/promocoes/" renderRow={renderRow} renderRowHeight={50} actions={renderActions()} />;
   }
 }
 
-export default LpPromocoes; 
+export default LpPromocoes;
