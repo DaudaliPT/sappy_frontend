@@ -115,13 +115,13 @@ class Inicio extends Component {
                 <span>Nota Crédito a Cliente</span>
               </button>
             </div>
-            <div className="posMenu-action">
+            {/* <div className="posMenu-action">
               <button className="btn btn-block" onClick={e => hashHistory.push("/pos/Odln")}>
                 <i className="icon pe-download" />
                 <br />
                 <span>Saída de Mercadoria </span>
               </button>
-            </div>
+            </div> */}
           </div>}
         <div className={"posMenu-actions2 " + (this.state.showRetomar ? "open" : "")}>
           {!this.state.showRetomar &&
