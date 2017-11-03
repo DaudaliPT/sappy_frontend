@@ -7,6 +7,7 @@ class TextBox extends Component {
     super(props);
     this.handleChange = this.handleChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
 
     this.state = this.createStateFromProps(props);
   }
@@ -37,6 +38,25 @@ class TextBox extends Component {
     }
 
     if (this.props.onBlur) this.props.onBlur(e);
+  }
+
+  handleKeyPress(e) {
+    if (e.charCode === 13) {
+      //Force the value to be saved
+      let formatedValue = e.target.value;
+
+      if (this.props.valueType === "discount") {
+        formatedValue = sappy.formatUserDisc(sappy.parseUserDisc(formatedValue));
+      }
+
+      if (sappy.isDiferent(formatedValue, this.state.receivedValue) || sappy.isDiferent(formatedValue, e.target.value)) {
+        let rawValue = formatedValue;
+        let changeInfo = { fieldName: this.props.name, rawValue, formatedValue };
+        this.props.onChange(changeInfo);
+      }
+    }
+
+    if (this.props.onKeyPress) this.props.onKeyPress(e);
   }
 
   render() {
@@ -85,6 +105,7 @@ class TextBox extends Component {
             disabled={this.props.disabled}
             onChange={e => this.handleChange(e)}
             onBlur={e => this.handleBlur(e)}
+            onKeyPress={e => this.handleKeyPress(e)}
           />
           {renderRightButton()}
         </InputGroup>

@@ -117,3 +117,7 @@
   position: absolute;
   left: 1px;
 }
+
+.pos [data-tip]:before {
+  color: rgba(241, 244, 245, 1);
+}

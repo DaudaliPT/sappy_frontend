@@ -46,10 +46,10 @@ exports.prepareDocType = function({ tableName }) {
   }
 
   headerFields.icons = [];
-  headerFields.icons.push({ name: "DISTRIBUICAO", label: "", type: "iconToggle", ON: "ion-ios-navigate-outline success", OFF: "ion-ios-cart-outline" });
-  headerFields.icons.push({ name: "HAPPYDAY", label: "", type: "iconToggle", ON: "ion-ios-happy-outline success", OFF: "ion-ios-sad-outline danger" });
-  headerFields.icons.push({ name: "MATRICULA", label: "Matricula", gridSize: 6, type: "iconEdit", ON: "fa-truck success", OFF: "fa-truck secondary" });
-  headerFields.icons.push({ name: "COMMENTS", label: "Observações", gridSize: 12, type: "iconEdit", ON: "ion-ios-alert primary", OFF: "ion-ios-alert-outline secondary" });
+  headerFields.icons.push({ name: "DISTRIBUICAO", label: "Distribuição", type: "iconToggle", ON: "fa-truck success", OFF: "fa-truck secondary" });
+  headerFields.icons.push({ name: "HAPPYDAY", label: "Happy Day", type: "iconToggle", ON: "fa-tag success", OFF: "fa-tag secondary" });
+  headerFields.icons.push({ name: "MATRICULA", label: "Matricula", gridSize: 6, type: "iconEdit", ON: "fa-road success", OFF: "fa-road secondary" });
+  headerFields.icons.push({ name: "COMMENTS", label: "Observações", gridSize: 12, type: "iconEdit", ON: "fa-info-circle success", OFF: "fa-info-circle secondary" });
 
   let detailFields = [
     { name: "ITEMNAME", label: "Descrição", type: "tags", width: 400, editable: false },

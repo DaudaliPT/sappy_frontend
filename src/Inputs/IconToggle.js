@@ -33,7 +33,7 @@ class Flag extends Component {
     }
 
     return (
-      <div className="sappy-icon" onClick={this.handleToggle}>
+      <div className="sappy-icon" onClick={this.handleToggle} title={this.props.label}>
         <i className={classNames} aria-hidden="true" />
       </div>
     );

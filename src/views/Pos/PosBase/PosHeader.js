@@ -106,7 +106,7 @@ class PosHeader extends Component {
     // let hiddenClass = this.props.expanded ? "" : "hidden-xxl-down";
     // let notHiddenClass = this.props.expanded ? "hidden-xxl-down" : "";
     let title = this.props.title;
-    if (this.props.docData.ID > 0) title += " (Rascunho)";
+    // if (this.props.docData.ID > 0) title += " (Rascunho)";
 
     // let headerActions = [
     //   {

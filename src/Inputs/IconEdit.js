@@ -38,7 +38,7 @@ class Flag extends Component {
     }
 
     return (
-      <div className={"sappy-icon"}>
+      <div className={"sappy-icon"} title={this.props.label}>
         <i className={classNames} aria-hidden="true" onClick={this.handleToggle} />
         <i className={this.state.opened ? "opened" : "closed"} aria-hidden="true" />
 
