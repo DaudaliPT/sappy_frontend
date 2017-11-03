@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { TextBox, TextBoxNumeric, ComboBox, Date, Toggle, Flag, Truck } from "../../../Inputs";
+import { TextBox, TextBoxNumeric, ComboBox, Date, Toggle, Flag, IconToggle, IconEdit } from "../../../Inputs";
 import { Button } from "reactstrap";
 import Panel from "../../../components/Panel";
 const sappy = window.sappy;
@@ -10,6 +10,7 @@ class PosHeader extends Component {
     var user = sessionInfo.user || {};
     var company = sessionInfo.company || {};
     let that = this;
+
     let getProperInputForField = headerField => {
       if (!headerField) return null;
       let classNames = "col-3  col-sm-2 col-lg-1 col-xl-1 col-xxl-1 px-5";
@@ -43,9 +44,17 @@ class PosHeader extends Component {
       else if (headerField.type.startsWith("flag")) {
         let color = headerField.type.split("|")[1];
         input = <Flag {...commonProps} color={color} />;
-      } else if (headerField.type.startsWith("truck")) {
-        let color = headerField.type.split("|")[1];
-        input = <Truck {...commonProps} color={color} />;
+      } else if (headerField.type.startsWith("iconToggle")) {
+        classNames = "";
+        commonProps.ON = headerField.ON;
+        commonProps.OFF = headerField.OFF;
+        input = <IconToggle {...commonProps} />;
+      } else if (headerField.type.startsWith("iconEdit")) {
+        classNames = "";
+        commonProps.gridSize = headerField.gridSize;
+        commonProps.ON = headerField.ON;
+        commonProps.OFF = headerField.OFF;
+        input = <IconEdit {...commonProps} />;
       }
 
       return (
@@ -59,7 +68,7 @@ class PosHeader extends Component {
       let fields = this.props.fields;
       let ret = [];
       Object.keys(fields).forEach(lineKey => {
-        if (lineKey === "sidebar") return;
+        if (lineKey === "icons") return;
 
         let headerLine = fields[lineKey];
         let headerLineFields = [];
@@ -72,6 +81,22 @@ class PosHeader extends Component {
           </div>
         );
       });
+
+      return ret;
+    };
+
+    let renderHeaderIcons = () => {
+      let ret = [];
+      let headerLine = this.props.fields.icons;
+      let headerLineFields = [];
+      for (var ix = 0; ix < headerLine.length; ix++) {
+        headerLineFields.push(getProperInputForField(headerLine[ix]));
+      }
+      ret.push(
+        <div key={"headericons"} className="row mx--5">
+          {headerLineFields}
+        </div>
+      );
 
       return ret;
     };
@@ -102,7 +127,9 @@ class PosHeader extends Component {
           {title}
         </h4>
 
-        <div className="actions" />
+        <div className="actions">
+          {renderHeaderIcons()}
+        </div>
         <div className="fields">
           {renderHeaderFields()}
         </div>

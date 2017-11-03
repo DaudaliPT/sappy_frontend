@@ -11,4 +11,5 @@ exports.Notas = require("./Notas").default;
 exports.ButtonGetPdf = require("./ButtonGetPdf").default;
 exports.TagInput = require("./TagInput").default;
 exports.ButtonGroup = require("./ButtonGroup").default;
-exports.Truck = require("./Truck").default;
+exports.IconEdit = require("./IconEdit").default;
+exports.IconToggle = require("./IconToggle").default;

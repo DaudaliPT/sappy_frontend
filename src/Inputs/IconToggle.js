@@ -22,38 +22,20 @@ class Flag extends Component {
   }
 
   render() {
-    let stateColor, stateMsg;
-    if (this.props.state) {
-      stateColor = this.props.state.split("|")[0];
-      stateMsg = this.props.state.split("|")[1];
-    }
-
     let value = this.props.value;
     value = value === 1 || value === "1" || value === "Y" ? 1 : 0;
-
     let checked = value ? true : false;
-    let ON = "icon fa-truck";
-    let OFF = "icon fa-truck";
-    let color = this.props.color || "success";
-
-    let classNames = "";
+    let classNames = "icon ";
     if (checked) {
-      classNames = color + " " + ON;
+      classNames += this.props.ON;
     } else {
-      classNames = "inactive " + OFF;
+      classNames += this.props.OFF;
     }
 
     return (
-      <FormGroup color={stateColor} data-tip={this.props.label} title={stateMsg}>
-        {/*{renderLabel()}*/}
-        <InputGroup>
-          <div className="flag" onClick={this.handleToggle}>
-            <i className={classNames} aria-hidden="true" />
-          </div>
-        </InputGroup>
-
-        {/* {stateMsg && <FormFeedback>{stateMsg}</FormFeedback>} */}
-      </FormGroup>
+      <div className="sappy-icon" onClick={this.handleToggle}>
+        <i className={classNames} aria-hidden="true" />
+      </div>
     );
   }
 }

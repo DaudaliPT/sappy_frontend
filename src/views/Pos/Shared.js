@@ -50,8 +50,11 @@ exports.prepareDocType = function({ tableName }) {
     });
   }
 
-  // headerFields.line1.push({ name: "DISTRIBUICAO", label: "Distribuição", type: "truck|warning", gridSize: 1, savedEditable: true });
-  // headerFields.line1.push({ name: "HAPPYDAY", label: "Happy Day", type: "bool", gridSize: 1, savedEditable: true });
+  headerFields.icons = [];
+  headerFields.icons.push({ name: "DISTRIBUICAO", label: "", type: "iconToggle", ON: "ion-ios-navigate-outline success", OFF: "ion-ios-cart-outline" });
+  headerFields.icons.push({ name: "HAPPYDAY", label: "", type: "iconToggle", ON: "ion-ios-happy-outline success", OFF: "ion-ios-sad-outline danger" });
+  headerFields.icons.push({ name: "MATRICULA", label: "Matricula", gridSize: 6, type: "iconEdit", ON: "fa-truck success", OFF: "fa-truck secondary" });
+  headerFields.icons.push({ name: "COMMENTS", label: "Observações", gridSize: 12, type: "iconEdit", ON: "ion-ios-alert primary", OFF: "ion-ios-alert-outline secondary" });
 
   // headerFields.line2 = [];
 

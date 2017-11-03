@@ -12,30 +12,31 @@ class TextBox extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState(this.createStateFromProps(nextProps))
+    this.setState(this.createStateFromProps(nextProps));
   }
 
   createStateFromProps(props) {
-    return { receivedValue: props.value, value: props.value }
+    return { receivedValue: props.value, value: props.value };
   }
 
   handleChange(e) {
-    this.setState({ value: e.target.value })
+    this.setState({ value: e.target.value });
   }
 
   handleBlur(e) {
     let formatedValue = e.target.value;
 
     if (this.props.valueType === "discount") {
-      formatedValue = sappy.formatUserDisc(sappy.parseUserDisc(formatedValue))
+      formatedValue = sappy.formatUserDisc(sappy.parseUserDisc(formatedValue));
     }
 
-    if (sappy.isDiferent(formatedValue, this.state.receivedValue)
-      || sappy.isDiferent(formatedValue, e.target.value)) {
-      let rawValue = formatedValue
+    if (sappy.isDiferent(formatedValue, this.state.receivedValue) || sappy.isDiferent(formatedValue, e.target.value)) {
+      let rawValue = formatedValue;
       let changeInfo = { fieldName: this.props.name, rawValue, formatedValue };
       this.props.onChange(changeInfo);
     }
+
+    if (this.props.onBlur) this.props.onBlur(e);
   }
 
   render() {
@@ -48,11 +49,16 @@ class TextBox extends Component {
 
         return (
           <span className="input-group-btn">
-            <Button color={color} outline id={this.props.name + "_rbtn"} className="right-button"
+            <Button
+              color={color}
+              outline
+              id={this.props.name + "_rbtn"}
+              className="right-button"
               disabled={this.props.disabled || false}
               onClick={() => {
-                that.props.onRightButtonClick(that)
-              }}>
+                that.props.onRightButtonClick(that);
+              }}
+            >
               {this.props.rightButton}
             </Button>
           </span>
@@ -62,11 +68,9 @@ class TextBox extends Component {
 
     let stateColor, stateMsg;
     if (this.props.state) {
-      stateColor = this.props.state.split('|')[0];
-      stateMsg = this.props.state.split('|')[1];
+      stateColor = this.props.state.split("|")[0];
+      stateMsg = this.props.state.split("|")[1];
     }
-
-
 
     return (
       <FormGroup color={stateColor} className={this.props.label ? "" : "no-label"} data-tip={this.props.label} title={stateMsg}>
@@ -76,17 +80,19 @@ class TextBox extends Component {
             type={this.props.type}
             ref={this.props.name}
             id={this.props.name}
-            value={this.state.value || ''}
+            value={this.state.value || ""}
             placeholder={this.props.placeholder}
             disabled={this.props.disabled}
             onChange={e => this.handleChange(e)}
             onBlur={e => this.handleBlur(e)}
           />
           {renderRightButton()}
-
         </InputGroup>
 
-        {stateMsg && <FormFeedback>{stateMsg}</FormFeedback>}
+        {stateMsg &&
+          <FormFeedback>
+            {stateMsg}
+          </FormFeedback>}
       </FormGroup>
     );
   }

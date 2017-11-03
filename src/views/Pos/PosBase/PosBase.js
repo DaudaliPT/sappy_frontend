@@ -33,6 +33,7 @@ class PosBase extends Component {
   }
 
   getinitialState(props) {
+    let settings = sappy.getSettings(["POS.CFINAL.CARDCODE"]);
     return {
       selectedLineNums: [],
       footerLimitSearch: props.footerLimitSearchCondition || false,
@@ -50,7 +51,8 @@ class PosBase extends Component {
       detail: {},
       footer: {
         showTotals: false
-      }
+      },
+      settings
     };
   }
 
@@ -69,7 +71,7 @@ class PosBase extends Component {
     let detailsTop = $("#posDetail").position().top;
     let footerTop = $("#posFooter").position().top;
     let detail = { ...this.state.detail };
-    detail.height = footerTop - detailsTop - 45;
+    detail.height = footerTop - detailsTop - 20;
 
     this.setState({ detail });
   }
@@ -128,7 +130,14 @@ class PosBase extends Component {
         {
           loading: false
         },
-        that.recalcComponentsHeight
+        () => {
+          that.handleHeaderFieldChange({
+            fieldName: "CARDCODE",
+            formatedValue: that.state.settings["POS.CFINAL.CARDCODE"],
+            rawValue: that.state.settings["POS.CFINAL.CARDCODE"]
+          });
+          that.recalcComponentsHeight();
+        }
       );
     }
   }

@@ -935,26 +935,6 @@ div > .has-danger  .Select-control {
   font-size: .75rem !important;
 }
 
-/* flags  */
-.flag > i.icon.inactive {
-  color: rgb(228, 234, 236) !important;
-}
-.flag > i.icon.primary {
-  color: rgb(98, 168, 234) !important;
-}
-.flag > i.icon.success {
-  color: rgb(92, 184, 92) !important;
-}
-.flag > i.icon.info {
-  color: rgb(91, 192, 222) !important;
-}
-.flag > i.icon.warning {
-  color: rgb(240, 173, 78) !important;
-}
-.flag > i.icon.danger {
-  color: rgb(217, 83, 79) !important;
-}
-
 /* The switch - the box around the slider */
 .switch {
   position: relative;
@@ -1241,6 +1221,26 @@ input:checked + .slider.sm:before {
 }
 .input-search-btn > .icon.active {
   color: rgb(98, 168, 234);
+}
+
+/* flags  */
+.flag > i.icon.inactive {
+  color: rgb(228, 234, 236) !important;
+}
+.flag > i.icon.primary {
+  color: rgb(98, 168, 234) !important;
+}
+.flag > i.icon.success {
+  color: rgb(92, 184, 92) !important;
+}
+.flag > i.icon.info {
+  color: rgb(91, 192, 222) !important;
+}
+.flag > i.icon.warning {
+  color: rgb(240, 173, 78) !important;
+}
+.flag > i.icon.danger {
+  color: rgb(217, 83, 79) !important;
 }
 
 div.flag {
