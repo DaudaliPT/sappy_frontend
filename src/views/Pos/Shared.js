@@ -83,8 +83,15 @@ exports.prepareDocType = function({ tableName }) {
       }
     },
     { name: "VATGROUP", label: "IVA", type: "vatpercent", width: 40, editable: false }
+    // { name: "BASE_OBJTYPE", label: "T", type: "text", width: 40, editable: false },
+    // { name: "BASE_DOCENTRY", label: "E", type: "text", width: 40, editable: false },
+    // { name: "BASE_LINENUM", label: "L", type: "text", width: 40, editable: false },
+    // { name: "BASE_DOCNUM", label: "N", type: "text", width: 40, editable: false }
   ];
 
+  let groupBy = [];
+
+  if ("14".indexOf(objType) > -1) groupBy = [{ key: "Origem", name: "Grupo" }];
   return {
     propsToPosBase: {
       tableName,
@@ -92,6 +99,7 @@ exports.prepareDocType = function({ tableName }) {
       title,
       headerFields,
       detailFields,
+      groupBy,
       apiDocsNew: `/api/docs/new/${tableName}`,
       footerSearchType,
       footerSearchShowCatNum: false,

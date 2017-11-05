@@ -27,20 +27,29 @@ class SearchAndChoose extends Component {
     else if (this.props.searchType === "vnddev") barcodeApiUrl = VendDev.barcodeApiUrl;
     else sappy.showError(this.props.searchType, "Tipo de pesquisa desconhecido");
 
-    sappy.barcodes.onRead(this.handleBarcodeRead, barcodeApiUrl);
+    sappy.barcodes.onRead(this.handleBarcodeRead, barcodeApiUrl, this.props.limitSearchCondition);
   }
 
   componentWillUnmount() {
     sappy.barcodes.onRead(null);
   }
 
-  handleBarcodeRead({ barcodes, hasMany } = {}) {
+  componentDidUpdate(prevProps, prevState) {
+    let barcodeApiUrl = "";
+    if (this.props.searchType === "oitm") barcodeApiUrl = ModalOitm.barcodeApiUrl;
+    else if (this.props.searchType === "vnddev") barcodeApiUrl = VendDev.barcodeApiUrl;
+    else sappy.showError(this.props.searchType, "Tipo de pesquisa desconhecido");
+    sappy.barcodes.onRead(this.handleBarcodeRead, barcodeApiUrl, this.props.limitSearchCondition);
+  }
+
+  handleBarcodeRead({ barcodes, selectedItems, hasMany } = {}) {
     if (hasMany) {
       this.setState({ searchText: barcodes[0] }, this.performSearch);
     } else {
       this.setState({ searchText: "" });
       this.props.onReturnSelectItems({
-        barcodes: barcodes,
+        barcodes,
+        selectedItems,
         callback: sappy.barcodes.notifyBarcodesProcessed
       });
     }
@@ -102,7 +111,8 @@ class SearchAndChoose extends Component {
 
     if (searchApiUrl) {
       let limitSearchCondition = "";
-      if (this.props.limitSearch && this.props.limitSearchCondition) limitSearchCondition = this.props.limitSearchCondition;
+      if (this.props.limitSearch && this.props.limitSearchCondition)
+        limitSearchCondition = this.props.limitSearchCondition;
 
       if (this.cancelPreviousAxiosRequest) this.cancelPreviousAxiosRequest();
       var CancelToken = axios.CancelToken;
@@ -129,7 +139,10 @@ class SearchAndChoose extends Component {
             that.openSearchModal();
           } else {
             that.setState({ searchText: "" });
-            sappy.showWarning({ title: "Nada encontrado", moreInfo: "Não foi possivel encontrar ao procurar por '" + searchText + "'" });
+            sappy.showWarning({
+              title: "Nada encontrado",
+              moreInfo: "Não foi possivel encontrar ao procurar por '" + searchText + "'"
+            });
           }
         })
         .catch(function(error) {
@@ -147,11 +160,23 @@ class SearchAndChoose extends Component {
         <div className="input-search input-search-dark">
           <i className="input-search-icon wb-plus" aria-hidden="true" />
 
-          <input className="form-control w-full" autoComplete="off" value={this.state.searchText} onChange={this.handleOnChange_txtSearch} onKeyDown={this.handleOnKeyDown_txtSearch} />
+          <input
+            className="form-control w-full"
+            autoComplete="off"
+            value={this.state.searchText}
+            onChange={this.handleOnChange_txtSearch}
+            onKeyDown={this.handleOnKeyDown_txtSearch}
+          />
 
           <button className="input-search-btn vertical-align-middle">
             {this.props.limitSearchCondition &&
-              <i className={"icon " + (this.props.limitSearch ? "ion-ios-funnel active" : "ion-ios-funnel-outline inactive")} aria-hidden="true" onMouseDown={that.props.onToogleLimitSearch} />}
+              <i
+                className={
+                  "icon " + (this.props.limitSearch ? "ion-ios-funnel active" : "ion-ios-funnel-outline inactive")
+                }
+                aria-hidden="true"
+                onMouseDown={that.props.onToogleLimitSearch}
+              />}
             <i className="icon wb-menu" aria-hidden="true" onMouseDown={that.openSearchModal} />
           </button>
         </div>

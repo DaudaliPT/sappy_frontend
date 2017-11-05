@@ -50,13 +50,28 @@ class appBase extends Component {
     sappy.hideWaitProgress = this.hideWaitProgress.bind(this);
 
     sappy.playBadInputSound = this.playBadInputSound.bind(this);
+    sappy.playAlertSound = this.playAlertSound.bind(this);
 
     this.state = {
       currentAppModal: null,
       currentProgressModal: null,
       currentPopover: null,
       playBadInputSound: false,
-      badInputAlertComponent: <ReactAudioPlayer src="/files/216090__richerlandtv__bad-beep-incorrect.mp3" autoPlay={true} onEnded={() => that.setState({ playBadInputSound: false })} />
+      playAlertSound: false,
+      badInputAlertComponent: (
+        <ReactAudioPlayer
+          src="/files/216090__richerlandtv__bad-beep-incorrect.mp3"
+          autoPlay={true}
+          onEnded={() => that.setState({ playBadInputSound: false })}
+        />
+      ),
+      alertComponent: (
+        <ReactAudioPlayer
+          src="/files/Computer Error Alert-SoundBible.com-783113881.mp3"
+          autoPlay={true}
+          onEnded={() => that.setState({ playAlertSound: false })}
+        />
+      )
     };
   }
 
@@ -88,7 +103,11 @@ class appBase extends Component {
       );
     return (
       <span>
-        <i className="icon fa-arrow-circle-right" aria-hidden="true" onClick={e => sappy.LinkTo(objType, docEntry)} />{" "}
+        <i
+          className="icon fa-arrow-circle-right"
+          aria-hidden="true"
+          onClick={e => sappy.LinkTo(objType, docEntry)}
+        />{" "}
       </span>
     );
   }
@@ -96,7 +115,11 @@ class appBase extends Component {
   LinkTo(objType, docEntry) {
     let url = this.GetLinkUrl(objType, docEntry);
     if (!url) {
-      return sappy.showToastr({ color: "info", msg: "Ainda não há visualização par ao tipo de documento solicitado", title: "Ainda não disponivel" });
+      return sappy.showToastr({
+        color: "info",
+        msg: "Ainda não há visualização par ao tipo de documento solicitado",
+        title: "Ainda não disponivel"
+      });
     }
     sappy.hideModal();
     hashHistory.push({ pathname: url, state: { DocEntry: docEntry } });
@@ -130,7 +153,13 @@ class appBase extends Component {
 
           that.setState({
             currentPopover: (
-              <Popover isOpen={true} target={target} toggle={this.togglePopover} placement={placement || "left"} onMouseLeave={sappy.hidePopover}>
+              <Popover
+                isOpen={true}
+                target={target}
+                toggle={this.togglePopover}
+                placement={placement || "left"}
+                onMouseLeave={sappy.hidePopover}
+              >
                 <PopoverContent>
                   {content}
                 </PopoverContent>
@@ -189,9 +218,24 @@ class appBase extends Component {
   playBadInputSound() {
     this.setState({ playBadInputSound: true });
   }
+  playAlertSound() {
+    this.setState({ playAlertSound: true });
+  }
 
   showSwal(options) {
-    let { showCancelButton, type, html, msg, moreInfo, onConfirm, onCancel, confirmText, confirmStyle, cancelText, cancelStyle } = options;
+    let {
+      showCancelButton,
+      type,
+      html,
+      msg,
+      moreInfo,
+      onConfirm,
+      onCancel,
+      confirmText,
+      confirmStyle,
+      cancelText,
+      cancelStyle
+    } = options;
     let color = type;
     if (type === "question") color = "primary";
 
@@ -262,8 +306,14 @@ class appBase extends Component {
   render() {
     return (
       <div>
-        <ToastContainer toastMessageFactory={ToastMessageFactory} ref="container" preventDuplicates={true} className="toast-top-right" />
+        <ToastContainer
+          toastMessageFactory={ToastMessageFactory}
+          ref="container"
+          preventDuplicates={true}
+          className="toast-top-right"
+        />
         {this.state.playBadInputSound && this.state.badInputAlertComponent}
+        {this.state.playAlertSound && this.state.alertComponent}
 
         {this.state.currentAppModal}
         {this.state.currentProgressModal}

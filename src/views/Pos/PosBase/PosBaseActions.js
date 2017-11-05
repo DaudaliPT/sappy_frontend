@@ -40,10 +40,16 @@ export default {
   handleOnCancelar: that => {
     if (!that.state.docData.ID) {
       hashHistory.push("/pos");
+    } else if (that.state.docData.ID && that.state.docData.LINES.length === 0) {
+      that.serverRequest = axios
+        .delete(`${that.props.apiDocsNew}/${that.state.docData.ID}`)
+        .then(result => hashHistory.push("/pos"))
+        .catch(error => sappy.showError(error, "Erro ao apagar dados"));
     } else {
       sappy.showQuestion({
         title: "Manter rascunho?",
-        moreInfo: "Se escolher manter, as alterações ficarão disponiveis como rascunho e poderá continuar mais tarde...",
+        moreInfo:
+          "Se escolher manter, as alterações ficarão disponiveis como rascunho e poderá continuar mais tarde...",
         onConfirm: () => {
           hashHistory.push("/pos");
         },
@@ -76,7 +82,10 @@ export default {
       );
 
       if (fieldsRequired.length > 0) {
-        let msg = (fieldsRequired.length === 1 ? "O campo " : "Os campos ") + fieldsRequired.join(", ") + (fieldsRequired.length === 1 ? " não está preenchido." : " não estão preenchidos.");
+        let msg =
+          (fieldsRequired.length === 1 ? "O campo " : "Os campos ") +
+          fieldsRequired.join(", ") +
+          (fieldsRequired.length === 1 ? " não está preenchido." : " não estão preenchidos.");
 
         sappy.showToastr({ color: "danger", msg });
       }
@@ -87,7 +96,11 @@ export default {
       //     hasChangesToState = true;
       //     newDocData["TAXDATE_LOGICMSG"] = "danger|Não pode ser superior à data atual."
       // }
-      if (newDocData.TAXDATE && newDocData.DOCDUEDATE && sappy.moment(newDocData.TAXDATE).isAfter(newDocData.DOCDUEDATE)) {
+      if (
+        newDocData.TAXDATE &&
+        newDocData.DOCDUEDATE &&
+        sappy.moment(newDocData.TAXDATE).isAfter(newDocData.DOCDUEDATE)
+      ) {
         hasChangesToState = true;
         newDocData["DOCDUEDATE_LOGICMSG"] = "danger|Não pode ser inferior à data do documento.";
       }
@@ -146,7 +159,10 @@ export default {
         let url = `${that.props.apiDocsNew}/${that.state.docData.ID}/confirm`;
         let data = { forceTotal };
 
-        that.serverRequest = axios.post(url, { data }).then(result => handleAddDocApiResponse(result)).catch(error => sappy.showError(error, "Erro ao criar documento"));
+        that.serverRequest = axios
+          .post(url, { data })
+          .then(result => handleAddDocApiResponse(result))
+          .catch(error => sappy.showError(error, "Erro ao criar documento"));
       };
       if (hasWarning)
         return sappy.showWarning({

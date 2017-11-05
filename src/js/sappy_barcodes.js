@@ -9,6 +9,7 @@ import axios from "axios";
   var barcodeBuffer = [];
   var currentCallback;
   var currentBarcodeApiUrl;
+  var currentLimitSearchCondition;
   var processing = false;
   var sappy = null; // só será preenchido no init(sappy)
   var withError = false;
@@ -18,6 +19,7 @@ import axios from "axios";
     withError = false;
     console.log("acknowledgePopupMsg");
   }
+
   function showBarCodeError(title, moreInfo) {
     sappy.playBadInputSound();
 
@@ -31,7 +33,11 @@ import axios from "axios";
 
   function validate(barcode) {
     axios
-      .get(currentBarcodeApiUrl + encodeURIComponent(barcode))
+      .get(currentBarcodeApiUrl + encodeURIComponent(barcode), {
+        params: {
+          limitSearchCondition: currentLimitSearchCondition
+        }
+      })
       .then(result => {
         var listItems = result.data;
         let found = listItems.length;
@@ -50,14 +56,24 @@ import axios from "axios";
             barcodeBuffer = [];
             processing = true;
             // console.log("call " + bcToProcess);
-            currentCallback({ barcodes: bcToProcess, hasMany: false });
+
+            if (result.data[0].DocRef) {
+              //Retornar a referencia ao documento
+              currentCallback({ selectedItems: [result.data[0].DocRef], hasMany: false });
+            } else {
+              // retornar o próprio código lido
+              currentCallback({ barcodes: bcToProcess, hasMany: false });
+            }
           }
         } else if (found > 1) {
           if (processing) {
-            showBarCodeError("Múltiplos registos", "Foram encontrados vários registos ao procurar por '" + barcode + "'");
+            showBarCodeError(
+              "Múltiplos registos",
+              "Foram encontrados vários registos ao procurar por '" + barcode + "'"
+            );
           } else {
             // não interfere com o buffer
-            sappy.playBadInputSound();
+            sappy.playAlertSound();
             currentCallback({ barcodes: [barcode], hasMany: true });
           }
         } else {
@@ -140,9 +156,10 @@ import axios from "axios";
     );
   };
 
-  lib.onRead = function(callback, barcodeApiUrl) {
+  lib.onRead = function(callback, barcodeApiUrl, limitSearchCondition) {
     currentCallback = callback;
     currentBarcodeApiUrl = barcodeApiUrl;
+    currentLimitSearchCondition = limitSearchCondition;
   };
 
   lib.notifyBarcodesProcessed = function() {

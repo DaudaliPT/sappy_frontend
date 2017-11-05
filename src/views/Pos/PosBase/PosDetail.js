@@ -35,6 +35,7 @@ class PosDetail extends PureComponent {
 
               return classes;
             }}
+            groupBy={this.props.groupBy}
             onRowUpdate={this.props.onRowUpdate}
             onRowSelectionChange={this.props.onRowSelectionChange}
             selectedKeys={this.props.selectedKeys}

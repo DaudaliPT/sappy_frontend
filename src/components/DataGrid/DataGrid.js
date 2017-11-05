@@ -136,8 +136,10 @@ class DataGrid extends Component {
     let that = this;
     setTimeout(() => {
       var $e = $(".react-grid-Row .react-grid-Cell");
-      $e[idx].focus();
-      that.thisComponent.onSelect({ rowIdx, idx: idx + 1 });
+      if ($e.length) {
+        $e[idx].focus();
+        that.thisComponent.onSelect({ rowIdx, idx: idx + 1 });
+      }
     }, 10);
   }
 

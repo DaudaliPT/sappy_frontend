@@ -317,6 +317,7 @@ class PosBase extends Component {
     let detailProps = {
       ...this.state.detail,
       fields: this.props.detailFields,
+      groupBy: this.props.groupBy,
       onSideBarFieldChange: this.handleHeaderFieldChange,
       docData,
       onRowUpdate: this.handleDetailRowChange,
