@@ -36,7 +36,6 @@ class MenuBar extends Component {
         thisMenu.toggleClass("open");
         e.stopPropagation();
       } else {
-
         let btnHamburger = $(".navbar-toggler.hamburger");
 
         if (btnHamburger.css("display") === "block") {
@@ -73,14 +72,14 @@ class MenuBar extends Component {
   }
 
   render() {
-    let sessionInfo = sappy.sessionInfo || {}
-    var user = sessionInfo.user || {}
-    var company = sessionInfo.company || {}
+    let sessionInfo = sappy.sessionInfo || {};
+    var user = sessionInfo.user || {};
+    var company = sessionInfo.company || {};
 
     var renderTopMenus = () => {
       if (user && user.NAME) {
         return this.state.menus.map(menu => {
-          if (menu.dontCreateMenu) return null
+          if (menu.dontCreateMenu) return null;
           return <RootMenu key={"menu_" + menu.fullName} menu={menu} />;
         });
       }
@@ -90,7 +89,6 @@ class MenuBar extends Component {
       if (user && user.NAME) {
         return (
           <ul className="nav navbar-toolbar navbar-right navbar-toolbar-right">
-
             {/*<li className="nav-item hidden-float">
               <a
                 className="nav-link icon md-search waves-effect waves-light waves-round"
@@ -136,12 +134,16 @@ class MenuBar extends Component {
                   <i className="icon md-settings" aria-hidden="true" /> Definições Gerais
                 </a>
                 <div className="dropdown-divider" />
-                <a className="dropdown-item waves-effect waves-light waves-round" href="#" role="menuitem" onClick={this.onClickLogout}>
+                <a
+                  className="dropdown-item waves-effect waves-light waves-round"
+                  href="#"
+                  role="menuitem"
+                  onClick={this.onClickLogout}
+                >
                   <i className="icon md-power" aria-hidden="true" /> Terminar sessão de {user.NAME}
                 </a>
               </div>
             </li>
-
           </ul>
         );
       } else {
@@ -168,7 +170,9 @@ class MenuBar extends Component {
           </button>
 
           <div className="navbar-brand navbar-brand-center site-gridmenu-toggle" data-toggle="gridmenu">
-            <p id="nologotext" style={{ display: "none", wordBreak: "break-word" }}>{company.dbName} </p>
+            <p id="nologotext" style={{ display: "none", wordBreak: "break-word" }}>
+              {company.dbName}{" "}
+            </p>
             <img
               className="navbar-brand-logo"
               style={{ height: "3rem" }}
@@ -178,7 +182,12 @@ class MenuBar extends Component {
               alt={sessionInfo.company.dbName}
             />
           </div>
-          <button type="button" className="navbar-toggler collapsed" data-target="#site-navbar-search" data-toggle="collapse">
+          <button
+            type="button"
+            className="navbar-toggler collapsed"
+            data-target="#site-navbar-search"
+            data-toggle="collapse"
+          >
             <span className="sr-only">Toggle Search</span>
             <i className="icon md-search" aria-hidden="true" />
           </button>
@@ -189,7 +198,12 @@ class MenuBar extends Component {
             {/*Navbar Toolbar */}
             <ul className="nav navbar-toolbar">
               <li className="nav-item hidden-float" id="toggleMenubar">
-                <a className="nav-link waves-effect waves-light waves-round" data-toggle="menubar" href="#" role="button">
+                <a
+                  className="nav-link waves-effect waves-light waves-round"
+                  data-toggle="menubar"
+                  href="#"
+                  role="button"
+                >
                   <i className="icon hamburger hamburger-arrow-left">
                     <span className="sr-only">Toggle menubar</span>
                     <span className="hamburger-bar" />
@@ -202,7 +216,6 @@ class MenuBar extends Component {
                   {renderTopMenus()}
                 </ul>
               </li>
-
             </ul>
 
             {/*End Navbar Toolbar */}

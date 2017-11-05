@@ -34,10 +34,13 @@ var processMenuLevel = menus => {
     if (menu.menus) {
       processMenuLevel(menu.menus);
     } else if (menu.component) {
-      buildedRoutes.push(<Route key={"route_" + menu.fullName} path={menu.fullName} name={menu.fullName} component={menu.component} />);
+      buildedRoutes.push(
+        <Route key={"route_" + menu.fullName} path={menu.fullName} name={menu.fullName} component={menu.component} />
+      );
     }
   });
 };
+
 processMenuLevel(sappy.app.menus);
 
 class App extends Component {
@@ -49,7 +52,13 @@ class App extends Component {
   requireAuth(nextState, replace, callback) {
     let sessionInfo = sappy.sessionInfo || {};
     var user = sessionInfo.user || {};
+
     if (user.NAME) {
+      if (nextState.location.pathname === "/") {
+        let showSappy = ",manager,ibrahim,dora,marlene,zara,".indexOf("," + sappy.sessionInfo.user.NAME + ",") > -1;
+        if (!showSappy) hashHistory.push("/pos");
+      }
+
       callback();
     } else {
       hashHistory.push("/login");
@@ -61,6 +70,11 @@ class App extends Component {
       <div>
         <Router history={hashHistory}>
           <Route path="/" name="Main" component={Full} children={buildedRoutes} onEnter={this.requireAuth} />
+          <Route path="/" name="Login" component={Simple}>
+            <IndexRoute component={Login} />
+            <Route path="/login" name="." component={Login} />
+            <Route path="/forgotpass" name="ForgotPassword" component={ForgotPassword} />
+          </Route>
           <Route path="/pos" name="Pos" component={PosContainer} onEnter={this.requireAuth}>
             <IndexRoute component={Pos.PosMenu} />
             <Route path="/pos/oqut" name="." component={Pos.Oqut} />
@@ -68,11 +82,6 @@ class App extends Component {
             <Route path="/pos/oinv" name="." component={Pos.Oinv} />
             <Route path="/pos/orin" name="." component={Pos.Orin} />
             <Route path="/pos/odln" name="." component={Pos.Odln} />
-          </Route>
-          <Route path="/" name="Login" component={Simple}>
-            <IndexRoute component={Login} />
-            <Route path="/login" name="." component={Login} />
-            <Route path="/forgotpass" name="ForgotPassword" component={ForgotPassword} />
           </Route>
           <Route path="*" component={NotFound} />
         </Router>

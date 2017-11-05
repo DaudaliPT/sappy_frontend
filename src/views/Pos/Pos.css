@@ -1,7 +1,7 @@
 .pos {
   /* font-family: "Abel" !important; */
-  letter-spacing: 1px !important;
-
+  /* letter-spacing: 1px !important; */
+  font-weight: 500;
   position: absolute;
   width: 100%;
   height: 100%;
@@ -71,7 +71,7 @@
 }
 
 .posMenu-action {
-  width: 25%;
+  width: 20%;
   height: 80%;
   margin: 1%;
 }

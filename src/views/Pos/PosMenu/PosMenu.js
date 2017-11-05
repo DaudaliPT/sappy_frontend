@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 var $ = window.$;
 var sappy = window.sappy;
+
+import axios from "axios";
 import { hashHistory } from "react-router";
 import Panel from "../../../components/Panel";
 import SearchPage from "../../../components/SearchPage";
@@ -75,7 +77,11 @@ class Inicio extends Component {
             </div>
             <div className="row no-gutters secondrow">
               <div className="col-12 text-nowrap">
-                {"Criado em " + sappy.format.datetime(row.DOC_DATETIME) + ". Tem " + row.NR_LINES + (row.NR_LINES === 1 ? " linha" : " linhas")}
+                {"Criado em " +
+                  sappy.format.datetime(row.DOC_DATETIME) +
+                  ". Tem " +
+                  row.NR_LINES +
+                  (row.NR_LINES === 1 ? " linha" : " linhas")}
               </div>
             </div>
           </div>
@@ -131,8 +137,31 @@ class Inicio extends Component {
                 <br /> <span>Documentos em curso</span>
               </button>
             </div>}
+          {!this.state.showRetomar &&
+            <div className="posMenu-action">
+              <button
+                className="btn btn-block"
+                onClick={e => {
+                  e.preventDefault();
+                  this.serverRequest = axios
+                    .post("auth/logout")
+                    .then(result => {
+                      hashHistory.push("/login");
+                    })
+                    .catch(error => sappy.showError(error, "Não foi possível fazer logout"));
+                }}
+              >
+                <i className="icon ion-ios-log-out-outline" />
+                <br /> <span>Sair</span>
+              </button>
+            </div>}
           {this.state.showRetomar &&
-            <Panel name="panelDetails" allowCollapse={true} title="Documentos em curso" onToogleExpand={e => that.setState({ showRetomar: !that.state.showRetomar })}>
+            <Panel
+              name="panelDetails"
+              allowCollapse={true}
+              title="Documentos em curso"
+              onToogleExpand={e => that.setState({ showRetomar: !that.state.showRetomar })}
+            >
               <SearchPage
                 searchPlaceholder="Procurar..."
                 searchApiUrl="/api/docs/pospending/"

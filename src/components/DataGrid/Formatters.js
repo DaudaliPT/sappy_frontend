@@ -50,8 +50,16 @@ class DefaultFormater extends Component {
     if ("quantity,price,amount,integer".indexOf(type) > -1) style.textAlign = "right";
 
     return (
-      <div id={divID} className={classes} style={style} title={hover ? "" : value} onMouseLeave={onMouseLeave} onMouseEnter={onMouseEnter}>
-        {onLinkClick && <i className="icon fa-arrow-circle-right" aria-hidden="true" onClick={e => onLinkClick(this.props)} />}
+      <div
+        id={divID}
+        className={classes}
+        style={style}
+        title={hover ? "" : value}
+        onMouseLeave={onMouseLeave}
+        onMouseEnter={onMouseEnter}
+      >
+        {onLinkClick &&
+          <i className="icon fa-arrow-circle-right" aria-hidden="true" onClick={e => onLinkClick(this.props)} />}
         {onLinkClick && " "}
         {formatedValue}
       </div>
@@ -67,7 +75,13 @@ class CheckboxFormatter extends Component {
 
     return (
       <div className="react-grid-checkbox-container checkbox-align">
-        <input className="react-grid-checkbox" type="checkbox" name={checkboxName} checked={checked} disabled={disabled} />
+        <input
+          className="react-grid-checkbox"
+          type="checkbox"
+          name={checkboxName}
+          checked={checked}
+          disabled={disabled}
+        />
         <label htmlFor={checkboxName} className="react-grid-checkbox-label" />
       </div>
     );
@@ -105,7 +119,11 @@ class PkposFormatter extends Component {
     let OFF = "UN";
     return (
       <div style={{ textAlign: "right" }}>
-        <button className={"btn btn-sm btn-" + color + " float-left font-size-10"} style={{ lineHeight: "1.4rem", width: "25px" }} onClick={e => props.column.btnClick(e, props)}>
+        <button
+          className={"btn btn-sm btn-" + color + " float-left font-size-10"}
+          style={{ lineHeight: "1.4rem", width: "25px" }}
+          onClick={e => props.column.btnClick(e, props)}
+        >
           {checkedAPswitch ? ON : OFF}
         </button>
         {value}
@@ -235,7 +253,7 @@ class TagsFormatter extends Component {
             key={uuid()}
             style={{
               paddingLeft: "5px",
-              color: "rgba(236, 140, 50, 0.5)",
+              color: "rgba(236, 140, 50, 0.8)",
               position: "relative",
               top: "-5px",
               fontSize: ".8rem",
