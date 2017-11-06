@@ -95,7 +95,7 @@ import axios from "axios";
     isHuman = true;
 
     // check we have a long length e.g. it is a barcode
-    if (barcode.length >= 10) {
+    if (barcode.length >= 5) {
       if (withError) return; // ignore bar code when error is visible
       validate(barcode);
     }
@@ -121,35 +121,28 @@ import axios from "axios";
           e.preventDefault();
           e.stopPropagation();
           isHuman = false;
+          charBuffer = [];
           return;
         }
-        if ((e.keyCode === 9 || e.keyCode === 13 || e.keyCode === 10) && charBuffer.length >= 10) {
-          e.preventDefault();
-          e.stopPropagation();
-          return;
-        }
-
         if (isHuman === false) {
           e.preventDefault();
           e.stopPropagation();
-        }
+          if (e.keyCode === 9 || e.keyCode === 13 || e.keyCode === 10) return;
 
-        // Se 0 a z    [0-9] e [A-Z] e [a-z]
-        if (e.which >= 48 && e.which <= 122) {
-          charBuffer.push(String.fromCharCode(e.which));
-          // console.log(e.which + ":" + charBuffer.join("|"));
+          // Se 0 a z    [0-9] e [A-Z] e [a-z]
+          if (e.which >= 48 && e.which <= 122) {
+            charBuffer.push(String.fromCharCode(e.which));
+            console.log(e.which + ":" + charBuffer.join("|"));
 
-          if (timeOutHandler) {
-            clearTimeout(timeOutHandler);
-            timeOutHandler = null;
+            if (timeOutHandler) {
+              clearTimeout(timeOutHandler);
+              timeOutHandler = null;
+            }
+            timeOutHandler = setTimeout(e => {
+              // took more than 50 milisecs, is a human or ended barcode
+              onTypeTimeout();
+            }, 50);
           }
-          timeOutHandler = setTimeout(e => {
-            // took mode than 50 milisecs, is a human or ended barcode
-            onTypeTimeout();
-          }, 50);
-        } else {
-          charBuffer = []; //clear buffer
-          isHuman = true;
         }
       },
       useCapturingFase
