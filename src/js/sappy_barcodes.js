@@ -115,7 +115,7 @@ import axios from "axios";
       e => {
         if (!currentCallback) return;
 
-        if (e.showBarCodeError === "F9") {
+        if (e.code === "F9") {
           // F9 - PREFIXO CONFIGURADO NO SCANNER
           // Configurar scanner https://retailops.zendesk.com/hc/en-us/articles/213380163-Programming-Guide-Symbol-Motorola-Zebra-LI4278-Scanners
           e.preventDefault();
