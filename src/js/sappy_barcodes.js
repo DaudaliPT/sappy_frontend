@@ -17,7 +17,7 @@ import axios from "axios";
 
   function acknowledgePopupMsg() {
     withError = false;
-    console.log("acknowledgePopupMsg");
+    // console.log("acknowledgePopupMsg");
   }
 
   function showBarCodeError(title, moreInfo) {
@@ -88,7 +88,7 @@ import axios from "axios";
   function onTypeTimeout() {
     if (!currentCallback) return;
     var barcode = charBuffer.join("");
-    // console.log(barcode)
+    // console.log(barcode);
 
     timeOutHandler = null;
     charBuffer = [];
@@ -115,7 +115,7 @@ import axios from "axios";
       e => {
         if (!currentCallback) return;
 
-        if (e.key === "F9") {
+        if (e.showBarCodeError === "F9") {
           // F9 - PREFIXO CONFIGURADO NO SCANNER
           // Configurar scanner https://retailops.zendesk.com/hc/en-us/articles/213380163-Programming-Guide-Symbol-Motorola-Zebra-LI4278-Scanners
           e.preventDefault();
@@ -123,7 +123,7 @@ import axios from "axios";
           isHuman = false;
           return;
         }
-        if ((e.keyCode === 13 || e.keyCode === 10) && charBuffer.length >= 10) {
+        if ((e.keyCode === 9 || e.keyCode === 13 || e.keyCode === 10) && charBuffer.length >= 10) {
           e.preventDefault();
           e.stopPropagation();
           return;
