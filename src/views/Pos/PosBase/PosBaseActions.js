@@ -147,6 +147,7 @@ export default {
               .post(`/api/reports/printdoc/${that.state.docData.OBJTYPE}/${result.data.DocEntry}`)
               .then(result => {})
               .catch(error => {
+                console.error(error);
                 sappy.showToastr({ color: "danger", msg: "Erro ao imprimir documento, avise a caixa sff." });
               });
 
