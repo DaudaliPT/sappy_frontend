@@ -151,7 +151,7 @@ export default {
                 hashHistory.replace(hashHistory.getCurrentLocation().pathname + "?new=" + new Date().getTime());
               },
               confirmText: "Concluido",
-              onConfirm: () => hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", ""))
+              onConfirm: () => hashHistory.push("/pos")
             });
           }
         };

@@ -82,7 +82,7 @@ class PosBase extends Component {
 
     this.recalcComponentsHeight();
 
-    if (Object.keys(nextlocationState).length === 0 || locationState.ID !== nextlocationState.ID || locationState.ID !== nextlocationState.ID) {
+    if (locationState.ID !== nextlocationState.ID || locationState.search !== nextlocationState.search) {
       return this.setState(this.getinitialState(nextProps), this.loadDoc);
     }
   }
@@ -111,12 +111,13 @@ class PosBase extends Component {
 
   loadDoc() {
     let that = this;
-
     let locationState = this.props.location.state || {};
 
     let id = 0;
     if (locationState.ID) id = locationState.ID;
     if (this.state.docData && this.state.docData.ID) id = this.state.docData.ID;
+
+    console.log("LoadDoc" + id);
     if (id) {
       this.serverRequest = axios
         .get(`${this.props.apiDocsNew}/${id}`)
@@ -327,7 +328,10 @@ class PosBase extends Component {
     };
 
     let footerLimitSearchCondition = this.props.footerLimitSearchCondition || "";
-    Object.keys(docData).forEach(field => (footerLimitSearchCondition = sappy.replaceAll(footerLimitSearchCondition, "<" + field + ">", docData[field])));
+    Object.keys(docData).forEach(
+      field =>
+        (footerLimitSearchCondition = sappy.replaceAll(footerLimitSearchCondition, "<" + field + ">", docData[field]))
+    );
 
     let canConfirmar = this.state.docData.ID > 0;
 

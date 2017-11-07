@@ -108,7 +108,19 @@ exports.prepareDocType = function({ tableName }) {
         return classes;
       }
     },
-    { name: "VATGROUP", label: "IVA", type: "vatpercent", width: 40, editable: false }
+    { name: "VATGROUP", label: "IVA", type: "vatpercent", width: 40, editable: false },
+    {
+      name: "PLVP",
+      label: "Pr. c/Iva",
+      type: "price",
+      width: 80,
+      editable: false,
+      getCellStyle: props => {
+        let classes = "";
+        if (props.dependentValues.PRICE_CHANGEDBY) classes += " has-been-changed";
+        return classes;
+      }
+    }
     // { name: "BASE_OBJTYPE", label: "T", type: "text", width: 40, editable: false },
     // { name: "BASE_DOCENTRY", label: "E", type: "text", width: 40, editable: false },
     // { name: "BASE_LINENUM", label: "L", type: "text", width: 40, editable: false },
