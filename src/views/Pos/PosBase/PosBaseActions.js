@@ -143,6 +143,13 @@ export default {
               onConfirm: () => invokeAddDocAPI(data.PosTotal)
             });
           } else {
+            that.serverRequest = axios
+              .post(`/api/reports/printdoc/${that.state.docData.OBJTYPE}/${result.data.DocEntry}`)
+              .then(result => {})
+              .catch(error => {
+                sappy.showToastr({ color: "danger", msg: "Erro ao imprimir documento, avise a caixa sff." });
+              });
+
             sappy.showSuccess({
               title: "Documento criado",
               msg: `Criou com sucesso o documento ${result.data.DocNum}!`,
