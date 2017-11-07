@@ -27,24 +27,24 @@ exports.prepareDocType = function({ tableName }) {
     gridSize: 8,
     required: true
   });
-  if ("15,16,17, 20,21,22".indexOf(objType) > -1) {
-    //Encomendas/Entregas/Devoluções
-    headerFields.line1.push({
-      name: "SHIPADDR",
-      label: "Morada Envio",
-      type: "combo",
-      api: "/api/cbo/crd1/<CARDCODE>/s",
-      gridSize: 4
-    });
-  } else {
-    headerFields.line1.push({
-      name: "BILLADDR",
-      label: "Morada Faturação",
-      type: "combo",
-      api: "/api/cbo/crd1/<CARDCODE>/b",
-      gridSize: 4
-    });
-  }
+  // if ("13,15,16,17, 20,21,22".indexOf(objType) > -1) {
+  //Encomendas/Entregas/Devoluções
+  headerFields.line1.push({
+    name: "SHIPADDR",
+    label: "Morada Envio",
+    type: "combo",
+    api: "/api/cbo/crd1/<CARDCODE>/s",
+    gridSize: 4
+  });
+  // } else {
+  //   headerFields.line1.push({
+  //     name: "BILLADDR",
+  //     label: "Morada Faturação",
+  //     type: "combo",
+  //     api: "/api/cbo/crd1/<CARDCODE>/b",
+  //     gridSize: 4
+  //   });
+  // }
 
   headerFields.icons = [];
   headerFields.icons.push({
