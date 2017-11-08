@@ -34,6 +34,7 @@ exports.prepareDocType = function({ tableName }) {
     label: "Morada Envio",
     type: "combo",
     api: "/api/cbo/crd1/<CARDCODE>/s",
+    required: true,
     gridSize: 4
   });
   // } else {

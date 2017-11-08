@@ -117,7 +117,7 @@ class PosBase extends Component {
     if (locationState.ID) id = locationState.ID;
     if (this.state.docData && this.state.docData.ID) id = this.state.docData.ID;
 
-    console.log("LoadDoc" + id);
+    // console.log("LoadDoc" + id);
     if (id) {
       this.serverRequest = axios
         .get(`${this.props.apiDocsNew}/${id}`)

@@ -8,27 +8,19 @@
   height: 100%;
   overflow-y: auto;
   margin: auto;
-  /* background: rgb(241, 244, 245) !important; */
-  /* background: rgb(255, 255, 255) !important; */
   background: rgba(32, 46, 55, 0.9);
 }
 
 #posHeader {
-  /* background: rgb(241, 244, 245) !important; */
-  /* background: rgb(255, 255, 255) !important; */
   padding: 15px !important;
   width: 100%;
   margin: auto;
 
-  margin-bottom: 5px !important;
   height: 83px;
 }
 #posHeader > .posTitle {
   margin: 0px !important;
   color: rgba(255, 255, 255, 1) !important;
-  /* text-shadow: 1px 1px 2px rgb(98, 168, 234); */
-  /* rgba(255, 255, 255, 0.2); */
-  /* font-size: 1.2rem; */
 }
 
 #posHeader > .actions {
@@ -37,11 +29,10 @@
   text-align: center;
   top: 35px;
   width: calc(30% - 30px);
-  /* border: 1px solid red; */
 }
 #posHeader > .fields {
   position: absolute;
-  top: 10px;
+  top: 5px;
   left: 30%;
   width: calc(70% - 80px);
 }

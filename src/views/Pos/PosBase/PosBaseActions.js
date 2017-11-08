@@ -72,12 +72,11 @@ export default {
       //Validar campos de preenchimento obrigatório
       let newDocData = { ...that.state.docData };
       let fieldsRequired = [];
-      let hasChangesToState = false;
       Object.keys(that.props.headerFields).forEach(line =>
         that.props.headerFields[line].filter(f => f.required && !that.state.docData[f.name]).forEach(f => {
           fieldsRequired.push(f.label);
-          hasChangesToState = true;
-          newDocData[f.name + "_LOGICMSG"] = "danger|Preencha primeiro o campo " + f.label + ".";
+          // hasChangesToState = true;
+          // newDocData[f.name + "_LOGICMSG"] = "danger|Preencha primeiro o campo " + f.label + ".";
         })
       );
 
@@ -87,43 +86,12 @@ export default {
           fieldsRequired.join(", ") +
           (fieldsRequired.length === 1 ? " não está preenchido." : " não estão preenchidos.");
 
-        sappy.showToastr({ color: "danger", msg });
+        return sappy.showToastr({ color: "danger", msg });
       }
 
-      // Embora funcionasse, não é aqui que deve estar. Coloquei no backend
-      // Validar a data do documento
-      // if (newDocData.TAXDATE && sappy.moment(newDocData.TAXDATE).isAfter()) { //isAfter() sem parametros compara com now()
-      //     hasChangesToState = true;
-      //     newDocData["TAXDATE_LOGICMSG"] = "danger|Não pode ser superior à data atual."
-      // }
-      if (
-        newDocData.TAXDATE &&
-        newDocData.DOCDUEDATE &&
-        sappy.moment(newDocData.TAXDATE).isAfter(newDocData.DOCDUEDATE)
-      ) {
-        hasChangesToState = true;
-        newDocData["DOCDUEDATE_LOGICMSG"] = "danger|Não pode ser inferior à data do documento.";
+      if (newDocData.LINES && newDocData.LINES.length === 0) {
+        return sappy.showToastr({ color: "danger", msg: "O documento aina não tem linhas" });
       }
-
-      if (hasChangesToState) return that.setState({ docData: newDocData });
-
-      //Validar se há erros ativos
-      let hasDanger = Object.keys(newDocData).find(f => {
-        let aviso = newDocData[f + "_VALIDATEMSG"] || newDocData[f + "_LOGICMSG"] || "";
-        return aviso.startsWith("danger");
-      });
-
-      if (hasDanger)
-        return sappy.showToastr({
-          color: "danger",
-          msg: "Há campos com erros..."
-        });
-
-      //Validar se há avisos ativos
-      let hasWarning = Object.keys(newDocData).find(f => {
-        let aviso = newDocData[f + "_VALIDATEMSG"] || newDocData[f + "_LOGICMSG"] || "";
-        return aviso.startsWith("warning");
-      });
 
       let invokeAddDocAPI = forceTotal => {
         sappy.showWaitProgress("A adicionar documento, aguarde por favor...");
@@ -133,14 +101,14 @@ export default {
           // debugger
           if (data.message && data.message.indexOf("TOTALDIF") > -1) {
             sappy.showDanger({
-              msg: `O total ${data.PosTotal} € é diferente do esperado!`,
+              msg: `O total ${data.DocTotal} € é diferente do esperado!`,
               moreInfo: "A criação do documento foi cancelada.",
               cancelText: "Cancelar",
               cancelStyle: "success",
               showCancelButton: true,
               confirmText: "Adicionar mesmo assim",
               // eslint-disable-next-line
-              onConfirm: () => invokeAddDocAPI(data.PosTotal)
+              onConfirm: () => invokeAddDocAPI(data.DocTotal)
             });
           } else {
             that.serverRequest = axios
@@ -172,15 +140,6 @@ export default {
           .then(result => handleAddDocApiResponse(result))
           .catch(error => sappy.showError(error, "Erro ao criar documento"));
       };
-      if (hasWarning)
-        return sappy.showWarning({
-          title: "Atenção!",
-          msg: "Ainda há campos com avisos!",
-          moreInfo: "Deseja mesmo assim criar este documento?",
-          onConfirm: e => invokeAddDocAPI(),
-          confirmText: "Ignorar e criar documento",
-          onCancel: () => {}
-        });
 
       return sappy.showQuestion({
         title: "Deseja Continuar?",

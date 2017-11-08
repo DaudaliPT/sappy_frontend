@@ -94,16 +94,17 @@ class DocPromocao extends Component {
         width: 100,
         editable: false,
         dragable: false,
-        onLinkClick: props => sappy.showModal(<EditModal toggleModal={sappy.hideModal} itemcode={props.dependentValues.ITEMCODE} />)
+        onLinkClick: props =>
+          sappy.showModal(<EditModal toggleModal={sappy.hideModal} itemcode={props.dependentValues.ITEMCODE} />)
       },
       { name: "ITEMNAME", label: "Descrição", type: "tags", width: 400, editable: false },
       { name: "QTSTOCK", label: "Stk", type: "quantity", width: 60, editable: false },
-      { name: "PRICEINFO", label: "Preço Cash", type: "price", width: 60, editable: false },
-      { name: "PRICEBASE", label: "Preço Base", type: "price", width: 60, editable: true },
-      { name: "USER_DISC", label: "Descontos", type: "text", width: 120, editable: true },
+      { name: "PRICEINFO", label: "Preço Cash", type: "price", width: 80, editable: false },
+      { name: "PRICEBASE", label: "Preço Folheto", type: "price", width: 80, editable: true },
+      { name: "USER_DISC", label: "Descontos", type: "text", width: 100, editable: true },
       // { name: 'DISCOUNT', label: 'Desconto', type: "discount", width: 60, editable: false },
-      { name: "PRICE", label: "Preço", type: "price", width: 70, editable: true },
-      { name: "QTMIN", label: "Qt.Min", type: "quantity", width: 60, editable: true }
+      { name: "PRICE", label: "Preço Liq.", type: "price", width: 60, editable: false },
+      { name: "QTMIN", label: "Qt.Min", type: "quantity", width: 50, editable: true }
     ];
 
     this.state = getinitialState(props);
@@ -206,7 +207,8 @@ class DocPromocao extends Component {
     if (!this.state.NUMERO) {
       sappy.showQuestion({
         title: "Manter rascunho?",
-        moreInfo: "Se escolher manter, as alterações ficarão disponiveis como rascunho e poderá continuar mais tarde...",
+        moreInfo:
+          "Se escolher manter, as alterações ficarão disponiveis como rascunho e poderá continuar mais tarde...",
         onConfirm: () => {
           hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", ""));
         },
@@ -307,12 +309,17 @@ class DocPromocao extends Component {
     data.SCOPE = [...IC, ...EC, ...IA, ...EA];
 
     if (!specialOption) {
-      axios.post(`/api/promocoes/doc/`, data).then(this.loadDocToState).catch(error => sappy.showError(error, "Não foi possivel gravar documneto"));
+      axios
+        .post(`/api/promocoes/doc/`, data)
+        .then(this.loadDocToState)
+        .catch(error => sappy.showError(error, "Não foi possivel gravar documneto"));
     } else {
       data.ATIVO = 1; // para que consiga simular
       data.NUMERO = 999999999;
-      if (specialOption === "CLIENTES_ABRANGIDOS") sappy.showModal(<ModalCoveredPNs contentPromocao={data} toggleModal={sappy.hideModal} />);
-      if (specialOption === "ARTIGOS_ABRANGIDOS") sappy.showModal(<ModalCoveredItems contentPromocao={data} toggleModal={sappy.hideModal} />);
+      if (specialOption === "CLIENTES_ABRANGIDOS")
+        sappy.showModal(<ModalCoveredPNs contentPromocao={data} toggleModal={sappy.hideModal} />);
+      if (specialOption === "ARTIGOS_ABRANGIDOS")
+        sappy.showModal(<ModalCoveredItems contentPromocao={data} toggleModal={sappy.hideModal} />);
     }
   }
 
@@ -420,13 +427,20 @@ class DocPromocao extends Component {
     let hasDanger = Object.keys(alerts).find(f => alerts[f].startsWith("danger"));
     if (hasDanger) {
       if (toastrMsg.length > 0) return; // já deu mensagens
-      return sappy.showToastr({ color: "danger", msg: "Há campos com erros. Verifique se preencheu todos os campos obrigatórios..." });
+      return sappy.showToastr({
+        color: "danger",
+        msg: "Há campos com erros. Verifique se preencheu todos os campos obrigatórios..."
+      });
     }
 
     //Validar se há avisos ativos
     let hasWarning = Object.keys(alerts).find(f => alerts[f].startsWith("warning"));
 
-    let postConfirm = () => axios.post(`/api/promocoes/doc/${this.state.ID}/confirm`).then(this.loadDocToState).catch(error => sappy.showError(error, "Não foi possivel criar documento"));
+    let postConfirm = () =>
+      axios
+        .post(`/api/promocoes/doc/${this.state.ID}/confirm`)
+        .then(this.loadDocToState)
+        .catch(error => sappy.showError(error, "Não foi possivel criar documento"));
 
     if (!hasWarning)
       return sappy.showQuestion({
@@ -463,7 +477,10 @@ class DocPromocao extends Component {
     let hasDanger = Object.keys(alerts).find(f => alerts[f].startsWith("danger"));
     if (hasDanger) {
       if (toastrMsg.length > 0) return; // já deu mensagens
-      return sappy.showToastr({ color: "danger", msg: "Há campos com erros. Verifique se preencheu todos os campos obrigatórios..." });
+      return sappy.showToastr({
+        color: "danger",
+        msg: "Há campos com erros. Verifique se preencheu todos os campos obrigatórios..."
+      });
     }
 
     //Validar se há avisos ativos
@@ -723,12 +740,16 @@ class DocPromocao extends Component {
     let strNumero = (this.state.NUMERO && this.state.NUMERO) || (this.state.ID && "Rascunho") || "Novo";
 
     let cliColapsedInfo = "";
-    if (!this.state.CLI_RESTRICT) cliColapsedInfo = "(Todos os clientes" + (this.state.CLI_EXCLUDE ? ", com algumas exclusões]" : "") + ")";
-    if (this.state.CLI_RESTRICT) cliColapsedInfo = "(Alguns clientes" + (this.state.CLI_EXCLUDE ? " , com algumas exclusões]" : "") + ")";
+    if (!this.state.CLI_RESTRICT)
+      cliColapsedInfo = "(Todos os clientes" + (this.state.CLI_EXCLUDE ? ", com algumas exclusões]" : "") + ")";
+    if (this.state.CLI_RESTRICT)
+      cliColapsedInfo = "(Alguns clientes" + (this.state.CLI_EXCLUDE ? " , com algumas exclusões]" : "") + ")";
 
     let artColapsedInfo = "";
-    if (!this.state.ART_RESTRICT) artColapsedInfo = "(Todos os artigos" + (this.state.ART_EXCLUDE ? ", com algumas exclusões]" : "") + ")";
-    if (this.state.ART_RESTRICT) artColapsedInfo = "(Alguns artigos" + (this.state.ART_EXCLUDE ? ", com algumas exclusões]" : "") + ")";
+    if (!this.state.ART_RESTRICT)
+      artColapsedInfo = "(Todos os artigos" + (this.state.ART_EXCLUDE ? ", com algumas exclusões]" : "") + ")";
+    if (this.state.ART_RESTRICT)
+      artColapsedInfo = "(Alguns artigos" + (this.state.ART_EXCLUDE ? ", com algumas exclusões]" : "") + ")";
 
     let footerProps = {
       // ...this.state.footer,
@@ -789,7 +810,8 @@ class DocPromocao extends Component {
           <Panel
             title={(this.state.TIPO === "P" ? "Promoção" : "Folheto") + " (" + strNumero + ")"}
             expanded={this.state.headerExpanded}
-            onToogleExpand={() => that.setState({ headerExpanded: !this.state.headerExpanded }, this.recalcComponentsHeight)}
+            onToogleExpand={() =>
+              that.setState({ headerExpanded: !this.state.headerExpanded }, this.recalcComponentsHeight)}
             actions={headerActions}
           >
             <div className="row">
@@ -824,63 +846,105 @@ class DocPromocao extends Component {
                             value: "0",
                             label: "S",
                             disabled: !this.state.editable,
-                            className: "btn btn-circle btn-outline " + (!!that.state.DIASEM0 ? "active btn-primary" : "btn-secondary"),
+                            className:
+                              "btn btn-circle btn-outline " +
+                              (!!that.state.DIASEM0 ? "active btn-primary" : "btn-secondary"),
                             onClick: e => {
-                              that.onFieldChange({ fieldName: "DIASEM0", value: !that.state.DIASEM0, rawValue: !that.state.DIASEM0 });
+                              that.onFieldChange({
+                                fieldName: "DIASEM0",
+                                value: !that.state.DIASEM0,
+                                rawValue: !that.state.DIASEM0
+                              });
                             }
                           },
                           {
                             value: "1",
                             label: "T",
                             disabled: !this.state.editable,
-                            className: "btn btn-circle btn-outline " + (!!that.state.DIASEM1 ? "active btn-primary" : "btn-secondary"),
+                            className:
+                              "btn btn-circle btn-outline " +
+                              (!!that.state.DIASEM1 ? "active btn-primary" : "btn-secondary"),
                             onClick: e => {
-                              that.onFieldChange({ fieldName: "DIASEM1", value: !that.state.DIASEM1, rawValue: !that.state.DIASEM1 });
+                              that.onFieldChange({
+                                fieldName: "DIASEM1",
+                                value: !that.state.DIASEM1,
+                                rawValue: !that.state.DIASEM1
+                              });
                             }
                           },
                           {
                             value: "2",
                             label: "Q",
                             disabled: !this.state.editable,
-                            className: "btn btn-circle btn-outline " + (!!that.state.DIASEM2 ? "active btn-primary" : "btn-secondary"),
+                            className:
+                              "btn btn-circle btn-outline " +
+                              (!!that.state.DIASEM2 ? "active btn-primary" : "btn-secondary"),
                             onClick: e => {
-                              that.onFieldChange({ fieldName: "DIASEM2", value: !that.state.DIASEM2, rawValue: !that.state.DIASEM2 });
+                              that.onFieldChange({
+                                fieldName: "DIASEM2",
+                                value: !that.state.DIASEM2,
+                                rawValue: !that.state.DIASEM2
+                              });
                             }
                           },
                           {
                             value: "3",
                             label: "Q",
                             disabled: !this.state.editable,
-                            className: "btn btn-circle btn-outline " + (!!that.state.DIASEM3 ? "active btn-primary" : "btn-secondary"),
+                            className:
+                              "btn btn-circle btn-outline " +
+                              (!!that.state.DIASEM3 ? "active btn-primary" : "btn-secondary"),
                             onClick: e => {
-                              that.onFieldChange({ fieldName: "DIASEM3", value: !that.state.DIASEM3, rawValue: !that.state.DIASEM3 });
+                              that.onFieldChange({
+                                fieldName: "DIASEM3",
+                                value: !that.state.DIASEM3,
+                                rawValue: !that.state.DIASEM3
+                              });
                             }
                           },
                           {
                             value: "4",
                             label: "S",
                             disabled: !this.state.editable,
-                            className: "btn btn-circle btn-outline " + (!!that.state.DIASEM4 ? "active btn-primary" : "btn-secondary"),
+                            className:
+                              "btn btn-circle btn-outline " +
+                              (!!that.state.DIASEM4 ? "active btn-primary" : "btn-secondary"),
                             onClick: e => {
-                              that.onFieldChange({ fieldName: "DIASEM4", value: !that.state.DIASEM4, rawValue: !that.state.DIASEM4 });
+                              that.onFieldChange({
+                                fieldName: "DIASEM4",
+                                value: !that.state.DIASEM4,
+                                rawValue: !that.state.DIASEM4
+                              });
                             }
                           },
                           {
                             value: "5",
                             label: "S",
                             disabled: !this.state.editable,
-                            className: "btn btn-circle btn-outline " + (!!that.state.DIASEM5 ? "active btn-primary" : "btn-secondary"),
+                            className:
+                              "btn btn-circle btn-outline " +
+                              (!!that.state.DIASEM5 ? "active btn-primary" : "btn-secondary"),
                             onClick: e => {
-                              that.onFieldChange({ fieldName: "DIASEM5", value: !that.state.DIASEM5, rawValue: !that.state.DIASEM5 });
+                              that.onFieldChange({
+                                fieldName: "DIASEM5",
+                                value: !that.state.DIASEM5,
+                                rawValue: !that.state.DIASEM5
+                              });
                             }
                           },
                           {
                             value: "6",
                             label: "D",
                             disabled: !this.state.editable,
-                            className: "btn btn-circle btn-outline " + (!!that.state.DIASEM6 ? "active btn-primary" : "btn-secondary"),
+                            className:
+                              "btn btn-circle btn-outline " +
+                              (!!that.state.DIASEM6 ? "active btn-primary" : "btn-secondary"),
                             onClick: e => {
-                              that.onFieldChange({ fieldName: "DIASEM6", value: !that.state.DIASEM6, rawValue: !that.state.DIASEM6 });
+                              that.onFieldChange({
+                                fieldName: "DIASEM6",
+                                value: !that.state.DIASEM6,
+                                rawValue: !that.state.DIASEM6
+                              });
                             }
                           }
                         ]
@@ -903,7 +967,10 @@ class DocPromocao extends Component {
                       that.onFieldChange({ fieldName: "PRIORIDADE", value: e, rawValue: e });
                     }}
                     marks={{
-                      "-2": { label: "Muito baixa", style: { fontWeight: this.state.PRIORIDADE === -2 ? 700 : "normal" } },
+                      "-2": {
+                        label: "Muito baixa",
+                        style: { fontWeight: this.state.PRIORIDADE === -2 ? 700 : "normal" }
+                      },
                       "-1": { label: "Baixa", style: { fontWeight: this.state.PRIORIDADE === -1 ? 700 : "normal" } },
                       "0": { label: "Normal", style: { fontWeight: this.state.PRIORIDADE === 0 ? 700 : "normal" } },
                       "1": { label: "Alta", style: { fontWeight: this.state.PRIORIDADE === 1 ? 700 : "normal" } },
@@ -934,7 +1001,10 @@ class DocPromocao extends Component {
                       that.onFieldChange({ fieldName: "PRIORIDADE", value: e, rawValue: e });
                     }}
                     marks={{
-                      "-2": { label: "Muito baixa", style: { fontWeight: this.state.PRIORIDADE === -2 ? 700 : "normal" } },
+                      "-2": {
+                        label: "Muito baixa",
+                        style: { fontWeight: this.state.PRIORIDADE === -2 ? 700 : "normal" }
+                      },
                       "-1": { label: "Baixa", style: { fontWeight: this.state.PRIORIDADE === -1 ? 700 : "normal" } },
                       "0": { label: "Normal", style: { fontWeight: this.state.PRIORIDADE === 0 ? 700 : "normal" } },
                       "1": { label: "Alta", style: { fontWeight: this.state.PRIORIDADE === 1 ? 700 : "normal" } },
@@ -951,16 +1021,31 @@ class DocPromocao extends Component {
             allowCollapse={true}
             actions={scopeCliActions}
             expanded={this.state.pnScopeExpanded}
-            onToogleExpand={() => that.setState({ pnScopeExpanded: !this.state.pnScopeExpanded }, this.recalcComponentsHeight)}
+            onToogleExpand={() =>
+              that.setState({ pnScopeExpanded: !this.state.pnScopeExpanded }, this.recalcComponentsHeight)}
             colapsedInfo={cliColapsedInfo}
           >
             <div className="radio-custom radio-success" style={{ display: "block" }}>
-              <input type="radio" id="CLI_RESTRICT" name="CLI_RESTRICT" checked={!this.state.CLI_RESTRICT} disabled={!this.state.editable} onChange={e => that.toggleField("CLI_RESTRICT")} />
+              <input
+                type="radio"
+                id="CLI_RESTRICT"
+                name="CLI_RESTRICT"
+                checked={!this.state.CLI_RESTRICT}
+                disabled={!this.state.editable}
+                onChange={e => that.toggleField("CLI_RESTRICT")}
+              />
               <label htmlFor="CLI_RESTRICT">Todos os clientes</label>
             </div>
 
             <div className="radio-custom radio-success" style={{ display: "block" }}>
-              <input type="radio" disabled={!this.state.editable} id="CLI_RESTRICT2" name="CLI_RESTRICT" checked={!!this.state.CLI_RESTRICT} onChange={e => that.toggleField("CLI_RESTRICT")} />
+              <input
+                type="radio"
+                disabled={!this.state.editable}
+                id="CLI_RESTRICT2"
+                name="CLI_RESTRICT"
+                checked={!!this.state.CLI_RESTRICT}
+                onChange={e => that.toggleField("CLI_RESTRICT")}
+              />
               <label htmlFor="CLI_RESTRICT2">Clientes com base nas seguintes condições:</label>
             </div>
             {!!this.state.CLI_RESTRICT &&
@@ -1003,16 +1088,35 @@ class DocPromocao extends Component {
 
           {this.state.TIPO === "P" &&
             // Âmbito de artigos só existe em promoções
-            <Panel subtitle="Âmbito de artigos" allowCollapse={true} actions={scopeArtActions} colapsedInfo={artColapsedInfo}>
+            <Panel
+              subtitle="Âmbito de artigos"
+              allowCollapse={true}
+              actions={scopeArtActions}
+              colapsedInfo={artColapsedInfo}
+            >
               <div className="row">
                 <div className="col-12">
                   <div className="radio-custom radio-success" style={{ display: "block" }}>
-                    <input type="radio" id="ART_RESTRICT" name="ART_RESTRICT" checked={!this.state.ART_RESTRICT} disabled={!this.state.editable} onChange={e => that.toggleField("ART_RESTRICT")} />
+                    <input
+                      type="radio"
+                      id="ART_RESTRICT"
+                      name="ART_RESTRICT"
+                      checked={!this.state.ART_RESTRICT}
+                      disabled={!this.state.editable}
+                      onChange={e => that.toggleField("ART_RESTRICT")}
+                    />
                     <label htmlFor="ART_RESTRICT">Todos os artigos</label>
                   </div>
 
                   <div className="radio-custom radio-success" style={{ display: "block" }}>
-                    <input type="radio" id="ART_RESTRICT2" name="ART_RESTRICT" checked={!!this.state.ART_RESTRICT} disabled={!this.state.editable} onChange={e => that.toggleField("ART_RESTRICT")} />
+                    <input
+                      type="radio"
+                      id="ART_RESTRICT2"
+                      name="ART_RESTRICT"
+                      checked={!!this.state.ART_RESTRICT}
+                      disabled={!this.state.editable}
+                      onChange={e => that.toggleField("ART_RESTRICT")}
+                    />
                     <label htmlFor="ART_RESTRICT2">Artigos com base nas seguintes condições:</label>
                   </div>
                   {!!this.state.ART_RESTRICT &&
@@ -1036,7 +1140,11 @@ class DocPromocao extends Component {
                       name="ART_EXCLUDE"
                       checked={this.state.ART_EXCLUDE}
                       onChange={e => {
-                        that.onFieldChange({ fieldName: "ART_EXCLUDE", value: e.target.checked, rawValue: e.target.checked });
+                        that.onFieldChange({
+                          fieldName: "ART_EXCLUDE",
+                          value: e.target.checked,
+                          rawValue: e.target.checked
+                        });
                       }}
                     />
                     <label htmlFor="ART_EXCLUDE">Excluir artigos com base nas seguintes condições:</label>
