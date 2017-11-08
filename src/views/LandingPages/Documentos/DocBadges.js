@@ -5,14 +5,23 @@ import uuid from "uuid/v4";
 class DocBadges extends Component {
   render() {
     const renderBadges = () => {
-      const badges = this.props.tags.split("|");
+      let tags = this.props.tags || "";
+      let badges = tags.split("|");
       return badges.map((item, ix) => {
         let color = item.split("_")[0];
         let text = item.split("_")[1];
-        return <Badge key={uuid()} color={color} pill>{text}</Badge>;
+        return (
+          <Badge key={uuid()} color={color} pill>
+            {text}
+          </Badge>
+        );
       });
     };
-    return <span> {renderBadges()} </span>;
+    return (
+      <span>
+        {" "}{renderBadges()}{" "}
+      </span>
+    );
   }
 }
 
