@@ -218,22 +218,6 @@ class CmpPorReceber extends Component {
           that.setState({ selectedPN: "", selectedDocKeys: [] }, () => setTimeout(that.setState({ selectedPN }), 1));
         })
         .catch(error => sappy.showError(error, "Não foi possivel adicionar o documento"));
-      axios
-        .post(url, data)
-        .then(result => {
-          sappy.hideWaitProgress();
-          sappy.showToastr({
-            color: "success",
-            msg: `Criou com sucesso o ${strDocDesc} ${result.data.DocNum} no valor de ${sappy.format.amount(
-              totalOfSelectedDocs
-            )}, de ${this.state.selectedPNname}!`
-          });
-
-          //forçar refresh
-          let selectedPN = that.state.selectedPN;
-          that.setState({ selectedPN: "", selectedDocKeys: [] }, () => setTimeout(that.setState({ selectedPN }), 1));
-        })
-        .catch(error => sappy.showError(error, "Não foi possivel adicionar o documento"));
     };
 
     invokeAddDocAPI();
