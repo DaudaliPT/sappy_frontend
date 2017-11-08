@@ -40,8 +40,8 @@
 #posHeader > .userMenu {
   position: absolute;
   top: 20px;
-  right: -20px;
-  width: 80px;
+  right: 20px;
+  width: 40px;
 }
 #posDetail {
   /* background: rgba(32, 46, 55, 0.1) !important; */

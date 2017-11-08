@@ -71,7 +71,7 @@ class PosBase extends Component {
     let detailsTop = $("#posDetail").position().top;
     let footerTop = $("#posFooter").position().top;
     let detail = { ...this.state.detail };
-    detail.height = footerTop - detailsTop - 20;
+    detail.height = footerTop - detailsTop - 10;
 
     this.setState({ detail });
   }

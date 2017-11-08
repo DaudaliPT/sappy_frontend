@@ -152,7 +152,7 @@ class Inicio extends Component {
                 }}
               >
                 <i className="icon ion-ios-log-out-outline" />
-                <br /> <span>Sair</span>
+                <br /> <span>Terminar sessão de {sappy.sessionInfo.user.NAME}</span>
               </button>
             </div>}
           {this.state.showRetomar &&

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { TextBox, TextBoxNumeric, ComboBox, Date, Toggle, Flag, IconToggle, IconEdit } from "../../../Inputs";
+const sappy = window.sappy;
 
 class PosHeader extends Component {
   render() {
@@ -111,11 +112,11 @@ class PosHeader extends Component {
           {renderHeaderFields()}
         </div>
 
-        <div className="userMenu">
+        <div className="userMenu" title={"Sessão de " + sappy.sessionInfo.user.NAME}>
           <span className="avatar avatar-online">
-            <img src="img/avatar_male.png" alt="..." />
+            {<img src="img/avatar_male.png" alt="..." />}
             {/* <i className="icon md-account" aria-hidden="true" /> */}
-            <i />
+            {<i />}
           </span>
         </div>
       </div>
