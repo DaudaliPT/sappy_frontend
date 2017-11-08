@@ -183,10 +183,17 @@ import barcodes from "./sappy_barcodes";
     return Number(num + "e" + (exp + decimals));
   }
   sappy.round = (value, decimals) => {
-    let sign = value >= 0 ? 1 : -1;
-    let val = value * sign; //passar valores negativos a positivos, para que o round funcione bem nos negativos
+    let sign = value >= 0 ? 1 : -1; //FIX1: detectar o sinal original
+    let val = value * sign; //FIX1: passar valores negativos a positivos, para que o round funcione bem nos negativos
 
-    let ret = sign * addDecimals(Math.round(addDecimals(val, decimals)), -1 * decimals);
+    val += 0.00000000001; //FIX2: o valor 5.075 é guardado como 5.074999999 e estava arredondar para baixo ficava 5.07(errado) em vez de ficar 5.08 (correto)
+
+    // Number((1.005).toFixed(2));            // returns 1 (wrong) instead of 1.01
+    // Math.round(1.005*100)/100;             // returns 1 (wrong) instead of 1.01
+    // Number(Math.round(1.005+'e2')+'e-2');  // returns 1.01 (correct)
+
+    let ret = addDecimals(Math.round(addDecimals(val, decimals)), -1 * decimals);
+    ret *= sign; //FIX1: colocar novament o sinal original
     if (isNaN(ret)) console.log(`sappy.round = (${val}, ${decimals}) returned NaN`);
     return ret;
   };
@@ -205,7 +212,8 @@ import barcodes from "./sappy_barcodes";
       if (charCode < 48 || charCode > 57) return (hasInvalidChars = true);
     });
 
-    if (hasInvalidChars) return sappy.showToastr({ color: "danger", msg: "'" + value + "' não é uma expressão válida" });
+    if (hasInvalidChars)
+      return sappy.showToastr({ color: "danger", msg: "'" + value + "' não é uma expressão válida" });
     if (hasOperators) {
       try {
         value = sappy.replaceAll(value, ",", "."); //tratar virgulas como separadores decimais
@@ -214,7 +222,10 @@ import barcodes from "./sappy_barcodes";
         // eslint-disable-next-line
         return eval(value);
       } catch (error) {
-        return sappy.showToastr({ color: "danger", msg: "'" + value + "' não é uma expressão válida: " + error.message });
+        return sappy.showToastr({
+          color: "danger",
+          msg: "'" + value + "' não é uma expressão válida: " + error.message
+        });
       }
     } else {
       return sappy.getNum(value);
@@ -294,12 +305,33 @@ import barcodes from "./sappy_barcodes";
 
       if (part.toUpperCase() === "BONUS") {
         DISC_SUC[0] = 100;
-      } else if (part.indexOf("€/un") > -1 || part.indexOf("eu") > -1 || part.indexOf("EU") > -1 || part.indexOf("u") > -1 || part.indexOf("U") > -1) {
+      } else if (
+        part.indexOf("€/un") > -1 ||
+        part.indexOf("eu") > -1 ||
+        part.indexOf("EU") > -1 ||
+        part.indexOf("u") > -1 ||
+        part.indexOf("U") > -1
+      ) {
         part = part.replace("€/un", "").replace("eu", "").replace("EU", "").replace("u", "").replace("U", "");
         let d = sappy.getNum(part);
         if (d) DISC_UN[DISC_UN.length] = d;
-      } else if (part.indexOf("€") > -1 || part.indexOf("e") > -1 || part.indexOf("E") > -1 || part.indexOf("v") > -1 || part.indexOf("V") > -1 || part.indexOf("t") > -1 || part.indexOf("T") > -1) {
-        part = part.replace("€", "").replace("e", "").replace("E", "").replace("v", "").replace("V", "").replace("t", "").replace("T", "");
+      } else if (
+        part.indexOf("€") > -1 ||
+        part.indexOf("e") > -1 ||
+        part.indexOf("E") > -1 ||
+        part.indexOf("v") > -1 ||
+        part.indexOf("V") > -1 ||
+        part.indexOf("t") > -1 ||
+        part.indexOf("T") > -1
+      ) {
+        part = part
+          .replace("€", "")
+          .replace("e", "")
+          .replace("E", "")
+          .replace("v", "")
+          .replace("V", "")
+          .replace("t", "")
+          .replace("T", "");
         let d = sappy.getNum(part);
         if (d) DISC_VAL[DISC_VAL.length] = d;
       } else {
@@ -341,9 +373,17 @@ import barcodes from "./sappy_barcodes";
     if (parsed.DiscountPercent === 100) {
       formatted = "BONUS";
     } else {
-      DISC_SUC.filter(item => !!item).forEach(DSUC => (formatted += (formatted ? " + " : "") + DSUC.toString().replace(".", sappy.sessionInfo.company.oadm.DecSep) + "%"));
-      DISC_UN.filter(item => !!item).forEach(DUN => (formatted += (formatted ? " + " : "") + sappy.format.price(DUN) + "/un"));
-      DISC_VAL.filter(item => !!item).forEach(DVAL => (formatted += (formatted ? " + " : "") + sappy.format.amount(DVAL)));
+      DISC_SUC.filter(item => !!item).forEach(
+        DSUC =>
+          (formatted +=
+            (formatted ? " + " : "") + DSUC.toString().replace(".", sappy.sessionInfo.company.oadm.DecSep) + "%")
+      );
+      DISC_UN.filter(item => !!item).forEach(
+        DUN => (formatted += (formatted ? " + " : "") + sappy.format.price(DUN) + "/un")
+      );
+      DISC_VAL.filter(item => !!item).forEach(
+        DVAL => (formatted += (formatted ? " + " : "") + sappy.format.amount(DVAL))
+      );
     }
     return formatted;
   };
@@ -382,7 +422,10 @@ import barcodes from "./sappy_barcodes";
       let ret = accounting.formatNumber(value, decimals);
 
       //remover os separador decimal e as decimas quando não são relevantes
-      ret = ret.replace(sappy.sessionInfo.company.oadm.DecSep + "000000".substring(0, sappy.sessionInfo.company.oadm.QtyDec), "");
+      ret = ret.replace(
+        sappy.sessionInfo.company.oadm.DecSep + "000000".substring(0, sappy.sessionInfo.company.oadm.QtyDec),
+        ""
+      );
 
       return ret;
     },
@@ -563,7 +606,12 @@ import barcodes from "./sappy_barcodes";
       { tableName: "OUFD", tableSufix: "UFD", objectCode: 152, description: "User fields" },
       { tableName: "OUTB", tableSufix: "UTB", objectCode: 153, description: "User tables" },
       { tableName: "OPEX", tableSufix: "PEX", objectCode: 158, description: "Payment run export" },
-      { tableName: "OMRV", tableSufix: "MRV", objectCode: 162, description: "Material revaluation (country-specific for Poland) " },
+      {
+        tableName: "OMRV",
+        tableSufix: "MRV",
+        objectCode: 162,
+        description: "Material revaluation (country-specific for Poland) "
+      },
       { tableName: "OCTT", tableSufix: "CTT", objectCode: 170, description: "Contract templates" },
       { tableName: "OHEM", tableSufix: "HEM", objectCode: 171, description: "Employees" },
       { tableName: "OINS", tableSufix: "INS", objectCode: 176, description: "Customer equipment cards" },
@@ -587,7 +635,10 @@ import barcodes from "./sappy_barcodes";
     ];
 
     return objData.find(item => {
-      return item.tableName === (tableName || "").toUpperCase() || item.objectCode.toString() === (objectCode || "").toString();
+      return (
+        item.tableName === (tableName || "").toUpperCase() ||
+        item.objectCode.toString() === (objectCode || "").toString()
+      );
     });
   };
 

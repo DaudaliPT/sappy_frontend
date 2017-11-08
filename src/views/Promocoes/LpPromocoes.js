@@ -57,8 +57,10 @@ class LpPromocoes extends Component {
                 {" "}{row.NUMERO}{" "}
               </div>
               <div className="col-8">
-                {row.TIPO === "P" && <i style={{ color: "#ddd", paddingRight: "5px" }} className="icon fa-tags" />}
-                {row.TIPO === "F" && <i style={{ color: "#ddd", paddingRight: "5px" }} className="icon fa-newspaper-o" />}
+                {row.TIPO === "P" &&
+                  <i style={{ color: "rgba(0, 120, 68, 1)", paddingRight: "5px" }} className="icon fa-tags" />}
+                {row.TIPO === "F" &&
+                  <i style={{ color: "#aaa", paddingRight: "5px" }} className="icon fa-newspaper-o" />}
                 {row.DESCRICAO} {renderBadges()}
               </div>
               <div className="col-3 lastcol">
@@ -79,7 +81,10 @@ class LpPromocoes extends Component {
                 </div>
               </div>
               <div className="row secondrow">
-                <div className="col offset-1 text-nowrap firstcol lastcol" style={{ maxHeight: "25px", overflow: "hidden" }}>
+                <div
+                  className="col offset-1 text-nowrap firstcol lastcol"
+                  style={{ maxHeight: "25px", overflow: "hidden" }}
+                >
                   {sappy.format.date(row.DATAI) + " a " + sappy.format.date(row.DATAF)}
                   {renderBadges()}
                 </div>
@@ -120,7 +125,16 @@ class LpPromocoes extends Component {
       return actions;
     };
 
-    return <BaseLandingPage pageTitle="Promoções" searchPlaceholder="Procurar..." searchApiUrl="api/promocoes/" renderRow={renderRow} renderRowHeight={50} actions={renderActions()} />;
+    return (
+      <BaseLandingPage
+        pageTitle="Promoções"
+        searchPlaceholder="Procurar..."
+        searchApiUrl="api/promocoes/"
+        renderRow={renderRow}
+        renderRowHeight={50}
+        actions={renderActions()}
+      />
+    );
   }
 }
 

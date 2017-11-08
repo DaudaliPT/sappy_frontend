@@ -97,6 +97,7 @@ exports.prepareDocType = function({ tableName }) {
         return classes;
       }
     },
+    { name: "LINETOTAL", label: "Total", type: "amount", width: 80, editable: false },
     {
       name: "USER_DISC",
       label: "Descontos",
