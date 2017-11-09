@@ -72,7 +72,7 @@
 
 .posMenu-action {
   width: 20%;
-  height: 80%;
+  height: 100%;
   margin: 1%;
 }
 .posMenu-action > .btn {
@@ -87,8 +87,9 @@
 }
 .posMenu-action > .btn:hover {
   background: rgba(241, 244, 245, 1) !important;
-  border: 3px solid rgba(232, 246, 255, 0.3) !important;
-  box-shadow: 2px 2px 1px rgba(232, 246, 255, 0.3);
+  /* border: 3px solid rgba(232, 246, 255, 0.9) !important; */
+  /* box-shadow: 2px 2px 1px rgba(232, 246, 255, 0.8); */
+  box-shadow: 4px 8px 8px rgba(32, 46, 55, 0.3);
 }
 .posMenu-action i {
   padding-bottom: 5%;

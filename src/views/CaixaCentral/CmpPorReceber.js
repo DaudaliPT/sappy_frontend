@@ -86,11 +86,11 @@ class CmpPorReceber extends Component {
   }
 
   handlePrintDoc(e) {
-    let that = this;
-    let selectedPN = this.state.selectedPN;
+    // let that = this;
+    // let selectedPN = this.state.selectedPN;
     let docsList = [];
     if (this.docsComponent) docsList = this.docsComponent.state.listItems;
-    let totalOfSelectedDocs = 0;
+    // let totalOfSelectedDocs = 0;
     let selectedDocs = docsList.filter(doc => this.state.selectedDocKeys.indexOf(doc.TRANSID_AND_LINEID) > -1);
 
     this.setState({
@@ -98,10 +98,10 @@ class CmpPorReceber extends Component {
     });
 
     selectedDocs.forEach(doc => {
-      let InvoiceType = "";
+      // let InvoiceType = "";
       let transType = sappy.getNum(doc.TransType);
 
-      if (transType === 13 || transType == 14) {
+      if (transType === 13 || transType === 14) {
         let url = `/api/reports/printdoc/${transType}/${doc.CreatedBy}`;
         axios
           .post(url)
