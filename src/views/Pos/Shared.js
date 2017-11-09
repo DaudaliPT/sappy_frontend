@@ -13,7 +13,13 @@ exports.prepareDocType = function({ tableName }) {
   let footerLimitSearchCondition = "";
   let footerSearchType = "oitm";
   if ("14".indexOf(objType) > -1) {
-    footerLimitSearchCondition = `FACT."CardCode"='<CARDCODE>' AND FACT."PayToCode"='<BILLADDR>'`;
+    let settings = sappy.getSettings(["DOC.OBJTYPE14.MAXDIASTODEV"]);
+    let MAXDIASTODEV = sappy.getNum(settings["DOC.OBJTYPE14.MAXDIASTODEV"]);
+    footerLimitSearchCondition = `
+          BASEDOC."CardCode"='<CARDCODE>' 
+      AND BASEDOC."ShipToCode"='<SHIPADDR>' 
+      AND BASEDOC."QuantityAvailable">0
+      AND BASEDOC."DocDate" > ADD_DAYS(CURRENT_DATE, -${MAXDIASTODEV})`;
     footerSearchType = "vnddev";
   }
 
@@ -90,7 +96,7 @@ exports.prepareDocType = function({ tableName }) {
       label: "Preço",
       type: "price",
       width: 80,
-      editable: true,
+      editable: "14".indexOf(objType) > -1 ? false : true,
       getCellStyle: props => {
         let classes = "";
         if (props.dependentValues.PRICE_CHANGEDBY) classes += " has-been-changed";
@@ -104,7 +110,7 @@ exports.prepareDocType = function({ tableName }) {
       label: "Descontos",
       type: "text",
       width: 120,
-      editable: true,
+      editable: "14".indexOf(objType) > -1 ? false : true,
       getCellStyle: props => {
         let classes = "";
         if (props.dependentValues.DISC_CHANGEDBY) classes += " has-been-changed";
@@ -131,8 +137,8 @@ exports.prepareDocType = function({ tableName }) {
   ];
 
   let groupBy = [];
-
   if ("14".indexOf(objType) > -1) groupBy = [{ key: "Origem", name: "Grupo" }];
+
   return {
     propsToPosBase: {
       tableName,

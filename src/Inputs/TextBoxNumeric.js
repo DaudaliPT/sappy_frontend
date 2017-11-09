@@ -15,16 +15,13 @@ class TextBoxNumeric extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-
-    if (this.props.value !== nextProps.value)
-      this.setState(this.createStateFromProps(nextProps))
+    if (this.props.value !== nextProps.value) this.setState(this.createStateFromProps(nextProps));
   }
 
   createStateFromProps(props) {
-    let val = this.getFormatedValue(props.valueType, props.value)
-    return { receivedValue: val, value: val }
+    let val = this.getFormatedValue(props.valueType, props.value);
+    return { receivedValue: val, value: val };
   }
-
 
   handleChange(e) {
     let that = this;
@@ -33,15 +30,14 @@ class TextBoxNumeric extends Component {
 
     if (this.props.valueType === "integer") {
       if (sappy.getNum(value) < -2147483647) {
-        value = oldValue
-        sappy.showToastr({ color: "warning", msg: "Numero menor que o permitido" })
+        value = oldValue;
+        sappy.showToastr({ color: "warning", msg: "Numero menor que o permitido" });
       }
       if (sappy.getNum(value) > 2147483647) {
-        value = oldValue
-        sappy.showToastr({ color: "warning", msg: "Numero maior que o permitido" })
+        value = oldValue;
+        sappy.showToastr({ color: "warning", msg: "Numero maior que o permitido" });
       }
     }
-
 
     this.setState({ value }, () => {
       if (that.props.realTimeChange) {
@@ -53,26 +49,26 @@ class TextBoxNumeric extends Component {
         };
         that.props.onChange(changeInfo);
       }
-    })
+    });
   }
 
   getFormatedValue(valueType, value) {
-    if (value === null || value === undefined) return ""
+    if (value === null || value === undefined) return "";
 
-    let rawValue = sappy.evaluateNumericExpression(value)
+    let rawValue = sappy.evaluateNumericExpression(value);
     let formatedValue;
-    if (valueType === "price") formatedValue = sappy.format.price(rawValue)
-    if (valueType === "amount") formatedValue = sappy.format.amount(rawValue)
-    if (valueType === "percent") formatedValue = sappy.format.percent(rawValue)
-    if (valueType === "integer") formatedValue = Math.floor(sappy.getNum(rawValue))//getnum para não ter separador de milhares
+    if (valueType === "price") formatedValue = sappy.format.price(rawValue);
+    if (valueType === "amount") formatedValue = sappy.format.amount(rawValue);
+    if (valueType === "percent") formatedValue = sappy.format.percent(rawValue);
+    if (valueType === "integer") formatedValue = Math.floor(sappy.getNum(rawValue)); //getnum para não ter separador de milhares
 
     return formatedValue;
   }
 
   handleBlur(e) {
-    let formatedValue = this.getFormatedValue(this.props.valueType, e.target.value)
+    let formatedValue = this.getFormatedValue(this.props.valueType, e.target.value);
     if (sappy.isDiferent(formatedValue, this.state.receivedValue)) {
-      let rawValue = sappy.unformat.number(formatedValue)
+      let rawValue = sappy.unformat.number(formatedValue);
 
       let changeInfo = { fieldName: this.props.name, rawValue, formatedValue };
       this.props.onChange(changeInfo);
@@ -80,7 +76,7 @@ class TextBoxNumeric extends Component {
   }
 
   render() {
-    let that = this
+    let that = this;
     var renderRightButton = () => {
       if (this.props.rightButton) {
         let color = "success";
@@ -88,29 +84,36 @@ class TextBoxNumeric extends Component {
 
         return (
           <span className="input-group-btn">
-            <Button color={color} outline id={this.props.name + "_rbtn"} className="right-button"
-
+            <Button
+              color={color}
+              outline
+              id={this.props.name + "_rbtn"}
+              className="right-button"
               disabled={this.props.disabled || false}
               onClick={() => {
-                that.props.onRightButtonClick(that)
-              }}>
+                that.props.onRightButtonClick(that);
+              }}
+            >
               {this.props.rightButton}
             </Button>
-          </span >
+          </span>
         );
       }
     };
 
-
     let stateColor, stateMsg;
     if (this.props.state) {
-      stateColor = this.props.state.split('|')[0];
-      stateMsg = this.props.state.split('|')[1];
+      stateColor = this.props.state.split("|")[0];
+      stateMsg = this.props.state.split("|")[1];
     }
 
-
     return (
-      <FormGroup color={stateColor} className={this.props.label ? "" : "no-label"} data-tip={this.props.label} title={stateMsg}>
+      <FormGroup
+        color={stateColor}
+        className={this.props.label ? "" : "no-label"}
+        data-tip={this.props.label}
+        title={stateMsg}
+      >
         {/*{renderLabel()}*/}
         <InputGroup>
           {this.props.leftContent && this.props.leftContent}
@@ -129,7 +132,10 @@ class TextBoxNumeric extends Component {
           {this.props.rightContent && this.props.rightContent}
         </InputGroup>
 
-        {stateMsg && <FormFeedback>{stateMsg}</FormFeedback>}
+        {stateMsg &&
+          <FormFeedback>
+            {stateMsg}
+          </FormFeedback>}
       </FormGroup>
     );
   }
@@ -141,7 +147,7 @@ TextBoxNumeric.defaultProps = {
   disabled: false,
   realTimeChange: false,
   rightButton: null,
-  onChange: (changeInfo) => {
+  onChange: changeInfo => {
     console.log(changeInfo);
   },
   value: ""
