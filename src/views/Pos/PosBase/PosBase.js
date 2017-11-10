@@ -151,7 +151,7 @@ class PosBase extends Component {
     } else {
       let data = { ...this.state.docData };
       delete data.LINES;
-
+      data.MODULE = 2; // 2=>POS
       this.serverRequest = axios
         .post(this.props.apiDocsNew, data)
         .then(function(result) {
@@ -190,7 +190,6 @@ class PosBase extends Component {
     let val = changeInfo.rawValue;
 
     let updated = { [fieldName]: val };
-    updated.MODULE = 2; // 2=>POS
 
     if (that.props.onHeaderChange) updated = that.props.onHeaderChange(this.state.docData, updated);
 

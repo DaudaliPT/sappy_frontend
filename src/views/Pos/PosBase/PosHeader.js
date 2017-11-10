@@ -34,7 +34,7 @@ class PosHeader extends Component {
       if (headerField.type === "text") input = <TextBox {...commonProps} />;
       else if (headerField.type === "textarea") input = <TextBox {...commonProps} type="textarea" />;
       else if (headerField.type === "integer") input = <TextBoxNumeric {...commonProps} valueType="integer" />;
-      else if (headerField.type === "combo") input = <ComboBox {...commonProps} />;
+      else if (headerField.type === "combo") input = <ComboBox {...commonProps} clearable={false} />;
       else if (headerField.type === "date") input = <Date {...commonProps} />;
       else if (headerField.type === "bool") input = <Toggle {...commonProps} />;
       else if (headerField.type.startsWith("flag")) {
