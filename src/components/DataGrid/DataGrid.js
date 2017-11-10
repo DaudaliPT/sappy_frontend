@@ -142,7 +142,7 @@ class DataGrid extends Component {
         // check if next is a rowGroup
         var row = this.getRowAt(rowIdx);
         if (row && row.__metaData && row.__metaData.isGroup) {
-          if (rowIdx === 0) rowIdx = rowIdx + 1;
+          if (rowIdx === 0) rowIdx += 1;
         }
 
         that.thisComponent.onSelect({ rowIdx, idx: idx + 1 });

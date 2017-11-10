@@ -50,16 +50,8 @@ class DefaultFormater extends Component {
     if ("quantity,price,amount,integer".indexOf(type) > -1) style.textAlign = "right";
 
     return (
-      <div
-        id={divID}
-        className={classes}
-        style={style}
-        title={hover ? "" : value}
-        onMouseLeave={onMouseLeave}
-        onMouseEnter={onMouseEnter}
-      >
-        {onLinkClick &&
-          <i className="icon fa-arrow-circle-right" aria-hidden="true" onClick={e => onLinkClick(this.props)} />}
+      <div id={divID} className={classes} style={style} title={hover ? "" : value} onMouseLeave={onMouseLeave} onMouseEnter={onMouseEnter}>
+        {onLinkClick && <i className="icon fa-arrow-circle-right" aria-hidden="true" onClick={e => onLinkClick(this.props)} />}
         {onLinkClick && " "}
         {formatedValue}
       </div>
@@ -75,13 +67,7 @@ class CheckboxFormatter extends Component {
 
     return (
       <div className="react-grid-checkbox-container checkbox-align">
-        <input
-          className="react-grid-checkbox"
-          type="checkbox"
-          name={checkboxName}
-          checked={checked}
-          disabled={disabled}
-        />
+        <input className="react-grid-checkbox" type="checkbox" name={checkboxName} checked={checked} disabled={disabled} />
         <label htmlFor={checkboxName} className="react-grid-checkbox-label" />
       </div>
     );
@@ -108,6 +94,7 @@ class BonusFormatter extends Component {
     );
   }
 }
+
 class PkposFormatter extends Component {
   render() {
     let props = this.props;
@@ -119,11 +106,7 @@ class PkposFormatter extends Component {
     let OFF = "UN";
     return (
       <div style={{ textAlign: "right" }}>
-        <button
-          className={"btn btn-sm btn-" + color + " float-left font-size-10"}
-          style={{ lineHeight: "1.4rem", width: "25px" }}
-          onClick={e => props.column.btnClick(e, props)}
-        >
+        <button className={"btn btn-sm btn-" + color + " float-left font-size-10"} style={{ lineHeight: "1.4rem", width: "25px" }} onClick={e => props.column.btnClick(e, props)}>
           {checkedAPswitch ? ON : OFF}
         </button>
         {value}
@@ -221,6 +204,7 @@ class VatFormatter extends Component {
     );
   }
 }
+
 class VatPercentFormatter extends Component {
   shouldComponentUpdate(nextProps) {
     return nextProps.value !== this.props.value;
@@ -240,11 +224,16 @@ class TagsFormatter extends Component {
   render() {
     let key = this.props.column.key;
 
-    let value = this.props.value;
+    let { column, rowIdx, value } = this.props;
     let dependentValues = this.props.dependentValues || {};
     let countValue = dependentValues[key + "_COUNT"];
     let alertValue = dependentValues[key + "_ALERT"];
     let tagsValue = dependentValues[key + "_TAGS"] || "";
+
+    let { hover } = column;
+    let divID = column.name + rowIdx;
+    let onMouseLeave;
+    let onMouseEnter;
 
     const renderCount = () => {
       if (countValue > 1) {
@@ -286,6 +275,44 @@ class TagsFormatter extends Component {
       return null;
     };
 
+    const renderMoreInfo = () => {
+      if (hover && hover.render && dependentValues) {
+        onMouseLeave = e => sappy.hidePopover();
+
+        onMouseEnter = e => {
+          let api = hover.api || "";
+          Object.keys(dependentValues).forEach(c => (api = api.replace("<" + c + ">", dependentValues[c])));
+
+          sappy.showPopover({
+            target: divID,
+            api,
+            renderContext: { dependentValues, rowIdx, column },
+            render: hover.render,
+            placement: hover.placement
+          });
+        };
+
+        return (
+          <div
+            key={uuid()}
+            id={divID}
+            onMouseLeave={onMouseLeave}
+            onMouseEnter={onMouseEnter}
+            style={{
+              display: "inline",
+              paddingLeft: "5px",
+              color: "rgba(100, 100, 100, 0.2)",
+              fontSize: "1.3rem"
+            }}
+          >
+            <i className="icon pe-info" />
+            {/* <i className="icon ion-ios-information-circle-outline" /> */}
+          </div>
+        );
+      }
+      return null;
+    };
+
     const renderBadges = () => {
       const badges = tagsValue.split("|");
       if (badges.map) {
@@ -318,6 +345,7 @@ class TagsFormatter extends Component {
         {value}
         {renderCount()}
         {renderAlert()}
+        {renderMoreInfo()}
         {renderBadges()}
       </div>
     );

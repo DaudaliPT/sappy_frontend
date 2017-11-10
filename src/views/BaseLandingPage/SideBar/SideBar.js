@@ -27,15 +27,14 @@ class SideBar extends Component {
         if (item || groupKey === "Filtros" || key.indexOf("?") > -1) {
           let id = groupKey + "|" + key;
           return (
-            <a
-              key={key}
-              className={"list-group-item" + (this.props.activeSidebarItems.indexOf(id) !== -1 ? " active" : "")}
-              id={id}
-              onClick={this.handleOnClick}
-            >
+            <a key={key} className={"list-group-item" + (this.props.activeSidebarItems.indexOf(id) !== -1 ? " active" : "")} id={id} onClick={this.handleOnClick}>
               <div className="row list-group-item-content">
-                <div className="col-10">{key} </div>
-                <div className="col-2"><span className="badge badge-pill badge-default">{item}</span></div>
+                <div className="col-12 pr-0 ">
+                  {key}
+                  <span className="badge badge-pill badge-default float-right">
+                    {item}
+                  </span>
+                </div>
               </div>
             </a>
           );
@@ -61,12 +60,7 @@ class SideBar extends Component {
                 {groupKey}
               </a>
             </div>
-            <div
-              className={"panel-collapse collapse" + (ix < 2 ? " show" : "")}
-              id={"collapse_" + groupKey}
-              aria-labelledby={groupKey}
-              role="tabpanel"
-            >
+            <div className={"panel-collapse collapse" + (ix < 2 ? " show" : "")} id={"collapse_" + groupKey} aria-labelledby={groupKey} role="tabpanel">
               <div className="panel-body">
                 {renderSubitems(groupKey, item)}
               </div>
@@ -85,11 +79,8 @@ class SideBar extends Component {
         <div id="page-aside-scroll" className="page-aside-inner page-aside-scroll" style={{ overflow: "auto", height: "100%" }}>
           <div data-role="container">
             <div data-role="content">
-
               <div className="panel-group" id="acordion" aria-multiselectable="true" role="tablist">
-
                 {renderCollapsibleGroups()}
-
               </div>
             </div>
           </div>

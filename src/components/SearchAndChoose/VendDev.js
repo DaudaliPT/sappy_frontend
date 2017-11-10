@@ -176,6 +176,7 @@ class VndDev extends Component {
               limitSearch={this.props.limitSearch}
               limitSearchCondition={this.props.limitSearchCondition}
               onToogleLimitSearch={this.props.onToogleLimitSearch}
+              allowToogleSearchCondition={false}
               renderRowHeight={50}
               currentModal={this.state.currentModal}
             />

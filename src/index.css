@@ -697,6 +697,11 @@ textarea {
 .popover:after {
   border-left-color: rgba(32, 46, 55, 0.9) !important;
 }
+.popover.popover-right:after,
+.popover.bs-tether-element-attached-left::after {
+  border-right-color: rgba(32, 46, 55, 0.9) !important;
+}
+
 .popover-content {
   /* font-size: 0.8rem!important; */
   font-weight: 500;

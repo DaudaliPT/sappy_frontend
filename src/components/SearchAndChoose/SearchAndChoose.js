@@ -126,8 +126,7 @@ class SearchAndChoose extends Component {
 
     if (searchApiUrl) {
       let limitSearchCondition = "";
-      if (this.props.limitSearch && this.props.limitSearchCondition)
-        limitSearchCondition = this.props.limitSearchCondition;
+      if (this.props.limitSearch && this.props.limitSearchCondition) limitSearchCondition = this.props.limitSearchCondition;
 
       if (this.cancelPreviousAxiosRequest) this.cancelPreviousAxiosRequest();
       var CancelToken = axios.CancelToken;
@@ -147,7 +146,10 @@ class SearchAndChoose extends Component {
           let found = listItems.length > 0 ? listItems[0].TOTAL_ROWS : 0;
 
           if (found === 1) {
-            let selectedItems = [listItems[0].ItemCode];
+            let selectedItems;
+            if (that.props.searchType === "vnddev") selectedItems = [listItems[0].ObjType + "#" + listItems[0].DocEntry + "#" + listItems[0].LineNum];
+            else selectedItems = [listItems[0].ItemCode];
+
             this.props.onReturnSelectItems({ selectedItems });
             that.setState({ searchText: "" });
           } else if (found > 1) {
@@ -175,23 +177,11 @@ class SearchAndChoose extends Component {
         <div className="input-search input-search-dark">
           <i className="input-search-icon wb-plus" aria-hidden="true" />
 
-          <input
-            className="form-control w-full"
-            autoComplete="off"
-            value={this.state.searchText}
-            onChange={this.handleOnChange_txtSearch}
-            onKeyDown={this.handleOnKeyDown_txtSearch}
-          />
+          <input className="form-control w-full" autoComplete="off" value={this.state.searchText} onChange={this.handleOnChange_txtSearch} onKeyDown={this.handleOnKeyDown_txtSearch} />
 
           <button className="input-search-btn vertical-align-middle">
             {this.props.limitSearchCondition &&
-              <i
-                className={
-                  "icon " + (this.props.limitSearch ? "ion-ios-funnel active" : "ion-ios-funnel-outline inactive")
-                }
-                aria-hidden="true"
-                onMouseDown={that.props.onToogleLimitSearch}
-              />}
+              <i className={"icon " + (this.props.limitSearch ? "ion-ios-funnel active" : "ion-ios-funnel-outline inactive")} aria-hidden="true" onMouseDown={that.props.onToogleLimitSearch} />}
             <i className="icon wb-menu" aria-hidden="true" onMouseDown={that.openSearchModal} />
           </button>
         </div>

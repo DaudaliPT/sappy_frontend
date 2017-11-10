@@ -261,6 +261,7 @@ class PosBase extends Component {
   }
 
   handleToogleLimitSearch() {
+    if (this.state.docData.OBJTYPE === "14") return; // naõ pode desactivar o filtro
     this.setState({ footerLimitSearch: !this.state.footerLimitSearch });
   }
 
@@ -327,10 +328,7 @@ class PosBase extends Component {
     };
 
     let footerLimitSearchCondition = this.props.footerLimitSearchCondition || "";
-    Object.keys(docData).forEach(
-      field =>
-        (footerLimitSearchCondition = sappy.replaceAll(footerLimitSearchCondition, "<" + field + ">", docData[field]))
-    );
+    Object.keys(docData).forEach(field => (footerLimitSearchCondition = sappy.replaceAll(footerLimitSearchCondition, "<" + field + ">", docData[field])));
 
     let canConfirmar = this.state.docData.ID > 0;
 

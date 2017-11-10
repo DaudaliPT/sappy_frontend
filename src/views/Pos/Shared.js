@@ -1,4 +1,4 @@
-// import React from "react";
+import React from "react";
 // import EditModal from "../Produtos/EditModal";
 const sappy = window.sappy;
 
@@ -34,8 +34,38 @@ exports.prepareDocType = function({ tableName }) {
   headerFields.icons.push({ name: "MATRICULA", label: "Matricula", gridSize: 6, type: "iconEdit", ON: "fa-road success", OFF: "fa-road secondary" });
   headerFields.icons.push({ name: "COMMENTS", label: "Observações", gridSize: 12, type: "iconEdit", ON: "fa-info-circle success", OFF: "fa-info-circle secondary" });
 
+  let itemHover = {
+    api: "api/prod/item/<ITEMCODE>",
+    placement: "right",
+    render: ({ result, context }) => {
+      let content = [];
+
+      content.push(
+        <tr>
+          <td>
+            {"Código: " + result.data.Item.ItemCode}
+          </td>
+        </tr>
+      );
+      result.data.Item.ItemBarCodeCollection.forEach(popuprow => {
+        content.push(
+          <tr>
+            <td>
+              {popuprow.Barcode + " (PK" + popuprow.FreeText + ")"}
+            </td>
+          </tr>
+        );
+      });
+      return (
+        <table>
+          {content}
+        </table>
+      );
+    }
+  };
+
   let detailFields = [
-    { name: "ITEMNAME", label: "Descrição", type: "tags", width: 400, editable: false },
+    { name: "ITEMNAME", label: "Descrição", type: "tags", width: 400, editable: false, hover: itemHover },
     { name: "QTCX", label: "Cx", type: "quantity", width: 60, editable: true },
     { name: "QTPK", label: "Pk", type: "pkpos", width: 60, editable: true },
     { name: "QTSTK", label: "Qtd", type: "quantity", width: 60, editable: true },

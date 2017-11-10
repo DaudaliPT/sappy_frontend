@@ -132,6 +132,7 @@ class SearchPage extends PureComponent {
   }
 
   handleToogleLimitSearch() {
+    if (!this.props.allowToogleSearchCondition) return;
     let that = this;
     this.setState({ limitSearch: !that.state.limitSearch }, that.findAndGetFirstRows);
   }
@@ -321,7 +322,8 @@ SearchPage.defaultProps = {
   autoRefreshTime: 0,
   renderRowHeight: 20,
   limitSearch: false,
-  limitSearchCondition: ""
+  limitSearchCondition: "",
+  allowToogleSearchCondition: true
 };
 
 export default SearchPage;
