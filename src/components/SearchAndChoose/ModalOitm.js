@@ -64,10 +64,7 @@ class ModalOitm extends Component {
   }
 
   handleNewItemCreated(itemCode) {
-    this.setState(
-      { currentModal: null },
-      e => this.props.toggleModal([itemCode])
-    );
+    this.setState({ currentModal: null }, e => this.props.toggleModal([itemCode]));
   }
 
   handleAddNew(e) {
@@ -87,13 +84,29 @@ class ModalOitm extends Component {
       const renderBadges = () => {
         return badges.map((item, ix) => {
           if (item === "MP") {
-            return <Badge key={uuid()} color="primary" pill>{item}</Badge>;
+            return (
+              <Badge key={uuid()} color="primary" pill>
+                {item}
+              </Badge>
+            );
           } else if (item === "PV") {
-            return <Badge key={uuid()} color="success" pill>{item}</Badge>;
+            return (
+              <Badge key={uuid()} color="success" pill>
+                {item}
+              </Badge>
+            );
           } else if (item === "Inactivo") {
-            return <Badge key={uuid()} color="default" pill>{item}</Badge>;
+            return (
+              <Badge key={uuid()} color="default" pill>
+                {item}
+              </Badge>
+            );
           } else {
-            return <Badge key={uuid()} color="danger" pill>{item}</Badge>;
+            return (
+              <Badge key={uuid()} color="danger" pill>
+                {item}
+              </Badge>
+            );
           }
         });
       };
@@ -105,7 +118,6 @@ class ModalOitm extends Component {
       return (
         <div className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={this.handleRowSelection}>
           <div className="container vertical-align-middle">
-
             {/*large displays*/}
             <div className="row hidden-lg-down">
               <div className="col-4">
@@ -114,41 +126,69 @@ class ModalOitm extends Component {
                   <label htmlFor={rowId} />
                 </span>
 
-                {!this.props.showCatNum && <span style={{ display: "inline-block", width: "100px", paddingLeft: "5px" }}>{row.ItemCode}</span>}
-                {this.props.showCatNum && <span style={{ display: "inline-block", width: "100px", paddingLeft: "5px" }}> {(row.SuppCatNum || row.ItemCode)}</span>}
-                <span>{row.CodeBars} </span>
+                {!this.props.showCatNum &&
+                  <span style={{ display: "inline-block", width: "100px", paddingLeft: "5px" }}>
+                    {row.ItemCode}
+                  </span>}
+                {this.props.showCatNum &&
+                  <span style={{ display: "inline-block", width: "100px", paddingLeft: "5px" }}>
+                    {" "}{row.SuppCatNum || row.ItemCode}
+                  </span>}
+                <span>
+                  {row.CodeBars}{" "}
+                </span>
               </div>
-              <div className="col-6"> {row.ItemName} <span> {renderBadges()} </span> </div>
-              <div className="col-1"> <span className="float-right">{row.FORMATED_PRICE}</span> </div>
-              <div className="col-1 lastcol">
-                <span className="float-right">{sappy.format.quantity(row.OnHand, 0) + " " + row.InvntryUom}</span>
+              <div className="col-6">
+                {" "}{row.ItemName} <span> {renderBadges()} </span>{" "}
+              </div>
+              <div className="col-1">
+                {" "}<span className="float-right">{row.FORMATED_PRICE}</span>{" "}
+              </div>
+              <div className="col-1 lastcol text-nowrap">
+                <span className="float-right">
+                  {sappy.format.quantity(row.OnHand, 0) + " " + row.InvntryUom}
+                </span>
               </div>
             </div>
             {/*mobile*/}
             <div className="hidden-xl-up">
               <div className="row">
-                <div className="col text-nowrap"> {row.ItemName} </div>
+                <div className="col text-nowrap">
+                  {" "}{row.ItemName}{" "}
+                </div>
               </div>
               <div className="row secondrow">
-                {!this.props.showCatNum && <div className="col-6 text-nowrap firstcol"> {row.ItemCode} <span> {renderBadges()} </span> </div>}
-                {this.props.showCatNum && <div className="col-6 text-nowrap firstcol"> {(row.SuppCatNum || row.ItemCode)} <span> {renderBadges()} </span> </div>}
-                <div className="col-3 text-nowrap"> <span className="float-right">{row.FORMATED_PRICE}</span> </div>
+                {!this.props.showCatNum &&
+                  <div className="col-6 text-nowrap firstcol">
+                    {" "}{row.ItemCode} <span> {renderBadges()} </span>{" "}
+                  </div>}
+                {this.props.showCatNum &&
+                  <div className="col-6 text-nowrap firstcol">
+                    {" "}{row.SuppCatNum || row.ItemCode} <span> {renderBadges()} </span>{" "}
+                  </div>}
+                <div className="col-3 text-nowrap">
+                  {" "}<span className="float-right">{row.FORMATED_PRICE}</span>{" "}
+                </div>
                 <div className="col-3 text-nowrap lastcol">
                   {" "}<span className="float-right">{sappy.format.quantity(row.OnHand, 0)} Un</span>{" "}
                 </div>
               </div>
             </div>
           </div>
-        </div >
+        </div>
       );
     };
 
     return (
       <div>
-        <Modal isOpen={true} toggle={this.handleToggleModal} className={"modal-lg modal-success"} onKeyDown={this.handleOnKeyDown_popup}>
+        <Modal
+          isOpen={true}
+          toggle={this.handleToggleModal}
+          className={"modal-lg modal-success"}
+          onKeyDown={this.handleOnKeyDown_popup}
+        >
           <ModalHeader toggle={this.handleToggleModal}>Selecione o artigo</ModalHeader>
           <ModalBody>
-
             <SearchPage
               searchPlaceholder="Procurar..."
               searchApiUrl={ModalOitm.searchApiUrl}
@@ -160,44 +200,36 @@ class ModalOitm extends Component {
               renderRowHeight={50}
               currentModal={this.state.currentModal}
             />
-
           </ModalBody>
 
           <ModalFooter>
-
-
-
             <Button color="primary mr-auto" onClick={this.handleAddNew}>
               <span>
                 <i className="icon wb-plus" aria-hidden="true" />
                 Novo
-            </span>
+              </span>
             </Button>
 
             <Button color="primary" onClick={this.props.toggleModal}>
               <span>
                 <i className="icon wb-close" aria-hidden="true" />
                 Cancelar
-            </span>
+              </span>
             </Button>
-
 
             <Button color="success" onClick={this.handleOnClickContinuar}>
               <span>
                 <i className="icon wb-check" aria-hidden="true" />
                 Selecionar
-            </span>
+              </span>
             </Button>
-
           </ModalFooter>
-
         </Modal>
         {this.state.currentModal}
       </div>
     );
   }
 }
-
 
 ModalOitm.searchApiUrl = "/api/search/oitm/";
 ModalOitm.barcodeApiUrl = "/api/search/oitm/bc/";
@@ -206,6 +238,6 @@ ModalOitm.defaultProps = {
   limitSearch: false,
   limitSearchCondition: "",
   showCatNum: false,
-  onToogleLimitSearch: () => { }
+  onToogleLimitSearch: () => {}
 };
 export default ModalOitm;

@@ -138,6 +138,13 @@ class DataGrid extends Component {
       var $e = $(".react-grid-Row .react-grid-Cell");
       if ($e.length) {
         $e[idx].focus();
+
+        // check if next is a rowGroup
+        var row = this.getRowAt(rowIdx);
+        if (row && row.__metaData && row.__metaData.isGroup) {
+          if (rowIdx === 0) rowIdx = rowIdx + 1;
+        }
+
         that.thisComponent.onSelect({ rowIdx, idx: idx + 1 });
       }
     }, 10);

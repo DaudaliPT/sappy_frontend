@@ -11,7 +11,7 @@ exports.prepareDocType = function({ tableName }) {
   let cardCodeLabel = "Cliente";
   let cardCodeApi = "/api/cbo/ocrd/c";
   let footerLimitSearchCondition = "";
-  let footerSearchType = "oitm";
+  let footerSearchType = "oitmbasic";
   if ("14".indexOf(objType) > -1) {
     let settings = sappy.getSettings(["DOC.OBJTYPE14.MAXDIASTODEV"]);
     let MAXDIASTODEV = sappy.getNum(settings["DOC.OBJTYPE14.MAXDIASTODEV"]);
@@ -25,72 +25,20 @@ exports.prepareDocType = function({ tableName }) {
 
   let headerFields = {};
   headerFields.line1 = [];
-  headerFields.line1.push({
-    name: "CARDCODE",
-    label: cardCodeLabel,
-    type: "combo",
-    api: cardCodeApi,
-    gridSize: 8,
-    required: true
-  });
-  // if ("13,15,16,17, 20,21,22".indexOf(objType) > -1) {
-  //Encomendas/Entregas/Devoluções
-  headerFields.line1.push({
-    name: "SHIPADDR",
-    label: "Morada Envio",
-    type: "combo",
-    api: "/api/cbo/crd1/<CARDCODE>/s",
-    required: true,
-    gridSize: 4
-  });
-  // } else {
-  //   headerFields.line1.push({
-  //     name: "BILLADDR",
-  //     label: "Morada Faturação",
-  //     type: "combo",
-  //     api: "/api/cbo/crd1/<CARDCODE>/b",
-  //     gridSize: 4
-  //   });
-  // }
+  headerFields.line1.push({ name: "CARDCODE", label: cardCodeLabel, type: "combo", api: cardCodeApi, gridSize: 8, required: true });
+  headerFields.line1.push({ name: "SHIPADDR", label: "Morada Envio", type: "combo", api: "/api/cbo/crd1/<CARDCODE>/s", required: true, gridSize: 4 });
 
   headerFields.icons = [];
-  headerFields.icons.push({
-    name: "DISTRIBUICAO",
-    label: "Distribuição",
-    type: "iconToggle",
-    ON: "fa-truck success",
-    OFF: "fa-truck secondary"
-  });
-  headerFields.icons.push({
-    name: "HAPPYDAY",
-    label: "Happy Day",
-    type: "iconToggle",
-    ON: "fa-tag success",
-    OFF: "fa-tag secondary"
-  });
-  headerFields.icons.push({
-    name: "MATRICULA",
-    label: "Matricula",
-    gridSize: 6,
-    type: "iconEdit",
-    ON: "fa-road success",
-    OFF: "fa-road secondary"
-  });
-  headerFields.icons.push({
-    name: "COMMENTS",
-    label: "Observações",
-    gridSize: 12,
-    type: "iconEdit",
-    ON: "fa-info-circle success",
-    OFF: "fa-info-circle secondary"
-  });
+  headerFields.icons.push({ name: "DISTRIBUICAO", label: "Distribuição", type: "iconToggle", ON: "fa-truck success", OFF: "fa-truck secondary" });
+  headerFields.icons.push({ name: "HAPPYDAY", label: "Happy Day", type: "iconToggle", ON: "fa-tag success", OFF: "fa-tag secondary" });
+  headerFields.icons.push({ name: "MATRICULA", label: "Matricula", gridSize: 6, type: "iconEdit", ON: "fa-road success", OFF: "fa-road secondary" });
+  headerFields.icons.push({ name: "COMMENTS", label: "Observações", gridSize: 12, type: "iconEdit", ON: "fa-info-circle success", OFF: "fa-info-circle secondary" });
 
   let detailFields = [
     { name: "ITEMNAME", label: "Descrição", type: "tags", width: 400, editable: false },
     { name: "QTCX", label: "Cx", type: "quantity", width: 60, editable: true },
     { name: "QTPK", label: "Pk", type: "pkpos", width: 60, editable: true },
     { name: "QTSTK", label: "Qtd", type: "quantity", width: 60, editable: true },
-    // { name: "QTBONUS", label: "Qt.Bónus", type: "bonus", width: 100, editable: true },
     {
       name: "PRICE",
       label: "Preço",

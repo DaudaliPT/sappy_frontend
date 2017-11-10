@@ -16,12 +16,12 @@ class PosHeader extends Component {
         );
       }
 
-      let enabled = !headerField.disabled;
+      let disabled = headerField.disabled;
 
       let commonProps = {
         name: headerField.name,
         label: headerField.label,
-        disabled: !enabled,
+        disabled,
         value: this.props.docData[headerField.name],
         state:
           this.props.docData[headerField.name + "_VALIDATEMSG"] || this.props.docData[headerField.name + "_LOGICMSG"],
@@ -104,7 +104,6 @@ class PosHeader extends Component {
         <h4 className="posTitle">
           {title}
         </h4>
-
         <div className="actions">
           {renderHeaderIcons()}
         </div>
