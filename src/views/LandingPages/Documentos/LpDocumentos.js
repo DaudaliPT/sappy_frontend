@@ -13,15 +13,15 @@ class LpDocumentos extends Component {
   }
   componentDidMount() {
     let that = this
-
-    axios
-      .get(`/api/docs/${this.props.docTableName}/report`)
-      .then(function (result) {
-        that.props.setDefaultLayoutCode(result.data.LayoutCode)
-      })
-      .catch(function (error) {
-        if (!error.__CANCEL__) sappy.showError(error, "Api error")
-      });
+ 
+    // axios
+    //   .get(`/api/docs/${this.props.docTableName}/report`)
+    //   .then(function (result) {
+    //     that.props.setDefaultLayoutCode(result.data.LayoutCode)
+    //   })
+    //   .catch(function (error) {
+    //     if (!error.__CANCEL__) sappy.showError(error, "Api error")
+    //   });
   }
 
   handleRowClick({ row, index }) {

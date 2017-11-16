@@ -659,7 +659,7 @@ class DocAtualizacaoPrecos extends Component {
                                 setCurrentModal={({ currentModal }) => {
                                   hashHistory.push("/inv/etiq");
                                 }}
-                                defaultLayoutCode={that.state.defaultLayoutCode}
+                                
                                 docNumArray={docNumArray}
                               />
                             )

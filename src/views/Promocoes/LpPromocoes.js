@@ -14,8 +14,7 @@ class LpPromocoes extends Component {
     this.handleRowClick = this.handleRowClick.bind(this);
 
     this.state = {
-      selectedItems: [],
-      defaultLayoutCode: "",
+      selectedItems: [], 
       showActions: false
     };
   }

@@ -5,18 +5,11 @@ import { ButtonGetPdf } from "../../../../Inputs";
 import DocBadges from "../DocBadges";
 
 class odln extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      defaultLayoutCode: ""
-    }
-  }
-
+ 
   render() {
     let that = this;
 
-    let docProps = {
-      setDefaultLayoutCode: code => that.setState({ defaultLayoutCode: code }),
+    let docProps = { 
       docTableName: "odln",
       pageTitle: "Entregas",
       renderRowHeight: 50,
@@ -50,7 +43,7 @@ class odln extends Component {
                       </div>
                     </div>
                   </div>
-                  <div className="col-1 lastcol"> <ButtonGetPdf DocEntry={row.DocEntry} ObjectID={row.ObjType} defaultLayoutCode={that.state.defaultLayoutCode} />  </div>
+                  <div className="col-1 lastcol"> <ButtonGetPdf DocEntry={row.DocEntry} ObjectID={row.ObjType}  />  </div>
                 </div>
               </div>
 
@@ -67,7 +60,7 @@ class odln extends Component {
                       <div className="col-2 text-nowrap lastcol"> <span className="float-right"> {row.FORMATED_DOCTOTAL} </span> </div>
                     </div>
                   </div>
-                  <div className="col-1 lastcol"> <ButtonGetPdf DocEntry={row.DocEntry} ObjectID={row.ObjType} defaultLayoutCode={that.state.defaultLayoutCode} />  </div>
+                  <div className="col-1 lastcol"> <ButtonGetPdf DocEntry={row.DocEntry} ObjectID={row.ObjType}  />  </div>
                 </div>
               </div>
 
