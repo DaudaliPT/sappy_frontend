@@ -102,9 +102,16 @@ class CmpPorReceber extends Component {
       let transType = sappy.getNum(doc.TransType);
 
       if (transType === 13 || transType === 14) {
-        let url = `/api/reports/printdoc/${transType}/${doc.CreatedBy}`;
+        // let url = `/api/reports/printdoc/${transType}/${doc.CreatedBy}`;
+        let url = `/api/reports/print/${transType}/${doc.CreatedBy}`;
+
+        // let url = `/api/reports/pdf/${transType}/${doc.CreatedBy}`;
+        // var baseUrl = ""; // Nota: Em desenv, é preciso redirecionar o pedido. Já em produtivo a api é servida na mesma porta do pedido
+        // if (window.location.port === "3000") baseUrl = "http://byusserver:3005";
+        // window.open(baseUrl + url, "_blank");
+
         axios
-          .post(url)
+          .get(url)
           .then(result => {
             sappy.showToastr({
               color: "success",
@@ -208,9 +215,7 @@ class CmpPorReceber extends Component {
           sappy.hideWaitProgress();
           sappy.showToastr({
             color: "success",
-            msg: `Criou com sucesso o ${strDocDesc} ${result.data.DocNum} no valor de ${sappy.format.amount(
-              totalOfSelectedDocs
-            )}, de ${this.state.selectedPNname}!`
+            msg: `Criou com sucesso o ${strDocDesc} ${result.data.DocNum} no valor de ${sappy.format.amount(totalOfSelectedDocs)}, de ${this.state.selectedPNname}!`
           });
 
           //forçar refresh
@@ -275,20 +280,10 @@ class CmpPorReceber extends Component {
       let descDocs;
       if (sappy.getNum(row.BALANCE) === sappy.getNum(row.TOTAL_BALANCE)) {
         descDocs = row.NUMDOCS + " " + (row.NUMDOCS === 1 ? " documento " : " documentos ");
-      } else
-        descDocs =
-          sappy.format.amount(row.BALANCE) +
-          ", " +
-          row.NUMDOCS +
-          " " +
-          (row.NUMDOCS === 1 ? " documento " : " documentos ");
+      } else descDocs = sappy.format.amount(row.BALANCE) + ", " + row.NUMDOCS + " " + (row.NUMDOCS === 1 ? " documento " : " documentos ");
 
       return (
-        <div
-          id={"PN_" + row.CARDCODE}
-          className={"byusVirtualRow vertical-align " + rowStyleClass}
-          onClick={e => this.handlePNselection(e, r)}
-        >
+        <div id={"PN_" + row.CARDCODE} className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={e => this.handlePNselection(e, r)}>
           <div className="container vertical-align-middle">
             <div className="row">
               <div className="col-10 text-nowrap firstcol">
@@ -391,9 +386,7 @@ class CmpPorReceber extends Component {
                   if (success) {
                     //force refresh
                     let selectedPN = this.state.selectedPN;
-                    this.setState({ selectedPN: "", selectedDocKeys: [] }, () =>
-                      setTimeout(this.setState({ selectedPN }), 1)
-                    );
+                    this.setState({ selectedPN: "", selectedDocKeys: [] }, () => setTimeout(this.setState({ selectedPN }), 1));
                   }
 
                   sappy.hideModal();

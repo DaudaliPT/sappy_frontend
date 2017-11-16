@@ -27,17 +27,14 @@ class ModalReportParams extends Component {
     let that = this;
 
     axios
-      .get("/api/reports/getParameters(" + this.props.DocCode + ")")
-      .then(function (result) {
+      .get("/api/reports/params/" + this.props.DocCode)
+      .then(function(result) {
         let parameters = result.data;
         if (typeof parameters === "string") parameters = JSON.parse(parameters);
-
-        // if (parameters.length === 0) return that.handleVerPdf(that)
-
         that.setState({ loading: false, reportParameters: parameters });
       })
-      .catch(function (error) {
-        if (!error.__CANCEL__) sappy.showError(error, "Api error")
+      .catch(function(error) {
+        if (!error.__CANCEL__) sappy.showError(error, "Api error");
       });
   }
   // Recebe os valores dos campos MY*
@@ -72,7 +69,7 @@ class ModalReportParams extends Component {
       baseUrl = "http://byusserver:3005";
     }
 
-    var apiRoute = "/api/reports/getPdf(" + this.props.DocCode + ")";
+    var apiRoute = "/api/reports/pdf/" + this.props.DocCode;
     var apiQuery = "?parValues=" + encodeURIComponent(JSON.stringify(this.state.parValues));
     // Executar o mapa
 
@@ -86,15 +83,15 @@ class ModalReportParams extends Component {
     var apiQuery = "?parValues=" + encodeURIComponent(JSON.stringify(this.state.parValues));
     // Executar o mapa
 
-    sappy.showToastr({ color: "info", msg: `A impimir...` })
+    sappy.showToastr({ color: "info", msg: `A impimir...` });
     that.props.toggleModal();
     axios
-      .post(apiRoute + apiQuery)
-      .then(function (rrrr) {
-        sappy.showToastr({ color: "success", msg: `Relatório enviado para a impressora!` })
+      .get(apiRoute + apiQuery)
+      .then(function(rrrr) {
+        sappy.showToastr({ color: "success", msg: `Relatório enviado para a impressora!` });
       })
-      .catch(function (error) {
-        sappy.showError(error, "Api error")
+      .catch(function(error) {
+        sappy.showError(error, "Api error");
       });
   }
 
@@ -111,25 +108,29 @@ class ModalReportParams extends Component {
       let parameterComponents = [];
 
       if (loading) {
-        let parComponent = <div>
-          <div className="example-loading example-well h-150 vertical-align text-center">
-            <div className="loader vertical-align-middle loader-tadpole" />
-          </div>
-          <div className="vertical-align text-center">
-            <div className="vertical-align-middle">
-              <p>A analisar relatório...</p>
+        let parComponent = (
+          <div>
+            <div className="example-loading example-well h-150 vertical-align text-center">
+              <div className="loader vertical-align-middle loader-tadpole" />
+            </div>
+            <div className="vertical-align text-center">
+              <div className="vertical-align-middle">
+                <p>A analisar relatório...</p>
+              </div>
             </div>
           </div>
-        </div>;
+        );
         parameterComponents.push(parComponent);
       } else if (reportParameters.length === 0) {
-        let parComponent = <div>
-          <div className="vertical-align text-center">
-            <div className="vertical-align-middle">
-              <p>Este relatório não requer parametros...</p>
+        let parComponent = (
+          <div>
+            <div className="vertical-align text-center">
+              <div className="vertical-align-middle">
+                <p>Este relatório não requer parametros...</p>
+              </div>
             </div>
           </div>
-        </div>;
+        );
         parameterComponents.push(parComponent);
       } else {
         reportParameters
@@ -169,7 +170,7 @@ class ModalReportParams extends Component {
                       key={par.Name}
                       label={label}
                       name={par.Name}
-                      getOptionsApiRoute={"/api/reports/getParameterOptions?parName=" + encodeURIComponent(modifParName)}
+                      getOptionsApiRoute={"/api/reports/param/values?parName=" + encodeURIComponent(modifParName)}
                       value={value.Value}
                       onChange={this.onFieldChange}
                     />
@@ -179,7 +180,7 @@ class ModalReportParams extends Component {
                       key={"EndValueOf_" + par.Name}
                       label=""
                       name={"EndValueOf_" + par.Name}
-                      getOptionsApiRoute={"/api/reports/getParameterOptions?parName=" + encodeURIComponent(modifParName)}
+                      getOptionsApiRoute={"/api/reports/param/values?parName=" + encodeURIComponent(modifParName)}
                       value={value.EndValue}
                       onChange={this.onFieldChange}
                     />
@@ -192,7 +193,7 @@ class ModalReportParams extends Component {
                   key={par.Name}
                   label={label}
                   name={par.Name}
-                  getOptionsApiRoute={"/api/reports/getParameterOptions?parName=" + encodeURIComponent(par.Name)}
+                  getOptionsApiRoute={"/api/reports/param/values?parName=" + encodeURIComponent(par.Name)}
                   value={value.Value}
                   onChange={this.onFieldChange}
                 />
@@ -203,24 +204,17 @@ class ModalReportParams extends Component {
                     key={"EndValueOf_" + par.Name}
                     label=""
                     name={"EndValueOf_" + par.Name}
-                    getOptionsApiRoute={"/api/reports/getParameterOptions?parName=" + encodeURIComponent(par.Name)}
+                    getOptionsApiRoute={"/api/reports/param/values?parName=" + encodeURIComponent(par.Name)}
                     value={value.EndValue}
                     onChange={this.onFieldChange}
                   />
                 );
               }
             } else {
-              if (
-                par.ParameterValueKind === sappy.CrystalReports.ParameterValueKind.DateParameter ||
-                par.ParameterValueKind === sappy.CrystalReports.ParameterValueKind.DateTimeParameter
-              ) {
-                parComponent = (
-                  <Date key={par.Name} label={label} name={par.Name} value={value.Value} onChange={this.onFieldChange} />
-                );
+              if (par.ParameterValueKind === sappy.CrystalReports.ParameterValueKind.DateParameter || par.ParameterValueKind === sappy.CrystalReports.ParameterValueKind.DateTimeParameter) {
+                parComponent = <Date key={par.Name} label={label} name={par.Name} value={value.Value} onChange={this.onFieldChange} />;
               } else {
-                parComponent = (
-                  <TextBox key={par.Name} label={label} name={par.Name} value={value.Value} onChange={this.onFieldChange} />
-                );
+                parComponent = <TextBox key={par.Name} label={label} name={par.Name} value={value.Value} onChange={this.onFieldChange} />;
               }
             }
 
@@ -233,7 +227,9 @@ class ModalReportParams extends Component {
 
     return (
       <Modal isOpen={true} className={"modal-m modal-success"}>
-        <ModalHeader toggle={this.props.toggleModal}>{this.props.DocName} </ModalHeader>
+        <ModalHeader toggle={this.props.toggleModal}>
+          {this.props.DocName}{" "}
+        </ModalHeader>
         <ModalBody>
           <div style={{ minHeight: "150px" }}>
             {renderParameters()}
@@ -244,10 +240,10 @@ class ModalReportParams extends Component {
             </Button>
             <Button color="secondary" onClick={this.handleVerPdf} disabled={this.state.loading}>
               <i className="icon fa-file-pdf-o" /> Visualizar
-          </Button>
+            </Button>
           </div>
         </ModalBody>
-      </Modal >
+      </Modal>
     );
   }
 }

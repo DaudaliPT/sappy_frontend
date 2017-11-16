@@ -234,7 +234,7 @@ class CmpDespesas extends Component {
               <div className="col-2 text-nowrap lastcol">
                 <span className="float-right">
                   {sappy.format.amount(row.VALOR_PENDENTE) + " "}
-                  <ButtonGetPdf CreatedBy={row.CreatedBy} ObjectID={row.TransType} defaultLayoutCode={this.state["defaultLayoutCode" + row.TransType]} />
+                  <ButtonGetPdf DocEntry={row.CreatedBy} ObjectID={row.TransType} />
                 </span>
               </div>
             </div>

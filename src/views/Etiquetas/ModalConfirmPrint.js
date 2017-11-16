@@ -13,12 +13,12 @@ class ModalConfirmPrint extends Component {
     };
   }
 
-  processResult = (result) => {
+  processResult = result => {
     let that = this;
     let parValues = {
       DOCNUM: { Value: this.props.docNumArray },
       INCLUDEALL: { Value: this.state.includeAll },
-      SOURCE: { Value: 'EP' }
+      SOURCE: { Value: "EP" }
     };
     this.props.setCurrentModal({ currentModal: null });
 
@@ -30,22 +30,22 @@ class ModalConfirmPrint extends Component {
       let apiQuery = "?parValues=" + encodeURIComponent(JSON.stringify(parValues));
 
       axios
-        .post(apiRoute + apiQuery)
-        .then(function (result) {
+        .get(apiRoute + apiQuery)
+        .then(function(result) {
           //Marcar documentos como impressos
           axios
             .post("/api/etiq/printed", parValues)
-            .then(function (result) {
+            .then(function(result) {
               that.props.setCurrentModal({ currentModal: null });
               location.reload();
             })
-            .catch(function (error) {
-              if (!error.__CANCEL__) sappy.showError(error, "Api error")
+            .catch(function(error) {
+              if (!error.__CANCEL__) sappy.showError(error, "Api error");
             });
         })
-        .catch(function (error) {
+        .catch(function(error) {
           that.props.setCurrentModal({ currentModal: null });
-          if (!error.__CANCEL__) sappy.showError(error, "Api error")
+          if (!error.__CANCEL__) sappy.showError(error, "Api error");
         });
     } else if (result === "PDF") {
       // Executar o mapa
@@ -57,15 +57,11 @@ class ModalConfirmPrint extends Component {
       window.open(baseUrl + apiRoute + apiQuery, "_blank");
 
       //Marcar documentos como impressos
-      axios
-        .post("/api/etiq/printed", parValues)
-        .then(function (result) {
-        })
-        .catch(function (error) {
-          if (!error.__CANCEL__) sappy.showError(error, "Api error")
-        });
+      axios.post("/api/etiq/printed", parValues).then(function(result) {}).catch(function(error) {
+        if (!error.__CANCEL__) sappy.showError(error, "Api error");
+      });
     }
-  }
+  };
 
   render() {
     let that = this;
@@ -89,7 +85,7 @@ class ModalConfirmPrint extends Component {
             </span>
           </Button>
         </ModalFooter>
-      </Modal >
+      </Modal>
     );
   }
 }

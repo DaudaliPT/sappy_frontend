@@ -41,15 +41,11 @@ export default {
     if (!that.state.docData.ID) {
       hashHistory.push("/pos");
     } else if (that.state.docData.ID && that.state.docData.LINES.length === 0) {
-      that.serverRequest = axios
-        .delete(`${that.props.apiDocsNew}/${that.state.docData.ID}`)
-        .then(result => hashHistory.push("/pos"))
-        .catch(error => sappy.showError(error, "Erro ao apagar dados"));
+      that.serverRequest = axios.delete(`${that.props.apiDocsNew}/${that.state.docData.ID}`).then(result => hashHistory.push("/pos")).catch(error => sappy.showError(error, "Erro ao apagar dados"));
     } else {
       sappy.showQuestion({
         title: "Manter rascunho?",
-        moreInfo:
-          "Se escolher manter, as alterações ficarão disponiveis como rascunho e poderá continuar mais tarde...",
+        moreInfo: "Se escolher manter, as alterações ficarão disponiveis como rascunho e poderá continuar mais tarde...",
         onConfirm: () => {
           hashHistory.push("/pos");
         },
@@ -81,10 +77,7 @@ export default {
       );
 
       if (fieldsRequired.length > 0) {
-        let msg =
-          (fieldsRequired.length === 1 ? "O campo " : "Os campos ") +
-          fieldsRequired.join(", ") +
-          (fieldsRequired.length === 1 ? " não está preenchido." : " não estão preenchidos.");
+        let msg = (fieldsRequired.length === 1 ? "O campo " : "Os campos ") + fieldsRequired.join(", ") + (fieldsRequired.length === 1 ? " não está preenchido." : " não estão preenchidos.");
 
         return sappy.showToastr({ color: "danger", msg });
       }
@@ -111,13 +104,10 @@ export default {
               onConfirm: () => invokeAddDocAPI(data.DocTotal)
             });
           } else {
-            that.serverRequest = axios
-              .post(`/api/reports/printdoc/${that.state.docData.OBJTYPE}/${result.data.DocEntry}`)
-              .then(result => {})
-              .catch(error => {
-                console.error(error);
-                sappy.showToastr({ color: "danger", msg: "Erro ao imprimir documento, avise a caixa sff." });
-              });
+            that.serverRequest = axios.get(`/api/reports/autoprint/${that.state.docData.OBJTYPE}/${result.data.DocEntry}`).then(result => {}).catch(error => {
+              console.error(error);
+              sappy.showToastr({ color: "danger", msg: "Erro ao imprimir documento, avise a caixa sff." });
+            });
 
             sappy.showSuccess({
               title: "Documento criado",
@@ -135,10 +125,7 @@ export default {
         let url = `${that.props.apiDocsNew}/${that.state.docData.ID}/confirm`;
         let data = { forceTotal };
 
-        that.serverRequest = axios
-          .post(url, { data })
-          .then(result => handleAddDocApiResponse(result))
-          .catch(error => sappy.showError(error, "Erro ao criar documento"));
+        that.serverRequest = axios.post(url, { data }).then(result => handleAddDocApiResponse(result)).catch(error => sappy.showError(error, "Erro ao criar documento"));
       };
 
       return sappy.showQuestion({

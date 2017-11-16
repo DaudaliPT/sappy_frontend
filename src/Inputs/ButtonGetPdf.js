@@ -2,32 +2,24 @@ import React, { Component } from "react";
 const sappy = window.sappy;
 
 class ButtonGetPdf extends Component {
-
   handleOnClick_GetPdf(e) {
     let defaultLayoutCode = this.props.defaultLayoutCode;
     e.stopPropagation();
 
-    if (!defaultLayoutCode) {
-      // debugger
-      return sappy.showError({ message: "Não foi possível obter layout predefinido para impressão." });
-    }
+    let objType = this.props.ObjectID;
+    let docEntry = this.props.DocEntry;
 
     // Executar o mapa
-    let parValues = { "DOCKEY@": { Value: this.props.DocEntry }, "OBJECTID@": { Value: this.props.ObjectID } };
-    var apiRoute = "/api/reports/getPdf(" + defaultLayoutCode + ")";
-    var apiQuery = "?parValues=" + encodeURIComponent(JSON.stringify(parValues));
+    var apiRoute = `/api/reports/pdf/${objType}/${docEntry}`;
 
     var baseUrl = ""; // Nota: Em desenv, é preciso redirecionar o pedido. Já em produtivo a api é servida na mesma porta do pedido
     if (window.location.port === "3000") baseUrl = "http://byusserver:3005";
-    window.open(baseUrl + apiRoute + apiQuery, "_blank");
+    window.open(baseUrl + apiRoute, "_blank");
   }
 
   render() {
     return (
-      <span
-        className="sappy-execute"
-        onClick={this.handleOnClick_GetPdf.bind(this)}
-      >
+      <span className="sappy-execute" onClick={this.handleOnClick_GetPdf.bind(this)}>
         <i className="icon fa-file-pdf-o" />
       </span>
     );

@@ -4,7 +4,6 @@ import axios from "axios";
 import { ModalWaitProgress } from "../../Modals";
 const sappy = window.sappy;
 
-
 class ModalConfirmPrint extends Component {
   constructor(props) {
     super(props);
@@ -13,12 +12,12 @@ class ModalConfirmPrint extends Component {
     };
   }
 
-  processResult = (result) => {
+  processResult = result => {
     let that = this;
     let parValues = {
       DOCNUM: { Value: this.props.docNumArray },
       INCLUDEALL: { Value: this.state.includeAll },
-      SOURCE: { Value: 'PC' }
+      SOURCE: { Value: "PC" }
     };
     this.props.setCurrentModal({ currentModal: null });
 
@@ -30,22 +29,22 @@ class ModalConfirmPrint extends Component {
       let apiQuery = "?parValues=" + encodeURIComponent(JSON.stringify(parValues));
 
       axios
-        .post(apiRoute + apiQuery)
-        .then(function (result) {
+        .get(apiRoute + apiQuery)
+        .then(function(result) {
           //Marcar documentos como impressos
           axios
             .post("/api/precos/printed", parValues)
-            .then(function (result) {
+            .then(function(result) {
               that.props.setCurrentModal({ currentModal: null });
               location.reload();
             })
-            .catch(function (error) {
-              if (!error.__CANCEL__) sappy.showError(error, "Api error")
+            .catch(function(error) {
+              if (!error.__CANCEL__) sappy.showError(error, "Api error");
             });
         })
-        .catch(function (error) {
+        .catch(function(error) {
           that.props.setCurrentModal({ currentModal: null });
-          if (!error.__CANCEL__) sappy.showError(error, "Api error")
+          if (!error.__CANCEL__) sappy.showError(error, "Api error");
         });
     } else if (result === "PDF") {
       // Executar o mapa
@@ -57,15 +56,11 @@ class ModalConfirmPrint extends Component {
       window.open(baseUrl + apiRoute + apiQuery, "_blank");
 
       //Marcar documentos como impressos
-      axios
-        .post("/api/precos/printed", parValues)
-        .then(function (result) {
-        })
-        .catch(function (error) {
-          if (!error.__CANCEL__) sappy.showError(error, "Api error")
-        });
+      axios.post("/api/precos/printed", parValues).then(function(result) {}).catch(function(error) {
+        if (!error.__CANCEL__) sappy.showError(error, "Api error");
+      });
     }
-  }
+  };
 
   render() {
     let that = this;
@@ -76,31 +71,40 @@ class ModalConfirmPrint extends Component {
           <h4>Deseja visualizar ou imprimir?</h4>
           <p>Escolha se pretende a impressão de apenas os artigos com preços alterados ou todos os artigos</p>
           <div className="row" style={{ minHeight: "50px" }}>
-            <div className="col-1"></div>
+            <div className="col-1" />
             <div className="col">
               <div className="radio-custom radio-primary" style={{ display: "block" }}>
-                <input type="radio" id="inputRadiosUnchecked" name="inputRadios" checked={!this.state.includeAll} onChange={e => {
-                  that.setState({ includeAll: !e.target.checked });
-                }} />
+                <input
+                  type="radio"
+                  id="inputRadiosUnchecked"
+                  name="inputRadios"
+                  checked={!this.state.includeAll}
+                  onChange={e => {
+                    that.setState({ includeAll: !e.target.checked });
+                  }}
+                />
                 <label htmlFor="inputRadiosUnchecked">Só artigos com preços alterados</label>
               </div>
             </div>
           </div>
 
           <div className="row " style={{ minHeight: "50px" }}>
-            <div className="col-1"></div>
+            <div className="col-1" />
             <div className="col">
-
               <div className="radio-custom radio-primary" style={{ display: "block" }}>
-                <input type="radio" id="inputRadiosChecked" name="inputRadios" checked={this.state.includeAll} onChange={e => {
-                  that.setState({ includeAll: e.target.checked });
-                }} />
+                <input
+                  type="radio"
+                  id="inputRadiosChecked"
+                  name="inputRadios"
+                  checked={this.state.includeAll}
+                  onChange={e => {
+                    that.setState({ includeAll: e.target.checked });
+                  }}
+                />
                 <label htmlFor="inputRadiosChecked">Todos artigos</label>
               </div>
             </div>
-
           </div>
-
         </ModalBody>
         <ModalFooter>
           <Button color="default" onClick={e => this.processResult("PDF")}>
@@ -116,7 +120,7 @@ class ModalConfirmPrint extends Component {
             </span>
           </Button>
         </ModalFooter>
-      </Modal >
+      </Modal>
     );
   }
 }
