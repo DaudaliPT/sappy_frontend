@@ -27,9 +27,7 @@ class DocBase extends Component {
     this.handleToggleShowTotals = this.handleToggleShowTotals.bind(this);
     this.handleToogleLimitSearch = this.handleToogleLimitSearch.bind(this);
     this.forceReload = this.forceReload.bind(this);
-    this.setNewDataAndDisplayAlerts = this.setNewDataAndDisplayAlerts.bind(
-      this
-    );
+    this.setNewDataAndDisplayAlerts = this.setNewDataAndDisplayAlerts.bind(this);
 
     this.state = this.getinitialState(props);
   }
@@ -82,11 +80,7 @@ class DocBase extends Component {
 
     this.recalcComponentsHeight();
 
-    if (
-      Object.keys(nextlocationState).length === 0 ||
-      locationState.DocEntry !== nextlocationState.DocEntry ||
-      locationState.id !== nextlocationState.id
-    ) {
+    if (Object.keys(nextlocationState).length === 0 || locationState.DocEntry !== nextlocationState.DocEntry || locationState.id !== nextlocationState.id) {
       return this.setState(this.getinitialState(nextProps), this.loadDoc);
     }
   }
@@ -109,14 +103,12 @@ class DocBase extends Component {
       .get(`${this.props.apiDocsEdit}/${docentry}/haschanges`)
       .then(function(result) {
         let changes = result.data || [];
-        if (changes.length === 0)
-          return that.setState({ editable: !editable }, that.loadDoc);
+        if (changes.length === 0) return that.setState({ editable: !editable }, that.loadDoc);
 
         sappy.showQuestion({
           title: "Continuar edição?",
           msg: "Há alterações não confirmadas neste documento.",
-          moreInfo:
-            "Pode continuar a editar ou ignorar as alterações registadas e recomeçar do zero.",
+          moreInfo: "Pode continuar a editar ou ignorar as alterações registadas e recomeçar do zero.",
           onConfirm: () => {
             that.setState({ editable: !editable }, that.loadDoc);
           },
@@ -147,11 +139,7 @@ class DocBase extends Component {
     if (locationState.DocEntry) {
       let docentry = locationState.DocEntry;
       this.serverRequest = axios
-        .get(
-          `${this.props.apiDocsEdit}/${docentry}?editable=${this.state.editable
-            ? "yes"
-            : ""}`
-        )
+        .get(`${this.props.apiDocsEdit}/${docentry}?editable=${this.state.editable ? "yes" : ""}`)
         .then(function(result) {
           let newDocData = result.data;
           that.setNewDataAndDisplayAlerts(newDocData);
@@ -180,14 +168,21 @@ class DocBase extends Component {
       );
 
       //procurar série predefinida
-      this.serverRequest = axios
-        .get(this.props.apiDocsNew + "/dfltseries")
-        .then(function(result) {
-          let docData = that.state.docData;
-          docData = { ...docData, DOCSERIES: result.data.Series };
-          that.setState({ docData });
-        })
-        .catch(error => sappy.showError(error, "Erro ao obter dados"));
+
+      let nameSettingSerie = (this.props.module === 0 ? "CMP." : "VND.") + this.props.tableName.toUpperCase() + ".SERIE";
+      let settings = sappy.getSettings([nameSettingSerie]);
+      let DOCSERIES = sappy.getNum(settings[nameSettingSerie]);
+
+      that.setState({ docData: { ...that.state.docData, DOCSERIES } });
+
+      // this.serverRequest = axios
+      //   .get(this.props.apiDocsNew + "/dfltseries")
+      //   .then(function(result) {
+      //     let docData = that.state.docData;
+      //     docData = { ...docData, DOCSERIES };
+      //     that.setState({ docData });
+      //   })
+      //   .catch(error => sappy.showError(error, "Erro ao obter dados"));
     }
   }
 
@@ -239,24 +234,16 @@ class DocBase extends Component {
     let val = changeInfo.rawValue;
 
     let updated = { [fieldName]: val };
-    if (that.props.onHeaderChange)
-      updated = that.props.onHeaderChange(this.state.docData, updated);
+    if (that.props.onHeaderChange) updated = that.props.onHeaderChange(this.state.docData, updated);
 
     // // check if really changed
     // if (sappy.isEqual(oldVal, val)) return console.log("skip update");
     // console.log(fieldName, oldVal, val)
-    if ("EXTRADISC,EXTRADISCPERC,DOCTOTAL".indexOf(fieldName) > -1)
-      this.setState({ changingTotals: true });
+    if ("EXTRADISC,EXTRADISCPERC,DOCTOTAL".indexOf(fieldName) > -1) this.setState({ changingTotals: true });
 
     if (this.state.docData.DOCENTRY > 0) {
       that.serverRequest = axios
-        .patch(
-          this.props.apiDocsEdit +
-            "/" +
-            this.state.docData.DOCENTRY +
-            `?editable=${this.state.editable ? "yes" : ""}`,
-          updated
-        )
+        .patch(this.props.apiDocsEdit + "/" + this.state.docData.DOCENTRY + `?editable=${this.state.editable ? "yes" : ""}`, updated)
         .then(function(result) {
           let docData = { ...that.state.docData, ...result.data };
           delete docData.changing;
@@ -285,15 +272,10 @@ class DocBase extends Component {
     let documentoBloqueado = this.state.docData.DOCNUM > 0;
     if (documentoBloqueado) return;
 
-    if (this.props.onRowChange)
-      updated = this.props.onRowChange(currentRow, updated);
+    if (this.props.onRowChange) updated = this.props.onRowChange(currentRow, updated);
 
     this.serverRequest = axios
-      .patch(
-        `${this.props.apiDocsNew}/${this.state.docData
-          .ID}/line/${currentRow.LINENUM}`,
-        { ...updated }
-      )
+      .patch(`${this.props.apiDocsNew}/${this.state.docData.ID}/line/${currentRow.LINENUM}`, { ...updated })
       .then(function(result) {
         let new_row = result.data.UPDATED_LINE;
         // create a new object and replace the line on it, keeping the other intact
@@ -328,9 +310,7 @@ class DocBase extends Component {
         let docData = { ...that.state.docData, ...result.data };
         that.setState({ selectedLineNums: false, docData });
       })
-      .catch(error =>
-        sappy.showError(error, "Não foi possível reordernar as linhas")
-      );
+      .catch(error => sappy.showError(error, "Não foi possível reordernar as linhas"));
   }
 
   handleToggleShowTotals() {
@@ -368,10 +348,7 @@ class DocBase extends Component {
         });
     };
 
-    if (
-      (itemCodes && itemCodes.length > 0) ||
-      (barcodes && barcodes.length > 0)
-    ) {
+    if ((itemCodes && itemCodes.length > 0) || (barcodes && barcodes.length > 0)) {
       this.ensureDocHeaderExists(createDocLines);
     }
   }
@@ -403,19 +380,10 @@ class DocBase extends Component {
       onRowReorder: this.handleDetailRowReorder
     };
 
-    let footerLimitSearchCondition =
-      this.props.footerLimitSearchCondition || "";
-    Object.keys(docData).forEach(
-      field =>
-        (footerLimitSearchCondition = sappy.replaceAll(
-          footerLimitSearchCondition,
-          "<" + field + ">",
-          docData[field]
-        ))
-    );
+    let footerLimitSearchCondition = this.props.footerLimitSearchCondition || "";
+    Object.keys(docData).forEach(field => (footerLimitSearchCondition = sappy.replaceAll(footerLimitSearchCondition, "<" + field + ">", docData[field])));
 
-    let canConfirmar =
-      this.state.docData.ID > 0 || (this.state.docData.DOCNUM > 0 && editable);
+    let canConfirmar = this.state.docData.ID > 0 || (this.state.docData.DOCNUM > 0 && editable);
 
     let footerProps = {
       ...this.state.footer,
@@ -432,14 +400,10 @@ class DocBase extends Component {
       totals,
       actions: [
         {
-          name:
-            this.state.selectedLineNums.length === 1
-              ? "Apagar linha"
-              : "Apagar linhas",
+          name: this.state.selectedLineNums.length === 1 ? "Apagar linha" : "Apagar linhas",
           color: "danger",
           icon: "icon wb-trash",
-          visible:
-            this.state.docData.ID > 0 && this.state.selectedLineNums.length > 0,
+          visible: this.state.docData.ID > 0 && this.state.selectedLineNums.length > 0,
           onClick: e => actionFunc.handleOnApagarLinhas(that)
         },
         {

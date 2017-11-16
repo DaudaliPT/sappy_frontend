@@ -70,9 +70,9 @@ body.site-navbar-small {
     padding-left: 0px !important;
   }
 
-  .site-menubar-light .site-menu-item.open {
-    /*background-color: rgba(255, 255, 255, 1);*/
-  }
+  /* .site-menubar-light .site-menu-item.open { */
+  /*background-color: rgba(255, 255, 255, 1);*/
+  /* } */
 
   .site-menu-item.open > .site-menu-sub {
     padding-left: 20px !important;
@@ -291,26 +291,44 @@ body.site-navbar-small {
   padding-top: 20px;
 }
 .setting-title > h4 {
+  font-weight: 500;
   border-bottom: 1px solid #e4eaec;
   color: rgb(88, 158, 224);
 }
 
 .setting {
   /* border-bottom: 1px solid red; */
-  padding: 15px;
+  padding: 5px 15px;
 }
 .setting-name {
-  font-weight: 500;
+  font-size: 0.87rem;
+  font-weight: 400;
+  /* color: rgb(48, 118, 184); */
 }
 .setting-id {
   font-size: 0.87rem;
-  color: rgb(200, 200, 200);
+  color: rgb(230, 230, 230);
 }
+
 .setting-comments {
   font-size: 0.9rem;
+  color: rgba(48, 118, 184, .5);
+}
+.setting:hover .setting-name {
+  color: rgba(48, 118, 184, 1);
+}
+.setting:hover .setting-comments {
+  color: rgba(48, 118, 184, 1);
+}
+.setting:hover .setting-id {
+  font-weight: 400;
+  color: rgb(217, 83, 79);
 }
 .setting-input {
-  /* padding-top: 5px; */
+  /* font-weight: 400 !important; */
+}
+.setting-input input {
+  /* font-weight: 400 !important; */
 }
 .setting-input .form-group {
   margin-top: 0rem !important;
@@ -660,9 +678,10 @@ textarea {
 .page-content {
   padding-bottom: 0px !important;
 }
-.modal-body .panel-body {
-  /* padding: 0px !important;   */
-}
+/* .modal-body .panel-body { */
+/* padding: 0px !important;   */
+/* } */
+
 .modal-body {
   /* padding-top: 5px!important;  */
   padding-bottom: 5px !important;

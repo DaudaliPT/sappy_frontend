@@ -158,30 +158,16 @@
 }
 
 /* sappy-icon  */
-.sappy-icon > i.icon.secondary,
-.sappy-icon > i.icon.inactive {
+.sappy-icon > i.icon.secondary {
   color: rgba(32, 46, 55, 1) !important;
-  text-shadow: 1px 1px 4px rgba(255, 255, 255, 0.1);
-}
-.sappy-icon > i.icon.primary {
-  color: rgb(98, 168, 234) !important;
+  text-shadow: -1px -1px 5px gray, 1px 1px 5px gray, -1px 1px 5px gray, 1px -1px 5px gray, 1px 1px 20px white;
 }
 .sappy-icon > i.icon.success {
-  color: rgb(92, 184, 92) !important;
-  text-shadow: 1px 1px 4px rgba(255, 255, 255, 0.1);
-}
-.sappy-icon > i.icon.info {
-  color: rgb(91, 192, 222) !important;
-}
-.sappy-icon > i.icon.warning {
-  color: rgb(240, 173, 78) !important;
-}
-.sappy-icon > i.icon.danger {
-  color: rgb(217, 83, 79) !important;
+  color: rgba(32, 96, 55, 1) !important;
+  text-shadow: -1px -1px 5px lightgreen, 1px 1px 5px lightgreen, -1px 1px 5px lightgreen, 1px -1px 5px lightgreen, 1px 1px 20px white;
 }
 
 div.sappy-icon:hover {
-  /* color: rgb(98, 168, 234) !important; */
   background: rgba(98, 168, 234, 0.2) !important;
   border: 1px solid rgba(98, 168, 234, 0.2);
 }

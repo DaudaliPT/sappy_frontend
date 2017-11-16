@@ -13,8 +13,8 @@ exports.prepareDocType = function({ tableName }) {
   let footerLimitSearchCondition = "";
   let footerSearchType = "oitmbasic";
   if ("14".indexOf(objType) > -1) {
-    let settings = sappy.getSettings(["DOC.OBJTYPE14.MAXDIASTODEV"]);
-    let MAXDIASTODEV = sappy.getNum(settings["DOC.OBJTYPE14.MAXDIASTODEV"]);
+    let settings = sappy.getSettings(["VND.ORIN.MAXDIASTODEV"]);
+    let MAXDIASTODEV = sappy.getNum(settings["VND.ORIN.MAXDIASTODEV"]);
     footerLimitSearchCondition = `
           BASEDOC."CardCode"='<CARDCODE>' 
       AND BASEDOC."ShipToCode"='<SHIPADDR>' 

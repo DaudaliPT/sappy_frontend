@@ -212,8 +212,7 @@ import barcodes from "./sappy_barcodes";
       if (charCode < 48 || charCode > 57) return (hasInvalidChars = true);
     });
 
-    if (hasInvalidChars)
-      return sappy.showToastr({ color: "danger", msg: "'" + value + "' não é uma expressão válida" });
+    if (hasInvalidChars) return sappy.showToastr({ color: "danger", msg: "'" + value + "' não é uma expressão válida" });
     if (hasOperators) {
       try {
         value = sappy.replaceAll(value, ",", "."); //tratar virgulas como separadores decimais
@@ -242,7 +241,7 @@ import barcodes from "./sappy_barcodes";
     try {
       setting = settings[tab].settings[title].settings[name];
     } catch (error) {
-      sappy.showToastr({ color: "danger", settingId, title: "Definição não existe:" });
+      sappy.showToastr({ color: "danger", title: settingId, msg: "Definição não existe" });
     }
 
     return setting || {};
@@ -255,7 +254,7 @@ import barcodes from "./sappy_barcodes";
 
     settingIds.forEach(settingId => {
       let setting = getSetting(settingId);
-      if (!setting.rawValue) {
+      if (setting.id && !setting.rawValue) {
         hasMissingValues = true;
         msg.push(
           <li>
@@ -269,7 +268,7 @@ import barcodes from "./sappy_barcodes";
         ret[settingId] = setting.rawValue;
       }
     });
-    if (hasMissingValues) sappy.showToastr({ color: "danger", msg, title: "Verifique as definições" });
+    if (hasMissingValues && msg.length > 0) sappy.showToastr({ color: "danger", msg, title: "Verifique as definições" });
     return ret;
   };
 
@@ -305,33 +304,12 @@ import barcodes from "./sappy_barcodes";
 
       if (part.toUpperCase() === "BONUS") {
         DISC_SUC[0] = 100;
-      } else if (
-        part.indexOf("€/un") > -1 ||
-        part.indexOf("eu") > -1 ||
-        part.indexOf("EU") > -1 ||
-        part.indexOf("u") > -1 ||
-        part.indexOf("U") > -1
-      ) {
+      } else if (part.indexOf("€/un") > -1 || part.indexOf("eu") > -1 || part.indexOf("EU") > -1 || part.indexOf("u") > -1 || part.indexOf("U") > -1) {
         part = part.replace("€/un", "").replace("eu", "").replace("EU", "").replace("u", "").replace("U", "");
         let d = sappy.getNum(part);
         if (d) DISC_UN[DISC_UN.length] = d;
-      } else if (
-        part.indexOf("€") > -1 ||
-        part.indexOf("e") > -1 ||
-        part.indexOf("E") > -1 ||
-        part.indexOf("v") > -1 ||
-        part.indexOf("V") > -1 ||
-        part.indexOf("t") > -1 ||
-        part.indexOf("T") > -1
-      ) {
-        part = part
-          .replace("€", "")
-          .replace("e", "")
-          .replace("E", "")
-          .replace("v", "")
-          .replace("V", "")
-          .replace("t", "")
-          .replace("T", "");
+      } else if (part.indexOf("€") > -1 || part.indexOf("e") > -1 || part.indexOf("E") > -1 || part.indexOf("v") > -1 || part.indexOf("V") > -1 || part.indexOf("t") > -1 || part.indexOf("T") > -1) {
+        part = part.replace("€", "").replace("e", "").replace("E", "").replace("v", "").replace("V", "").replace("t", "").replace("T", "");
         let d = sappy.getNum(part);
         if (d) DISC_VAL[DISC_VAL.length] = d;
       } else {
@@ -373,17 +351,9 @@ import barcodes from "./sappy_barcodes";
     if (parsed.DiscountPercent === 100) {
       formatted = "BONUS";
     } else {
-      DISC_SUC.filter(item => !!item).forEach(
-        DSUC =>
-          (formatted +=
-            (formatted ? " + " : "") + DSUC.toString().replace(".", sappy.sessionInfo.company.oadm.DecSep) + "%")
-      );
-      DISC_UN.filter(item => !!item).forEach(
-        DUN => (formatted += (formatted ? " + " : "") + sappy.format.price(DUN) + "/un")
-      );
-      DISC_VAL.filter(item => !!item).forEach(
-        DVAL => (formatted += (formatted ? " + " : "") + sappy.format.amount(DVAL))
-      );
+      DISC_SUC.filter(item => !!item).forEach(DSUC => (formatted += (formatted ? " + " : "") + DSUC.toString().replace(".", sappy.sessionInfo.company.oadm.DecSep) + "%"));
+      DISC_UN.filter(item => !!item).forEach(DUN => (formatted += (formatted ? " + " : "") + sappy.format.price(DUN) + "/un"));
+      DISC_VAL.filter(item => !!item).forEach(DVAL => (formatted += (formatted ? " + " : "") + sappy.format.amount(DVAL)));
     }
     return formatted;
   };
@@ -422,10 +392,7 @@ import barcodes from "./sappy_barcodes";
       let ret = accounting.formatNumber(value, decimals);
 
       //remover os separador decimal e as decimas quando não são relevantes
-      ret = ret.replace(
-        sappy.sessionInfo.company.oadm.DecSep + "000000".substring(0, sappy.sessionInfo.company.oadm.QtyDec),
-        ""
-      );
+      ret = ret.replace(sappy.sessionInfo.company.oadm.DecSep + "000000".substring(0, sappy.sessionInfo.company.oadm.QtyDec), "");
 
       return ret;
     },
@@ -635,10 +602,7 @@ import barcodes from "./sappy_barcodes";
     ];
 
     return objData.find(item => {
-      return (
-        item.tableName === (tableName || "").toUpperCase() ||
-        item.objectCode.toString() === (objectCode || "").toString()
-      );
+      return item.tableName === (tableName || "").toUpperCase() || item.objectCode.toString() === (objectCode || "").toString();
     });
   };
 
