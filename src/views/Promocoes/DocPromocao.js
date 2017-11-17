@@ -172,9 +172,9 @@ class DocPromocao extends Component {
   loadDocToState(result) {
     let newState = { ...result.data };
 
-    if (newState.ReturnMessage) {
-      sappy.showToastr(newState.ReturnMessage);
-      delete newState.ReturnMessage;
+    if (newState.ReturnToastr) {
+      sappy.showToastr(newState.ReturnToastr);
+      delete newState.ReturnToastr;
     }
 
     if (this.state.ID !== newState.ID) newState.pnScopeExpanded = newState.TIPO === "P" ? true : false;
@@ -577,8 +577,8 @@ class DocPromocao extends Component {
           }
         });
 
-        if (result.data.ReturnMessage) {
-          sappy.showToastr(result.data.ReturnMessage);
+        if (result.data.ReturnToastr) {
+          sappy.showToastr(result.data.ReturnToastr);
         }
 
         let newDocData = { LINES: rows };

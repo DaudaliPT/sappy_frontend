@@ -211,9 +211,14 @@ class DocBase extends Component {
   setNewDataAndDisplayAlerts(docData) {
     let that = this;
 
-    if (docData.ReturnMessage) {
-      sappy.showToastr(docData.ReturnMessage);
-      delete docData.ReturnMessage;
+    if (docData.ReturnToastr) {
+      sappy.showToastr(docData.ReturnToastr);
+      delete docData.ReturnToastr;
+    }
+
+    if (docData.ReturnPopup) {
+      sappy.showError(docData.ReturnPopup);
+      delete docData.ReturnPopup;
     }
 
     this.setState(

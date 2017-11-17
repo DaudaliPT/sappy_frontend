@@ -67,10 +67,7 @@ import axios from "axios";
           }
         } else if (found > 1) {
           if (processing) {
-            showBarCodeError(
-              "Múltiplos registos",
-              "Foram encontrados vários registos ao procurar por '" + barcode + "'"
-            );
+            showBarCodeError("Múltiplos registos", "Foram encontrados vários registos ao procurar por '" + barcode + "'");
           } else {
             // não interfere com o buffer
             sappy.playAlertSound();
@@ -127,12 +124,19 @@ import axios from "axios";
         if (isHuman === false) {
           e.preventDefault();
           e.stopPropagation();
-          if (e.keyCode === 9 || e.keyCode === 13 || e.keyCode === 10) return;
+          if (e.keyCode === 9 || e.keyCode === 13 || e.keyCode === 10) {
+            if (timeOutHandler) {
+              clearTimeout(timeOutHandler);
+              timeOutHandler = null;
+            }
+            onTypeTimeout(); //End barcode
+            return;
+          }
 
           // Se 0 a z    [0-9] e [A-Z] e [a-z]
           if (e.which >= 48 && e.which <= 122) {
             charBuffer.push(String.fromCharCode(e.which));
-            console.log(e.which + ":" + charBuffer.join("|"));
+            // console.log(e.which + ":" + charBuffer.join("|"));
 
             if (timeOutHandler) {
               clearTimeout(timeOutHandler);
@@ -143,6 +147,8 @@ import axios from "axios";
               onTypeTimeout();
             }, 50);
           }
+        } else {
+          console.log("human " + e.which + " '" + String.fromCharCode(e.which) + "'");
         }
       },
       useCapturingFase
