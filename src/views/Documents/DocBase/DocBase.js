@@ -16,6 +16,7 @@ class DocBase extends Component {
     this.recalcComponentsHeight = this.recalcComponentsHeight.bind(this);
     this.toggleHeader = this.toggleHeader.bind(this);
     this.toggleEditable = this.toggleEditable.bind(this);
+    this.menuPrint = this.menuPrint.bind(this);
     this.loadDoc = this.loadDoc.bind(this);
 
     this.ensureDocHeaderExists = this.ensureDocHeaderExists.bind(this);
@@ -46,7 +47,8 @@ class DocBase extends Component {
         title: props.title,
         expanded: true,
         toggleHeader: this.toggleHeader,
-        toggleEditable: this.toggleEditable
+        toggleEditable: this.toggleEditable,
+        menuPrint: this.menuPrint
       },
       detail: {},
       footer: {
@@ -90,6 +92,21 @@ class DocBase extends Component {
     header.expanded = !header.expanded;
     this.setState({ header }, this.recalcComponentsHeight);
   }
+
+  menuPrint(cmd) {
+    let objType = this.state.docData.OBJTYPE;
+    let docEntry = this.state.docData.DOCENTRY;
+    let url = `/api/reports/${cmd}/${objType}/${docEntry}`;
+
+    if (cmd === "print") {
+      axios.get(url).then(result => sappy.showToastr({ color: "success", msg: "Documento impresso!" })).catch(error => sappy.showError(error, "Não foi possivel imprimir o documento"));
+    } else {
+      var baseUrl = ""; // Nota: Em desenv, é preciso redirecionar o pedido. Já em produtivo a api é servida na mesma porta do pedido
+      if (window.location.port === "3000") baseUrl = "http://byusserver:3005";
+      window.open(baseUrl + url, "_blank");
+    }
+  }
+
   toggleEditable() {
     let that = this;
     let locationState = this.props.location.state || {};

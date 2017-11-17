@@ -3,6 +3,11 @@ import { Button } from "reactstrap";
 import uuid from "uuid";
 import "./Panel.css";
 
+import Menu from "../ReactMenu";
+var MenuTrigger = Menu.MenuTrigger;
+var MenuOptions = Menu.MenuOptions;
+var MenuOption = Menu.MenuOption;
+
 class Panel extends Component {
   constructor(props) {
     super(props);
@@ -22,11 +27,9 @@ class Panel extends Component {
   }
 
   render() {
-    let expanded = this.props.onToogleExpand
-      ? this.props.expanded
-      : this.state.expanded;
+    let expanded = this.props.onToogleExpand ? this.props.expanded : this.state.expanded;
 
-    let expandIcon = expanded ? "wb-minus" : "wb-plus";
+    let expandIcon = expanded ? "fa-angle-up" : "fa-angle-down";
     let hiddenClass = expanded ? "" : "hidden-xxl-down";
     let notHiddenClass = expanded ? "hidden-xxl-down" : "";
     let title = this.props.title;
@@ -34,22 +37,16 @@ class Panel extends Component {
     let allowCollapse = this.props.allowCollapse;
 
     let renderActions = () => {
-      let DOMactions = [];
+      let DOMelements = [];
 
       this.props.actions.forEach(action => {
         if (!action.visible) return;
 
-        DOMactions.push(
+        DOMelements.push(
           <div key={action.name} className="action">
             {action.content && action.content}
             {!action.content &&
-              <Button
-                outline
-                color={action.color || "secondary"}
-                className={"btn-sm btn-flat"}
-                onClick={action.onClick}
-                disabled={action.disabled ? true : false}
-              >
+              <Button outline color={action.color || "secondary"} className={"btn-sm btn-flat"} onClick={action.onClick} disabled={action.disabled ? true : false}>
                 <i className={"icon " + action.icon} />
                 <span className="hidden-sm-down">
                   {" "}{action.text}
@@ -58,14 +55,38 @@ class Panel extends Component {
           </div>
         );
       });
-      return DOMactions;
+      return DOMelements;
+    };
+
+    let renderMenu = () => {
+      let DOMmenus = [];
+
+      this.props.menus.forEach(menu => {
+        if (!menu.visible) return;
+        DOMmenus.push(
+          <MenuOption key={"menu_" + menu.name} onSelect={menu.onClick}>
+            <i className={"icon " + menu.icon} />
+            {menu.name}
+          </MenuOption>
+        );
+      });
+      if (DOMmenus.length === 0) return null;
+      return (
+        <Menu className="action " preferredHorizontal="left">
+          <MenuTrigger>
+            <Button outline className="btn-sm btn-flat">
+              <i className={"icon fa-navicon"} />
+            </Button>
+          </MenuTrigger>
+          <MenuOptions>
+            {DOMmenus}
+          </MenuOptions>
+        </Menu>
+      );
     };
 
     return (
-      <div
-        id={this.props.name || uuid()}
-        className={"sappy-panel " + (!expanded ? "collapsed" : "expanded")}
-      >
+      <div id={this.props.name || uuid()} className={"sappy-panel " + (!expanded ? "collapsed" : "expanded")}>
         {(title || subtitle || allowCollapse) &&
           <div className="title">
             {title &&
@@ -81,13 +102,9 @@ class Panel extends Component {
             </span>
             <div className="actions">
               {renderActions()}
-
+              {renderMenu()}
               {allowCollapse &&
-                <Button
-                  outline
-                  className="btn-sm btn-flat"
-                  onClick={this.toggleHeader}
-                >
+                <Button outline className="btn-sm btn-flat" onClick={this.toggleHeader}>
                   <i className={"icon " + expandIcon} />
                 </Button>}
             </div>
@@ -106,7 +123,8 @@ Panel.defaultProps = {
   title: "",
   colapsedInfo: "",
   allowCollapse: true,
-  actions: []
+  actions: [],
+  menus: []
 };
 
 export default Panel;

@@ -1,4 +1,6 @@
 import axios from "axios";
+import { setImmediate } from "timers";
+const $ = window.$;
 
 (function(root) {
   // Create the local library object, to be exported or referenced globally later
@@ -14,6 +16,7 @@ import axios from "axios";
   var sappy = null; // só será preenchido no init(sappy)
   var withError = false;
   var isHuman = true;
+  var oldFocusElement;
 
   function acknowledgePopupMsg() {
     withError = false;
@@ -148,7 +151,22 @@ import axios from "axios";
             }, 50);
           }
         } else {
-          console.log("human " + e.which + " '" + String.fromCharCode(e.which) + "'");
+          // console.log("human " + e.which + " '" + String.fromCharCode(e.which) + "'");
+          if (e.code === "Escape" || e.keyCode === 27) {
+            setImmediate(() => {
+              if (oldFocusElement) {
+                oldFocusElement.focus();
+                oldFocusElement = null;
+              } else {
+                // No pos fazer escape coloca o cursor na caixa de pesquisa
+                let $el = $(".pos .input-search input");
+                if ($el.length > 0) {
+                  oldFocusElement = document.activeElement;
+                  $el.focus();
+                }
+              }
+            });
+          }
         }
       },
       useCapturingFase

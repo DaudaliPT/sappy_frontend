@@ -13,6 +13,7 @@
     "create-react-class": "^15.5.2",
     "css-element-queries": "^0.4.0",
     "imutable": "0.0.1",
+    "js-stylesheet": "^0.0.1",
     "moment": "^2.18.1",
     "rc-slider": "^8.3.1",
     "rc-tooltip": "^3.5.0",

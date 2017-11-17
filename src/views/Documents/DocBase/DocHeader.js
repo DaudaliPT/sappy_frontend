@@ -95,6 +95,39 @@ class DocHeader extends Component {
       }
     ];
 
+    let headerMenus = [
+      {
+        name: "Visualizar",
+        visible: !!this.props.docData.DOCNUM,
+        icon: "fa-file-pdf-o",
+        onClick: () => this.props.menuPrint("pdf")
+      },
+      {
+        name: "Imprimir",
+        visible: !!this.props.docData.DOCNUM,
+        icon: "fa-print",
+        onClick: () => this.props.menuPrint("print")
+      },
+      {
+        name: "Ficheiro Excel",
+        visible: !!this.props.docData.DOCNUM,
+        icon: "fa-download",
+        onClick: () => this.props.menuPrint("xls")
+      },
+      {
+        name: "Ficheiro Word",
+        visible: !!this.props.docData.DOCNUM,
+        icon: "fa-download",
+        onClick: () => this.props.menuPrint("doc")
+      },
+      {
+        name: "Ficheiro CSV",
+        visible: !!this.props.docData.DOCNUM,
+        icon: "fa-download",
+        onClick: () => this.props.menuPrint("csv")
+      }
+    ];
+
     return (
       <div id="docHeader">
         <Panel
@@ -103,6 +136,7 @@ class DocHeader extends Component {
           expanded={this.props.expanded}
           onToogleExpand={this.props.toggleHeader}
           actions={headerActions}
+          menus={headerMenus}
         >
           {renderHeaderFields()}
         </Panel>

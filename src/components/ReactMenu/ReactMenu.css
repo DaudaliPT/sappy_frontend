@@ -1,0 +1,58 @@
+.Menu {
+  position: relative;
+  /* border: 1px solid red; */
+}
+.Menu__MenuOptions {
+  /* border: 1px solid #ccc; */
+  border-radius: 3px;
+  background: rgba(53, 65, 74, 1);
+  box-shadow: 1px 1px 20px black;
+  position: absolute;
+  min-width: 200px;
+}
+.Menu__MenuOption {
+  padding: 5px;
+  padding-left: 10px;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+.Menu__MenuOption:hover {
+  color: rgba(255, 255, 255, 1);
+  background: rgba(255, 255, 255, .1);
+}
+.Menu__MenuOption > i {
+  padding-right: 10px;
+}
+.Menu__MenuOption--disabled {
+  /* background-color: #eee; */
+}
+.Menu__MenuOption--active {
+  /* background-color: #0aafff; */
+}
+.Menu__MenuOption--active.Menu__MenuOption--disabled {
+  /* background-color: #ccc; */
+}
+.Menu__MenuTrigger {
+  /* border: 1px solid #ccc; */
+  /* border-radius: 3px; */
+  padding-left: 15px;
+  /* padding-right: 15px; */
+  /* background: #fff; */
+}
+.Menu__MenuTrigger:focus {
+  border: none !important;
+  outline: none !important;
+}
+.Menu__MenuOptions--horizontal-left {
+  top: 40px;
+  right: 10px;
+}
+.Menu__MenuOptions--horizontal-right {
+  left: 0px;
+}
+.Menu__MenuOptions--vertical-top {
+  bottom: 45px;
+}
+.Menu__MenuOptions--vertical-bottom: {
+}

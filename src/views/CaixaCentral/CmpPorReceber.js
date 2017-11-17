@@ -101,27 +101,25 @@ class CmpPorReceber extends Component {
       // let InvoiceType = "";
       let transType = sappy.getNum(doc.TransType);
 
-      if (transType === 13 || transType === 14) {
-        // let url = `/api/reports/printdoc/${transType}/${doc.CreatedBy}`;
-        let url = `/api/reports/print/${transType}/${doc.CreatedBy}`;
+      // let url = `/api/reports/printdoc/${transType}/${doc.CreatedBy}`;
+      let url = `/api/reports/print/${transType}/${doc.CreatedBy}`;
 
-        // let url = `/api/reports/pdf/${transType}/${doc.CreatedBy}`;
-        // var baseUrl = ""; // Nota: Em desenv, é preciso redirecionar o pedido. Já em produtivo a api é servida na mesma porta do pedido
-        // if (window.location.port === "3000") baseUrl = "http://byusserver:3005";
-        // window.open(baseUrl + url, "_blank");
+      // let url = `/api/reports/pdf/${transType}/${doc.CreatedBy}`;
+      // var baseUrl = ""; // Nota: Em desenv, é preciso redirecionar o pedido. Já em produtivo a api é servida na mesma porta do pedido
+      // if (window.location.port === "3000") baseUrl = "http://byusserver:3005";
+      // window.open(baseUrl + url, "_blank");
 
-        axios
-          .get(url)
-          .then(result => {
-            sappy.showToastr({
-              color: "success",
-              msg: `${doc.DOCUMENTO} impresso!`
-            });
-          })
-          .catch(error => {
-            sappy.showError(error, "Não foi possivel imprimir o documento");
+      axios
+        .get(url)
+        .then(result => {
+          sappy.showToastr({
+            color: "success",
+            msg: `${doc.DOCUMENTO} impresso!`
           });
-      }
+        })
+        .catch(error => {
+          sappy.showError(error, "Não foi possivel imprimir o documento");
+        });
     });
   }
 

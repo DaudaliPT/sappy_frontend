@@ -1,159 +1,170 @@
 #doc {
-    display: block;
-    padding-top: 10px;
-    padding-bottom: 0px;
-    padding-left:   10px;
-    padding-right:  10px;
-    /* border: 1px dotted red;   */
-    position: fixed;
-    width: calc(100% - 30px);
-    height: calc(100% - 108px);
-    overflow-y: auto;
-    margin: auto;}
- 
+  display: block;
+  padding-top: 10px;
+  padding-bottom: 0px;
+  padding-left: 10px;
+  padding-right: 10px;
+  /* border: 1px dotted red;   */
+  position: fixed;
+  width: calc(100% - 30px);
+  height: calc(100% - 108px);
+  overflow-y: auto;
+  margin: auto;
+}
+
 /* #docHeader{     
     border: 1px solid red;  
 } */
 
 .header-title {
-    position: relative;
-    padding: 0px;
-    border-bottom: 1px solid transparent;
-    border-top-left-radius: .214rem;
-    border-top-right-radius: .214rem; }
+  position: relative;
+  padding: 0px;
+  border-bottom: 1px solid transparent;
+  border-top-left-radius: .214rem;
+  border-top-right-radius: .214rem;
+}
 
 .header-title-text {
-    display: initial;
-    margin-top: 0;
-    margin-bottom: 0;
-     /* padding: 20px 0px;  */
-    font-size: 18px;
-    color: #37474f;}
+  display: initial;
+  margin-top: 0;
+  margin-bottom: 0;
+  /* padding: 20px 0px;  */
+  font-size: 18px;
+  color: #37474f;
+}
 
 .header-actions {
-    position: absolute;
-     right: 0px; 
-    top: 50%;
-    -webkit-transform: translate(0%, -50%);
-    -ms-transform: translate(0%, -50%);
-    transform: translate(0%, -50%);
-    margin: auto;
-    z-index: 1;}
+  position: absolute;
+  right: 0px;
+  top: 50%;
+  -webkit-transform: translate(0%, -50%);
+  -ms-transform: translate(0%, -50%);
+  transform: translate(0%, -50%);
+  margin: auto;
+  z-index: 1;
+}
 
 .header-actions .header-action {
-    display: inline-block;
-    padding: 8px 10px;
-    color: #a3afb7;
-    text-decoration: none;
-    cursor: pointer;
-    background-color: transparent;}
+  display: inline-block;
+  padding: 8px 10px;
+  color: #a3afb7;
+  text-decoration: none;
+  cursor: pointer;
+  background-color: transparent;
+}
 
-#docFooter{   
-    background:rgba(32, 46, 55,0.9);
-    /* transparent;    */
-    padding: 0px 19px !important;
+#docFooter {
+  background: rgba(32, 46, 55, 0.9);
+  /* transparent;    */
+  padding: 0px 19px !important;
 }
 
 #docDetail {
-    position: absolute;
-    width: calc(100% - 20px);
-    /* border: 1px solid blue;  */
-   } 
- 
-#docDetailSidebar { 
-    position: absolute;
-    top:15px;
-    right: 15px;
-    bottom:15px; 
-    background: white !important;   
-    padding:0px;
-    overflow-y: scroll;
+  position: absolute;
+  width: calc(100% - 20px);
+  /* border: 1px solid blue;  */
 }
 
-#docDetailSidebar div .flag >.icon{
-    padding-left: 5px;
+#docDetailSidebar {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  bottom: 15px;
+  background: white !important;
+  padding: 0px;
+  overflow-y: scroll;
 }
 
-#docFooter-actions{
-
-    padding-top: 10px;
-    padding-bottom: 8px;
-
-    display:         flex;
-    /* border-top: 1px solid #e4eaec;  */
-
-    -webkit-box-align: center;
-    -webkit-align-items: center;
-    -ms-flex-align: center;
-    align-items: center;}
-
-#docFooter-actions>div.left { 
-    width: 40%; 
+#docDetailSidebar div .flag > .icon {
+  padding-left: 5px;
 }
 
-#docFooter-actions>div.right { 
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display:         flex;
-    width: 80%;
-    
-    -webkit-box-pack: end;
-    -webkit-justify-content: flex-end;
-    -ms-flex-pack: end;
-    justify-content: flex-end;
-}
-#docFooter-actions>div > :not(:first-child){    margin-left:  .25rem;}
-#docFooter-actions>div > :not(:last-child) {    margin-right: .25rem;} 
+#docFooter-actions {
+  padding-top: 10px;
+  padding-bottom: 8px;
 
+  display: flex;
+  /* border-top: 1px solid #e4eaec;  */
 
-#docTotal {  
-    font-weight: bold;
-    letter-spacing: 0.05rem!important;
-    position: absolute;
-    padding: 25px 25px 10px 30px;
-    color: rgba(255,255,255,0.5);
-    background: rgba(32, 46, 55,0.7);
-    right: 0px;
-    bottom: 52px;
-    z-index: 3;
-    max-width: 300px; 
-    border-top-left-radius: 3rem;} 
- 
-#docTotal > hr{  
-    margin-top: 5px;
-    margin-bottom: 5px;}
-
-#docTotal > .total{  
-    font-size: 1.2rem;
-    color: rgba(255,255,255,0.9);}
-
-#docTotal .total  input{    font-size: 1.2rem; } 
-
-
-#total-btn-text{
-    padding-left: 5px;
-    padding-right: 10px;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
 }
 
-#docTotal .form-group{  
-     margin-top: 0px!important ; 
+#docFooter-actions > div.left {
+  width: 40%;
 }
 
-#docTotal .form-group input{  
-    font-weight: bold!important;
-    letter-spacing: 0.05rem!important;
-    max-height: 1.5rem;
-    padding-left: 0px;
-    padding-right: 0px;
-    color: rgba(255,255,255,0.5)!important; 
-    border:none;
-    background:  rgba(255,255,255,0.1);
+#docFooter-actions > div.right {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  width: 80%;
+
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+}
+#docFooter-actions > div > :not(:first-child) {
+  margin-left: .25rem;
+}
+#docFooter-actions > div > :not(:last-child) {
+  margin-right: .25rem;
+}
+
+#docTotal {
+  font-weight: bold;
+  letter-spacing: 0.05rem !important;
+  position: absolute;
+  padding: 25px 25px 10px 30px;
+  color: rgba(255, 255, 255, 0.5);
+  background: rgba(32, 46, 55, 0.7);
+  right: 0px;
+  bottom: 52px;
+  z-index: 3;
+  max-width: 300px;
+  border-top-left-radius: 3rem;
+}
+
+#docTotal > hr {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+#docTotal > .total {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+#docTotal .total  input {
+  font-size: 1.2rem;
+}
+
+#total-btn-text {
+  padding-left: 5px;
+  padding-right: 10px;
+}
+
+#docTotal .form-group {
+  margin-top: 0px !important;
+}
+
+#docTotal .form-group input {
+  font-weight: bold !important;
+  letter-spacing: 0.05rem !important;
+  max-height: 1.5rem;
+  padding-left: 0px;
+  padding-right: 0px;
+  color: rgba(255, 255, 255, 0.5) !important;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 #docTotal .form-group input:hover,
-#docTotal .form-group input:focus{  
-    color: rgb(0,0,0)!important;
-    background:  rgba(255,255,255,0.7);
+#docTotal .form-group input:focus {
+  color: rgb(0, 0, 0) !important;
+  background: rgba(255, 255, 255, 0.7);
 }
-
