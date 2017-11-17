@@ -24,7 +24,7 @@ class Login extends Component {
       .then(result => {
         let company = "";
 
-        if (result.data && result.data.length === 1) company = result.data[0].dbName
+        if (result.data && result.data.length === 1) company = result.data[0].dbName;
         that.setState({ companys: result.data, company });
       })
       .catch(error => {
@@ -50,19 +50,22 @@ class Login extends Component {
       data: JSON.stringify({ username: username.value, password: password.value, company: company.value }),
       url: "auth/login"
     })
-      .then(result => window.location.href = "/")
+      .then(result => (window.location.href = "/"))
       .catch(error => sappy.showError(error));
   }
   render() {
     var { companys, company } = this.state;
-
 
     let renderCompanys = () => {
       var options = [
         <option key="none" value={""} />,
         companys.map(cmp => {
           var { dbName, cmpName } = cmp;
-          return <option key={dbName} value={dbName}>{cmpName}</option>;
+          return (
+            <option key={dbName} value={dbName}>
+              {cmpName}
+            </option>
+          );
         })
       ];
 
@@ -77,11 +80,9 @@ class Login extends Component {
       <div className="page vertical-align text-center" data-animsition-in="fade-in" data-animsition-out="fade-out">
         <div className="page-content vertical-align-middle animation-slide-top animation-duration-1">
           <div className="panel">
-
             <div className="panel-body">
               <div className="brand">
                 <img id="logo" className="brand-img" src="img/site_red.png" alt="..." />
-
               </div>
               <form onSubmit={this.onSubmitLogin}>
                 <div className="form-group form-material floating" data-plugin="formMaterial">
@@ -89,15 +90,19 @@ class Login extends Component {
                   <label className="floating-label">Utilizador</label>
                 </div>
                 <div className="form-group form-material floating" data-plugin="formMaterial">
-                  <input type="password" className="form-control" name="password" ref="password" />
+                  <input type="password" className="form-control" name="password" ref="password" autocomplete="off" />
                   <label className="floating-label">Senha de acesso</label>
                 </div>
                 <div className="form-group form-material floating" data-plugin="formMaterial">
                   {renderCompanys()}
                   <label className="floating-label">Empresa SAP</label>
-                  <label> {company}</label>
+                  <label>
+                    {" "}{company}
+                  </label>
                 </div>
-                <button type="submit" className="btn btn-primary btn-block btn-lg mt-40">Iniciar sessão</button>
+                <button type="submit" className="btn btn-primary btn-block btn-lg mt-40">
+                  Iniciar sessão
+                </button>
               </form>
             </div>
           </div>

@@ -369,6 +369,11 @@ body.site-navbar-small {
   background-color: rgba(100, 100, 100, 0.03);
 }
 
+.btn-purple {
+  background: rgb(123, 104, 238);
+  color: #fff;
+}
+
 /* comentado porque criava sempre a barra de scroll á direita  */
 /* html {
     overflow: -moz-scrollbars-vertical; 

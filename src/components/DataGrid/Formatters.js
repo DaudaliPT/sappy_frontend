@@ -102,6 +102,14 @@ class PkposFormatter extends Component {
 
     let checkedAPswitch = value > 1;
     let color = checkedAPswitch ? "success" : "danger";
+
+    let dependentValues = this.props.dependentValues || {};
+    let QTPK_ORIGINAL = sappy.getNum(dependentValues.QTPK_ORIGINAL);
+
+    if (value !== 1 && value !== QTPK_ORIGINAL) {
+      color = "purple";
+    }
+
     let ON = "PK";
     let OFF = "UN";
     return (

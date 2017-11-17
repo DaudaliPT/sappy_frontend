@@ -8,6 +8,7 @@ import swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.css";
 
 import ReactAudioPlayer from "react-audio-player";
+import { setTimeout } from "timers";
 
 swal.setDefaults({
   reverseButtons: true,
@@ -58,20 +59,8 @@ class appBase extends Component {
       currentPopover: null,
       playBadInputSound: false,
       playAlertSound: false,
-      badInputAlertComponent: (
-        <ReactAudioPlayer
-          src="/files/216090__richerlandtv__bad-beep-incorrect.mp3"
-          autoPlay={true}
-          onEnded={() => that.setState({ playBadInputSound: false })}
-        />
-      ),
-      alertComponent: (
-        <ReactAudioPlayer
-          src="/files/Computer Error Alert-SoundBible.com-783113881.mp3"
-          autoPlay={true}
-          onEnded={() => that.setState({ playAlertSound: false })}
-        />
-      )
+      badInputAlertComponent: <ReactAudioPlayer src="/files/216090__richerlandtv__bad-beep-incorrect.mp3" autoPlay={true} onEnded={() => that.setState({ playBadInputSound: false })} />,
+      alertComponent: <ReactAudioPlayer src="/files/Computer Error Alert-SoundBible.com-783113881.mp3" autoPlay={true} onEnded={() => that.setState({ playAlertSound: false })} />
     };
   }
 
@@ -103,11 +92,7 @@ class appBase extends Component {
       );
     return (
       <span>
-        <i
-          className="icon fa-arrow-circle-right"
-          aria-hidden="true"
-          onClick={e => sappy.LinkTo(objType, docEntry)}
-        />{" "}
+        <i className="icon fa-arrow-circle-right" aria-hidden="true" onClick={e => sappy.LinkTo(objType, docEntry)} />{" "}
       </span>
     );
   }
@@ -153,13 +138,7 @@ class appBase extends Component {
 
           that.setState({
             currentPopover: (
-              <Popover
-                isOpen={true}
-                target={target}
-                toggle={this.togglePopover}
-                placement={placement || "left"}
-                onMouseLeave={sappy.hidePopover}
-              >
+              <Popover isOpen={true} target={target} toggle={this.togglePopover} placement={placement || "left"} onMouseLeave={sappy.hidePopover}>
                 <PopoverContent>
                   {content}
                 </PopoverContent>
@@ -223,19 +202,7 @@ class appBase extends Component {
   }
 
   showSwal(options) {
-    let {
-      showCancelButton,
-      type,
-      html,
-      msg,
-      moreInfo,
-      onConfirm,
-      onCancel,
-      confirmText,
-      confirmStyle,
-      cancelText,
-      cancelStyle
-    } = options;
+    let { showCancelButton, type, html, msg, moreInfo, onConfirm, onCancel, confirmText, confirmStyle, cancelText, cancelStyle } = options;
     let color = type;
     if (type === "question") color = "primary";
 
@@ -254,6 +221,7 @@ class appBase extends Component {
     err = err || {};
     console.error(title, err);
     sappy.hideWaitProgress(); // If visible, hide waitprogress
+
     // let that = this;
     let moreInfo = "";
     let msg = "";
@@ -271,6 +239,15 @@ class appBase extends Component {
     }
 
     if (!msg) msg = safeJsonStringify(err);
+
+    if (msg.indexOf("Content not allowed without valid session. Please login first.") > -1) {
+      sappy.hideModal();
+      sappy.hidePopover();
+      setTimeout(() => {
+        sappy.showToastr("danger|" + msg);
+      }, 500);
+      return hashHistory.push("/login");
+    }
 
     swal({
       title: title || "Erro",
@@ -306,12 +283,7 @@ class appBase extends Component {
   render() {
     return (
       <div>
-        <ToastContainer
-          toastMessageFactory={ToastMessageFactory}
-          ref="container"
-          preventDuplicates={true}
-          className="toast-top-right"
-        />
+        <ToastContainer toastMessageFactory={ToastMessageFactory} ref="container" preventDuplicates={true} className="toast-top-right" />
         {this.state.playBadInputSound && this.state.badInputAlertComponent}
         {this.state.playAlertSound && this.state.alertComponent}
 
