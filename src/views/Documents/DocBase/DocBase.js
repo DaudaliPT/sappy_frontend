@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+
+import { hashHistory } from "react-router";
 import DocHeader from "./DocHeader";
 import DocDetail from "./DocDetail";
 import DocFooter from "./DocFooter";
@@ -17,6 +19,7 @@ class DocBase extends Component {
     this.toggleHeader = this.toggleHeader.bind(this);
     this.toggleEditable = this.toggleEditable.bind(this);
     this.menuPrint = this.menuPrint.bind(this);
+    this.menuCancelarDocumento = this.menuCancelarDocumento.bind(this);
     this.loadDoc = this.loadDoc.bind(this);
 
     this.ensureDocHeaderExists = this.ensureDocHeaderExists.bind(this);
@@ -48,7 +51,8 @@ class DocBase extends Component {
         expanded: true,
         toggleHeader: this.toggleHeader,
         toggleEditable: this.toggleEditable,
-        menuPrint: this.menuPrint
+        menuPrint: this.menuPrint,
+        menuCancelarDocumento: this.menuCancelarDocumento
       },
       detail: {},
       footer: {
@@ -105,6 +109,16 @@ class DocBase extends Component {
       if (window.location.port === "3000") baseUrl = "http://byusserver:3005";
       window.open(baseUrl + url, "_blank");
     }
+  }
+  menuCancelarDocumento() {
+    let docEntry = this.state.docData.DOCENTRY;
+
+    this.serverRequest = axios
+      .post(`${this.props.apiDocsEdit}/${docEntry}/canceldoc`)
+      .then(function(result) {
+        hashHistory.replace(hashHistory.getCurrentLocation().pathname + "?new=" + new Date().getTime());
+      })
+      .catch(error => sappy.showError(error, "Erro ao canelar documento"));
   }
 
   toggleEditable() {

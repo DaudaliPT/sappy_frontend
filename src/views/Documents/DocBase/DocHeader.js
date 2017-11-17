@@ -77,10 +77,6 @@ class DocHeader extends Component {
       return ret;
     };
 
-    // let expandIcon = this.props.expanded ? "wb-minus" : "wb-plus";
-    // let editIcon = this.props.editable ? "wb-close" : "wb-edit";
-    // let hiddenClass = this.props.expanded ? "" : "hidden-xxl-down";
-    // let notHiddenClass = this.props.expanded ? "hidden-xxl-down" : "";
     let title = this.props.title;
     if (this.props.docData.DOCNUM > 0) title += " (" + this.props.docData.DOCNUM + ")";
 
@@ -98,33 +94,39 @@ class DocHeader extends Component {
     let headerMenus = [
       {
         name: "Visualizar",
-        visible: !!this.props.docData.DOCNUM,
+        visible: !!this.props.docData.DOCENTRY,
         icon: "fa-file-pdf-o",
         onClick: () => this.props.menuPrint("pdf")
       },
       {
         name: "Imprimir",
-        visible: !!this.props.docData.DOCNUM,
+        visible: !!this.props.docData.DOCENTRY,
         icon: "fa-print",
         onClick: () => this.props.menuPrint("print")
       },
       {
         name: "Ficheiro Excel",
-        visible: !!this.props.docData.DOCNUM,
+        visible: !!this.props.docData.DOCENTRY,
         icon: "fa-download",
         onClick: () => this.props.menuPrint("xls")
       },
       {
         name: "Ficheiro Word",
-        visible: !!this.props.docData.DOCNUM,
+        visible: !!this.props.docData.DOCENTRY,
         icon: "fa-download",
         onClick: () => this.props.menuPrint("doc")
       },
       {
         name: "Ficheiro CSV",
-        visible: !!this.props.docData.DOCNUM,
+        visible: !!this.props.docData.DOCENTRY,
         icon: "fa-download",
         onClick: () => this.props.menuPrint("csv")
+      },
+      {
+        name: "Cancelar Documento",
+        visible: !!this.props.docData.DOCENTRY,
+        icon: "fa-close",
+        onClick: this.props.menuCancelarDocumento
       }
     ];
 
