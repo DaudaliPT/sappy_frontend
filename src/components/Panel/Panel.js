@@ -63,6 +63,16 @@ class Panel extends Component {
 
       this.props.menus.forEach(menu => {
         if (!menu.visible) return;
+
+        if (menu.content)
+          return DOMmenus.push(
+            <MenuOption key={"menu_" + menu.name} onSelect={menu.onClick}>
+              <i className={"icon " + menu.icon} />
+              {menu.name}
+              {menu.content}
+            </MenuOption>
+          );
+
         DOMmenus.push(
           <MenuOption key={"menu_" + menu.name} onSelect={menu.onClick}>
             <i className={"icon " + menu.icon} />

@@ -8,7 +8,7 @@
   background: rgba(53, 65, 74, 1);
   box-shadow: 1px 1px 20px black;
   position: absolute;
-  min-width: 200px;
+  min-width: 220px;
 }
 .Menu__MenuOption {
   padding: 5px;
@@ -24,6 +24,7 @@
 .Menu__MenuOption > i {
   padding-right: 10px;
 }
+
 .Menu__MenuOption--disabled {
   /* background-color: #eee; */
 }
@@ -54,5 +55,5 @@
 .Menu__MenuOptions--vertical-top {
   bottom: 45px;
 }
-.Menu__MenuOptions--vertical-bottom: {
+.Menu__MenuOptions--vertical-bottom {
 }

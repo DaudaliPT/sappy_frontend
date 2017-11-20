@@ -70,6 +70,10 @@ var MenuOption = (module.exports = React.createClass({
 
   render: function() {
     var { active, onSelect, onDisabledSelect, disabled, role, children, ...otherProps } = this.props;
+
+    delete otherProps._internalFocus;
+    delete otherProps._internalSelect;
+    delete otherProps.index;
     return (
       <div
         {...otherProps}

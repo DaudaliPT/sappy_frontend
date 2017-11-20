@@ -70,9 +70,8 @@ var Menu = (module.exports = React.createClass({
     // give next element a tick to take focus
     setTimeout(
       function() {
-        if (!this.isMounted()) {
-          return;
-        }
+        // if (!this.isMounted())           return;
+
         if (!findDOMNode(this).contains(document.activeElement) && this.state.active) {
           this.closeMenu();
         }

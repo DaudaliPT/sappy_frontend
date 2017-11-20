@@ -162,14 +162,17 @@ import barcodes from "./sappy_barcodes";
 
           if ((day || month || year) === false) return null;
 
-          let d = moment();
-          if (day && !isNaN(day)) d.set("date", parseInt(day, 10));
-          if (month && !isNaN(month)) d.set("month", parseInt(month, 10) - 1); // -1, because is base0
+          var d = moment();
+          // Definir o ano
           if (year && !isNaN(year)) {
             year = parseInt(year, 10);
             if (year < 2000) year += 2000;
             d.set("year", year);
           }
+          //Definir o mês
+          if (month && !isNaN(month)) d.set("month", parseInt(month, 10) - 1); // -1, because is base0
+          // Definir o dia (tem que ser após definir o ano e o mês porque nem todos os meses tem o mesmo numero de dias)
+          if (day && !isNaN(day)) d.set("date", parseInt(day, 10));
           return d.format(HANA_DEFAULT_DATE_FORMAT);
         }
       }

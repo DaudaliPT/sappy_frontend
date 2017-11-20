@@ -61,6 +61,73 @@ export default {
     }
   },
 
+  handleExport: ({ that, cmd }) => {
+    let objType = that.state.docData.OBJTYPE;
+    let docEntry = that.state.docData.DOCENTRY;
+    let url = `/api/reports/${cmd}/${objType}/${docEntry}`;
+
+    if (cmd === "print") {
+      axios.get(url).then(result => sappy.showToastr({ color: "success", msg: "Documento impresso!" })).catch(error => sappy.showError(error, "Não foi possivel imprimir o documento"));
+    } else {
+      var baseUrl = ""; // Nota: Em desenv, é preciso redirecionar o pedido. Já em produtivo a api é servida na mesma porta do pedido
+      if (window.location.port === "3000") baseUrl = "http://byusserver:3005";
+      window.open(baseUrl + url, "_blank");
+    }
+  },
+
+  handleOnCancelarDocumento: ({ that, apiDocsEdit }) => {
+    sappy.showQuestion({
+      title: "Cancelar Documento?",
+      moreInfo: "Cancelar um documento é uma acção irreversível. Confirma que deseja cancelar o documento?",
+      cancelText: "Cancelar",
+      confirmText: "Cancelar Documento",
+      confirmStyle: "danger",
+      onConfirm: () => {
+        let docEntry = that.state.docData.DOCENTRY;
+        axios
+          .post(`${that.props.apiDocsEdit}/${docEntry}/canceldoc`)
+          .then(function(result) {
+            hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", ""));
+
+            sappy.showToastr({ color: "success", msg: "Documento cancelado." });
+          })
+          .catch(error => sappy.showError(error, "Erro ao cancelar documento"));
+      }
+    });
+  },
+  handleOnFecharDocumento: ({ that }) => {
+    sappy.showQuestion({
+      title: "Fechar Documento?",
+      moreInfo: "Fechar um documento é uma acção irreversível. Confirma que deseja fechar o documento?",
+      cancelText: "Cancelar",
+      confirmText: "Fechar Documento",
+      confirmStyle: "danger",
+      onConfirm: () => {
+        let docEntry = that.state.docData.DOCENTRY;
+        axios
+          .post(`${that.props.apiDocsEdit}/${docEntry}/closedoc`)
+          .then(function(result) {
+            hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", ""));
+
+            sappy.showToastr({ color: "success", msg: "Documento fechado." });
+          })
+          .catch(error => sappy.showError(error, "Erro ao fechar documento"));
+      }
+    });
+  },
+  handleOnDuplicarDocumento: ({ that }) => {
+    let docEntry = that.state.docData.DOCENTRY;
+    axios
+      .post(`${that.props.apiDocsNew}/${docEntry}/clone`)
+      .then(function(result) {
+        hashHistory.push({
+          pathname: hashHistory.getCurrentLocation().pathname,
+          state: { id: result.data.ID }
+        });
+        setImmediate(() => sappy.showToastr({ color: "success", msg: "Documento duplicado com sucesso." }));
+      })
+      .catch(error => sappy.showError(error, "Erro ao duplicar documento"));
+  },
   handleOnConfirmar: that => {
     let performChecks = () => {
       //Validar campos de preenchimento obrigatório

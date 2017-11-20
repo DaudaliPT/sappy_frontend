@@ -152,10 +152,14 @@ class appBase extends Component {
 
   showWaitProgress(msg) {
     swal({
-      html: `<div class="example-loading example-well h-150 vertical-align text-center">
+      html: `<div class="h-150">
+              <div class="h-100 vertical-align text-center">
                 <div class="loader vertical-align-middle loader-tadpole" />
               </div>
-              <h4>${msg || ""}</h4>`,
+              <div class="h-30">
+                <h4>${msg || ""}</h4>
+              </div>
+            </div>`,
       showCancelButton: false,
       showConfirmButton: false,
       allowOutsideClick: false,

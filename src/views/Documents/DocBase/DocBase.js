@@ -18,8 +18,6 @@ class DocBase extends Component {
     this.recalcComponentsHeight = this.recalcComponentsHeight.bind(this);
     this.toggleHeader = this.toggleHeader.bind(this);
     this.toggleEditable = this.toggleEditable.bind(this);
-    this.menuPrint = this.menuPrint.bind(this);
-    this.menuCancelarDocumento = this.menuCancelarDocumento.bind(this);
     this.loadDoc = this.loadDoc.bind(this);
 
     this.ensureDocHeaderExists = this.ensureDocHeaderExists.bind(this);
@@ -51,8 +49,7 @@ class DocBase extends Component {
         expanded: true,
         toggleHeader: this.toggleHeader,
         toggleEditable: this.toggleEditable,
-        menuPrint: this.menuPrint,
-        menuCancelarDocumento: this.menuCancelarDocumento
+        DocBaseActions: actionFunc
       },
       detail: {},
       footer: {
@@ -97,19 +94,6 @@ class DocBase extends Component {
     this.setState({ header }, this.recalcComponentsHeight);
   }
 
-  menuPrint(cmd) {
-    let objType = this.state.docData.OBJTYPE;
-    let docEntry = this.state.docData.DOCENTRY;
-    let url = `/api/reports/${cmd}/${objType}/${docEntry}`;
-
-    if (cmd === "print") {
-      axios.get(url).then(result => sappy.showToastr({ color: "success", msg: "Documento impresso!" })).catch(error => sappy.showError(error, "Não foi possivel imprimir o documento"));
-    } else {
-      var baseUrl = ""; // Nota: Em desenv, é preciso redirecionar o pedido. Já em produtivo a api é servida na mesma porta do pedido
-      if (window.location.port === "3000") baseUrl = "http://byusserver:3005";
-      window.open(baseUrl + url, "_blank");
-    }
-  }
   menuCancelarDocumento() {
     let docEntry = this.state.docData.DOCENTRY;
 
@@ -397,6 +381,7 @@ class DocBase extends Component {
 
     let totals = docData.totals || {};
     let headerProps = {
+      mainThis: that,
       ...this.state.header,
       editable,
       docData,
@@ -405,6 +390,7 @@ class DocBase extends Component {
     };
 
     let detailProps = {
+      mainThis: that,
       ...this.state.detail,
       fields: this.props.detailFields,
       sidebarFields: this.props.sidebarFields,
@@ -422,6 +408,7 @@ class DocBase extends Component {
     let canConfirmar = this.state.docData.ID > 0 || (this.state.docData.DOCNUM > 0 && editable);
 
     let footerProps = {
+      mainThis: that,
       ...this.state.footer,
       docData,
       editable,

@@ -91,42 +91,50 @@ class DocHeader extends Component {
       }
     ];
 
+    let docFuncs = this.props.DocBaseActions || {};
     let headerMenus = [
-      {
-        name: "Visualizar",
-        visible: !!this.props.docData.DOCENTRY,
-        icon: "fa-file-pdf-o",
-        onClick: () => this.props.menuPrint("pdf")
-      },
       {
         name: "Imprimir",
         visible: !!this.props.docData.DOCENTRY,
         icon: "fa-print",
-        onClick: () => this.props.menuPrint("print")
+        onClick: () => docFuncs.handleExport({ that: this.props.mainThis, cmd: "print" })
       },
       {
-        name: "Ficheiro Excel",
+        name: "Descarregar",
         visible: !!this.props.docData.DOCENTRY,
         icon: "fa-download",
-        onClick: () => this.props.menuPrint("xls")
+        content: (
+          <span className="float-right">
+            <i className="icon fa-file-pdf-o download" title="Formato PDF" onClick={() => docFuncs.handleExport({ that: this.props.mainThis, cmd: "pdf" })} />
+            <i className="icon fa-file-excel-o download" title="Formato Excel" onClick={() => docFuncs.handleExport({ that: this.props.mainThis, cmd: "xls" })} />
+            <i className="icon fa-file-word-o download" title="Formato Winword" onClick={() => docFuncs.handleExport({ that: this.props.mainThis, cmd: "doc" })} />
+            <i className="icon fa-file-text-o download" title="Formato texto(*.csv)" onClick={() => docFuncs.handleExport({ that: this.props.mainThis, cmd: "csv" })} />
+          </span>
+        )
       },
       {
-        name: "Ficheiro Word",
-        visible: !!this.props.docData.DOCENTRY,
-        icon: "fa-download",
-        onClick: () => this.props.menuPrint("doc")
-      },
-      {
-        name: "Ficheiro CSV",
-        visible: !!this.props.docData.DOCENTRY,
-        icon: "fa-download",
-        onClick: () => this.props.menuPrint("csv")
-      },
-      {
-        name: "Cancelar Documento",
+        name: "Cancelar documento",
         visible: !!this.props.docData.DOCENTRY,
         icon: "fa-close",
-        onClick: this.props.menuCancelarDocumento
+        onClick: () => docFuncs.handleOnCancelarDocumento({ that: this.props.mainThis })
+      },
+      {
+        name: "Fechar documento",
+        visible: !!this.props.docData.DOCENTRY,
+        icon: "fa-lock",
+        onClick: () => docFuncs.handleOnFecharDocumento({ that: this.props.mainThis })
+      },
+      {
+        name: "Duplicar",
+        visible: !!this.props.docData.DOCENTRY,
+        icon: "fa-clone",
+        onClick: () => docFuncs.handleOnDuplicarDocumento({ that: this.props.mainThis })
+      },
+      {
+        name: "Ligações",
+        visible: !!this.props.docData.DOCENTRY,
+        icon: "fa-code-fork",
+        onClick: () => docFuncs.menuGetDocConnections({ that: this.props.mainThis })
       }
     ];
 
