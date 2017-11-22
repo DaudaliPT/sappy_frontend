@@ -85,6 +85,16 @@ export default {
       .catch(error => sappy.showError(error, "Erro ao obter dados"));
   },
 
+  handleForwardDocument: ({ that }) => {
+    // let docEntry = that.state.docData.DOCENTRY;
+    // axios
+    //   .get(`${that.props.apiDocsEdit}/${docEntry}/links`)
+    //   .then(function(result) {
+    //     sappy.showModal(<ModalLinks data={result.data} />);
+    //   })
+    //   .catch(error => sappy.showError(error, "Erro ao obter dados"));
+  },
+
   handleOnCancelarDocumento: ({ that, apiDocsEdit }) => {
     sappy.showQuestion({
       title: "Cancelar Documento?",
