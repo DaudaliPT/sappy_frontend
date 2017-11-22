@@ -5,12 +5,16 @@
 .Menu__MenuOptions {
   /* border: 1px solid #ccc; */
   border-radius: 3px;
-  background: rgba(53, 65, 74, 1);
-  box-shadow: 1px 1px 20px black;
+  /* background: rgba(53, 65, 74, 1); */
+  background: rgba(255, 255, 255, 1);
+  /* box-shadow: 1px 1px 2px black; */
+  border: 1px solid rgb(228, 234, 236);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, .05);
   position: absolute;
   min-width: 220px;
 }
 .Menu__MenuOption {
+  color: rgb(118, 131, 143);
   padding: 5px;
   padding-left: 10px;
   border-radius: 2px;
@@ -18,11 +22,41 @@
   cursor: pointer;
 }
 .Menu__MenuOption:hover {
-  color: rgba(255, 255, 255, 1);
-  background: rgba(255, 255, 255, .1);
+  color: rgba(82, 96, 105, 1);
+  background-color: rgba(98, 168, 234, 0.2) !important;
 }
 .Menu__MenuOption > i {
   padding-right: 10px;
+}
+.Menu__MenuOption > span.menutext {
+  position: absolute;
+  color: inherit;
+  left: 35px;
+}
+
+.Menu__MenuOptions .icon.download {
+  margin-left: 5px !important;
+  margin-right: 5px !important;
+}
+.Menu__MenuOptions .icon.download:hover {
+  font-size: 1.3rem;
+  color: rgba(255, 140, 0, 1) !important;
+}
+.Menu__MenuOptions .icon.download.fa-file-pdf-o:hover {
+  background-color: rgba(255, 255, 255, 1) !important;
+  color: rgba(255, 0, 0, 1) !important;
+}
+.Menu__MenuOptions .icon.download.fa-file-excel-o:hover {
+  background-color: rgba(255, 255, 255, 1) !important;
+  color: rgba(33, 115, 70, 1) !important;
+}
+.Menu__MenuOptions .icon.download.fa-file-word-o:hover {
+  background-color: rgba(255, 255, 255, 1) !important;
+  color: rgba(43, 87, 154, 1) !important;
+}
+.Menu__MenuOptions .icon.download.fa-file-text-o:hover {
+  background-color: rgba(255, 255, 255, 1) !important;
+  color: rgba(0, 0, 0, 1) !important;
 }
 
 .Menu__MenuOption--disabled {
@@ -45,8 +79,13 @@
   border: none !important;
   outline: none !important;
 }
+.Menu__MenuTrigger__active .btn {
+  color: #292b2c;
+  border-color: #ccc;
+  background-color: #ccc;
+}
 .Menu__MenuOptions--horizontal-left {
-  top: 40px;
+  top: 34px;
   right: 10px;
 }
 .Menu__MenuOptions--horizontal-right {

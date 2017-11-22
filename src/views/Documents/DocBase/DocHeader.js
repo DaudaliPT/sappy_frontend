@@ -94,23 +94,10 @@ class DocHeader extends Component {
     let docFuncs = this.props.DocBaseActions || {};
     let headerMenus = [
       {
-        name: "Imprimir",
+        name: "Duplicar",
         visible: !!this.props.docData.DOCENTRY,
-        icon: "fa-print",
-        onClick: () => docFuncs.handleExport({ that: this.props.mainThis, cmd: "print" })
-      },
-      {
-        name: "Descarregar",
-        visible: !!this.props.docData.DOCENTRY,
-        icon: "fa-download",
-        content: (
-          <span className="float-right">
-            <i className="icon fa-file-pdf-o download" title="Formato PDF" onClick={() => docFuncs.handleExport({ that: this.props.mainThis, cmd: "pdf" })} />
-            <i className="icon fa-file-excel-o download" title="Formato Excel" onClick={() => docFuncs.handleExport({ that: this.props.mainThis, cmd: "xls" })} />
-            <i className="icon fa-file-word-o download" title="Formato Winword" onClick={() => docFuncs.handleExport({ that: this.props.mainThis, cmd: "doc" })} />
-            <i className="icon fa-file-text-o download" title="Formato texto(*.csv)" onClick={() => docFuncs.handleExport({ that: this.props.mainThis, cmd: "csv" })} />
-          </span>
-        )
+        icon: "fa-clone",
+        onClick: () => docFuncs.handleOnDuplicarDocumento({ that: this.props.mainThis })
       },
       {
         name: "Cancelar documento",
@@ -125,16 +112,36 @@ class DocHeader extends Component {
         onClick: () => docFuncs.handleOnFecharDocumento({ that: this.props.mainThis })
       },
       {
-        name: "Duplicar",
-        visible: !!this.props.docData.DOCENTRY,
-        icon: "fa-clone",
-        onClick: () => docFuncs.handleOnDuplicarDocumento({ that: this.props.mainThis })
-      },
-      {
         name: "Ligações",
         visible: !!this.props.docData.DOCENTRY,
         icon: "fa-code-fork",
-        onClick: () => docFuncs.menuGetDocConnections({ that: this.props.mainThis })
+        onClick: () => docFuncs.handleGetDocLinks({ that: this.props.mainThis })
+      },
+      {
+        name: "Migrar p/ Nota Crédito",
+        visible: !!this.props.docData.DOCENTRY,
+        icon: "fa-share-square-o",
+        onClick: () => docFuncs.handleForwardDocument({ that: this.props.mainThis })
+      },
+      {
+        name: "Imprimir",
+        visible: !!this.props.docData.DOCENTRY,
+        icon: "fa-print",
+        onClick: () => docFuncs.handleExport({ that: this.props.mainThis, cmd: "print" })
+      },
+      {
+        name: "Descarregar",
+        visible: !!this.props.docData.DOCENTRY,
+        icon: "fa-download",
+        onClick: () => docFuncs.handleExport({ that: this.props.mainThis, cmd: "pdf" }), //por defeito o download é pdf
+        content: (
+          <span className="float-right">
+            <i className="icon fa-file-pdf-o download" title="Formato PDF" onClick={() => docFuncs.handleExport({ that: this.props.mainThis, cmd: "pdf" })} />
+            <i className="icon fa-file-excel-o download" title="Formato Excel" onClick={() => docFuncs.handleExport({ that: this.props.mainThis, cmd: "xls" })} />
+            <i className="icon fa-file-word-o download" title="Formato Winword" onClick={() => docFuncs.handleExport({ that: this.props.mainThis, cmd: "doc" })} />
+            <i className="icon fa-file-text-o download" title="Formato texto(*.csv)" onClick={() => docFuncs.handleExport({ that: this.props.mainThis, cmd: "csv" })} />
+          </span>
+        )
       }
     ];
 

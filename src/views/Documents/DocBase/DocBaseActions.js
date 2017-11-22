@@ -1,7 +1,7 @@
-// import React from "react";
+import React from "react";
 import { hashHistory } from "react-router";
 import axios from "axios";
-
+import ModalLinks from "./ModalLinks";
 const sappy = window.sappy;
 // const $ = window.$;
 
@@ -73,6 +73,16 @@ export default {
       if (window.location.port === "3000") baseUrl = "http://byusserver:3005";
       window.open(baseUrl + url, "_blank");
     }
+  },
+
+  handleGetDocLinks: ({ that }) => {
+    let docEntry = that.state.docData.DOCENTRY;
+    axios
+      .get(`${that.props.apiDocsEdit}/${docEntry}/links`)
+      .then(function(result) {
+        sappy.showModal(<ModalLinks data={result.data} />);
+      })
+      .catch(error => sappy.showError(error, "Erro ao obter dados"));
   },
 
   handleOnCancelarDocumento: ({ that, apiDocsEdit }) => {

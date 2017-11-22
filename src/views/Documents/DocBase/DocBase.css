@@ -53,16 +53,6 @@
   background-color: transparent;
 }
 
-.Menu__MenuOptions .icon.download {
-  padding-left: 5px !important;
-  padding-right: 5px !important;
-}
-.Menu__MenuOptions .icon.download:hover {
-  color: rgba(255, 255, 255, 1);
-  background: rgba(255, 255, 255, .1);
-  font-size: 1.3rem;
-}
-
 #docFooter {
   background: rgba(32, 46, 55, 0.9);
   /* transparent;    */

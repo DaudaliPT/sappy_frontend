@@ -68,7 +68,9 @@ class Panel extends Component {
           return DOMmenus.push(
             <MenuOption key={"menu_" + menu.name} onSelect={menu.onClick}>
               <i className={"icon " + menu.icon} />
-              {menu.name}
+              <span className="menutext">
+                {menu.name}
+              </span>
               {menu.content}
             </MenuOption>
           );
@@ -76,7 +78,9 @@ class Panel extends Component {
         DOMmenus.push(
           <MenuOption key={"menu_" + menu.name} onSelect={menu.onClick}>
             <i className={"icon " + menu.icon} />
-            {menu.name}
+            <span className="menutext">
+              {menu.name}
+            </span>
           </MenuOption>
         );
       });

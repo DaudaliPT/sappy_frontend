@@ -216,7 +216,6 @@ exports.prepareDocType = function({ tableName, module }) {
       sidebarFields,
       detailFields,
       apiDocsNew: `/api/docs/new/${tableName}`,
-      apiDocsView: `/api/docs/view/${tableName}`,
       apiDocsEdit: `/api/docs/edit/${tableName}`,
       footerSearchType: "oitm",
       footerSearchShowCatNum: true,
