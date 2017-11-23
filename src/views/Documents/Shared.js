@@ -18,6 +18,17 @@ exports.prepareDocType = function({ tableName, module }) {
   let contractHover = {};
   let numatcardLabel = "";
 
+  if ("14".indexOf(objType) > -1) {
+    let settings = sappy.getSettings(["VND.ORIN.MAXDIASTODEV"]);
+    let MAXDIASTODEV = sappy.getNum(settings["VND.ORIN.MAXDIASTODEV"]);
+
+    footerBaseDocLinesCondition = `
+          BASEDOC."CardCode"='<CARDCODE>' 
+      AND BASEDOC."ShipToCode"='<SHIPADDR>' 
+      AND BASEDOC."QTYSTK_AVAILABLE">0
+      AND BASEDOC."DocDate" > ADD_DAYS(CURRENT_DATE, -${MAXDIASTODEV})`;
+  }
+
   if ("13,14,15,16,17,23".indexOf(objType) > -1) {
     //Vendas
     cardCodeLabel = "Cliente";
@@ -221,7 +232,8 @@ exports.prepareDocType = function({ tableName, module }) {
 
       footerSearchType: "oitm",
       footerSearchShowCatNum: true,
-      footerSearchLimitCondition
+      footerSearchLimitCondition,
+      footerBaseDocLinesCondition
     }
   };
 };

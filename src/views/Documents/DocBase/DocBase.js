@@ -28,6 +28,7 @@ class DocBase extends Component {
     this.handleFooterSearchResult = this.handleFooterSearchResult.bind(this);
     this.handleToggleShowTotals = this.handleToggleShowTotals.bind(this);
     this.handleToogleLimitSearch = this.handleToogleLimitSearch.bind(this);
+    this.handleToogleUseBaseDoclines = this.handleToogleUseBaseDoclines.bind(this);
     this.forceReload = this.forceReload.bind(this);
     this.setNewDataAndDisplayAlerts = this.setNewDataAndDisplayAlerts.bind(this);
 
@@ -38,6 +39,7 @@ class DocBase extends Component {
     return {
       selectedLineNums: [],
       footerLimitSearch: props.footerSearchLimitCondition || false,
+      footerUseBaseDoclines: !!props.footerBaseDocLinesCondition || false,
       loading: true,
       changingTotals: false,
       editable: false,
@@ -340,6 +342,10 @@ class DocBase extends Component {
     this.setState({ footer });
   }
 
+  handleToogleUseBaseDoclines() {
+    // if (this.state.docData.OBJTYPE === "14") return; //
+    this.setState({ footerUseBaseDoclines: !this.state.footerUseBaseDoclines });
+  }
   handleToogleLimitSearch() {
     this.setState({ footerLimitSearch: !this.state.footerLimitSearch });
   }
@@ -404,6 +410,8 @@ class DocBase extends Component {
 
     let footerSearchLimitCondition = this.props.footerSearchLimitCondition || "";
     Object.keys(docData).forEach(field => (footerSearchLimitCondition = sappy.replaceAll(footerSearchLimitCondition, "<" + field + ">", docData[field])));
+    let footerBaseDocLinesCondition = this.props.footerBaseDocLinesCondition || "";
+    Object.keys(docData).forEach(field => (footerBaseDocLinesCondition = sappy.replaceAll(footerBaseDocLinesCondition, "<" + field + ">", docData[field])));
 
     let canConfirmar = this.state.docData.ID > 0 || (this.state.docData.DOCNUM > 0 && editable);
 
@@ -414,10 +422,13 @@ class DocBase extends Component {
       editable,
       loading: this.state.loading,
       footerLimitSearch: this.state.footerLimitSearch,
+      footerUseBaseDoclines: this.state.footerUseBaseDoclines,
       footerSearchLimitCondition,
+      footerBaseDocLinesCondition,
       footerSearchType: this.props.footerSearchType,
       footerSearchShowCatNum: this.props.footerSearchShowCatNum,
       onToogleUseSearchLimit: this.handleToogleLimitSearch,
+      onToogleUseBaseDoclines: this.handleToogleUseBaseDoclines,
       onFooterSearchResult: this.handleFooterSearchResult,
       onToggleShowTotals: this.handleToggleShowTotals,
       totals,
