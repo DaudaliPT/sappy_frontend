@@ -38,12 +38,13 @@ class SearchAndChoose extends Component {
 
   setBarCodeListener() {
     let barcodeApiUrl = "";
-    let condition = this.props.searchLimitCondition;
+    let condition = "";
 
-    if (this.props.useBaseDoclines) {
-      barcodeApiUrl = BaseDoc.barcodeApiUrl;
-      condition = this.props.baseDocLinesCondition;
-    } else if (this.props.searchType === "oitm") barcodeApiUrl = ModalOitm.barcodeApiUrl;
+    if (this.props.useBaseDoclines) condition = this.props.baseDocLinesCondition;
+    else if (this.props.useSearchLimit) condition = this.props.searchLimitCondition;
+
+    if (this.props.useBaseDoclines) barcodeApiUrl = BaseDoc.barcodeApiUrl;
+    else if (this.props.searchType === "oitm") barcodeApiUrl = ModalOitm.barcodeApiUrl;
     else if (this.props.searchType === "oitmpos") barcodeApiUrl = OitmPOS.barcodeApiUrl;
     else sappy.showError(this.props.searchType, "Tipo de pesquisa desconhecido");
 
