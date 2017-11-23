@@ -178,6 +178,7 @@ class SearchPage extends PureComponent {
         params: {
           searchTags,
           searchLimitCondition,
+          toObjtype: this.props.toObjtype,
           activeTab
         },
         cancelToken: new CancelToken(function executor(c) {
@@ -226,6 +227,7 @@ class SearchPage extends PureComponent {
       let params = {
         searchTags,
         searchLimitCondition,
+        toObjtype: this.props.toObjtype,
         activeTab,
         startIndex: listItems.length,
         maxRecords: 100

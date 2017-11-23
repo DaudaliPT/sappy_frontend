@@ -108,6 +108,19 @@ class BaseDoc extends Component {
       if (row.QTYSTK_AVAILABLE !== row.Quantity) qty += "(" + sappy.format.quantity(row.Quantity, 0) + ") ";
       qty += sappy.format.quantity(row.QTYSTK_AVAILABLE, 0) + " " + row.InvntryUom;
 
+      let abrev = row.ObjType;
+      if (row.ObjType === "23") abrev = "CT";
+      else if (row.ObjType === "17") abrev = "EC";
+      else if (row.ObjType === "15") abrev = "GR";
+      else if (row.ObjType === "16") abrev = "DV";
+      else if (row.ObjType === "13") abrev = "FT";
+      else if (row.ObjType === "14") abrev = "NC";
+      else if (row.ObjType === "22") abrev = "EF";
+      else if (row.ObjType === "20") abrev = "RM";
+      else if (row.ObjType === "21") abrev = "DM";
+      else if (row.ObjType === "18") abrev = "FC";
+      else if (row.ObjType === "19") abrev = "NC";
+
       return (
         <div className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={this.handleRowSelection}>
           <div className="container vertical-align-middle">
@@ -119,7 +132,7 @@ class BaseDoc extends Component {
                   <label htmlFor={rowId} />
                 </span>
                 <span style={{ display: "inline-block", paddingLeft: "5px" }}>
-                  FT {row.DocNum}
+                  {abrev + " " + row.DocNum}
                 </span>
               </div>
               <div className="col-2">
@@ -172,6 +185,7 @@ class BaseDoc extends Component {
               searchPlaceholder="Procurar..."
               searchApiUrl={BaseDoc.searchApiUrl}
               renderRow={renderRow}
+              toObjtype={this.props.toObjtype}
               searchText={this.props.searchText}
               useSearchLimit={this.props.useSearchLimit}
               searchLimitCondition={this.props.searchLimitCondition}
@@ -208,6 +222,7 @@ BaseDoc.barcodeApiUrl = "/api/search/basedoc/bc/";
 BaseDoc.defaultProps = {
   showCatNum: false,
   useSearchLimit: false,
-  searchLimitCondition: ""
+  searchLimitCondition: "",
+  toObjtype: ""
 };
 export default BaseDoc;

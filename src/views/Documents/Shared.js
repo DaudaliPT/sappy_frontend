@@ -18,17 +18,6 @@ exports.prepareDocType = function({ tableName, module }) {
   let contractHover = {};
   let numatcardLabel = "";
 
-  if ("14".indexOf(objType) > -1) {
-    let settings = sappy.getSettings(["VND.ORIN.MAXDIASTODEV"]);
-    let MAXDIASTODEV = sappy.getNum(settings["VND.ORIN.MAXDIASTODEV"]);
-
-    footerBaseDocLinesCondition = `
-          BASEDOC."CardCode"='<CARDCODE>' 
-      AND BASEDOC."ShipToCode"='<SHIPADDR>' 
-      AND BASEDOC."QTYSTK_AVAILABLE">0
-      AND BASEDOC."DocDate" > ADD_DAYS(CURRENT_DATE, -${MAXDIASTODEV})`;
-  }
-
   if ("13,14,15,16,17,23".indexOf(objType) > -1) {
     //Vendas
     cardCodeLabel = "Cliente";
@@ -37,7 +26,20 @@ exports.prepareDocType = function({ tableName, module }) {
     footerSearchLimitCondition = "";
     priceHover = {};
     numatcardLabel = "Ref. Cliente";
+
+    // as cotações não se podem basear em documentos
+    if (objType !== "23")
+      footerBaseDocLinesCondition = `
+          BASEDOC."CardCode"='<CARDCODE>' 
+      AND BASEDOC."ShipToCode"='<SHIPADDR>' 
+      AND BASEDOC."QTYSTK_AVAILABLE">0 `;
   } else if ("18,19,20,21,22".indexOf(objType) > -1) {
+    // as encomendas de compra não se podem basear em documentos
+    if (objType !== "22")
+      footerBaseDocLinesCondition = `
+            BASEDOC."CardCode"='<CARDCODE>' 
+        AND BASEDOC."ShipToCode"='<SHIPADDR>' 
+        AND BASEDOC."QTYSTK_AVAILABLE">0 `;
     //Compras
     cardCodeLabel = "Fornecedor";
     cardCodeApi = "/api/cbo/ocrd/s";
@@ -123,6 +125,17 @@ exports.prepareDocType = function({ tableName, module }) {
       }
     };
     numatcardLabel = "Ref. Fornecedor";
+  }
+
+  if ("14".indexOf(objType) > -1) {
+    let settings = sappy.getSettings(["VND.ORIN.MAXDIASTODEV"]);
+    let MAXDIASTODEV = sappy.getNum(settings["VND.ORIN.MAXDIASTODEV"]);
+
+    footerBaseDocLinesCondition = `
+          BASEDOC."CardCode"='<CARDCODE>' 
+      AND BASEDOC."ShipToCode"='<SHIPADDR>' 
+      AND BASEDOC."QTYSTK_AVAILABLE">0
+      AND BASEDOC."DocDate" > ADD_DAYS(CURRENT_DATE, -${MAXDIASTODEV})`;
   }
 
   const DESCDEBOP_options = [

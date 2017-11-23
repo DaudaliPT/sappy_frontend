@@ -122,7 +122,7 @@ class DocDetail extends PureComponent {
     }
 
     let groupBy = null;
-    let lineWithGroup = this.props.docData.LINES.find(l => !(l.Origem === "Não definida"));
+    let lineWithGroup = this.props.docData.LINES.find(l => (l.Origem || "Não definida") !== "Não definida");
     if (lineWithGroup) groupBy = [{ key: "Origem", name: "Grupo" }];
 
     return (

@@ -98,6 +98,7 @@ class SearchAndChoose extends Component {
     if (this.props.useBaseDoclines) {
       currentModal = (
         <BaseDoc
+          toObjtype={this.props.toObjtype}
           toggleModal={this.handleModalSearchClose}
           useSearchLimit={this.props.useBaseDoclines}
           showCatNum={this.props.showCatNum}
@@ -148,7 +149,8 @@ class SearchAndChoose extends Component {
         .get(searchApiUrl, {
           params: {
             searchTags: [{ value: searchText }],
-            searchLimitCondition
+            searchLimitCondition,
+            toObjtype: this.props.toObjtype
           },
           cancelToken: new CancelToken(function executor(c) {
             that.cancelPreviousAxiosRequest = c;
@@ -213,6 +215,7 @@ SearchAndChoose.defaultProps = {
   showCatNum: false,
 
   useBaseDoclines: false,
+  toObjtype: "",
   baseDocLinesCondition: "",
   onToogleUseBaseDoclines: () => {},
 
