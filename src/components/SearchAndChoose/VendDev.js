@@ -105,8 +105,8 @@ class VndDev extends Component {
       if (selected) rowStyleClass += " sappy-selected-row";
 
       let qty = "";
-      if (row.QuantityAvailable !== row.Quantity) qty += "(" + sappy.format.quantity(row.Quantity, 0) + ") ";
-      qty += sappy.format.quantity(row.QuantityAvailable, 0) + " " + row.InvntryUom;
+      if (row.QTYSTK_AVAILABLE !== row.Quantity) qty += "(" + sappy.format.quantity(row.Quantity, 0) + ") ";
+      qty += sappy.format.quantity(row.QTYSTK_AVAILABLE, 0) + " " + row.InvntryUom;
 
       return (
         <div className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={this.handleRowSelection}>

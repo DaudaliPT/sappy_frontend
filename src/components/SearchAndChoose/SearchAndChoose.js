@@ -3,7 +3,7 @@ import axios from "axios";
 
 const sappy = window.sappy;
 import ModalOitm from "./ModalOitm";
-import OitmBasic from "./OitmBasic";
+import OitmPOS from "./OitmPOS";
 import VendDev from "./VendDev";
 
 class SearchAndChoose extends Component {
@@ -25,7 +25,7 @@ class SearchAndChoose extends Component {
   componentDidMount() {
     let barcodeApiUrl = "";
     if (this.props.searchType === "oitm") barcodeApiUrl = ModalOitm.barcodeApiUrl;
-    else if (this.props.searchType === "oitmbasic") barcodeApiUrl = OitmBasic.barcodeApiUrl;
+    else if (this.props.searchType === "oitmpos") barcodeApiUrl = OitmPOS.barcodeApiUrl;
     else if (this.props.searchType === "vnddev") barcodeApiUrl = VendDev.barcodeApiUrl;
     else sappy.showError(this.props.searchType, "Tipo de pesquisa desconhecido");
 
@@ -39,7 +39,7 @@ class SearchAndChoose extends Component {
   componentDidUpdate(prevProps, prevState) {
     let barcodeApiUrl = "";
     if (this.props.searchType === "oitm") barcodeApiUrl = ModalOitm.barcodeApiUrl;
-    else if (this.props.searchType === "oitmbasic") barcodeApiUrl = OitmBasic.barcodeApiUrl;
+    else if (this.props.searchType === "oitmpos") barcodeApiUrl = OitmPOS.barcodeApiUrl;
     else if (this.props.searchType === "vnddev") barcodeApiUrl = VendDev.barcodeApiUrl;
     else sappy.showError(this.props.searchType, "Tipo de pesquisa desconhecido");
     sappy.barcodes.onRead(this.handleBarcodeRead, barcodeApiUrl, this.props.limitSearchCondition);
@@ -89,9 +89,9 @@ class SearchAndChoose extends Component {
           searchText={this.state.searchText}
         />
       );
-    else if (this.props.searchType === "oitmbasic")
+    else if (this.props.searchType === "oitmpos")
       currentModal = (
-        <OitmBasic
+        <OitmPOS
           toggleModal={this.handleModalSearchClose}
           limitSearch={this.props.limitSearch}
           showCatNum={this.props.showCatNum}
@@ -120,7 +120,7 @@ class SearchAndChoose extends Component {
     let that = this;
     let searchApiUrl = "";
     if (this.props.searchType === "oitm") searchApiUrl = ModalOitm.searchApiUrl;
-    else if (this.props.searchType === "oitmbasic") searchApiUrl = OitmBasic.searchApiUrl;
+    else if (this.props.searchType === "oitmpos") searchApiUrl = OitmPOS.searchApiUrl;
     else if (this.props.searchType === "vnddev") searchApiUrl = VendDev.searchApiUrl;
     else sappy.showError(this.props.searchType, "Tipo de pesquisa desconhecido");
 

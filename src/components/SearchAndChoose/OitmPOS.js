@@ -7,7 +7,7 @@ import SearchPage from "../SearchPage";
 import { Badge } from "reactstrap";
 import uuid from "uuid/v4";
 
-class OitmBasic extends Component {
+class OitmPOS extends Component {
   constructor(props) {
     super(props);
     this.handleRowSelection = this.handleRowSelection.bind(this);
@@ -172,7 +172,7 @@ class OitmBasic extends Component {
           <ModalBody>
             <SearchPage
               searchPlaceholder="Procurar..."
-              searchApiUrl={OitmBasic.searchApiUrl}
+              searchApiUrl={OitmPOS.searchApiUrl}
               renderRow={renderRow}
               searchText={this.props.searchText}
               limitSearch={this.props.limitSearch}
@@ -205,13 +205,13 @@ class OitmBasic extends Component {
   }
 }
 
-OitmBasic.searchApiUrl = "/api/search/oitmbasic/";
-OitmBasic.barcodeApiUrl = "/api/search/oitmbasic/bc/";
+OitmPOS.searchApiUrl = "/api/search/oitmpos/";
+OitmPOS.barcodeApiUrl = "/api/search/oitmpos/bc/";
 
-OitmBasic.defaultProps = {
+OitmPOS.defaultProps = {
   limitSearch: false,
   limitSearchCondition: "",
   showCatNum: false,
   onToogleLimitSearch: () => {}
 };
-export default OitmBasic;
+export default OitmPOS;

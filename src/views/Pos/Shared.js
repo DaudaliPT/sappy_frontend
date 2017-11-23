@@ -11,14 +11,14 @@ exports.prepareDocType = function({ tableName }) {
   let cardCodeLabel = "Cliente";
   let cardCodeApi = "/api/cbo/ocrd/c";
   let footerLimitSearchCondition = "";
-  let footerSearchType = "oitmbasic";
+  let footerSearchType = "oitmpos";
   if ("14".indexOf(objType) > -1) {
     let settings = sappy.getSettings(["VND.ORIN.MAXDIASTODEV"]);
     let MAXDIASTODEV = sappy.getNum(settings["VND.ORIN.MAXDIASTODEV"]);
     footerLimitSearchCondition = `
           BASEDOC."CardCode"='<CARDCODE>' 
       AND BASEDOC."ShipToCode"='<SHIPADDR>' 
-      AND BASEDOC."QuantityAvailable">0
+      AND BASEDOC."QTYSTK_AVAILABLE">0
       AND BASEDOC."DocDate" > ADD_DAYS(CURRENT_DATE, -${MAXDIASTODEV})`;
     footerSearchType = "vnddev";
   }

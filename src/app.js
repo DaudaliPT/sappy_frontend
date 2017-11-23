@@ -34,9 +34,7 @@ var processMenuLevel = menus => {
     if (menu.menus) {
       processMenuLevel(menu.menus);
     } else if (menu.component) {
-      buildedRoutes.push(
-        <Route key={"route_" + menu.fullName} path={menu.fullName} name={menu.fullName} component={menu.component} />
-      );
+      buildedRoutes.push(<Route key={"route_" + menu.fullName} path={menu.fullName} name={menu.fullName} component={menu.component} />);
     }
   });
 };
@@ -55,7 +53,7 @@ class App extends Component {
 
     if (user.NAME) {
       if (nextState.location.pathname === "/") {
-        let showSappy = ",manager,ibrahim,dora,marlene,zara,".indexOf("," + sappy.sessionInfo.user.NAME + ",") > -1;
+        let showSappy = ",manager,ibrahim,dora,marlene,zara,adelaide,antunes,".indexOf("," + sappy.sessionInfo.user.NAME + ",") > -1;
         if (!showSappy) hashHistory.push("/pos");
       }
 
