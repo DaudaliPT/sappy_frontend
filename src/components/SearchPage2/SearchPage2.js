@@ -5,7 +5,7 @@ import DataGrid from "../DataGrid";
 import SearchBar from "../SearchBar";
 import TabsBar from "../TabsBar";
 import NoContent from "../NoContent";
-import uuid from 'uuid';
+import uuid from "uuid";
 const sappy = window.sappy;
 // const $ = window.$;
 
@@ -18,16 +18,16 @@ class SearchPage2 extends PureComponent {
     this.handleOnTabSelect = this.handleOnTabSelect.bind(this);
     this.handleOnChange_txtSearch = this.handleOnChange_txtSearch.bind(this);
     // this.calcPageHeight = this.calcPageHeight.bind(this);
-    this.handleToogleLimitSearch = this.handleToogleLimitSearch.bind(this)
-    this.getGrid = this.getGrid.bind(this)
+    this.handleToogleLimitSearch = this.handleToogleLimitSearch.bind(this);
+    this.getGrid = this.getGrid.bind(this);
 
-    this.gridUuid = 'grid' + uuid();
-    this.byusModalTabsBarID = 'byusModalTabsBar' + uuid();
+    this.gridUuid = "grid" + uuid();
+    this.byusModalTabsBarID = "byusModalTabsBar" + uuid();
     this.state = {
       /** holds the text typed by the user */
       searchTags: (props.searchText && [{ value: props.searchText, label: props.searchText }]) || [],
 
-      limitSearch: props.limitSearch || false,
+      useSearchLimit: props.useSearchLimit || false,
       tabItems: {},
       activeTab: "",
       listItems: [],
@@ -39,32 +39,23 @@ class SearchPage2 extends PureComponent {
     };
   }
 
-
   componentWillReceiveProps(nextProps) {
-    if (nextProps.searchText !== this.props.searchText
-      || nextProps.searchApiUrl !== this.props.searchApiUrl
-      || nextProps.currentModal !== this.props.currentModal
-    ) {
-
+    if (nextProps.searchText !== this.props.searchText || nextProps.searchApiUrl !== this.props.searchApiUrl || nextProps.currentModal !== this.props.currentModal) {
       setTimeout(() => {
-        this.findAndGetFirstRows()
+        this.findAndGetFirstRows();
         if (this.resfreshInterval) clearInterval(this.resfreshInterval);
-        if (this.props.autoRefreshTime) this.resfreshInterval = setInterval(this.findAndGetFirstRows, this.props.autoRefreshTime)
+        if (this.props.autoRefreshTime) this.resfreshInterval = setInterval(this.findAndGetFirstRows, this.props.autoRefreshTime);
       }, 1);
-
     }
   }
 
   componentDidMount() {
     setTimeout(() => {
-      this.findAndGetFirstRows()
+      this.findAndGetFirstRows();
       if (this.resfreshInterval) clearInterval(this.resfreshInterval);
-      if (this.props.autoRefreshTime) this.resfreshInterval = setInterval(this.findAndGetFirstRows, this.props.autoRefreshTime)
+      if (this.props.autoRefreshTime) this.resfreshInterval = setInterval(this.findAndGetFirstRows, this.props.autoRefreshTime);
     }, 1);
-
   }
-
-
 
   componentWillUnmount() {
     if (this.serverRequest && this.serverRequest.abort) this.serverRequest.abort();
@@ -78,7 +69,7 @@ class SearchPage2 extends PureComponent {
 
   handleToogleLimitSearch() {
     let that = this;
-    this.setState({ limitSearch: !that.state.limitSearch }, that.findAndGetFirstRows);
+    this.setState({ useSearchLimit: !that.state.useSearchLimit }, that.findAndGetFirstRows);
   }
   getGrid() {
     return this.grid || {};
@@ -90,7 +81,7 @@ class SearchPage2 extends PureComponent {
       {
         searchTags: values
       },
-      function () {
+      function() {
         that.findAndGetFirstRows();
       }
     );
@@ -112,14 +103,14 @@ class SearchPage2 extends PureComponent {
       if (this.cancelPreviousAxiosRequest) this.cancelPreviousAxiosRequest();
       var CancelToken = axios.CancelToken;
 
-      let limitSearchCondition = "";
-      if (this.state.limitSearch && this.props.limitSearchCondition) limitSearchCondition = this.props.limitSearchCondition;
+      let searchLimitCondition = "";
+      if (this.state.useSearchLimit && this.props.searchLimitCondition) searchLimitCondition = this.props.searchLimitCondition;
 
       this.serverRequest = axios
         .get(that.props.searchApiUrl, {
           params: {
             searchTags,
-            limitSearchCondition,
+            searchLimitCondition,
             activeTab
           },
           cancelToken: new CancelToken(function executor(c) {
@@ -127,7 +118,7 @@ class SearchPage2 extends PureComponent {
             that.cancelPreviousAxiosRequest = c;
           })
         })
-        .then(function (result) {
+        .then(function(result) {
           var { activeTab } = that.state;
           var tabItems = result.data.tabItems;
           var listItems = result.data.firstRows;
@@ -137,16 +128,13 @@ class SearchPage2 extends PureComponent {
           };
           if (!(activeTab in tabItems)) activeTab = Object.keys(tabItems)[0];
 
-          that.setState(
-            { listItems, tabItems, activeTab, totalInfo },
-            e => {
-              // that.calcPageHeight()
-              that.props.onRefresh && that.props.onRefresh()
-            }
-          );
+          that.setState({ listItems, tabItems, activeTab, totalInfo }, e => {
+            // that.calcPageHeight()
+            that.props.onRefresh && that.props.onRefresh();
+          });
         })
-        .catch(function (error) {
-          if (!error.__CANCEL__) sappy.showError(error, "Api error")
+        .catch(function(error) {
+          if (!error.__CANCEL__) sappy.showError(error, "Api error");
         });
     }
   }
@@ -156,12 +144,12 @@ class SearchPage2 extends PureComponent {
     if (that.props.searchApiUrl) {
       let { searchTags, activeTab, listItems } = this.state;
 
-      let limitSearchCondition = "";
-      if (this.state.limitSearch && this.props.limitSearchCondition) limitSearchCondition = this.props.limitSearchCondition;
+      let searchLimitCondition = "";
+      if (this.state.useSearchLimit && this.props.searchLimitCondition) searchLimitCondition = this.props.searchLimitCondition;
 
       let params = {
         searchTags,
-        limitSearchCondition,
+        searchLimitCondition,
         activeTab,
         startIndex: listItems.length,
         maxRecords: 100
@@ -169,7 +157,7 @@ class SearchPage2 extends PureComponent {
 
       that.serverRequest = axios
         .get(that.props.searchApiUrl + "/more", { params })
-        .then(function (result) {
+        .then(function(result) {
           var nextRows = result.data;
           var listItems = that.state.listItems.concat(nextRows);
           let totalInfo = {
@@ -178,9 +166,8 @@ class SearchPage2 extends PureComponent {
           };
           that.setState({ listItems, totalInfo });
         })
-        .catch(function (error) {
-          if (!error.__CANCEL__) sappy.showError(error, "Api error")
-
+        .catch(function(error) {
+          if (!error.__CANCEL__) sappy.showError(error, "Api error");
         });
     }
   };
@@ -189,39 +176,33 @@ class SearchPage2 extends PureComponent {
     var { activeTab, tabItems, totalInfo } = this.state;
     var { currentModal } = this.props;
 
-    let hasNoContent = (this.state.listItems.length === 0 &&
-      this.state.searchTags.length === 0 &&
-      this.state.activeTab === Object.keys(tabItems)[0])
+    let hasNoContent = this.state.listItems.length === 0 && this.state.searchTags.length === 0 && this.state.activeTab === Object.keys(tabItems)[0];
 
-    let hasContent = !hasNoContent || !this.props.noRecordsMessage
+    let hasContent = !hasNoContent || !this.props.noRecordsMessage;
 
     return (
-      <div >
-        {!hasContent &&
-          <NoContent message={this.props.noRecordsMessage}></NoContent>
-        }
+      <div>
+        {!hasContent && <NoContent message={this.props.noRecordsMessage} />}
         {hasContent &&
           <SearchBar
             totalInfo={totalInfo}
             onChange={this.handleOnChange_txtSearch}
             searchTags={this.state.searchTags}
-            limitSearch={this.state.limitSearch}
-            limitSearchCondition={this.props.limitSearchCondition}
-            onToogleLimitSearch={this.handleToogleLimitSearch}
+            useSearchLimit={this.state.useSearchLimit}
+            searchLimitCondition={this.props.searchLimitCondition}
+            onToogleUseSearchLimit={this.handleToogleLimitSearch}
             inputProps={{
-              placeholder: this.props.searchPlaceholder,
+              placeholder: this.props.searchPlaceholder
             }}
-          />
-        }
+          />}
         {hasContent &&
           <div className="byusModalTabsBar" id={this.byusModalTabsBarID}>
             <TabsBar items={tabItems} activeItem={activeTab} onSelect={this.handleOnTabSelect} />
-          </div>
-        }
+          </div>}
         {hasContent &&
           <DataGrid
             id={this.gridUuid}
-            ref={node => this.grid = node}
+            ref={node => (this.grid = node)}
             height={this.props.height - 100}
             fields={this.props.fields}
             rowKey={this.props.rowKey}
@@ -229,24 +210,23 @@ class SearchPage2 extends PureComponent {
             onRowSelectionChange={this.props.onRowSelectionChange}
             selectedKeys={this.props.selectedKeys}
             rows={this.state.listItems}
-          ></DataGrid>
-        }
+          />}
         {currentModal}
       </div>
-    )
+    );
   }
 }
 
 SearchPage2.defaultProps = {
   searchPlaceholder: "Procurar...",
   searchApiUrl: "",
-  renderHeaders: () => { },
+  renderHeaders: () => {},
   currentModal: null,
-  renderRow: ({ row, index }) => { },
+  renderRow: ({ row, index }) => {},
   autoRefreshTime: 0,
   renderRowHeight: 20,
-  limitSearch: false,
-  limitSearchCondition: "",
+  useSearchLimit: false,
+  searchLimitCondition: ""
 };
 
 export default SearchPage2;

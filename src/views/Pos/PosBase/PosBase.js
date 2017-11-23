@@ -26,6 +26,7 @@ class PosBase extends Component {
     this.handleFooterSearchResult = this.handleFooterSearchResult.bind(this);
     this.handleToggleShowTotals = this.handleToggleShowTotals.bind(this);
     this.handleToogleLimitSearch = this.handleToogleLimitSearch.bind(this);
+    this.handleToogleUseBaseDoclines = this.handleToogleUseBaseDoclines.bind(this);
     this.forceReload = this.forceReload.bind(this);
     this.setNewDataAndDisplayAlerts = this.setNewDataAndDisplayAlerts.bind(this);
 
@@ -36,7 +37,8 @@ class PosBase extends Component {
     let settings = sappy.getSettings(["POS.CFINAL.CARDCODE"]);
     return {
       selectedLineNums: [],
-      footerLimitSearch: props.footerLimitSearchCondition || false,
+      footerLimitSearch: !!props.footerSearchLimitCondition || false,
+      footerUseBaseDoclines: !!props.footerBaseDocLinesCondition || false,
       loading: true,
       docData: {
         LINES: []
@@ -265,8 +267,12 @@ class PosBase extends Component {
     this.setState({ footer });
   }
 
+  handleToogleUseBaseDoclines() {
+    if (this.state.docData.OBJTYPE === "14") return; //
+    this.setState({ footerUseBaseDoclines: !this.state.footerUseBaseDoclines });
+  }
+
   handleToogleLimitSearch() {
-    if (this.state.docData.OBJTYPE === "14") return; // naõ pode desactivar o filtro
     this.setState({ footerLimitSearch: !this.state.footerLimitSearch });
   }
 
@@ -323,7 +329,6 @@ class PosBase extends Component {
     let detailProps = {
       ...this.state.detail,
       fields: this.props.detailFields,
-      groupBy: this.props.groupBy,
       onSideBarFieldChange: this.handleHeaderFieldChange,
       docData,
       onRowUpdate: this.handleDetailRowChange,
@@ -332,8 +337,10 @@ class PosBase extends Component {
       onRowReorder: this.handleDetailRowReorder
     };
 
-    let footerLimitSearchCondition = this.props.footerLimitSearchCondition || "";
-    Object.keys(docData).forEach(field => (footerLimitSearchCondition = sappy.replaceAll(footerLimitSearchCondition, "<" + field + ">", docData[field])));
+    let footerSearchLimitCondition = this.props.footerSearchLimitCondition || "";
+    Object.keys(docData).forEach(field => (footerSearchLimitCondition = sappy.replaceAll(footerSearchLimitCondition, "<" + field + ">", docData[field])));
+    let footerBaseDocLinesCondition = this.props.footerBaseDocLinesCondition || "";
+    Object.keys(docData).forEach(field => (footerBaseDocLinesCondition = sappy.replaceAll(footerBaseDocLinesCondition, "<" + field + ">", docData[field])));
 
     let canConfirmar = this.state.docData.ID > 0;
 
@@ -342,10 +349,13 @@ class PosBase extends Component {
       docData,
       loading: this.state.loading,
       footerLimitSearch: this.state.footerLimitSearch,
-      footerLimitSearchCondition,
+      footerUseBaseDoclines: this.state.footerUseBaseDoclines,
+      footerSearchLimitCondition,
+      footerBaseDocLinesCondition,
       footerSearchType: this.props.footerSearchType,
       footerSearchShowCatNum: this.props.footerSearchShowCatNum,
-      onToogleLimitSearch: this.handleToogleLimitSearch,
+      onToogleUseSearchLimit: this.handleToogleLimitSearch,
+      onToogleUseBaseDoclines: this.handleToogleUseBaseDoclines,
       onFooterSearchResult: this.handleFooterSearchResult,
       onToggleShowTotals: this.handleToggleShowTotals,
       totals,
@@ -398,7 +408,7 @@ PosBase.defaultProps = {
   apiDocsNew: "", //  /api/docs/ordr/doc
   headerFields: {},
   detailFields: [],
-  footerLimitSearchCondition: "",
+  footerSearchLimitCondition: "",
   footerSearchShowCatNum: false,
   onRowChange: null, //   handleRowChange(currentRow, updated) => allows for specific doc behaviour
   onHeaderChange: null //  onHeaderChange(docData, updated) => allows to react to user change on header

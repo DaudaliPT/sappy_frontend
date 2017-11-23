@@ -37,7 +37,7 @@ class DocBase extends Component {
   getinitialState(props) {
     return {
       selectedLineNums: [],
-      footerLimitSearch: props.footerLimitSearchCondition || false,
+      footerLimitSearch: props.footerSearchLimitCondition || false,
       loading: true,
       changingTotals: false,
       editable: false,
@@ -402,8 +402,8 @@ class DocBase extends Component {
       onRowReorder: this.handleDetailRowReorder
     };
 
-    let footerLimitSearchCondition = this.props.footerLimitSearchCondition || "";
-    Object.keys(docData).forEach(field => (footerLimitSearchCondition = sappy.replaceAll(footerLimitSearchCondition, "<" + field + ">", docData[field])));
+    let footerSearchLimitCondition = this.props.footerSearchLimitCondition || "";
+    Object.keys(docData).forEach(field => (footerSearchLimitCondition = sappy.replaceAll(footerSearchLimitCondition, "<" + field + ">", docData[field])));
 
     let canConfirmar = this.state.docData.ID > 0 || (this.state.docData.DOCNUM > 0 && editable);
 
@@ -414,10 +414,10 @@ class DocBase extends Component {
       editable,
       loading: this.state.loading,
       footerLimitSearch: this.state.footerLimitSearch,
-      footerLimitSearchCondition,
+      footerSearchLimitCondition,
       footerSearchType: this.props.footerSearchType,
       footerSearchShowCatNum: this.props.footerSearchShowCatNum,
-      onToogleLimitSearch: this.handleToogleLimitSearch,
+      onToogleUseSearchLimit: this.handleToogleLimitSearch,
       onFooterSearchResult: this.handleFooterSearchResult,
       onToggleShowTotals: this.handleToggleShowTotals,
       totals,
@@ -472,7 +472,7 @@ DocBase.defaultProps = {
   headerFields: {},
   sidebarFields: {},
   detailFields: [],
-  footerLimitSearchCondition: "",
+  footerSearchLimitCondition: "",
   footerSearchShowCatNum: false,
   onRowChange: null, //   handleRowChange(currentRow, updated) => allows for specific doc behaviour
   onHeaderChange: null //  onHeaderChange(docData, updated) => allows to react to user change on header

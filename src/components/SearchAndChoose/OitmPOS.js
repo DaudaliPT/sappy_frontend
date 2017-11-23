@@ -175,9 +175,12 @@ class OitmPOS extends Component {
               searchApiUrl={OitmPOS.searchApiUrl}
               renderRow={renderRow}
               searchText={this.props.searchText}
-              limitSearch={this.props.limitSearch}
-              limitSearchCondition={this.props.limitSearchCondition}
-              onToogleLimitSearch={this.props.onToogleLimitSearch}
+              useBaseDoclines={this.props.useBaseDoclines}
+              baseDocLinesCondition={this.props.baseDocLinesCondition}
+              onToogleUseBaseDoclines={this.props.onToogleUseBaseDoclines}
+              useSearchLimit={this.props.useSearchLimit}
+              searchLimitCondition={this.props.searchLimitCondition}
+              onToogleUseSearchLimit={this.props.onToogleUseSearchLimit}
               renderRowHeight={50}
               currentModal={this.state.currentModal}
             />
@@ -209,9 +212,13 @@ OitmPOS.searchApiUrl = "/api/search/oitmpos/";
 OitmPOS.barcodeApiUrl = "/api/search/oitmpos/bc/";
 
 OitmPOS.defaultProps = {
-  limitSearch: false,
-  limitSearchCondition: "",
   showCatNum: false,
-  onToogleLimitSearch: () => {}
+  useBaseDoclines: false,
+  baseDocLinesCondition: "",
+  onToogleUseBaseDoclines: () => {},
+
+  useSearchLimit: false,
+  searchLimitCondition: "",
+  onToogleUseSearchLimit: () => {}
 };
 export default OitmPOS;

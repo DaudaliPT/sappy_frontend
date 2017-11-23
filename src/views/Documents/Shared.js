@@ -12,7 +12,8 @@ exports.prepareDocType = function({ tableName, module }) {
   let cardCodeApi = "";
   let contactLabel = "";
   let dueDateLabel = "15,16,17, 20,21,22".indexOf(objType) > -1 ? "Data Entrega" : "Data Vencimento"; //Encomendas/Entregas/Devoluções
-  let footerLimitSearchCondition = "";
+  let footerBaseDocLinesCondition = "";
+  let footerSearchLimitCondition = "";
   let priceHover = {};
   let contractHover = {};
   let numatcardLabel = "";
@@ -22,7 +23,7 @@ exports.prepareDocType = function({ tableName, module }) {
     cardCodeLabel = "Cliente";
     cardCodeApi = "/api/cbo/ocrd/c";
     contactLabel = "Contato";
-    footerLimitSearchCondition = "";
+    footerSearchLimitCondition = "";
     priceHover = {};
     numatcardLabel = "Ref. Cliente";
   } else if ("18,19,20,21,22".indexOf(objType) > -1) {
@@ -30,7 +31,7 @@ exports.prepareDocType = function({ tableName, module }) {
     cardCodeLabel = "Fornecedor";
     cardCodeApi = "/api/cbo/ocrd/s";
     contactLabel = "Contato/Sub.For";
-    footerLimitSearchCondition = `OITM."CardCode"='<CARDCODE>' AND 1= CASE WHEN OCRD."U_apyITMCNT"='Y' THEN CASE WHEN CASE WHEN OITM."FirmCode"=-1 THEN 'null' ELSE  OMRC."FirmName" END = '<CONTACT>' THEN 1 ELSE 0 END  ELSE 1 END`; //<CONTACT> vazio retorna null
+    footerSearchLimitCondition = `OITM."CardCode"='<CARDCODE>' AND 1= CASE WHEN OCRD."U_apyITMCNT"='Y' THEN CASE WHEN CASE WHEN OITM."FirmCode"=-1 THEN 'null' ELSE  OMRC."FirmName" END = '<CONTACT>' THEN 1 ELSE 0 END  ELSE 1 END`; //<CONTACT> vazio retorna null
 
     priceHover = {
       api: "api/prod/info/<ITEMCODE>/upc",
@@ -217,9 +218,10 @@ exports.prepareDocType = function({ tableName, module }) {
       detailFields,
       apiDocsNew: `/api/docs/new/${tableName}`,
       apiDocsEdit: `/api/docs/edit/${tableName}`,
+
       footerSearchType: "oitm",
       footerSearchShowCatNum: true,
-      footerLimitSearchCondition
+      footerSearchLimitCondition
     }
   };
 };

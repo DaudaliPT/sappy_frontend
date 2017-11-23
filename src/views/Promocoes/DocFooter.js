@@ -40,10 +40,10 @@ class DocFooter extends Component {
           <div className="sappy-search-bar float-left">
             <SearchAndChoose
               searchType={this.props.footerSearchType}
-              limitSearch={this.props.footerLimitSearch}
-              limitSearchCondition={this.props.footerLimitSearchCondition}
+              useSearchLimit={this.props.footerLimitSearch}
+              searchLimitCondition={this.props.footerSearchLimitCondition}
               showCatNum={this.props.footerSearchShowCatNum}
-              onToogleLimitSearch={this.props.onToogleLimitSearch}
+              onToogleUseSearchLimit={this.props.onToogleUseSearchLimit}
               onReturnSelectItems={this.props.onFooterSearchResult}
             />
           </div>}
@@ -55,10 +55,10 @@ class DocFooter extends Component {
 
 DocFooter.defaultProps = {
   footerSearchType: "",
-  footerLimitSearchCondition: "",
+  footerSearchLimitCondition: "",
   footerSearchShowCatNum: false,
   onFooterSearchResult: selectedItems => {},
-  onToogleLimitSearch: () => {},
+  onToogleUseSearchLimit: () => {},
   totals: {}
 };
 

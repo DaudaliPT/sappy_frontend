@@ -51,10 +51,13 @@ class PosFooter extends Component {
           <div className="sappy-search-bar float-left">
             <SearchAndChoose
               searchType={this.props.footerSearchType}
-              limitSearch={this.props.footerLimitSearch}
-              limitSearchCondition={this.props.footerLimitSearchCondition}
+              useSearchLimit={this.props.footerLimitSearch}
+              useBaseDoclines={this.props.footerUseBaseDoclines}
+              searchLimitCondition={this.props.footerSearchLimitCondition}
+              baseDocLinesCondition={this.props.footerBaseDocLinesCondition}
               showCatNum={this.props.footerSearchShowCatNum}
-              onToogleLimitSearch={this.props.onToogleLimitSearch}
+              onToogleUseSearchLimit={this.props.onToogleUseSearchLimit}
+              onToogleUseBaseDoclines={this.props.onToogleUseBaseDoclines}
               onReturnSelectItems={this.props.onFooterSearchResult}
             />
           </div>}
@@ -66,10 +69,12 @@ class PosFooter extends Component {
 
 PosFooter.defaultProps = {
   footerSearchType: "",
-  footerLimitSearchCondition: "",
+  footerSearchLimitCondition: "",
+  footerBaseDocLinesCondition: "",
   footerSearchShowCatNum: false,
   onFooterSearchResult: selectedItems => {},
-  onToogleLimitSearch: () => {},
+  onToogleUseSearchLimit: () => {},
+  onToogleUseBaseDoclines: () => {},
   totals: {}
 };
 

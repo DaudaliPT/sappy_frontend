@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import uuid from 'uuid';
+import uuid from "uuid";
 const $ = window.$;
 
 class SearchBar extends PureComponent {
@@ -16,27 +16,26 @@ class SearchBar extends PureComponent {
     let that = this;
 
     setTimeout(() => {
-      $('#' + that.txtName)
-        .on('tokenfield:createdtoken', function (e) {
-          let values = $('#' + that.txtName).tokenfield('getTokens');
+      $("#" + that.txtName)
+        .on("tokenfield:createdtoken", function(e) {
+          let values = $("#" + that.txtName).tokenfield("getTokens");
           that.props.onChange(values);
         })
-        .on('tokenfield:removedtoken', function (e) {
-          let values = $('#' + that.txtName).tokenfield('getTokens');
+        .on("tokenfield:removedtoken", function(e) {
+          let values = $("#" + that.txtName).tokenfield("getTokens");
           that.props.onChange(values);
         })
         .tokenfield()
-        .tokenfield('setTokens', that.state.searchTags);
-
-    }, 0)
+        .tokenfield("setTokens", that.state.searchTags);
+    }, 0);
 
     setTimeout(() => {
-      $(".token-input").focus()
-    }, 1000)
+      $(".token-input").focus();
+    }, 1000);
   }
 
   render() {
-    let that = this
+    let that = this;
     let { totalInfo } = this.props;
     return (
       <form
@@ -47,27 +46,29 @@ class SearchBar extends PureComponent {
           e.preventDefault();
         }}
       >
-        <div className="input-search" >
+        <div className="input-search">
           <i className="input-search-icon wb-search" aria-hidden="true" />
-          <div className="tokenfield" id={that.txtName}  >
+          <div className="tokenfield" id={that.txtName}>
             <input type="text" className="form-control w-full" tabIndex="1" ref="txtSearch" {...this.props.inputProps} />
           </div>
 
+          <button className="input-search-btn vertical-align-middle">
+            <small>
+              {totalInfo.Searching ? "(A pesquisar...)   " : totalInfo.Loaded + "/" + totalInfo.Total + "   "}
+            </small>
 
-          <button className="input-search-btn vertical-align-middle"          >
-            <small>{totalInfo.Searching ? "(A pesquisar...)   " : totalInfo.Loaded + "/" + totalInfo.Total + "   "}</small>
-
-            {this.props.limitSearchCondition &&
-              <i className={"icon " + (this.props.limitSearch ? "ion-ios-funnel active" : "ion-ios-funnel-outline inactive")} aria-hidden="true"
-                onMouseDown={that.props.onToogleLimitSearch} />
-            }
-            <i className="icon wb-close" aria-hidden="true" onMouseDown={e => {
-              /** o onClick funcionava com o Enter */
-              e.preventDefault();
-              $('#' + that.txtName).tokenfield('setTokens', []);
-              this.props.onChange([]);
-            }} />
-
+            {this.props.searchLimitCondition &&
+              <i className={"icon " + (this.props.useSearchLimit ? "ion-ios-funnel active" : "ion-ios-funnel-outline inactive")} aria-hidden="true" onMouseDown={that.props.onToogleUseSearchLimit} />}
+            <i
+              className="icon wb-close"
+              aria-hidden="true"
+              onMouseDown={e => {
+                /** o onClick funcionava com o Enter */
+                e.preventDefault();
+                $("#" + that.txtName).tokenfield("setTokens", []);
+                this.props.onChange([]);
+              }}
+            />
           </button>
         </div>
       </form>
@@ -80,14 +81,15 @@ SearchBar.defaultProps = {
     Loaded: 0,
     Searching: true
   },
-  onChange: () => { },
+  onChange: () => {},
   searchTags: [],
   inputProps: {
     placeholder: "Procurar..."
   },
-  onClickClear: item => { },
-  limitSearch: false,
-  limitSearchCondition: "",
-  onToogleLimitSearch: () => { }
+  onClickClear: item => {},
+
+  useSearchLimit: false,
+  searchLimitCondition: "",
+  onToogleUseSearchLimit: () => {}
 };
 export default SearchBar;

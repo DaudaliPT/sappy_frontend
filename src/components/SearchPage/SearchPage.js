@@ -25,7 +25,7 @@ class SearchPage extends PureComponent {
       /** holds the text typed by the user */
       searchTags: (props.searchText && [{ value: props.searchText, label: props.searchText }]) || [],
 
-      limitSearch: props.limitSearch || false,
+      useSearchLimit: props.useSearchLimit || false,
 
       /*********/
       /** list of items to put on tabs bar */
@@ -134,7 +134,7 @@ class SearchPage extends PureComponent {
   handleToogleLimitSearch() {
     if (!this.props.allowToogleSearchCondition) return;
     let that = this;
-    this.setState({ limitSearch: !that.state.limitSearch }, that.findAndGetFirstRows);
+    this.setState({ useSearchLimit: !that.state.useSearchLimit }, that.findAndGetFirstRows);
   }
 
   handleOnChange_txtSearch(values) {
@@ -168,28 +168,16 @@ class SearchPage extends PureComponent {
       if (this.cancelPreviousAxiosRequest) this.cancelPreviousAxiosRequest();
       var CancelToken = axios.CancelToken;
 
-      let limitSearchCondition = "";
-      if (this.state.limitSearch && this.props.limitSearchCondition) limitSearchCondition = this.props.limitSearchCondition;
+      let searchLimitCondition = "";
+      if (this.state.useSearchLimit && this.props.searchLimitCondition) searchLimitCondition = this.props.searchLimitCondition;
 
-      // this.serverRequest = axios
-      // .get(that.props.searchApiUrl, {
-      //   params: {
-      //     searchTags,
-      //     limitSearchCondition,
-      //     activeTab
-      //   },
-      //   cancelToken: new CancelToken(function executor(c) {
-      //     // An executor function receives a cancel function as a parameter
-      //     that.cancelPreviousAxiosRequest = c;
-      //   })
-      // })
       this.serverRequest = axios({
         method: this.props.searchApiMethod || "get",
         url: that.props.searchApiUrl,
         data: that.props.searchApiData,
         params: {
           searchTags,
-          limitSearchCondition,
+          searchLimitCondition,
           activeTab
         },
         cancelToken: new CancelToken(function executor(c) {
@@ -232,12 +220,12 @@ class SearchPage extends PureComponent {
       let { searchTags, activeTab, listItems } = this.state;
       that.setState({ rvIsLoading: true });
 
-      let limitSearchCondition = "";
-      if (this.state.limitSearch && this.props.limitSearchCondition) limitSearchCondition = this.props.limitSearchCondition;
+      let searchLimitCondition = "";
+      if (this.state.useSearchLimit && this.props.searchLimitCondition) searchLimitCondition = this.props.searchLimitCondition;
 
       let params = {
         searchTags,
-        limitSearchCondition,
+        searchLimitCondition,
         activeTab,
         startIndex: listItems.length,
         maxRecords: 100
@@ -278,9 +266,9 @@ class SearchPage extends PureComponent {
             totalInfo={totalInfo}
             onChange={this.handleOnChange_txtSearch}
             searchTags={this.state.searchTags}
-            limitSearch={this.state.limitSearch}
-            limitSearchCondition={this.props.limitSearchCondition}
-            onToogleLimitSearch={this.handleToogleLimitSearch}
+            useSearchLimit={this.state.useSearchLimit}
+            searchLimitCondition={this.props.searchLimitCondition}
+            onToogleUseSearchLimit={this.handleToogleLimitSearch}
             inputProps={{
               placeholder: this.props.searchPlaceholder
             }}
@@ -321,8 +309,8 @@ SearchPage.defaultProps = {
   renderRow: ({ row, index }) => {},
   autoRefreshTime: 0,
   renderRowHeight: 20,
-  limitSearch: false,
-  limitSearchCondition: "",
+  useSearchLimit: false,
+  searchLimitCondition: "",
   allowToogleSearchCondition: true
 };
 

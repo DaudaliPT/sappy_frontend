@@ -4,7 +4,7 @@ import axios from "axios";
 const sappy = window.sappy;
 import ModalOitm from "./ModalOitm";
 import OitmPOS from "./OitmPOS";
-import VendDev from "./VendDev";
+import BaseDoc from "./BaseDoc";
 
 class SearchAndChoose extends Component {
   constructor(props) {
@@ -15,6 +15,8 @@ class SearchAndChoose extends Component {
     this.handleOnKeyDown_txtSearch = this.handleOnKeyDown_txtSearch.bind(this);
     this.openSearchModal = this.openSearchModal.bind(this);
     this.handleBarcodeRead = this.handleBarcodeRead.bind(this);
+    this.setBarCodeListener = this.setBarCodeListener.bind(this);
+    this.getSearchApiUrl = this.getSearchApiUrl.bind(this);
 
     this.state = {
       searchText: "",
@@ -23,13 +25,7 @@ class SearchAndChoose extends Component {
   }
 
   componentDidMount() {
-    let barcodeApiUrl = "";
-    if (this.props.searchType === "oitm") barcodeApiUrl = ModalOitm.barcodeApiUrl;
-    else if (this.props.searchType === "oitmpos") barcodeApiUrl = OitmPOS.barcodeApiUrl;
-    else if (this.props.searchType === "vnddev") barcodeApiUrl = VendDev.barcodeApiUrl;
-    else sappy.showError(this.props.searchType, "Tipo de pesquisa desconhecido");
-
-    sappy.barcodes.onRead(this.handleBarcodeRead, barcodeApiUrl, this.props.limitSearchCondition);
+    this.setBarCodeListener();
   }
 
   componentWillUnmount() {
@@ -37,12 +33,32 @@ class SearchAndChoose extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    this.setBarCodeListener();
+  }
+
+  setBarCodeListener() {
     let barcodeApiUrl = "";
-    if (this.props.searchType === "oitm") barcodeApiUrl = ModalOitm.barcodeApiUrl;
+    let condition = this.props.searchLimitCondition;
+
+    if (this.props.useBaseDoclines) {
+      barcodeApiUrl = BaseDoc.barcodeApiUrl;
+      condition = this.props.baseDocLinesCondition;
+    } else if (this.props.searchType === "oitm") barcodeApiUrl = ModalOitm.barcodeApiUrl;
     else if (this.props.searchType === "oitmpos") barcodeApiUrl = OitmPOS.barcodeApiUrl;
-    else if (this.props.searchType === "vnddev") barcodeApiUrl = VendDev.barcodeApiUrl;
     else sappy.showError(this.props.searchType, "Tipo de pesquisa desconhecido");
-    sappy.barcodes.onRead(this.handleBarcodeRead, barcodeApiUrl, this.props.limitSearchCondition);
+
+    sappy.barcodes.onRead(this.handleBarcodeRead, barcodeApiUrl, condition);
+    return barcodeApiUrl;
+  }
+
+  getSearchApiUrl() {
+    let searchApiUrl = "";
+    if (this.props.useBaseDoclines) searchApiUrl = BaseDoc.searchApiUrl;
+    else if (this.props.searchType === "oitm") searchApiUrl = ModalOitm.searchApiUrl;
+    else if (this.props.searchType === "oitmpos") searchApiUrl = OitmPOS.searchApiUrl;
+    else sappy.showError(this.props.searchType, "Tipo de pesquisa desconhecido");
+
+    return searchApiUrl;
   }
 
   handleBarcodeRead({ barcodes, selectedItems, hasMany } = {}) {
@@ -78,14 +94,23 @@ class SearchAndChoose extends Component {
 
   openSearchModal() {
     let currentModal = null;
-    if (this.props.searchType === "oitm")
+    if (this.props.useBaseDoclines) {
+      currentModal = (
+        <BaseDoc
+          toggleModal={this.handleModalSearchClose}
+          useSearchLimit={this.props.useBaseDoclines}
+          showCatNum={this.props.showCatNum}
+          searchLimitCondition={this.props.baseDocLinesCondition}
+          searchText={this.state.searchText}
+        />
+      );
+    } else if (this.props.searchType === "oitm")
       currentModal = (
         <ModalOitm
           toggleModal={this.handleModalSearchClose}
-          limitSearch={this.props.limitSearch}
+          useSearchLimit={this.props.useSearchLimit}
           showCatNum={this.props.showCatNum}
-          limitSearchCondition={this.props.limitSearchCondition}
-          onToogleLimitSearch={this.props.onToogleLimitSearch}
+          searchLimitCondition={this.props.searchLimitCondition}
           searchText={this.state.searchText}
         />
       );
@@ -93,21 +118,9 @@ class SearchAndChoose extends Component {
       currentModal = (
         <OitmPOS
           toggleModal={this.handleModalSearchClose}
-          limitSearch={this.props.limitSearch}
+          useSearchLimit={this.props.useSearchLimit}
           showCatNum={this.props.showCatNum}
-          limitSearchCondition={this.props.limitSearchCondition}
-          onToogleLimitSearch={this.props.onToogleLimitSearch}
-          searchText={this.state.searchText}
-        />
-      );
-    else if (this.props.searchType === "vnddev")
-      currentModal = (
-        <VendDev
-          toggleModal={this.handleModalSearchClose}
-          limitSearch={this.props.limitSearch}
-          showCatNum={this.props.showCatNum}
-          limitSearchCondition={this.props.limitSearchCondition}
-          onToogleLimitSearch={this.props.onToogleLimitSearch}
+          searchLimitCondition={this.props.searchLimitCondition}
           searchText={this.state.searchText}
         />
       );
@@ -118,15 +131,14 @@ class SearchAndChoose extends Component {
 
   performSearch() {
     let that = this;
-    let searchApiUrl = "";
-    if (this.props.searchType === "oitm") searchApiUrl = ModalOitm.searchApiUrl;
-    else if (this.props.searchType === "oitmpos") searchApiUrl = OitmPOS.searchApiUrl;
-    else if (this.props.searchType === "vnddev") searchApiUrl = VendDev.searchApiUrl;
-    else sappy.showError(this.props.searchType, "Tipo de pesquisa desconhecido");
+    let searchApiUrl = this.getSearchApiUrl();
 
     if (searchApiUrl) {
-      let limitSearchCondition = "";
-      if (this.props.limitSearch && this.props.limitSearchCondition) limitSearchCondition = this.props.limitSearchCondition;
+      let searchLimitCondition = "";
+
+      if (this.props.useBaseDoclines) {
+        searchLimitCondition = this.props.baseDocLinesCondition;
+      } else if (this.props.useSearchLimit && this.props.searchLimitCondition) searchLimitCondition = this.props.searchLimitCondition;
 
       if (this.cancelPreviousAxiosRequest) this.cancelPreviousAxiosRequest();
       var CancelToken = axios.CancelToken;
@@ -135,7 +147,7 @@ class SearchAndChoose extends Component {
         .get(searchApiUrl, {
           params: {
             searchTags: [{ value: searchText }],
-            limitSearchCondition
+            searchLimitCondition
           },
           cancelToken: new CancelToken(function executor(c) {
             that.cancelPreviousAxiosRequest = c;
@@ -147,7 +159,7 @@ class SearchAndChoose extends Component {
 
           if (found === 1) {
             let selectedItems;
-            if (that.props.searchType === "vnddev") selectedItems = [listItems[0].ObjType + "#" + listItems[0].DocEntry + "#" + listItems[0].LineNum];
+            if (this.props.useBaseDoclines) selectedItems = [listItems[0].ObjType + "#" + listItems[0].DocEntry + "#" + listItems[0].LineNum];
             else selectedItems = [listItems[0].ItemCode];
 
             this.props.onReturnSelectItems({ selectedItems });
@@ -180,8 +192,12 @@ class SearchAndChoose extends Component {
           <input className="form-control w-full" autoComplete="off" value={this.state.searchText} onChange={this.handleOnChange_txtSearch} onKeyDown={this.handleOnKeyDown_txtSearch} />
 
           <button className="input-search-btn vertical-align-middle">
-            {this.props.limitSearchCondition &&
-              <i className={"icon " + (this.props.limitSearch ? "ion-ios-funnel active" : "ion-ios-funnel-outline inactive")} aria-hidden="true" onMouseDown={that.props.onToogleLimitSearch} />}
+            {this.props.baseDocLinesCondition &&
+              <i className={"icon " + (this.props.useBaseDoclines ? "fa-external-link active" : "fa-external-link inactive")} aria-hidden="true" onMouseDown={that.props.onToogleUseBaseDoclines} />}
+
+            {this.props.searchLimitCondition &&
+              <i className={"icon " + (this.props.useSearchLimit ? "ion-ios-funnel active" : "ion-ios-funnel-outline inactive")} aria-hidden="true" onMouseDown={that.props.onToogleUseSearchLimit} />}
+
             <i className="icon wb-menu" aria-hidden="true" onMouseDown={that.openSearchModal} />
           </button>
         </div>
@@ -193,9 +209,14 @@ class SearchAndChoose extends Component {
 SearchAndChoose.defaultProps = {
   searchType: "",
   onReturnSelectItems: selectedItems => {},
-  limitSearch: false,
-  limitSearchCondition: "",
   showCatNum: false,
-  onToogleLimitSearch: () => {}
+
+  useBaseDoclines: false,
+  baseDocLinesCondition: "",
+  onToogleUseBaseDoclines: () => {},
+
+  useSearchLimit: false,
+  searchLimitCondition: "",
+  onToogleUseSearchLimit: () => {}
 };
 export default SearchAndChoose;

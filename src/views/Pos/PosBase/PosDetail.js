@@ -18,6 +18,11 @@ class PosDetail extends PureComponent {
   render() {
     let LINES = [...this.props.docData.LINES];
     LINES.reverse();
+
+    let groupBy = null;
+    let lineWithGroup = LINES.find(l => !(l.Origem === "Não definida"));
+    if (lineWithGroup) groupBy = [{ key: "Origem", name: "Grupo" }];
+
     return (
       <div id="posDetail">
         <div id="posDetailGrid">
@@ -35,7 +40,7 @@ class PosDetail extends PureComponent {
 
               return classes;
             }}
-            groupBy={this.props.groupBy}
+            groupBy={groupBy}
             onRowUpdate={this.props.onRowUpdate}
             onRowSelectionChange={this.props.onRowSelectionChange}
             selectedKeys={this.props.selectedKeys}

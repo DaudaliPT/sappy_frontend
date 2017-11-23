@@ -11,7 +11,7 @@ const $ = window.$;
   var barcodeBuffer = [];
   var currentCallback;
   var currentBarcodeApiUrl;
-  var currentLimitSearchCondition;
+  var currentSearchLimitCondition;
   var processing = false;
   var sappy = null; // só será preenchido no init(sappy)
   var withError = false;
@@ -38,7 +38,7 @@ const $ = window.$;
     axios
       .get(currentBarcodeApiUrl + encodeURIComponent(barcode), {
         params: {
-          limitSearchCondition: currentLimitSearchCondition
+          searchLimitCondition: currentSearchLimitCondition
         }
       })
       .then(result => {
@@ -173,10 +173,10 @@ const $ = window.$;
     );
   };
 
-  lib.onRead = function(callback, barcodeApiUrl, limitSearchCondition) {
+  lib.onRead = function(callback, barcodeApiUrl, searchLimitCondition) {
     currentCallback = callback;
     currentBarcodeApiUrl = barcodeApiUrl;
-    currentLimitSearchCondition = limitSearchCondition;
+    currentSearchLimitCondition = searchLimitCondition;
   };
 
   lib.notifyBarcodesProcessed = function() {

@@ -7,7 +7,7 @@ import SearchPage from "../SearchPage";
 import { Badge } from "reactstrap";
 import uuid from "uuid/v4";
 
-class VndDev extends Component {
+class BaseDoc extends Component {
   constructor(props) {
     super(props);
     this.handleRowSelection = this.handleRowSelection.bind(this);
@@ -170,12 +170,11 @@ class VndDev extends Component {
           <ModalBody>
             <SearchPage
               searchPlaceholder="Procurar..."
-              searchApiUrl={VndDev.searchApiUrl}
+              searchApiUrl={BaseDoc.searchApiUrl}
               renderRow={renderRow}
               searchText={this.props.searchText}
-              limitSearch={this.props.limitSearch}
-              limitSearchCondition={this.props.limitSearchCondition}
-              onToogleLimitSearch={this.props.onToogleLimitSearch}
+              useSearchLimit={this.props.useSearchLimit}
+              searchLimitCondition={this.props.searchLimitCondition}
               allowToogleSearchCondition={false}
               renderRowHeight={50}
               currentModal={this.state.currentModal}
@@ -203,13 +202,12 @@ class VndDev extends Component {
   }
 }
 
-VndDev.searchApiUrl = "/api/search/vnddev/";
-VndDev.barcodeApiUrl = "/api/search/vnddev/bc/";
+BaseDoc.searchApiUrl = "/api/search/basedoc/";
+BaseDoc.barcodeApiUrl = "/api/search/basedoc/bc/";
 
-VndDev.defaultProps = {
-  limitSearch: false,
-  limitSearchCondition: "",
+BaseDoc.defaultProps = {
   showCatNum: false,
-  onToogleLimitSearch: () => {}
+  useSearchLimit: false,
+  searchLimitCondition: ""
 };
-export default VndDev;
+export default BaseDoc;

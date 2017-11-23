@@ -10,17 +10,18 @@ exports.prepareDocType = function({ tableName }) {
 
   let cardCodeLabel = "Cliente";
   let cardCodeApi = "/api/cbo/ocrd/c";
-  let footerLimitSearchCondition = "";
+  let footerSearchLimitCondition = "";
+  let footerBaseDocLinesCondition = "";
   let footerSearchType = "oitmpos";
   if ("14".indexOf(objType) > -1) {
     let settings = sappy.getSettings(["VND.ORIN.MAXDIASTODEV"]);
     let MAXDIASTODEV = sappy.getNum(settings["VND.ORIN.MAXDIASTODEV"]);
-    footerLimitSearchCondition = `
+
+    footerBaseDocLinesCondition = `
           BASEDOC."CardCode"='<CARDCODE>' 
       AND BASEDOC."ShipToCode"='<SHIPADDR>' 
       AND BASEDOC."QTYSTK_AVAILABLE">0
       AND BASEDOC."DocDate" > ADD_DAYS(CURRENT_DATE, -${MAXDIASTODEV})`;
-    footerSearchType = "vnddev";
   }
 
   let headerFields = {};
@@ -115,9 +116,6 @@ exports.prepareDocType = function({ tableName }) {
     // { name: "BASE_DOCNUM", label: "N", type: "text", width: 40, editable: false }
   ];
 
-  let groupBy = [];
-  if ("14".indexOf(objType) > -1) groupBy = [{ key: "Origem", name: "Grupo" }];
-
   return {
     propsToPosBase: {
       tableName,
@@ -125,11 +123,15 @@ exports.prepareDocType = function({ tableName }) {
       title,
       headerFields,
       detailFields,
-      groupBy,
       apiDocsNew: `/api/docs/new/${tableName}`,
       footerSearchType,
       footerSearchShowCatNum: false,
-      footerLimitSearchCondition
+      footerSearchLimitCondition,
+      footerBaseDocLinesCondition
     }
   };
 };
+
+// useBaseDoclines: false,
+// baseDocLinesCondition: "",
+// onToogleUseBaseDoclines: () => {},
