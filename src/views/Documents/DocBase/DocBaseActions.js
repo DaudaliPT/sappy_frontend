@@ -85,14 +85,20 @@ export default {
       .catch(error => sappy.showError(error, "Erro ao obter dados"));
   },
 
-  handleForwardDocument: ({ that }) => {
-    // let docEntry = that.state.docData.DOCENTRY;
-    // axios
-    //   .get(`${that.props.apiDocsEdit}/${docEntry}/links`)
-    //   .then(function(result) {
-    //     sappy.showModal(<ModalLinks data={result.data} />);
-    //   })
-    //   .catch(error => sappy.showError(error, "Erro ao obter dados"));
+  handleForwardDocument: ({ that, toObjtype }) => {
+    let docEntry = that.state.docData.DOCENTRY;
+    axios
+      .post(`${that.props.apiDocsNew}/${docEntry}/migrate/${toObjtype}`)
+      .then(function(result) {
+        let docInfo = sappy.b1.sapObjectInfo({ objectCode: toObjtype });
+
+        hashHistory.push({
+          pathname: docInfo.landingPage + "doc",
+          state: { id: result.data.ID }
+        });
+        setImmediate(() => sappy.showToastr({ color: "success", msg: "Documento migrado com sucesso." }));
+      })
+      .catch(error => sappy.showError(error, "Erro ao obter dados"));
   },
 
   handleOnCancelarDocumento: ({ that, apiDocsEdit }) => {

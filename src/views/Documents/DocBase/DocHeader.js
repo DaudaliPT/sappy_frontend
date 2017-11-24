@@ -5,6 +5,8 @@ import Panel from "../../../components/Panel";
 
 class DocHeader extends Component {
   render() {
+    let { CARDCODE, CARDNAME, OBJTYPE, DOCENTRY, DOCNUM, DOCSTATUS, CANCELED } = this.props.docData;
+
     let getProperInputForField = headerField => {
       if (!headerField) return null;
       let classNames = "col-3  col-sm-2 col-lg-1 col-xl-1 col-xxl-1 px-5";
@@ -20,7 +22,7 @@ class DocHeader extends Component {
       }
 
       let enabled = true;
-      if (this.props.docData.DOCNUM > 0) {
+      if (DOCNUM > 0) {
         enabled = this.props.editable && headerField.savedEditable;
       } else {
         enabled = !headerField.disabled;
@@ -78,24 +80,41 @@ class DocHeader extends Component {
     };
 
     let title = this.props.title;
-    if (this.props.docData.DOCNUM > 0) title += " (" + this.props.docData.DOCNUM + ")";
+    if (DOCNUM > 0) title += " (" + DOCNUM + ")";
 
     let headerActions = [
       {
         name: "toogleEdit",
         text: "Alterar",
         color: !this.props.editable ? "" : "danger",
-        visible: !!this.props.docData.DOCNUM,
+        visible: !!DOCNUM,
         icon: this.props.editable ? "fa-close" : "fa-edit",
         onClick: this.props.toggleEditable
       }
     ];
 
     let docFuncs = this.props.DocBaseActions || {};
-    let OBJTYPE = this.props.docData.OBJTYPE;
-    let isDoc = !!this.props.docData.DOCENTRY;
-    let canCancel = isDoc && this.props.docData.DOCSTATUS === "O";
-    let canClose = isDoc && this.props.docData.DOCSTATUS === "O" && "23,17,15, 22,20,21".indexOf(OBJTYPE) > -1;
+    let isDoc = !!DOCENTRY;
+    let canCancel = isDoc && DOCSTATUS === "O";
+    let canClose = isDoc && DOCSTATUS === "O" && "23,17,15, 22,20,21".indexOf(OBJTYPE) > -1;
+
+    let migrateTo = [];
+    if (OBJTYPE === "23") migrateTo = [{ objtype: "17", name: "Encomenda" }, { objtype: "15", name: "Entrega" }, { objtype: "13", name: "Fatura" }];
+    if (OBJTYPE === "17") migrateTo = [{ objtype: "15", name: "Entrega" }, { objtype: "13", name: "Fatura" }];
+    if (OBJTYPE === "15") migrateTo = [{ objtype: "16", name: "Devolução" }, { objtype: "13", name: "Fatura" }];
+    if (OBJTYPE === "13") migrateTo = [{ objtype: "14", name: "Nota de crédito", allowIfClosed: true }];
+    if (OBJTYPE === "22") migrateTo = [{ objtype: "20", name: "Entrega" }, { objtype: "18", name: "Fatura" }];
+    if (OBJTYPE === "20") migrateTo = [{ objtype: "21", name: "Devolução" }, { objtype: "18", name: "Fatura" }];
+    if (OBJTYPE === "18") migrateTo = [{ objtype: "19", name: "Nota de crédito", allowIfClosed: true }];
+
+    let migrateToMenus = migrateTo.map(m => {
+      return {
+        name: "Migrar p/" + m.name,
+        visible: isDoc && CANCELED === "N" && (DOCSTATUS === "O" || m.allowIfClosed),
+        icon: "fa-share-square-o",
+        onClick: () => docFuncs.handleForwardDocument({ that: this.props.mainThis, toObjtype: m.objtype })
+      };
+    });
 
     let headerMenus = [
       {
@@ -122,12 +141,7 @@ class DocHeader extends Component {
         icon: "fa-code-fork",
         onClick: () => docFuncs.handleGetDocLinks({ that: this.props.mainThis })
       },
-      {
-        name: "Migrar p/ Nota Crédito",
-        visible: isDoc,
-        icon: "fa-share-square-o",
-        onClick: () => docFuncs.handleForwardDocument({ that: this.props.mainThis })
-      },
+      ...migrateToMenus,
       {
         name: "Imprimir",
         visible: isDoc,
@@ -154,7 +168,7 @@ class DocHeader extends Component {
       <div id="docHeader">
         <Panel
           title={title}
-          colapsedInfo={this.props.docData.CARDCODE && " (" + this.props.docData.CARDCODE + " - " + this.props.docData.CARDNAME + ")"}
+          colapsedInfo={CARDCODE && " (" + CARDCODE + " - " + CARDNAME + ")"}
           expanded={this.props.expanded}
           onToogleExpand={this.props.toggleHeader}
           actions={headerActions}
