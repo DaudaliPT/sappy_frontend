@@ -11,7 +11,7 @@ exports.prepareDocType = function({ tableName, module }) {
   let cardCodeLabel = "";
   let cardCodeApi = "";
   let contactLabel = "";
-  let dueDateLabel = "15,16,17, 20,21,22".indexOf(objType) > -1 ? "Data Entrega" : "Data Vencimento"; //Encomendas/Entregas/Devoluções
+  let dueDateLabel = "15,16,17,23, 20,21,22".indexOf(objType) > -1 ? "Data Entrega" : "Data Vencimento"; //Encomendas/Entregas/Devoluções
   let footerBaseDocLinesCondition = "";
   let footerSearchLimitCondition = "";
   let priceHover = {};
@@ -165,14 +165,20 @@ exports.prepareDocType = function({ tableName, module }) {
   headerFields.line1.push({ name: "TAXDATE", label: "Data Documento", type: "date", gridSize: 2, required: true });
   headerFields.line1.push({ name: "DOCDUEDATE", label: dueDateLabel, type: "date", gridSize: 2, required: true, savedEditable: true });
   headerFields.line2 = [];
-  if ("15,16,17, 20,21,22".indexOf(objType) > -1) {
+  if ("15,16,17 20,21,22".indexOf(objType) > -1) {
     //Encomendas/Entregas/Devoluções
     headerFields.line2.push({ name: "SHIPADDR", label: "Morada Envio", type: "combo", api: "/api/cbo/crd1/<CARDCODE>/s", gridSize: 4 });
   } else {
     headerFields.line2.push({ name: "BILLADDR", label: "Morada Faturação", type: "combo", api: "/api/cbo/crd1/<CARDCODE>/b", gridSize: 2 });
   }
   headerFields.line2.push({ name: "CONTACT", label: contactLabel, type: "combo", api: "/api/cbo/ocpr/<CARDCODE>", gridSize: 2 });
-  headerFields.line2.push({ name: "NUMATCARD", label: numatcardLabel, type: "text", gridSize: 2, required: true });
+
+  if ("18".indexOf(objType) > -1) {
+    // Faturas de compra é obrigatório
+    headerFields.line2.push({ name: "NUMATCARD", label: numatcardLabel, type: "text", gridSize: 2, required: true });
+  } else {
+    headerFields.line2.push({ name: "NUMATCARD", label: numatcardLabel, type: "text", gridSize: 2, required: false });
+  }
   headerFields.line2.push({ name: "COMMENTS", label: "Observações", type: "text", gridSize: 5, savedEditable: true });
   headerFields.line2.push({ name: "HASINCONF", label: "", type: "flag|danger", gridSize: 1, savedEditable: true });
 

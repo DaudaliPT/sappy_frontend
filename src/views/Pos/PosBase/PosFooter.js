@@ -50,6 +50,7 @@ class PosFooter extends Component {
           loaded &&
           <div className="sappy-search-bar float-left">
             <SearchAndChoose
+              toObjtype={docData.OBJTYPE}
               searchType={this.props.footerSearchType}
               useSearchLimit={this.props.footerLimitSearch}
               useBaseDoclines={this.props.footerUseBaseDoclines}

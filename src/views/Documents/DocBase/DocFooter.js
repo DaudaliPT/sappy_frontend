@@ -6,7 +6,7 @@ const sappy = window.sappy;
 class DocFooter extends Component {
   render() {
     let docData = this.props.docData || {};
-    let allowAddLines = docData.DOCNUM > 0 ? false : true;
+    let allowAddLines = docData.DOCNUM > 0 ? false : !!docData.ID;
     // let editable = docData.DOCNUM > 0 ? this.props.editable : true;
     let loaded = !this.props.loading;
 

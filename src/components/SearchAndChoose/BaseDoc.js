@@ -179,7 +179,7 @@ class BaseDoc extends Component {
     return (
       <div>
         <Modal isOpen={true} toggle={this.handleToggleModal} className={"modal-lg modal-success"} onKeyDown={this.handleOnKeyDown_popup}>
-          <ModalHeader toggle={this.handleToggleModal}>Selecione o artigo a devolver</ModalHeader>
+          <ModalHeader toggle={this.handleToggleModal}>Selecione linha(s) do documento base</ModalHeader>
           <ModalBody>
             <SearchPage
               searchPlaceholder="Procurar..."
