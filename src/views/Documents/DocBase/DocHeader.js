@@ -92,46 +92,51 @@ class DocHeader extends Component {
     ];
 
     let docFuncs = this.props.DocBaseActions || {};
+    let OBJTYPE = this.props.docData.OBJTYPE;
+    let isDoc = !!this.props.docData.DOCENTRY;
+    let canCancel = isDoc && this.props.docData.DOCSTATUS === "O";
+    let canClose = isDoc && this.props.docData.DOCSTATUS === "O" && "23,17,15, 22,20,21".indexOf(OBJTYPE) > -1;
+
     let headerMenus = [
       {
         name: "Duplicar",
-        visible: !!this.props.docData.DOCENTRY,
+        visible: isDoc,
         icon: "fa-clone",
         onClick: () => docFuncs.handleOnDuplicarDocumento({ that: this.props.mainThis })
       },
       {
         name: "Cancelar documento",
-        visible: !!this.props.docData.DOCENTRY,
+        visible: canCancel,
         icon: "fa-close",
         onClick: () => docFuncs.handleOnCancelarDocumento({ that: this.props.mainThis })
       },
       {
         name: "Fechar documento",
-        visible: !!this.props.docData.DOCENTRY,
+        visible: canClose,
         icon: "fa-lock",
         onClick: () => docFuncs.handleOnFecharDocumento({ that: this.props.mainThis })
       },
       {
         name: "Ligações",
-        visible: !!this.props.docData.DOCENTRY,
+        visible: isDoc,
         icon: "fa-code-fork",
         onClick: () => docFuncs.handleGetDocLinks({ that: this.props.mainThis })
       },
       {
         name: "Migrar p/ Nota Crédito",
-        visible: !!this.props.docData.DOCENTRY,
+        visible: isDoc,
         icon: "fa-share-square-o",
         onClick: () => docFuncs.handleForwardDocument({ that: this.props.mainThis })
       },
       {
         name: "Imprimir",
-        visible: !!this.props.docData.DOCENTRY,
+        visible: isDoc,
         icon: "fa-print",
         onClick: () => docFuncs.handleExport({ that: this.props.mainThis, cmd: "print" })
       },
       {
         name: "Descarregar",
-        visible: !!this.props.docData.DOCENTRY,
+        visible: isDoc,
         icon: "fa-download",
         onClick: () => docFuncs.handleExport({ that: this.props.mainThis, cmd: "pdf" }), //por defeito o download é pdf
         content: (
