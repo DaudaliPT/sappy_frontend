@@ -82,22 +82,37 @@ class DocHeader extends Component {
     let title = this.props.title;
     if (DOCNUM > 0) title += " (" + DOCNUM + ")";
 
-    let headerActions = [
-      {
-        name: "toogleEdit",
-        text: "Alterar",
-        color: !this.props.editable ? "" : "danger",
-        visible: !!DOCNUM,
-        icon: this.props.editable ? "fa-close" : "fa-edit",
-        onClick: this.props.toggleEditable
-      }
-    ];
-
     let docFuncs = this.props.DocBaseActions || {};
     let isDoc = !!DOCENTRY;
     let canCancel = isDoc && DOCSTATUS === "O";
     let canClose = isDoc && DOCSTATUS === "O" && "23,17,15, 22,20,21".indexOf(OBJTYPE) > -1;
 
+    let headerActions = [
+      {
+        name: "toogleEdit",
+        text: "Alterar",
+        color: !this.props.editable ? "" : "danger",
+        visible: isDoc,
+        icon: this.props.editable ? "fa-close" : "fa-edit",
+        onClick: this.props.toggleEditable
+      },
+      {
+        name: "movePreviows",
+        text: "",
+        color: !this.props.editable ? "" : "danger",
+        visible: isDoc,
+        icon: "fa-angle-left",
+        onClick: () => docFuncs.handleMovePrevious({ that: this.props.mainThis })
+      },
+      {
+        name: "moveNext",
+        text: "",
+        color: !this.props.editable ? "" : "danger",
+        visible: isDoc,
+        icon: "fa-angle-right",
+        onClick: () => docFuncs.handleMoveNext({ that: this.props.mainThis })
+      }
+    ];
     let migrateTo = [];
     if (OBJTYPE === "23") migrateTo = [{ objtype: "17", name: "Encomenda" }, { objtype: "15", name: "Entrega" }, { objtype: "13", name: "Fatura" }];
     if (OBJTYPE === "17") migrateTo = [{ objtype: "15", name: "Entrega" }, { objtype: "13", name: "Fatura" }];

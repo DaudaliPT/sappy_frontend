@@ -36,7 +36,7 @@ class DocBase extends Component {
   }
 
   getinitialState(props) {
-    return {
+    let state = {
       selectedLineNums: [],
       footerLimitSearch: props.footerSearchLimitCondition || false,
       footerUseBaseDoclines: !!props.footerBaseDocLinesCondition || false,
@@ -58,6 +58,12 @@ class DocBase extends Component {
         showTotals: false
       }
     };
+
+    // Ao mudar de localização iniciar logo com o docentry, para que os itens visuais não pisquem
+    let locationState = this.props.location.state || {};
+    if (locationState.DocEntry) state.docData.DOCENTRY = locationState.DocEntry;
+
+    return state;
   }
 
   componentDidMount() {
@@ -82,8 +88,6 @@ class DocBase extends Component {
   componentWillReceiveProps(nextProps) {
     let locationState = this.props.location.state || {};
     let nextlocationState = nextProps.location.state || {};
-
-    this.recalcComponentsHeight();
 
     if (Object.keys(nextlocationState).length === 0 || locationState.DocEntry !== nextlocationState.DocEntry || locationState.id !== nextlocationState.id) {
       return this.setState(this.getinitialState(nextProps), this.loadDoc);
@@ -150,6 +154,8 @@ class DocBase extends Component {
 
   loadDoc() {
     let that = this;
+
+    this.recalcComponentsHeight();
 
     let locationState = this.props.location.state || {};
 

@@ -96,7 +96,7 @@ export default {
           pathname: docInfo.landingPage + "doc",
           state: { id: result.data.ID }
         });
-        setImmediate(() => sappy.showToastr({ color: "success", msg: "Documento migrado com sucesso." }));
+        // setImmediate(() => sappy.showToastr({ color: "success", msg: "Documento migrado com sucesso." }));
       })
       .catch(error => sappy.showError(error, "Erro ao obter dados"));
   },
@@ -150,9 +150,35 @@ export default {
           pathname: hashHistory.getCurrentLocation().pathname,
           state: { id: result.data.ID }
         });
-        setImmediate(() => sappy.showToastr({ color: "success", msg: "Documento duplicado com sucesso." }));
+        // setImmediate(() => sappy.showToastr({ color: "success", msg: "Documento duplicado com sucesso." }));
       })
       .catch(error => sappy.showError(error, "Erro ao duplicar documento"));
+  },
+
+  handleMovePrevious: ({ that }) => {
+    let docEntry = that.state.docData.DOCENTRY;
+    axios
+      .get(`${that.props.apiDocsEdit}/${docEntry}/previous`)
+      .then(function(result) {
+        hashHistory.push({
+          pathname: hashHistory.getCurrentLocation().pathname,
+          state: { DocEntry: result.data }
+        });
+      })
+      .catch(error => sappy.showError(error, "Erro ao mover para anterior"));
+  },
+
+  handleMoveNext: ({ that }) => {
+    let docEntry = that.state.docData.DOCENTRY;
+    axios
+      .get(`${that.props.apiDocsEdit}/${docEntry}/next`)
+      .then(function(result) {
+        hashHistory.push({
+          pathname: hashHistory.getCurrentLocation().pathname,
+          state: { DocEntry: result.data }
+        });
+      })
+      .catch(error => sappy.showError(error, "Erro ao mover para seguinte"));
   },
   handleOnConfirmar: that => {
     let performChecks = () => {
