@@ -2,7 +2,7 @@ var React = require("react");
 var MenuOption = require("./MenuOption");
 var buildClassName = require("./buildClassName");
 var findDOMNode = require("react-dom").findDOMNode;
-var MenuOptions = (module.exports = React.createClass({
+module.exports = React.createClass({
   contextTypes: {
     id: React.PropTypes.string,
     active: React.PropTypes.bool
@@ -102,4 +102,4 @@ var MenuOptions = (module.exports = React.createClass({
       </div>
     );
   }
-}));
+});

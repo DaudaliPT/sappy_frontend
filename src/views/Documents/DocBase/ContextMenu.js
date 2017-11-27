@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-const sappy = window.sappy;
-const $ = window.$;
+// const sappy = window.sappy;
+// const $ = window.$;
 
 const { Menu } = require("react-data-grid/packages/react-data-grid-addons/dist/react-data-grid-addons");
 

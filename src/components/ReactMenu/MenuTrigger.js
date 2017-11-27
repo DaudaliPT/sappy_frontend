@@ -1,7 +1,7 @@
 var React = require("react");
 var buildClassName = require("./buildClassName");
 
-var MenuTrigger = (module.exports = React.createClass({
+module.exports = React.createClass({
   contextTypes: {
     id: React.PropTypes.string,
     active: React.PropTypes.bool
@@ -43,4 +43,4 @@ var MenuTrigger = (module.exports = React.createClass({
       </div>
     );
   }
-}));
+});

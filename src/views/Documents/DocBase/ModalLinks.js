@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-var $ = window.$;
+// var $ = window.$;
 const sappy = window.sappy;
 import ReactGraphVis from "../../../components/ReactGraphVis";
 
-import { Badge } from "reactstrap";
-import uuid from "uuid/v4";
+// import { Badge } from "reactstrap";
+// import uuid from "uuid/v4";
 
 class ModalLinks extends Component {
   render() {

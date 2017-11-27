@@ -1,7 +1,7 @@
 var React = require("react");
 var buildClassName = require("./buildClassName");
 
-var MenuOption = (module.exports = React.createClass({
+module.exports = React.createClass({
   propTypes: {
     active: React.PropTypes.bool,
     onSelect: React.PropTypes.func,
@@ -90,4 +90,4 @@ var MenuOption = (module.exports = React.createClass({
       </div>
     );
   }
-}));
+});

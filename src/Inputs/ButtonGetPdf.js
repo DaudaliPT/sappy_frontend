@@ -1,9 +1,10 @@
-import React, { Component } from "react";
-const sappy = window.sappy;
+// import React, { Component } from "react";
+import { Component } from "react";
+// const sappy = window.sappy;
 
 class ButtonGetPdf extends Component {
   handleOnClick_GetPdf(e) {
-    let defaultLayoutCode = this.props.defaultLayoutCode;
+    // let defaultLayoutCode = this.props.defaultLayoutCode;
     e.stopPropagation();
 
     let objType = this.props.ObjectID;
@@ -18,11 +19,12 @@ class ButtonGetPdf extends Component {
   }
 
   render() {
-    return (
-      <span className="sappy-execute" onClick={this.handleOnClick_GetPdf.bind(this)}>
-        <i className="icon fa-file-pdf-o" />
-      </span>
-    );
+    return null;
+    // return (
+    //   <span className="sappy-execute" onClick={this.handleOnClick_GetPdf.bind(this)}>
+    //     <i className="icon fa-file-pdf-o" />
+    //   </span>
+    // );
   }
 }
 

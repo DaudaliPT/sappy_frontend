@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import SearchPage from "../../components/SearchPage";
-import axios from "axios";
+// import axios from "axios";
 import { Badge } from "reactstrap";
 import { ButtonGetPdf } from "../../Inputs";
 import uuid from "uuid/v4";

@@ -6,7 +6,7 @@ import DocBadges from "../../../../components/DocBadges";
 
 class oqut extends Component {
   render() {
-    let that = this;
+    // let that = this;
 
     let docProps = {
       docTableName: "oqut",

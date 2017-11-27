@@ -3,12 +3,12 @@ var findDOMNode = require("react-dom").findDOMNode;
 
 var MenuTrigger = require("./MenuTrigger");
 var MenuOptions = require("./MenuOptions");
-var MenuOption = require("./MenuOption");
+// var MenuOption = require("./MenuOption");
 var uuid = require("./uuid");
 var buildClassName = require("./buildClassName");
 import "./ReactMenu.css";
 
-var Menu = (module.exports = React.createClass({
+module.exports = React.createClass({
   displayName: "Menu",
 
   mixins: [buildClassName],
@@ -121,7 +121,7 @@ var Menu = (module.exports = React.createClass({
 
   verifyTwoChildren: function() {
     var ok = React.Children.count(this.props.children) === 2;
-    if (!ok) throw "react-menu can only take two children, a MenuTrigger, and a MenuOptions";
+    if (!ok) throw new Error("react-menu can only take two children, a MenuTrigger, and a MenuOptions");
     return ok;
   },
 
@@ -171,4 +171,4 @@ var Menu = (module.exports = React.createClass({
       </div>
     );
   }
-}));
+});

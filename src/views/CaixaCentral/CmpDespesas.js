@@ -28,7 +28,7 @@ class CmpDespesas extends Component {
     };
   }
   componentDidMount() {
-    let that = this;
+    // let that = this;
 
     this.setState({
       settings: sappy.getSettings(["FIN.CCD.CAIXA_DIFERENCAS"])
