@@ -196,7 +196,16 @@ class SearchAndChoose extends Component {
 
           <button className="input-search-btn vertical-align-middle">
             {this.props.baseDocLinesCondition &&
-              <i className={"icon " + (this.props.useBaseDoclines ? "fa-external-link active" : "fa-external-link inactive")} aria-hidden="true" onMouseDown={that.props.onToogleUseBaseDoclines} />}
+              <i
+                className={"icon " + (this.props.useBaseDoclines ? "pe-way active" : "pe-way inactive")}
+                style={{
+                  fontSize: "1.8rem",
+                  lineHeight: "1rem",
+                  top: "5px"
+                }}
+                aria-hidden="true"
+                onMouseDown={that.props.onToogleUseBaseDoclines}
+              />}
 
             {this.props.searchLimitCondition &&
               <i className={"icon " + (this.props.useSearchLimit ? "ion-ios-funnel active" : "ion-ios-funnel-outline inactive")} aria-hidden="true" onMouseDown={that.props.onToogleUseSearchLimit} />}

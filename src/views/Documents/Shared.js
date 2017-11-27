@@ -17,6 +17,7 @@ exports.prepareDocType = function({ tableName, module }) {
   let priceHover = {};
   let contractHover = {};
   let numatcardLabel = "";
+  let itemCodeLabel = "Código";
 
   if ("13,14,15,16,17,23".indexOf(objType) > -1) {
     //Vendas
@@ -41,6 +42,7 @@ exports.prepareDocType = function({ tableName, module }) {
         AND BASEDOC."ShipToCode"='<SHIPADDR>' 
         AND BASEDOC."QTYSTK_AVAILABLE">0 `;
     //Compras
+    itemCodeLabel = "Catálogo";
     cardCodeLabel = "Fornecedor";
     cardCodeApi = "/api/cbo/ocrd/s";
     contactLabel = "Contato/Sub.For";
@@ -207,7 +209,7 @@ exports.prepareDocType = function({ tableName, module }) {
   // detailFields.push({ name: 'ITEMCODE', label: 'Artigo', type: "text", width: 220, editable: false, dragable: false, onLinkClick: this.handleItemcodeLinkClick })
   detailFields.push({
     name: "CATNUM_OR_ITEMCODE",
-    label: "Catálogo",
+    label: itemCodeLabel,
     type: "text",
     width: 100,
     editable: false,
@@ -220,8 +222,31 @@ exports.prepareDocType = function({ tableName, module }) {
   detailFields.push({ name: "QTSTK", label: "Qtd", type: "quantity", width: 60, editable: true });
   detailFields.push({ name: "QTBONUS", label: "Qt.Bónus", type: "bonus", width: 120, editable: true });
   // detailFields.push({ name: 'BONUS_NAP', label: 'NAP', type: "check", width: 40, editable: true })
-  detailFields.push({ name: "PRICE", label: "Preço", type: "price", width: 70, editable: true, hover: priceHover });
-  detailFields.push({ name: "USER_DISC", label: "Descontos", type: "text", width: 120, editable: true });
+  detailFields.push({
+    name: "PRICE",
+    label: "Preço",
+    type: "price",
+    width: 70,
+    editable: true,
+    hover: priceHover,
+    getCellStyle: props => {
+      let classes = "";
+      if (props.dependentValues.PRICE_CHANGEDBY) classes += " has-been-changed";
+      return classes;
+    }
+  });
+  detailFields.push({
+    name: "USER_DISC",
+    label: "Descontos",
+    type: "text",
+    width: 120,
+    editable: true,
+    getCellStyle: props => {
+      let classes = "";
+      if (props.dependentValues.DISC_CHANGEDBY) classes += " has-been-changed";
+      return classes;
+    }
+  });
   detailFields.push({ name: "LINETOTAL", label: "Total", width: 90, type: "amount", editable: true });
   // detailFields.push({ name: 'LINETOTALBONUS', label: 'TotalB', width: 90, type: "amount", editable: true })
   detailFields.push({ name: "VATGROUP", label: "IVA", type: "vat", width: 70, editable: true });

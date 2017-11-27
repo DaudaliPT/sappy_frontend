@@ -2,23 +2,50 @@ import React, { PureComponent } from "react";
 import DataGrid from "../../../components/DataGrid";
 import { TextBox, TextBoxNumeric, ComboBox, Date, Toggle, Flag, Check } from "../../../Inputs";
 import Panel from "../../../components/Panel";
+import ContextMenu from "./ContextMenu";
+
 const sappy = window.sappy;
 
 class DocDetail extends PureComponent {
   constructor(props) {
     super(props);
-
-    this.getSelectedRows = this.getSelectedRows.bind(this);
     this.scrollToLastLine = this.scrollToLastLine.bind(this);
-  }
-
-  getSelectedRows() {
-    // return this.refs.grid.getState().selectedIndexes.map(i => this.refs.grid.getRowAt(i).LINENUM)
-    return this.refs.grid.getState().selectedKeys;
+    this.handleContextMenuCopy = this.handleContextMenuCopy.bind(this);
   }
 
   scrollToLastLine() {
     return this.refs.grid.scrollToRow(this.refs.grid.getSize());
+  }
+
+  handleContextMenuCopy(e, data) {
+    let rows = this.refs.grid.getSelectedRows();
+    let fields = this.refs.grid.props.fields;
+
+    if (rows.length === 0) {
+      rows = [this.refs.grid.getRowAt(data.rowIdx)];
+    }
+
+    let copied = "";
+    fields.forEach(f => {
+      copied += f.label + "\t";
+    });
+    copied += "\n";
+    rows.forEach(r => {
+      fields.forEach(f => {
+        let value = r[f.name];
+        let formatedValue;
+        if (f.type === "quantity") formatedValue = value === null ? null : sappy.format.quantity(sappy.getNum(value));
+        else if (f.type === "price") formatedValue = value === null ? null : sappy.format.price(sappy.getNum(value));
+        else if (f.type === "amount") formatedValue = value === null ? null : sappy.format.amount(sappy.getNum(value));
+        else if (f.type === "integer") formatedValue = value === null ? null : sappy.format.integer(sappy.getNum(value));
+        else if (f.type === "date") formatedValue = value === null ? null : sappy.format.date(sappy.unformat.date(value));
+        else formatedValue = value;
+        copied += formatedValue + "\t";
+      });
+      copied += "\n";
+    });
+
+    sappy.copyTextToClipboard(copied);
   }
 
   render() {
@@ -133,12 +160,23 @@ class DocDetail extends PureComponent {
               ref="grid"
               height={this.props.height}
               fields={this.props.fields}
+              contextMenu={
+                <ContextMenu
+                  menus={[
+                    {
+                      text: "Copiar",
+                      onClick: this.handleContextMenuCopy
+                    }
+                  ]}
+                />
+              }
               disabled={this.props.docData.DOCNUM > 0 ? true : false}
               rows={this.props.docData.LINES}
               getRowStyle={props => {
                 let row = props.row;
                 let classes = "";
-                if (row.IDPROMO) classes += "has-promo";
+                if (row.IDPROMO) classes += " has-promo";
+                if (row.LineStatus === "C") classes += " line-closed";
                 // if (sappy.getNum(row.AvgPrice) * sappy.getNum(row.QTSTK) > sappy.getNum(row.LINETOTAL)) classes += " bellow-cost";
 
                 return classes;

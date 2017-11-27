@@ -101,6 +101,12 @@
   background-color: rgba(70, 190, 138, 0.1) !important;
   color: rgba(0, 120, 68, 1) !important;
 }
+
+.line-closed {
+  background-color: rgba(233, 237, 239, 1) !important;
+  /* color: rgba(32, 46, 55, 1) !important; */
+}
+
 .bellow-cost {
   color: rgb(237, 103, 99) !important;
 }

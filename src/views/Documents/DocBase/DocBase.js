@@ -39,7 +39,8 @@ class DocBase extends Component {
     let state = {
       selectedLineNums: [],
       footerLimitSearch: props.footerSearchLimitCondition || false,
-      footerUseBaseDoclines: !!props.footerBaseDocLinesCondition || false,
+      // footerUseBaseDoclines: !!props.footerBaseDocLinesCondition || false,
+      footerUseBaseDoclines: false,
       loading: true,
       changingTotals: false,
       editable: false,
@@ -299,6 +300,9 @@ class DocBase extends Component {
     let that = this;
     let documentoBloqueado = this.state.docData.DOCNUM > 0;
     if (documentoBloqueado) return;
+
+    if (updated.hasOwnProperty("PRICE")) updated.PRICE_CHANGEDBY = sappy.sessionInfo.user.NAME;
+    if (updated.hasOwnProperty("USER_DISC")) updated.DISC_CHANGEDBY = sappy.sessionInfo.user.NAME;
 
     if (this.props.onRowChange) updated = this.props.onRowChange(currentRow, updated);
 

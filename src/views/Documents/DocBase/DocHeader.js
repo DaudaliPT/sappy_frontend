@@ -5,7 +5,7 @@ import Panel from "../../../components/Panel";
 
 class DocHeader extends Component {
   render() {
-    let { CARDCODE, CARDNAME, OBJTYPE, DOCENTRY, DOCNUM, DOCSTATUS, CANCELED } = this.props.docData;
+    let { TAGS, CARDCODE, CARDNAME, OBJTYPE, DOCENTRY, DOCNUM, DOCSTATUS, CANCELED } = this.props.docData;
 
     let getProperInputForField = headerField => {
       if (!headerField) return null;
@@ -183,6 +183,7 @@ class DocHeader extends Component {
       <div id="docHeader">
         <Panel
           title={title}
+          tags={TAGS}
           colapsedInfo={CARDCODE && " (" + CARDCODE + " - " + CARDNAME + ")"}
           expanded={this.props.expanded}
           onToogleExpand={this.props.toggleHeader}

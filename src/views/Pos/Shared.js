@@ -103,12 +103,7 @@ exports.prepareDocType = function({ tableName }) {
       label: "Pr. c/Iva",
       type: "price",
       width: 80,
-      editable: false,
-      getCellStyle: props => {
-        let classes = "";
-        if (props.dependentValues.PRICE_CHANGEDBY) classes += " has-been-changed";
-        return classes;
-      }
+      editable: false
     }
     // { name: "BASE_OBJTYPE", label: "T", type: "text", width: 40, editable: false },
     // { name: "BASE_DOCENTRY", label: "E", type: "text", width: 40, editable: false },

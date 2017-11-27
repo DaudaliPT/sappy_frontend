@@ -428,6 +428,7 @@ class DataGrid extends Component {
       <Draggable.Container>
         <ReactDataGrid
           ref={node => (this.thisComponent = node)}
+          contextMenu={this.props.contextMenu}
           columns={this.state.columns}
           minHeight={this.props.height || 0}
           enableDragAndDrop={true}

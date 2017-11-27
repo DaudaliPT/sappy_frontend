@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Button } from "reactstrap";
 import uuid from "uuid";
 import "./Panel.css";
+import DocBadges from "../DocBadges";
 
 import Menu from "../ReactMenu";
 var MenuTrigger = Menu.MenuTrigger;
@@ -33,6 +34,7 @@ class Panel extends Component {
     let hiddenClass = expanded ? "" : "hidden-xxl-down";
     let notHiddenClass = expanded ? "hidden-xxl-down" : "";
     let title = this.props.title;
+    let tags = this.props.tags;
     let subtitle = this.props.subtitle;
     let allowCollapse = this.props.allowCollapse;
 
@@ -105,11 +107,14 @@ class Panel extends Component {
           <div className="title">
             {title &&
               <h4 className="text" onClick={this.toggleHeader}>
-                {" "}{title}{" "}
+                {title}
               </h4>}
+
+            <DocBadges tags={tags} />
+
             {subtitle &&
               <h5 className="text" onClick={this.toggleHeader}>
-                {" "}{subtitle}{" "}
+                {subtitle}
               </h5>}
             <span className={"moreinfo " + notHiddenClass}>
               {this.props.colapsedInfo}

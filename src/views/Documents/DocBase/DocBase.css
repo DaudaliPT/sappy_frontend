@@ -52,6 +52,12 @@
   background-color: transparent;
 }
 
+#docHeader .badge {
+  position: relative;
+  top: -5px;
+  margin: 5px;
+}
+
 #docFooter {
   background: rgba(32, 46, 55, 0.9);
   /* transparent;    */
