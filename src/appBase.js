@@ -128,13 +128,20 @@ class appBase extends Component {
 
     this.hoverTimeOutHandle = setTimeout(function() {
       if (that.hoverServerRequest && that.hoverServerRequest.abort) that.hoverServerRequest.abort();
+
+      // let $mouseIsHover = document.querySelectorAll(":hover");
+      let $le = $("#" + target + ":hover");
+      if ($le.length === 0) return; // console.log("popover ignored because element does not exists anymore, or mouse is out");
+
       that.hoverServerRequest = axios({ method: "get", url: api })
         .then(result => {
           let content = null;
           if (render) content = render({ result, context: renderContext });
           if (!content) return;
-          let $le = $("#" + target);
-          if ($le.length === 0) return console.log("popover ignored because element does not exists anymore");
+
+          // let $mouseIsHover = document.querySelectorAll(":hover");
+          let $le = $("#" + target + ":hover");
+          if ($le.length === 0) return; //console.log("popover ignored because element does not exists anymore, or mouse is out");
 
           that.setState({
             currentPopover: (
