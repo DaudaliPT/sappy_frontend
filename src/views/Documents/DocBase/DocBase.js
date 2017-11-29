@@ -296,7 +296,7 @@ class DocBase extends Component {
     }
   }
 
-  handleDetailRowChange(currentRow, updated) {
+  handleDetailRowChange(currentRow, updated, callback) {
     let that = this;
     let documentoBloqueado = this.state.docData.DOCNUM > 0;
     if (documentoBloqueado) return;
@@ -322,6 +322,8 @@ class DocBase extends Component {
         let newDocData = { ...result.data, LINES: rows };
         delete newDocData.UPDATED_LINE;
         that.setNewDataAndDisplayAlerts(newDocData);
+
+        callback && callback(new_row);
       })
       .catch(error => sappy.showError(error, "Erro ao gravar linha"));
   }

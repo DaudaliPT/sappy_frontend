@@ -56,7 +56,7 @@ class TextBoxNumeric extends Component {
     if (value === null || value === undefined) return "";
 
     let rawValue = sappy.evaluateNumericExpression(value);
-    let formatedValue;
+    let formatedValue = rawValue;
     if (valueType === "price") formatedValue = sappy.format.price(rawValue);
     if (valueType === "amount") formatedValue = sappy.format.amount(rawValue);
     if (valueType === "percent") formatedValue = sappy.format.percent(rawValue);
@@ -108,12 +108,7 @@ class TextBoxNumeric extends Component {
     }
 
     return (
-      <FormGroup
-        color={stateColor}
-        className={this.props.label ? "" : "no-label"}
-        data-tip={this.props.label}
-        title={stateMsg}
-      >
+      <FormGroup color={stateColor} className={this.props.label ? "" : "no-label"} data-tip={this.props.label} title={stateMsg}>
         {/*{renderLabel()}*/}
         <InputGroup>
           {this.props.leftContent && this.props.leftContent}

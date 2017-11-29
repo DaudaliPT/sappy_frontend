@@ -715,8 +715,10 @@ textarea {
 }
 
 .popover {
+  border: 1px solid rgb(200, 200, 200) !important;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+  border-radius: 0rem;
   max-width: 500px !important;
-  background: rgba(32, 46, 55, 0.9) !important;
 }
 .popover:after {
   border-left-color: rgba(32, 46, 55, 0.9) !important;
@@ -726,11 +728,18 @@ textarea {
   border-right-color: rgba(32, 46, 55, 0.9) !important;
 }
 
-.popover-content {
-  /* font-size: 0.8rem!important; */
+.popover .hovertip .popover-content {
+  font-size: 0.8rem !important;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.5) !important;
   padding: 10px !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.popover .hovertip {
+  background: rgba(32, 46, 55, 0.9) !important;
+}
+.popover .popbox {
+  background: white !important;
 }
 
 .painel-modopag {
@@ -1281,6 +1290,11 @@ div.flag > .icon[class*="ion-"] {
   text-align: center !important;
 }
 div.flag > .icon[class*="fa-"] {
+  font-size: 1.5rem !important;
+  line-height: 1.5;
+  text-align: center !important;
+}
+div.flag > .icon[class*="pe-"] {
   font-size: 1.5rem !important;
   line-height: 1.5;
   text-align: center !important;

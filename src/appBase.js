@@ -44,6 +44,8 @@ class appBase extends Component {
 
     sappy.showPopover = this.showPopover.bind(this);
     sappy.hidePopover = this.hidePopover.bind(this);
+    sappy.showPopbox = this.showPopbox.bind(this);
+    sappy.hidePopbox = this.hidePopbox.bind(this);
 
     sappy.showToastr = this.showToastr.bind(this);
     sappy.clearToastr = this.clearToastr.bind(this);
@@ -57,6 +59,8 @@ class appBase extends Component {
       currentAppModal: null,
       currentProgressModal: null,
       currentPopover: null,
+      currentPopbox: null,
+      currentPopboxID: null,
       playBadInputSound: false,
       playAlertSound: false,
       badInputAlertComponent: <ReactAudioPlayer src="/files/216090__richerlandtv__bad-beep-incorrect.mp3" autoPlay={true} onEnded={() => that.setState({ playBadInputSound: false })} />,
@@ -145,7 +149,7 @@ class appBase extends Component {
 
           that.setState({
             currentPopover: (
-              <Popover isOpen={true} target={target} toggle={this.togglePopover} placement={placement || "left"} onMouseLeave={sappy.hidePopover}>
+              <Popover className="hovertip" isOpen={true} target={target} placement={placement || "left"} onMouseLeave={sappy.hidePopover}>
                 <PopoverContent>
                   {content}
                 </PopoverContent>
@@ -155,6 +159,36 @@ class appBase extends Component {
         })
         .catch(error => console.log(error, "Erro ao obter dados"));
     }, 300);
+  }
+
+  hidePopbox() {
+    if (!this.state.currentPopbox) return null;
+    let id = this.state.currentPopboxID;
+    this.setState({ currentPopbox: null, currentPopboxID: null });
+    return id;
+  }
+
+  showPopbox({ target, api, render, renderContext, placement }) {
+    let that = this;
+    sappy.hidePopbox();
+
+    let content = null;
+    if (render) content = render({ context: renderContext });
+    if (!content) return;
+
+    let $le = $("#" + target);
+    if ($le.length === 0) return; //console.log("popover ignored because element does not exists anymore");
+
+    that.setState({
+      currentPopboxID: target,
+      currentPopbox: (
+        <Popover className="popbox" isOpen={true} target={target} placement={placement || "left"}>
+          <PopoverContent>
+            {content}
+          </PopoverContent>
+        </Popover>
+      )
+    });
   }
 
   showWaitProgress(msg) {
@@ -301,6 +335,7 @@ class appBase extends Component {
         {this.state.currentAppModal}
         {this.state.currentProgressModal}
         {this.state.currentPopover}
+        {this.state.currentPopbox}
       </div>
     );
   }

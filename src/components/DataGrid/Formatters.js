@@ -195,6 +195,57 @@ class FlagFormatter extends Component {
   }
 }
 
+class MoreFormatter extends Component {
+  render() {
+    let { column, dependentValues, rowIdx, value, valueON, valueOFF, color } = this.props;
+    let { type, hover, onLinkClick } = column;
+    let divID = column.name + rowIdx;
+    let onMouseLeave;
+    let onMouseEnter;
+    let checked = value != null ? value : false;
+    valueON = valueON || "icon pe-comment";
+    valueOFF = valueOFF || "icon pe-comment";
+    color = color || "success";
+
+    if (hover && hover.render && dependentValues) {
+      onMouseLeave = e => sappy.hidePopover();
+
+      onMouseEnter = e => {
+        let api = hover.api || "";
+        Object.keys(dependentValues).forEach(c => (api = api.replace("<" + c + ">", dependentValues[c])));
+
+        sappy.showPopover({
+          target: divID,
+          api,
+          renderContext: { dependentValues, rowIdx, column },
+          render: hover.render,
+          placement: hover.placement
+        });
+      };
+    }
+
+    let getCellStyle = this.props.column.getCellStyle;
+    let classes = "flag";
+    if (getCellStyle && typeof getCellStyle === "function") {
+      classes += " " + getCellStyle(this.props);
+    }
+
+    let iClasses = "";
+    if (checked) {
+      iClasses += " " + color + " " + valueON;
+    } else {
+      iClasses += " " + "inactive " + valueOFF;
+    }
+    let style = {};
+
+    return (
+      <div id={divID} className={classes} style={style} title={hover ? "" : value} onMouseLeave={onMouseLeave} onMouseEnter={onMouseEnter}>
+        <i className={iClasses} aria-hidden="true" />
+      </div>
+    );
+  }
+}
+
 class VatFormatter extends Component {
   shouldComponentUpdate(nextProps) {
     return nextProps.value !== this.props.value;
@@ -361,15 +412,16 @@ class TagsFormatter extends Component {
 }
 
 let Formatters = {
-  Default: DefaultFormater,
-  Vat: VatFormatter,
-  VatPercent: VatPercentFormatter,
-  Tags: TagsFormatter,
-  Check: CheckboxFormatter,
-  Switch: SwitchFormatter,
-  Flag: FlagFormatter,
-  Discount: DiscountFormatter,
   Bonus: BonusFormatter,
-  Pkpos: PkposFormatter
+  Check: CheckboxFormatter,
+  Default: DefaultFormater,
+  Discount: DiscountFormatter,
+  Flag: FlagFormatter,
+  More: MoreFormatter,
+  Pkpos: PkposFormatter,
+  Switch: SwitchFormatter,
+  Tags: TagsFormatter,
+  Vat: VatFormatter,
+  VatPercent: VatPercentFormatter
 };
 export default Formatters;

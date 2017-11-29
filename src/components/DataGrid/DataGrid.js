@@ -169,6 +169,7 @@ class DataGrid extends Component {
         condition: field.condition,
         getCellStyle: field.getCellStyle,
         hover: field.hover,
+        popbox: field.popbox,
         editable,
         editor: editable ? Editors.Default : null,
         cellClass,
@@ -201,6 +202,10 @@ class DataGrid extends Component {
         if (editable) {
           col.editable = false; //don't allow double ckick and enter the edit mode with textBox
           col.events = {
+            onDoubleClick: (ev, args) => {
+              ev.stopPropagation();
+              ev.preventDefault();
+            },
             onClick: (ev, args) => {
               ev.stopPropagation();
 
@@ -223,6 +228,55 @@ class DataGrid extends Component {
                   updated: { [args.column.key]: !currentRow[args.column.key] }
                 });
               }
+            }
+          };
+        }
+      } else if (field.type.startsWith("more")) {
+        let parts = field.type.split("|");
+        let type = parts[0];
+        col.color = parts[1];
+        col.valueON = parts[2];
+        col.valueOFF = parts[3];
+
+        if (type === "more") col.formatter = Formatters.More;
+        if (editable) {
+          col.editable = false; //don't allow double ckick and enter the edit mode with textBox
+          col.events = {
+            onDoubleClick: (ev, args) => {
+              ev.stopPropagation();
+              ev.preventDefault();
+            },
+            onClick: (ev, args) => {
+              ev.stopPropagation();
+              ev.preventDefault();
+
+              let target = ev.target;
+              let divID = args.column.name + args.rowIdx;
+              let popbox = args.column.popbox || {};
+              if (sappy.hidePopbox() === divID) return; // já estava uma aberta para esta linha
+
+              setImmediate(() => {
+                let dependentValues = this.getRowAt(args.rowIdx);
+
+                sappy.showPopbox({
+                  target: divID,
+                  renderContext: {
+                    dependentValues,
+                    rowIdx: args.rowIdx,
+                    column: args.column,
+                    onChange: changeInfo => {
+                      that.handleGridRowsUpdated({
+                        fromRow: args.rowIdx,
+                        toRow: args.rowIdx,
+                        updated: { [changeInfo.fieldName]: changeInfo.rawValue },
+                        callback: changeInfo.callback
+                      });
+                    }
+                  },
+                  render: popbox.render,
+                  placement: popbox.placement
+                });
+              });
             }
           };
         }
@@ -354,7 +408,7 @@ class DataGrid extends Component {
     return ret;
   }
 
-  handleGridRowsUpdated({ fromRow, toRow, updated }) {
+  handleGridRowsUpdated({ fromRow, toRow, updated, callback }) {
     let colUpdated = Object.keys(updated)[0];
 
     let colType = "string";
@@ -389,7 +443,7 @@ class DataGrid extends Component {
       let ix = index;
       let currentRow = this.getRowAt(ix);
 
-      this.props.onRowUpdate(currentRow, { ...updated });
+      this.props.onRowUpdate(currentRow, { ...updated }, callback);
     }
   }
 

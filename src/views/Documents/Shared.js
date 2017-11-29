@@ -1,5 +1,7 @@
 import React from "react";
 import EditModal from "../Produtos/EditModal";
+import DocDetailMore from "./DocBase/DocDetailMore";
+import { TextBox, TextBoxNumeric, ComboBox, Date, Toggle, Flag, Check } from "../../Inputs";
 const sappy = window.sappy;
 
 exports.prepareDocType = function({ tableName, module }) {
@@ -16,6 +18,7 @@ exports.prepareDocType = function({ tableName, module }) {
   let footerSearchLimitCondition = "";
   let priceHover = {};
   let contractHover = {};
+  let moreBox = {};
   let numatcardLabel = "";
   let itemCodeLabel = "Código";
 
@@ -25,7 +28,6 @@ exports.prepareDocType = function({ tableName, module }) {
     cardCodeApi = "/api/cbo/ocrd/c";
     contactLabel = "Contato";
     footerSearchLimitCondition = "";
-    priceHover = {};
     numatcardLabel = "Ref. Cliente";
 
     // as cotações não se podem basear em documentos
@@ -126,6 +128,12 @@ exports.prepareDocType = function({ tableName, module }) {
         );
       }
     };
+
+    moreBox = {
+      placement: "right",
+      render: ({ context }) => <DocDetailMore {...context} />
+    };
+
     numatcardLabel = "Ref. Fornecedor";
   }
 
@@ -251,6 +259,10 @@ exports.prepareDocType = function({ tableName, module }) {
   // detailFields.push({ name: 'LINETOTALBONUS', label: 'TotalB', width: 90, type: "amount", editable: true })
   detailFields.push({ name: "VATGROUP", label: "IVA", type: "vat", width: 70, editable: true });
   // detailFields.push({ name: 'WHSCODE', label: 'Arm', type: "text", width: 50, editable: true })
+  if ("18".indexOf(objType) > -1) {
+    //Compras
+    detailFields.push({ name: "MORE", label: "more", type: "more|danger", width: 35, editable: true, popbox: moreBox });
+  }
   detailFields.push({ name: "HASINCONF", label: "", type: "flag|danger", width: 35, editable: true });
   if ("18".indexOf(objType) > -1) {
     //Compras
