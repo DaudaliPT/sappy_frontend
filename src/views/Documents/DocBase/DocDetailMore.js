@@ -36,7 +36,7 @@ class DocDetailMore extends Component {
             disabled: false,
             value: dependentValues.UIEC,
             onChange: this.onFieldChange,
-            valueType: "discount"
+            valueType: "tax"
           }}
         />
         <TextBox
@@ -46,7 +46,7 @@ class DocDetailMore extends Component {
             disabled: false,
             value: dependentValues.UECOVALOR,
             onChange: this.onFieldChange,
-            valueType: "discount"
+            valueType: "tax"
           }}
         />
         <TextBox
@@ -56,7 +56,7 @@ class DocDetailMore extends Component {
             disabled: false,
             value: dependentValues.UECOREE,
             onChange: this.onFieldChange,
-            valueType: "discount"
+            valueType: "tax"
           }}
         />
         <TextBoxNumeric

@@ -55,6 +55,14 @@ class appBase extends Component {
     sappy.playBadInputSound = this.playBadInputSound.bind(this);
     sappy.playAlertSound = this.playAlertSound.bind(this);
 
+    // hide popbox if target div id doesn't exist anymore (otherwise the popbox still open, for example if we go to other page)
+    setInterval(() => {
+      let target = this.state.currentPopboxID;
+      if (!target) return;
+      let $le = $("#" + target);
+      if ($le.length === 0) this.hidePopbox();
+    }, 1000);
+
     this.state = {
       currentAppModal: null,
       currentProgressModal: null,

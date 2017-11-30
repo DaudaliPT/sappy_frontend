@@ -31,6 +31,10 @@ class TextBox extends Component {
       formatedValue = sappy.formatUserDisc(sappy.parseUserDisc(formatedValue));
     }
 
+    if (this.props.valueType === "tax") {
+      formatedValue = sappy.formatUserTax(sappy.parseUserTax(formatedValue));
+    }
+
     if (sappy.isDiferent(formatedValue, this.state.receivedValue) || sappy.isDiferent(formatedValue, e.target.value)) {
       let rawValue = formatedValue;
       let changeInfo = { fieldName: this.props.name, rawValue, formatedValue };
@@ -49,10 +53,11 @@ class TextBox extends Component {
         formatedValue = sappy.formatUserDisc(sappy.parseUserDisc(formatedValue));
       }
 
-      if (
-        sappy.isDiferent(formatedValue, this.state.receivedValue) ||
-        sappy.isDiferent(formatedValue, e.target.value)
-      ) {
+      if (this.props.valueType === "tax") {
+        formatedValue = sappy.formatUserTax(sappy.parseUserTax(formatedValue));
+      }
+
+      if (sappy.isDiferent(formatedValue, this.state.receivedValue) || sappy.isDiferent(formatedValue, e.target.value)) {
         let rawValue = formatedValue;
         let changeInfo = { fieldName: this.props.name, rawValue, formatedValue };
         this.props.onChange(changeInfo);
@@ -96,12 +101,7 @@ class TextBox extends Component {
     }
 
     return (
-      <FormGroup
-        color={stateColor}
-        className={this.props.label ? "" : "no-label"}
-        data-tip={this.props.label}
-        title={stateMsg}
-      >
+      <FormGroup color={stateColor} className={this.props.label ? "" : "no-label"} data-tip={this.props.label} title={stateMsg}>
         {/*{renderLabel()}*/}
         <InputGroup>
           <Input
