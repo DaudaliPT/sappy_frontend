@@ -3,6 +3,7 @@ import accounting from "./accountingjs";
 import moment from "moment";
 import barcodes from "./sappy_barcodes";
 import { setTimeout } from "timers";
+import { isNumber } from "util";
 
 // sappy namespace
 (function(sappy) {
@@ -430,7 +431,11 @@ import { setTimeout } from "timers";
         part = sappy.replaceAll(part, sappy.sessionInfo.company.oadm.ThousSep, "");
       }
 
-      if (part.indexOf("€") > -1 || part.indexOf("e") > -1 || part.indexOf("E") > -1 || part.indexOf("v") > -1 || part.indexOf("V") > -1 || part.indexOf("t") > -1 || part.indexOf("T") > -1) {
+      if (part.indexOf("€/un") > -1 || part.indexOf("eu") > -1 || part.indexOf("EU") > -1 || part.indexOf("u") > -1 || part.indexOf("U") > -1) {
+        part = part.replace("€/un", "").replace("eu", "").replace("EU", "").replace("u", "").replace("U", "");
+        let d = sappy.getNum(part);
+        if (d) UN[UN.length] = d;
+      } else if (part.indexOf("€") > -1 || part.indexOf("e") > -1 || part.indexOf("E") > -1 || part.indexOf("v") > -1 || part.indexOf("V") > -1 || part.indexOf("t") > -1 || part.indexOf("T") > -1) {
         part = part.replace("€", "").replace("e", "").replace("E", "").replace("v", "").replace("V", "").replace("t", "").replace("T", "");
         let d = sappy.getNum(part);
         if (d) VAL[VAL.length] = d;

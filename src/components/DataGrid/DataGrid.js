@@ -239,47 +239,47 @@ class DataGrid extends Component {
         col.valueOFF = parts[3];
 
         if (type === "more") col.formatter = Formatters.More;
-        if (editable) {
-          col.editable = false; //don't allow double ckick and enter the edit mode with textBox
-          col.events = {
-            onDoubleClick: (ev, args) => {
-              ev.stopPropagation();
-              ev.preventDefault();
-            },
-            onClick: (ev, args) => {
-              ev.stopPropagation();
-              ev.preventDefault();
+        // if (editable) {
+        col.editable = false; //don't allow double ckick and enter the edit mode with textBox
+        col.events = {
+          onDoubleClick: (ev, args) => {
+            ev.stopPropagation();
+            ev.preventDefault();
+          },
+          onClick: (ev, args) => {
+            ev.stopPropagation();
+            ev.preventDefault();
 
-              let target = ev.target;
-              let divID = args.column.name + args.rowIdx;
-              let popbox = args.column.popbox || {};
-              if (sappy.hidePopbox() === divID) return; // já estava uma aberta para esta linha
+            let target = ev.target;
+            let divID = args.column.name + args.rowIdx;
+            let popbox = args.column.popbox || {};
+            if (sappy.hidePopbox() === divID) return; // já estava uma aberta para esta linha
 
-              setImmediate(() => {
-                let dependentValues = this.getRowAt(args.rowIdx);
+            setImmediate(() => {
+              let dependentValues = this.getRowAt(args.rowIdx);
 
-                sappy.showPopbox({
-                  target: divID,
-                  renderContext: {
-                    dependentValues,
-                    rowIdx: args.rowIdx,
-                    column: args.column,
-                    onChange: changeInfo => {
-                      that.handleGridRowsUpdated({
-                        fromRow: args.rowIdx,
-                        toRow: args.rowIdx,
-                        updated: { [changeInfo.fieldName]: changeInfo.rawValue },
-                        callback: changeInfo.callback
-                      });
-                    }
-                  },
-                  render: popbox.render,
-                  placement: popbox.placement
-                });
+              sappy.showPopbox({
+                target: divID,
+                renderContext: {
+                  dependentValues,
+                  rowIdx: args.rowIdx,
+                  column: args.column,
+                  onChange: changeInfo => {
+                    that.handleGridRowsUpdated({
+                      fromRow: args.rowIdx,
+                      toRow: args.rowIdx,
+                      updated: { [changeInfo.fieldName]: changeInfo.rawValue },
+                      callback: changeInfo.callback
+                    });
+                  }
+                },
+                render: popbox.render,
+                placement: popbox.placement
               });
-            }
-          };
-        }
+            });
+          }
+        };
+        // }
       } else if (field.type.startsWith("discount")) {
         let parts = field.type.split("|");
         // let type = parts[0];
