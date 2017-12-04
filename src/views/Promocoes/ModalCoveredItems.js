@@ -110,13 +110,13 @@ class ModalCoveredItems extends Component {
                 </span>
               </div> */}
               <div className="col-2">
-                {" "}{row.ItemCode}{" "}
+                {row.ItemCode}
               </div>
               <div className="col-5 ">
-                {" "}{row.ItemName} <span> {renderBadges()} </span>{" "}
+                {row.ItemName} <span> {renderBadges()} </span>
               </div>
               <div className="col-2">
-                {" "}<span className="float-right">{row.FORMATED_PRICE}</span>{" "}
+                <span className="float-right">{row.FORMATED_PRICE}</span>
               </div>
               <div className="col-2 lastcol">
                 <span className="float-right">
@@ -128,18 +128,18 @@ class ModalCoveredItems extends Component {
             <div className="hidden-xl-up">
               <div className="row">
                 <div className="col text-nowrap">
-                  {" "}{row.ItemName}{" "}
+                  {row.ItemName}
                 </div>
               </div>
               <div className="row secondrow">
                 <div className="col-6 text-nowrap firstcol">
-                  {" "}{row.ItemCode} <span> {renderBadges()} </span>{" "}
+                  {row.ItemCode} <span> {renderBadges()} </span>
                 </div>
                 <div className="col-3 text-nowrap">
-                  {" "}<span className="float-right">{row.FORMATED_PRICE}</span>{" "}
+                  <span className="float-right">{row.FORMATED_PRICE}</span>
                 </div>
                 <div className="col-3 text-nowrap lastcol">
-                  {" "}<span className="float-right">{sappy.format.quantity(row.OnHand, 0)} Un</span>{" "}
+                  <span className="float-right">{sappy.format.quantity(row.OnHand, 0)} Un</span>
                 </div>
               </div>
             </div>

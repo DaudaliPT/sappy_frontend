@@ -225,11 +225,11 @@ class CmpDespesas extends Component {
                 </span>
               </div>
               <div className="col-5 text-nowrap ">
-                {" "}{entidade}
+                {entidade}
                 {renderBadges()}
               </div>
               <div className="col-2 text-nowrap ">
-                {" "}<span className="float-right">{parcialmentePago ? sappy.format.amount(row.VALOR_ORIGINAL) : ""}</span>{" "}
+                <span className="float-right">{parcialmentePago ? sappy.format.amount(row.VALOR_ORIGINAL) : ""}</span>
               </div>
               <div className="col-2 text-nowrap lastcol">
                 <span className="float-right">

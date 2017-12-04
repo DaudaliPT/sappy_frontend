@@ -53,7 +53,7 @@ class DocHeader extends Component {
 
       return (
         <div key={"headerfield_" + headerField.name} className={classNames}>
-          {" "}{input}{" "}
+          {input}
         </div>
       );
     };
@@ -71,7 +71,7 @@ class DocHeader extends Component {
         }
         ret.push(
           <div key={"headerrow_" + lineKey} className="row mx--5">
-            {" "}{headerLineFields}
+            {headerLineFields}
           </div>
         );
       });

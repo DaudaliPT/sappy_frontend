@@ -23,7 +23,7 @@ class DocFooter extends Component {
                   <span>
                     <i className={action.icon} aria-hidden="true" />
                     <span className="hidden-sm-down">
-                      {" "}{action.name}
+                      {action.name}
                     </span>
                   </span>
                 </button>

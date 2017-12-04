@@ -97,7 +97,7 @@ class Login extends Component {
                   {renderCompanys()}
                   <label className="floating-label">Empresa SAP</label>
                   <label>
-                    {" "}{company}
+                    {company}
                   </label>
                 </div>
                 <button type="submit" className="btn btn-primary btn-block btn-lg mt-40">

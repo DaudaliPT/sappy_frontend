@@ -186,7 +186,7 @@ class Produtos extends Component {
                 <div className="col-6 text-nowrap firstcol"> {row.ItemCode} <span> {renderBadges()} </span> </div>
                 <div className="col-3 text-nowrap"> <span className="float-right">{row.FORMATED_PRICE}</span> </div>
                 <div className="col-3 text-nowrap lastcol">
-                  {" "}<span className="float-right">{sappy.format.quantity(row.OnHand, 0)} Un</span>{" "}
+                  <span className="float-right">{sappy.format.quantity(row.OnHand, 0)} Un</span>
                 </div>
               </div>
             </div>

@@ -107,7 +107,7 @@ class ModalAskDocumento extends Component {
               <div className="row secondrow">
                 <div className="col-4 text-nowrap firstcol"> {row.ABREV + " " + row.DocNum} </div>
                 <div className="col-5 text-nowrap firstcol">
-                  {" "}{sappy.format.date(row.TaxDate)} <span className="hidden-lg-down"> {renderBadges()} </span>{" "}
+                  {sappy.format.date(row.TaxDate)} <span className="hidden-lg-down"> {renderBadges()} </span>
                 </div>
                 <div className="col-3 text-nowrap lastcol">
                   <span className="float-right">{row.FORMATED_DOCTOTAL}</span>

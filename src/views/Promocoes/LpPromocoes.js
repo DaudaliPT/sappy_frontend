@@ -53,7 +53,7 @@ class LpPromocoes extends Component {
           <div className="container vertical-align-middle hidden-sm-down">
             <div className="row">
               <div className="col-1">
-                {" "}{row.NUMERO}{" "}
+                {row.NUMERO}
               </div>
               <div className="col-8">
                 {row.TIPO === "P" &&
@@ -63,7 +63,7 @@ class LpPromocoes extends Component {
                 {row.DESCRICAO} {renderBadges()}
               </div>
               <div className="col-3 lastcol">
-                {" "}{sappy.format.date(row.DATAI) + " a " + sappy.format.date(row.DATAF)}
+                {sappy.format.date(row.DATAI) + " a " + sappy.format.date(row.DATAF)}
               </div>
             </div>
           </div>

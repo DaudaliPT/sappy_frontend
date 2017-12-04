@@ -55,7 +55,7 @@ class PosHeader extends Component {
 
       return (
         <div key={"headerfield_" + headerField.name} className={classNames}>
-          {" "}{input}{" "}
+          {input}
         </div>
       );
     };
@@ -73,7 +73,7 @@ class PosHeader extends Component {
         }
         ret.push(
           <div key={"headerrow_" + lineKey} className="row mx--5">
-            {" "}{headerLineFields}
+            {headerLineFields}
           </div>
         );
       });

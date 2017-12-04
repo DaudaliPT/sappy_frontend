@@ -115,7 +115,7 @@ class DocDetail extends PureComponent {
 
       return (
         <div key={divID} id={divID} className={classNames} onMouseLeave={onMouseLeave} onMouseEnter={onMouseEnter} style={style}>
-          {" "}{input}{" "}
+          {input}
         </div>
       );
     };
@@ -132,7 +132,7 @@ class DocDetail extends PureComponent {
         let style = { display: "inline-flex", width: "100%" };
         ret.push(
           <div key={"sidebarRow_" + lineKey} style={style}>
-            {" "}{headerLineFields}
+            {headerLineFields}
           </div>
         );
       });

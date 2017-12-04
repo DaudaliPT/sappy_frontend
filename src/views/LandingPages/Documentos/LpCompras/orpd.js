@@ -29,19 +29,19 @@ class orpd extends Component {
                       <div className="col-3">
                         {sappy.format.datetime2(row.DOC_DATETIME)}
                         <span className="float-right">
-                          {" "}{row.DocNum}
+                          {row.DocNum}
                         </span>
                         <span className="float-right font-size-10">
-                          {" "}{row.NumAtCard}
+                          {row.NumAtCard}
                         </span>
                       </div>
                       <div className="col-7">
-                        {" "}{row.CardCode + " - " + row.CardName} <DocBadges tags={row.ITEM_TAGS} />{" "}
+                        {row.CardCode + " - " + row.CardName} <DocBadges tags={row.ITEM_TAGS} />
                       </div>
                       <div className="col-2 lastcol">
                         <span className="float-right">
                           <strong>
-                            {row.FORMATED_DOCTOTAL}{" "}
+                            {row.FORMATED_DOCTOTAL}
                           </strong>
                           {" " + sappy.format.date(row.DocDueDate)}
                         </span>
@@ -49,7 +49,7 @@ class orpd extends Component {
                     </div>
                   </div>
                   <div className="col-1 lastcol">
-                    {" "}<ButtonGetPdf DocEntry={row.DocEntry} ObjectID={row.ObjType} />{" "}
+                    <ButtonGetPdf DocEntry={row.DocEntry} ObjectID={row.ObjType} />
                   </div>
                 </div>
               </div>
@@ -60,23 +60,23 @@ class orpd extends Component {
                   <div className="col-11">
                     <div className="row">
                       <div className="col text-nowrap">
-                        {" "}{row.CardCode + " - " + row.CardName}{" "}
+                        {row.CardCode + " - " + row.CardName}
                       </div>
                     </div>
                     <div className="row secondrow">
                       <div className="col-2 text-nowrap firstcol">
-                        {" "}{sappy.format.datetime2(row.DOC_DATETIME)}{" "}
+                        {sappy.format.datetime2(row.DOC_DATETIME)}
                       </div>
                       <div className="col-8 text-nowrap">
-                        {" "}{row.DocNum} <DocBadges tags={row.ITEM_TAGS} />{" "}
+                        {row.DocNum} <DocBadges tags={row.ITEM_TAGS} />
                       </div>
                       <div className="col-2 text-nowrap lastcol">
-                        {" "}<span className="float-right"> {row.FORMATED_DOCTOTAL} </span>{" "}
+                        <span className="float-right"> {row.FORMATED_DOCTOTAL} </span>
                       </div>
                     </div>
                   </div>
                   <div className="col-1 lastcol">
-                    {" "}<ButtonGetPdf DocEntry={row.DocEntry} ObjectID={row.ObjType} />{" "}
+                    <ButtonGetPdf DocEntry={row.DocEntry} ObjectID={row.ObjType} />
                   </div>
                 </div>
               </div>
@@ -85,18 +85,18 @@ class orpd extends Component {
               <div className="hidden-sm-up">
                 <div className="row font-size-12">
                   <div className="col text-nowrap">
-                    {" "}{row.CardCode + " - " + row.CardName}{" "}
+                    {row.CardCode + " - " + row.CardName}
                   </div>
                 </div>
                 <div className="row secondrow font-size-10">
                   <div className="col-2 text-nowrap firstcol">
-                    {" "}{sappy.format.date(row.DOC_DATETIME)}{" "}
+                    {sappy.format.date(row.DOC_DATETIME)}
                   </div>
                   <div className="col-8 text-nowrap">
-                    {" "}{row.DocNum} <DocBadges tags={row.ITEM_TAGS} />{" "}
+                    {row.DocNum} <DocBadges tags={row.ITEM_TAGS} />
                   </div>
                   <div className="col-2 text-nowrap lastcol">
-                    {" "}<span className="float-right"> {row.FORMATED_DOCTOTAL} </span>{" "}
+                    <span className="float-right"> {row.FORMATED_DOCTOTAL} </span>
                   </div>
                 </div>
               </div>

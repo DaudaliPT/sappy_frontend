@@ -285,15 +285,15 @@ class CmpPorReceber extends Component {
           <div className="container vertical-align-middle">
             <div className="row">
               <div className="col-10 text-nowrap firstcol">
-                {" "}{row.CARDNAME + " (" + row.CARDCODE + ")"}{" "}
+                {row.CARDNAME + " (" + row.CARDCODE + ")"}
               </div>
             </div>
             <div className="row secondrow">
               <div className="col-6 text-nowrap firstcol">
-                {" "}{descDocs}{" "}
+                {descDocs}
               </div>
               <div className="col-6 text-nowrap lastcol">
-                {" "}<span className="float-right">{sappy.format.amount(row.TOTAL_BALANCE)}</span>{" "}
+                <span className="float-right">{sappy.format.amount(row.TOTAL_BALANCE)}</span>
               </div>
             </div>
           </div>

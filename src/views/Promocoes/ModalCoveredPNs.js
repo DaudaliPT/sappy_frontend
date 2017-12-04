@@ -110,17 +110,17 @@ class ModalCoveredPNs extends Component {
                 </span>
               </div> */}
               <div className="col-2">
-                {" "}{row.CardCode}{" "}
+                {row.CardCode}
               </div>
               <div className="col-9 lastcol ">
-                {" "}{row.CardName} <span> {renderBadges()} </span>{" "}
+                {row.CardName} <span> {renderBadges()} </span>
               </div>
             </div>
             {/*mobile*/}
             <div className="hidden-xl-up">
               <div className="row">
                 <div className="col text-nowrap">
-                  {" "}{row.CardCode + " - " + row.CardName}{" "}
+                  {row.CardCode + " - " + row.CardName}
                 </div>
               </div>
             </div>

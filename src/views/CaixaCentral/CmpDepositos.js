@@ -62,20 +62,20 @@ class CmpDepositos extends Component {
           <div className="container vertical-align-middle">
             <div className="row">
               <div className="col-2 text-nowrap firstcol">
-                {" "}{sappy.format.datetime2(row.DOC_DATETIME)}{" "}
+                {sappy.format.datetime2(row.DOC_DATETIME)}
               </div>
               <div className="col-2 text-nowrap ">
-                {" "}{row.DeposNum}{" "}
+                {row.DeposNum}
               </div>
               <div className="col-5 text-nowrap ">
-                {" "}{row.DpsBank ? row.BanckAcct + " - " + row.DpsBank : row.Memo}
+                {row.DpsBank ? row.BanckAcct + " - " + row.DpsBank : row.Memo}
                 {renderBadges()}
               </div>
               <div className="col-2 text-nowrap ">
-                {" "}<span className="float-right">{sappy.format.amount(row.LocTotal)}</span>{" "}
+                <span className="float-right">{sappy.format.amount(row.LocTotal)}</span>
               </div>
               <div className="col-1 lastcol">
-                {" "}<ButtonGetPdf DocEntry={row.DeposId} ObjectID={row.ObjType} defaultLayoutCode={this.state.defaultLayoutCode} />{" "}
+                <ButtonGetPdf DocEntry={row.DeposId} ObjectID={row.ObjType} defaultLayoutCode={this.state.defaultLayoutCode} />
               </div>
             </div>
           </div>

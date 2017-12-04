@@ -63,13 +63,13 @@ const HeaderAlignRight = ({ column }) => {
   if (column.editable) {
     return (
       <div style={{ textAlign: "right" }}>
-        {" "}<strong>{column.name}</strong>{" "}
+        <strong>{column.name}</strong>
       </div>
     );
   } else {
     return (
       <div style={{ textAlign: "right" }}>
-        {" "}{column.name}{" "}
+        {column.name}
       </div>
     );
   }
@@ -79,7 +79,7 @@ class SimpleFormatter extends Component {
   render() {
     return (
       <div>
-        {" "}{this.props.value || ""}
+        {this.props.value || ""}
       </div>
     );
   }
@@ -89,7 +89,7 @@ class DateFormatter extends Component {
   render() {
     return (
       <div>
-        {" "}{this.props.value ? sappy.format.date(this.props.value) : ""}
+        {this.props.value ? sappy.format.date(this.props.value) : ""}
       </div>
     );
   }
@@ -162,7 +162,7 @@ class ItemCodeFormater extends Component {
               currentModal: <EditModal toggleModal={toggleModal} itemcode={itemCode} />
             });
           }}
-        />{" "}
+        />
         {this.props.value || ""}
         {this.state.currentModal}
       </div>
@@ -719,7 +719,7 @@ class DocAtualizacaoPrecos extends Component {
                     <i className={action.icon} aria-hidden="true" />
 
                     <span className="hidden-sm-down">
-                      {" "}{action.name}
+                      {action.name}
                     </span>
                   </span>
                 </button>
@@ -756,7 +756,7 @@ class DocAtualizacaoPrecos extends Component {
           <div className="row">
             <div className="col-xl-8 col-md-4">
               <h5 className="page-title">
-                Impressão de etiquetas {this.state.docData.DOCNUM && this.state.docData.DOCNUM}{" "}
+                Impressão de etiquetas {this.state.docData.DOCNUM && this.state.docData.DOCNUM}
               </h5>
             </div>
             <div className="col-xl-4 col-md-8">

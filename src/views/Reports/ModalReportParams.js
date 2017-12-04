@@ -228,7 +228,7 @@ class ModalReportParams extends Component {
     return (
       <Modal isOpen={true} className={"modal-m modal-success"}>
         <ModalHeader toggle={this.props.toggleModal}>
-          {this.props.DocName}{" "}
+          {this.props.DocName}
         </ModalHeader>
         <ModalBody>
           <div style={{ minHeight: "150px" }}>

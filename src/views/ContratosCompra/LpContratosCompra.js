@@ -58,13 +58,13 @@ class LpContratosCompra extends Component {
           <div className="container vertical-align-middle hidden-sm-down">
             <div className="row">
               <div className="col-2">
-                {" "}{row.CARDCODE + "-" + sappy.padZeros(row.NUMERO, 3)}{" "}
+                {row.CARDCODE + "-" + sappy.padZeros(row.NUMERO, 3)}
               </div>
               <div className="col-6">
-                {" "}{row.CardName + (row.CONTACT_NAME ? `(${row.CONTACT_NAME})` : "")}{" "}
+                {row.CardName + (row.CONTACT_NAME ? `(${row.CONTACT_NAME})` : "")}
               </div>
               <div className="col-4 lastcol">
-                {" "}{row.DESCRICAO} {renderBadges()}
+                {row.DESCRICAO} {renderBadges()}
               </div>
             </div>
           </div>

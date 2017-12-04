@@ -172,28 +172,28 @@ class ModalMeiosPagPagamento extends Component {
       continuarColor = "danger";
       continuarContent = (
         <span>
-          {" "}<i className="icon wb-warning" /> Troco {sappy.format.amount(troco)}
+          <i className="icon wb-warning" /> Troco {sappy.format.amount(troco)}
         </span>
       );
     } else if (troco < 0) {
       continuarColor = "danger";
       continuarContent = (
         <span>
-          {" "}<i className="icon wb-warning" /> Em falta {sappy.format.amount(-1 * troco)}
+          <i className="icon wb-warning" /> Em falta {sappy.format.amount(-1 * troco)}
         </span>
       );
     } else if (troco > 0) {
       continuarColor = "warning";
       continuarContent = (
         <span>
-          {" "}<i className="icon wb-check" /> Concluir (Troco {sappy.format.amount(troco)})
+          <i className="icon wb-check" /> Concluir (Troco {sappy.format.amount(troco)})
         </span>
       );
     } else {
       continuarColor = "success";
       continuarContent = (
         <span>
-          {" "}<i className="icon wb-check" /> Concluir {sappy.format.amount(troco)}
+          <i className="icon wb-check" /> Concluir {sappy.format.amount(troco)}
         </span>
       );
     }
@@ -475,55 +475,55 @@ class ModalMeiosPagPagamento extends Component {
         <div className="row">
           <div className="col-4">
             <div className="row">
-              {" "}<div className="col pr-1">
-                {" "}<Notas valueType="amount" label="5 €" name="NrNotas5" value={this.state.NrNotas5} onChange={this.onFieldChange} realTimeChange={true} />
+              <div className="col pr-1">
+                <Notas valueType="amount" label="5 €" name="NrNotas5" value={this.state.NrNotas5} onChange={this.onFieldChange} realTimeChange={true} />
               </div>
             </div>
             <div className="row">
-              {" "}<div className="col pr-1">
-                {" "}<Notas valueType="amount" label="10 €" name="NrNotas10" value={this.state.NrNotas10} onChange={this.onFieldChange} realTimeChange={true} />
+              <div className="col pr-1">
+                <Notas valueType="amount" label="10 €" name="NrNotas10" value={this.state.NrNotas10} onChange={this.onFieldChange} realTimeChange={true} />
               </div>
             </div>
             <div className="row">
-              {" "}<div className="col pr-1">
-                {" "}<Notas valueType="amount" label="20 €" name="NrNotas20" value={this.state.NrNotas20} onChange={this.onFieldChange} realTimeChange={true} />
+              <div className="col pr-1">
+                <Notas valueType="amount" label="20 €" name="NrNotas20" value={this.state.NrNotas20} onChange={this.onFieldChange} realTimeChange={true} />
               </div>
             </div>
             <div className="row">
-              {" "}<div className="col pr-1">
-                {" "}<Notas valueType="amount" label="50 €" name="NrNotas50" value={this.state.NrNotas50} onChange={this.onFieldChange} realTimeChange={true} />
+              <div className="col pr-1">
+                <Notas valueType="amount" label="50 €" name="NrNotas50" value={this.state.NrNotas50} onChange={this.onFieldChange} realTimeChange={true} />
               </div>
             </div>
             <div className="row">
-              {" "}<div className="col pr-1">
-                {" "}<Notas valueType="amount" label="100 €" name="NrNotas100" value={this.state.NrNotas100} onChange={this.onFieldChange} realTimeChange={true} />
+              <div className="col pr-1">
+                <Notas valueType="amount" label="100 €" name="NrNotas100" value={this.state.NrNotas100} onChange={this.onFieldChange} realTimeChange={true} />
               </div>
             </div>
             <div className="row">
-              {" "}<div className="col pr-1">
-                {" "}<Notas valueType="amount" label="200 €" name="NrNotas200" value={this.state.NrNotas200} onChange={this.onFieldChange} realTimeChange={true} />
+              <div className="col pr-1">
+                <Notas valueType="amount" label="200 €" name="NrNotas200" value={this.state.NrNotas200} onChange={this.onFieldChange} realTimeChange={true} />
               </div>
             </div>
             <div className="row">
-              {" "}<div className="col pr-1">
-                {" "}<Notas valueType="amount" label="500 €" name="NrNotas500" value={this.state.NrNotas500} onChange={this.onFieldChange} realTimeChange={true} />
+              <div className="col pr-1">
+                <Notas valueType="amount" label="500 €" name="NrNotas500" value={this.state.NrNotas500} onChange={this.onFieldChange} realTimeChange={true} />
               </div>
             </div>
           </div>
           <div className="col-3">
             <div className="row">
               <div className="col">
-                {" "}<TextBoxNumeric valueType="amount" label="Moedas:" name="ValorMoedas" value={this.state.ValorMoedas} onChange={this.onFieldChange} realTimeChange={true} />
+                <TextBoxNumeric valueType="amount" label="Moedas:" name="ValorMoedas" value={this.state.ValorMoedas} onChange={this.onFieldChange} realTimeChange={true} />
               </div>
             </div>
             <div className="row">
               <div className="col">
-                {" "}<TextBoxNumeric valueType="amount" label="Vales:" name="ValorVales" value={this.state.ValorVales} onChange={this.onFieldChange} realTimeChange={true} />
+                <TextBoxNumeric valueType="amount" label="Vales:" name="ValorVales" value={this.state.ValorVales} onChange={this.onFieldChange} realTimeChange={true} />
               </div>
             </div>
             <div className="row">
               <div className="col">
-                {" "}<TextBoxNumeric valueType="amount" label="Tickets:" name="ValorTickets" value={this.state.ValorTickets} onChange={this.onFieldChange} realTimeChange={true} />
+                <TextBoxNumeric valueType="amount" label="Tickets:" name="ValorTickets" value={this.state.ValorTickets} onChange={this.onFieldChange} realTimeChange={true} />
               </div>
             </div>
             {/* <div className="row">
@@ -698,7 +698,7 @@ class ModalMeiosPagPagamento extends Component {
                       id="tab1"
                       onClick={this.handleOnTabClick}
                     >
-                      Numerário{" "}
+                      Numerário
                     </a>
                     <a className={"list-group-item " + (this.state.ValorMultibanco ? "filled" : "")} data-toggle="tab" role="tab" id="tab2" onClick={this.handleOnTabClick}>
                       Multibanco

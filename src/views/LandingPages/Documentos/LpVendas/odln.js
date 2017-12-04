@@ -18,38 +18,40 @@ class odln extends Component {
         // if (selected) rowStyleClass += " sappy-selected-row";
         if (row.DRAFT === "Y" || row.DRAFT === "X") rowStyleClass += " vlist-row-warning";
 
+        let elTags = "";
+        if (row.ElCoStatus === "0") elTags = "success_OK";
+        else if (row.ElCoStatus === "1") elTags = "warn_Pendente";
+        else if (row.ElCoStatus === "2") elTags = "danger_Rejeitado";
         return (
           <div key={rowId} className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={e => onRowClick({ row, index })}>
             <div className="container vertical-align-middle">
               {/*very large displays*/}
               <div className="hidden-xl-down">
                 <div className="row">
-                  <div className="col-11">
-                    <div className="row">
-                      <div className="col-3">
-                        {sappy.format.datetime2(row.DOC_DATETIME)}
-                        <span className="float-right">
-                          {" "}{row.DocNum}
-                        </span>
-                        <span className="float-right font-size-10">
-                          {" "}{row.NumAtCard}
-                        </span>
-                      </div>
-                      <div className="col-7">
-                        {" "}{row.CardCode + " - " + row.CardName} <DocBadges tags={row.ITEM_TAGS} />{" "}
-                      </div>
-                      <div className="col-2 lastcol">
-                        <span className="float-right">
-                          <strong>
-                            {row.FORMATED_DOCTOTAL}{" "}
-                          </strong>
-                          {" " + sappy.format.date(row.DocDueDate)}
-                        </span>
-                      </div>
-                    </div>
+                  <div className="col-3">
+                    {sappy.format.datetime2(row.DOC_DATETIME)}
+                    <span className="float-right">
+                      {row.DocNum}
+                    </span>
+                    <span className="float-right font-size-10">
+                      {row.NumAtCard}
+                    </span>
                   </div>
-                  <div className="col-1 lastcol">
-                    {" "}<ButtonGetPdf DocEntry={row.DocEntry} ObjectID={row.ObjType} />{" "}
+                  <div className="col-6">
+                    {row.CardCode + " - " + row.CardName} <DocBadges tags={row.ITEM_TAGS} />
+                  </div>
+                  <div className="col-1">
+                    <span className="float-right">
+                      <strong>
+                        {row.FORMATED_DOCTOTAL}
+                      </strong>
+                    </span>
+                  </div>
+                  <div className="col-2 lastcol" title={row.ElCoMsg}>
+                    {row.ElCoStatus === "0" && row.AtDocType + " " + row.AuthCode}
+                    {row.ElCoStatus === "1" && row.AtDocType}
+                    {row.ElCoStatus === "2" && row.AtDocType}
+                    <DocBadges tags={elTags} />
                   </div>
                 </div>
               </div>
@@ -60,23 +62,32 @@ class odln extends Component {
                   <div className="col-11">
                     <div className="row">
                       <div className="col text-nowrap">
-                        {" "}{row.CardCode + " - " + row.CardName}{" "}
+                        {row.CardCode + " - " + row.CardName}
                       </div>
                     </div>
                     <div className="row secondrow">
                       <div className="col-2 text-nowrap firstcol">
-                        {" "}{sappy.format.datetime2(row.DOC_DATETIME)}{" "}
+                        {sappy.format.datetime2(row.DOC_DATETIME)}
                       </div>
-                      <div className="col-8 text-nowrap">
-                        {" "}{row.DocNum} <DocBadges tags={row.ITEM_TAGS} />{" "}
+                      <div className="col-4 text-nowrap">
+                        {row.DocNum} <DocBadges tags={row.ITEM_TAGS} />
+                      </div>
+
+                      <div className="col-4 text-nowrap" title={row.ElCoMsg}>
+                        {row.ElCoStatus === "0" && row.AtDocType + " " + row.AuthCode}
+                        {row.ElCoStatus === "1" && row.AtDocType}
+                        {row.ElCoStatus === "2" && row.AtDocType}
+                        <DocBadges tags={elTags} />
                       </div>
                       <div className="col-2 text-nowrap lastcol">
-                        {" "}<span className="float-right"> {row.FORMATED_DOCTOTAL} </span>{" "}
+                        <span className="float-right">
+                          {row.FORMATED_DOCTOTAL}
+                        </span>
                       </div>
                     </div>
                   </div>
                   <div className="col-1 lastcol">
-                    {" "}<ButtonGetPdf DocEntry={row.DocEntry} ObjectID={row.ObjType} />{" "}
+                    <ButtonGetPdf DocEntry={row.DocEntry} ObjectID={row.ObjType} />
                   </div>
                 </div>
               </div>
@@ -85,18 +96,20 @@ class odln extends Component {
               <div className="hidden-sm-up">
                 <div className="row font-size-12">
                   <div className="col text-nowrap">
-                    {" "}{row.CardCode + " - " + row.CardName}{" "}
+                    {row.CardCode + " - " + row.CardName}
                   </div>
                 </div>
                 <div className="row secondrow font-size-10">
                   <div className="col-2 text-nowrap firstcol">
-                    {" "}{sappy.format.date(row.DOC_DATETIME)}{" "}
+                    {sappy.format.date(row.DOC_DATETIME)}
                   </div>
                   <div className="col-8 text-nowrap">
-                    {" "}{row.DocNum} <DocBadges tags={row.ITEM_TAGS} />{" "}
+                    {row.DocNum} <DocBadges tags={row.ITEM_TAGS} />
                   </div>
                   <div className="col-2 text-nowrap lastcol">
-                    {" "}<span className="float-right"> {row.FORMATED_DOCTOTAL} </span>{" "}
+                    <span className="float-right">
+                      {row.FORMATED_DOCTOTAL}
+                    </span>
                   </div>
                 </div>
               </div>
