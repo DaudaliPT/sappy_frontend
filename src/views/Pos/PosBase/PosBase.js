@@ -296,7 +296,7 @@ class PosBase extends Component {
           that.setState({ docData: newDocData }, () => {
             let idx = 0;
             that.refs.PosDetail.props.fields.forEach((f, i) => {
-              if (f.name === "QTCX") idx = i;
+              if (f.name === "QTPK") idx = i;
             });
             that.refs.PosDetail.focusCell({ rowIdx: 0, idx });
           });

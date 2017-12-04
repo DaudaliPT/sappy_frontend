@@ -69,7 +69,7 @@ exports.prepareDocType = function({ tableName }) {
     { name: "ITEMNAME", label: "Descrição", type: "tags", width: 400, editable: false, hover: itemHover },
     { name: "QTCX", label: "Cx", type: "quantity", width: 60, editable: true },
     { name: "QTPK", label: "Pk", type: "pkpos", width: 60, editable: true },
-    { name: "QTSTK", label: "Qtd", type: "quantity", width: 60, editable: true },
+    { name: "QTSTK", label: "Qtd", type: "quantity", width: 60, editable: false },
     {
       name: "PRICE",
       label: "Preço",
