@@ -22,6 +22,7 @@ class odln extends Component {
         if (row.ElCoStatus === "0") elTags = "success_OK";
         else if (row.ElCoStatus === "1") elTags = "warn_Pendente";
         else if (row.ElCoStatus === "2") elTags = "danger_Rejeitado";
+
         return (
           <div key={rowId} className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={e => onRowClick({ row, index })}>
             <div className="container vertical-align-middle">

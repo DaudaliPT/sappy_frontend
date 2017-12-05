@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import { TextBox, TextBoxNumeric, ComboBox, Date, Toggle, Flag } from "../../../Inputs";
-// import { Button } from "reactstrap";
+import DocHeaderAT from "./DocHeaderAT";
 import Panel from "../../../components/Panel";
-
+const sappy = window.sappy;
 class DocHeader extends Component {
   render() {
-    let { TAGS, CARDCODE, CARDNAME, OBJTYPE, DOCENTRY, DOCNUM, DOCSTATUS, CANCELED } = this.props.docData;
+    let docData = this.props.docData;
+    let { TAGS, CARDCODE, CARDNAME, OBJTYPE, DOCENTRY, DOCNUM, DOCSTATUS, CANCELED } = docData;
 
     let getProperInputForField = headerField => {
       if (!headerField) return null;
@@ -88,6 +89,40 @@ class DocHeader extends Component {
     let canClose = isDoc && DOCSTATUS === "O" && "23,17,15, 22,20,21".indexOf(OBJTYPE) > -1;
 
     let headerActions = [
+      {
+        name: "showAT",
+        text: "",
+        color: !this.props.editable ? "" : "danger",
+        visible: false, //OBJTYPE === "15" || OBJTYPE === "16",
+        icon: "pe-plane",
+        onClick: ev => {
+          ev.stopPropagation();
+          ev.preventDefault();
+
+          let popbox = {
+            placement: "bottom",
+            render: ({ context }) => <DocHeaderAT {...context} />
+          };
+          if (sappy.hidePopbox()) return; // já estava uma aberta para esta linha
+
+          setImmediate(() => {
+            sappy.showPopbox({
+              target: "showAT",
+              renderContext: {
+                docData,
+                isDoc,
+                editable: this.props.editable,
+
+                onChange: changeInfo => {
+                  console.log(changeInfo);
+                }
+              },
+              render: popbox.render,
+              placement: popbox.placement
+            });
+          });
+        }
+      },
       {
         name: "toogleEdit",
         text: "Alterar",

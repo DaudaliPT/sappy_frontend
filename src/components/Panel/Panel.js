@@ -45,7 +45,7 @@ class Panel extends Component {
         if (!action.visible) return;
 
         DOMelements.push(
-          <div key={action.name} className="action">
+          <div key={action.name} id={action.name} className="action">
             {action.content && action.content}
             {!action.content &&
               <Button outline color={action.color || "secondary"} className={"btn-sm btn-flat"} onClick={action.onClick} disabled={action.disabled ? true : false}>

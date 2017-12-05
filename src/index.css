@@ -721,11 +721,11 @@ textarea {
   max-width: 500px !important;
 }
 .popover:after {
-  border-left-color: rgba(32, 46, 55, 0.9) !important;
+  /* border-left-color: rgba(32, 46, 55, 0.9) !important; */
 }
-.popover.popover-right:after,
+.popover.hovertip.popover-right:after,
 .popover.bs-tether-element-attached-left::after {
-  border-right-color: rgba(32, 46, 55, 0.9) !important;
+  /* border-right-color: rgba(32, 46, 55, 0.9) !important; */
 }
 
 .popover .hovertip .popover-content {
