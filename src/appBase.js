@@ -123,6 +123,9 @@ class appBase extends Component {
   }
 
   showModal(modal) {
+    sappy.hidePopbox();
+    sappy.hidePopover();
+
     this.setState({ currentAppModal: modal });
   }
 
@@ -179,6 +182,7 @@ class appBase extends Component {
   showPopbox({ target, api, render, renderContext, placement }) {
     let that = this;
     sappy.hidePopbox();
+    sappy.hidePopover();
 
     let content = null;
     if (render) content = render({ context: renderContext });
@@ -200,6 +204,8 @@ class appBase extends Component {
   }
 
   showWaitProgress(msg) {
+    sappy.hidePopbox();
+    sappy.hidePopover();
     swal({
       html: `<div class="h-150">
               <div class="h-100 vertical-align text-center">
@@ -223,18 +229,27 @@ class appBase extends Component {
   }
 
   showSuccess(options) {
+    sappy.hidePopbox();
+    sappy.hidePopover();
+
     options.type = "success";
     options.title = options.title || "Successo";
     this.showSwal(options);
   }
 
   showQuestion(options) {
+    sappy.hidePopbox();
+    sappy.hidePopover();
+
     options.type = "question";
     options.title = options.title || "Questão";
     this.showSwal(options);
   }
 
   showWarning(options) {
+    sappy.hidePopbox();
+    sappy.hidePopover();
+
     options.type = "warning";
     options.title = options.title || "Aviso";
     options.confirmText = options.confirmText || "Ok";
@@ -242,6 +257,9 @@ class appBase extends Component {
   }
 
   showDanger(options) {
+    sappy.hidePopbox();
+    sappy.hidePopover();
+
     options.type = "warning";
     options.title = options.title || "Muita atenção!!!";
     this.showSwal(options);
@@ -255,6 +273,9 @@ class appBase extends Component {
   }
 
   showSwal(options) {
+    sappy.hidePopbox();
+    sappy.hidePopover();
+
     let { showCancelButton, type, html, msg, moreInfo, onConfirm, onCancel, confirmText, confirmStyle, cancelText, cancelStyle } = options;
     let color = type;
     if (type === "question") color = "primary";
@@ -271,6 +292,9 @@ class appBase extends Component {
   }
 
   showError(err, title, onConfirm) {
+    sappy.hidePopbox();
+    sappy.hidePopover();
+
     err = err || {};
     console.error(title, err);
     sappy.hideWaitProgress(); // If visible, hide waitprogress
@@ -295,6 +319,7 @@ class appBase extends Component {
 
     if (msg.indexOf("Content not allowed without valid session. Please login first.") > -1) {
       sappy.hideModal();
+      sappy.hidePopbox();
       sappy.hidePopover();
       setTimeout(() => {
         sappy.showToastr("danger|" + msg);

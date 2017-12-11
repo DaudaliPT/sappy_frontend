@@ -5,6 +5,7 @@ import Panel from "../../../components/Panel";
 const sappy = window.sappy;
 class DocHeader extends Component {
   render() {
+    let that = this;
     let docData = this.props.docData;
     let { TAGS, CARDCODE, CARDNAME, OBJTYPE, DOCENTRY, DOCNUM, DOCSTATUS, CANCELED } = docData;
 
@@ -91,10 +92,10 @@ class DocHeader extends Component {
     let headerActions = [
       {
         name: "showAT",
-        text: "",
+        text: "Transporte",
         color: !this.props.editable ? "" : "danger",
-        visible: false, //OBJTYPE === "15" || OBJTYPE === "16",
-        icon: "pe-plane",
+        visible: OBJTYPE === "15" || OBJTYPE === "16" || OBJTYPE === "21",
+        icon: "fa-truck",
         onClick: ev => {
           ev.stopPropagation();
           ev.preventDefault();
@@ -109,13 +110,10 @@ class DocHeader extends Component {
             sappy.showPopbox({
               target: "showAT",
               renderContext: {
-                docData,
+                docData: { ...docData },
                 isDoc,
                 editable: this.props.editable,
-
-                onChange: changeInfo => {
-                  console.log(changeInfo);
-                }
+                onChange: that.props.onFieldChange
               },
               render: popbox.render,
               placement: popbox.placement

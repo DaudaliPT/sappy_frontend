@@ -278,6 +278,7 @@ class DocBase extends Component {
           delete docData.changing;
           delete docData[changeInfo.fieldName + "_LOGICMSG"];
           that.setNewDataAndDisplayAlerts(docData);
+          changeInfo.callback && changeInfo.callback(docData);
         })
         .catch(error => sappy.showError(error, "Erro ao gravar cabeçalho"));
     } else {
@@ -290,6 +291,7 @@ class DocBase extends Component {
             delete docData.changing;
             delete docData[changeInfo.fieldName + "_LOGICMSG"];
             that.setNewDataAndDisplayAlerts(docData);
+            changeInfo.callback && changeInfo.callback(docData);
           })
           .catch(error => sappy.showError(error, "Erro ao gravar cabeçalho"));
       });
