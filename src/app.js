@@ -51,6 +51,10 @@ class App extends Component {
     let sessionInfo = sappy.sessionInfo || {};
     var user = sessionInfo.user || {};
 
+    sappy.hideModals();
+    sappy.hidePopbox();
+    sappy.hidePopover();
+
     if (user.NAME) {
       if (nextState.location.pathname === "/") {
         let showSappy = ",manager,ibrahim,dora,mansur,marlene,zara,adelaide,antunes,".indexOf("," + sappy.sessionInfo.user.NAME + ",") > -1;

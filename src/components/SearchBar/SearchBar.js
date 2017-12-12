@@ -29,9 +29,7 @@ class SearchBar extends PureComponent {
         .tokenfield("setTokens", that.state.searchTags);
     }, 0);
 
-    setTimeout(() => {
-      $(".token-input").focus();
-    }, 1000);
+    setTimeout(() => $(".token-input").focus(), 1000);
   }
 
   render() {
@@ -65,6 +63,10 @@ class SearchBar extends PureComponent {
               onMouseDown={e => {
                 /** o onClick funcionava com o Enter */
                 e.preventDefault();
+
+                if (this.props.onClickClear) {
+                  return this.props.onClickClear();
+                }
                 $("#" + that.txtName).tokenfield("setTokens", []);
                 this.props.onChange([]);
               }}
@@ -83,6 +85,7 @@ SearchBar.defaultProps = {
   },
   onChange: () => {},
   searchTags: [],
+
   inputProps: {
     placeholder: "Procurar..."
   },

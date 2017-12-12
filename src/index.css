@@ -3,9 +3,24 @@
   z-index: 1;
 }
 
+.modal-search #global-search {
+  position: absolute !important;
+  top: 0;
+  left: 15px;
+  width: calc(100% - 30px);
+}
+
 .site-navbar-small .site-navbar {
   height: 3.7rem !important;
   min-height: 3.7rem !important;
+}
+
+.modal-search .modal-content {
+  background-color: slategray;
+}
+
+.modal-search .modal-body {
+  margin-top: 20px;
 }
 
 /*Combobox aberta ficava por trar dos inputs*/
@@ -671,6 +686,9 @@ textarea {
 .form-group {
   margin-top: 1.9rem !important;
   margin-bottom: 0rem !important;
+}
+.navbar-search-overlap .form-group {
+  margin-top: 0rem !important;
 }
 .form-group.no-label {
   margin-top: 0.1rem !important;

@@ -31,6 +31,7 @@ class appBase extends Component {
 
     sappy.showModal = this.showModal.bind(this);
     sappy.hideModal = this.hideModal.bind(this);
+    sappy.hideModals = this.hideModals.bind(this);
 
     sappy.GetLinkTo = this.GetLinkTo.bind(this);
     sappy.LinkTo = this.LinkTo.bind(this);
@@ -65,6 +66,7 @@ class appBase extends Component {
 
     this.state = {
       currentAppModal: null,
+      currentAppModal2: null,
       currentProgressModal: null,
       currentPopover: null,
       currentPopbox: null,
@@ -118,7 +120,7 @@ class appBase extends Component {
         title: "Ainda não disponivel"
       });
     }
-    sappy.hideModal();
+    sappy.hideModals();
     hashHistory.push({ pathname: url, state: { DocEntry: docEntry } });
   }
 
@@ -126,11 +128,17 @@ class appBase extends Component {
     sappy.hidePopbox();
     sappy.hidePopover();
 
+    if (this.state.currentAppModal) return this.setState({ currentAppModal2: modal });
     this.setState({ currentAppModal: modal });
   }
 
   hideModal() {
+    if (this.state.currentAppModal2) return this.setState({ currentAppModal2: null });
     this.setState({ currentAppModal: null });
+  }
+
+  hideModals() {
+    this.setState({ currentAppModal2: null, currentAppModal: null });
   }
   hidePopover() {
     if (this.hoverTimeOutHandle) clearTimeout(this.hoverTimeOutHandle);
@@ -318,7 +326,7 @@ class appBase extends Component {
     if (!msg) msg = safeJsonStringify(err);
 
     if (msg.indexOf("Content not allowed without valid session. Please login first.") > -1) {
-      sappy.hideModal();
+      sappy.hideModals();
       sappy.hidePopbox();
       sappy.hidePopover();
       setTimeout(() => {
@@ -366,6 +374,7 @@ class appBase extends Component {
         {this.state.playAlertSound && this.state.alertComponent}
 
         {this.state.currentAppModal}
+        {this.state.currentAppModal2}
         {this.state.currentProgressModal}
         {this.state.currentPopover}
         {this.state.currentPopbox}

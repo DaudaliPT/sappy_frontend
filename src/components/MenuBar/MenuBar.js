@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import RootMenu from "./Menus";
 import { hashHistory } from "react-router";
 import axios from "axios";
+import Views from "../../views";
+
 var $ = window.$;
 var sappy = window.sappy;
 
@@ -72,6 +74,7 @@ class MenuBar extends Component {
   }
 
   render() {
+    let that = this;
     let sessionInfo = sappy.sessionInfo || {};
     var user = sessionInfo.user || {};
     var company = sessionInfo.company || {};
@@ -89,37 +92,27 @@ class MenuBar extends Component {
       if (user && user.NAME) {
         return (
           <ul className="nav navbar-toolbar navbar-right navbar-toolbar-right">
-            {/*<li className="nav-item hidden-float">
+            <li className="nav-item hidden-float">
               <a
                 className="nav-link icon md-search waves-effect waves-light waves-round"
-                data-toggle="collapse"
+                onClick={e => {
+                  e.preventDefault();
+                  sappy.showModal(<Views.GlobalSearch toggleModal={sappy.hideModal} />);
+                }}
                 href="#"
-                data-target="#site-navbar-search"
                 role="button"
               >
                 <span className="sr-only">Toggle Search</span>
               </a>
-            </li>*/}
+            </li>
 
             <li className="nav-item hidden-sm-down" id="toggleFullscreen">
-              <a
-                className="nav-link icon icon-fullscreen waves-effect waves-light waves-round"
-                data-toggle="fullscreen"
-                href="#"
-                role="button"
-              >
+              <a className="nav-link icon icon-fullscreen waves-effect waves-light waves-round" data-toggle="fullscreen" href="#" role="button">
                 <span className="sr-only">Toggle fullscreen</span>
               </a>
             </li>
             <li className="nav-item dropdown">
-              <a
-                className="nav-link navbar-avatar waves-effect waves-light waves-round"
-                data-toggle="dropdown"
-                href="#"
-                aria-expanded="false"
-                data-animation="scale-up"
-                role="button"
-              >
+              <a className="nav-link navbar-avatar waves-effect waves-light waves-round" data-toggle="dropdown" href="#" aria-expanded="false" data-animation="scale-up" role="button">
                 <span className="avatar avatar-online">
                   <img src="img/avatar_male.png" alt="..." />
                   {/* <i className="icon md-account" aria-hidden="true" /> */}
@@ -134,12 +127,7 @@ class MenuBar extends Component {
                   <i className="icon md-settings" aria-hidden="true" /> Definições Gerais
                 </a>
                 <div className="dropdown-divider" />
-                <a
-                  className="dropdown-item waves-effect waves-light waves-round"
-                  href="#"
-                  role="menuitem"
-                  onClick={this.onClickLogout}
-                >
+                <a className="dropdown-item waves-effect waves-light waves-round" href="#" role="menuitem" onClick={this.onClickLogout}>
                   <i className="icon md-power" aria-hidden="true" /> Terminar sessão de {user.NAME}
                 </a>
               </div>
@@ -160,12 +148,7 @@ class MenuBar extends Component {
     return (
       <nav className="site-navbar navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation">
         <div className="navbar-header">
-          <button
-            type="button"
-            className="navbar-toggler hamburger hamburger-close collapsed navbar-toggler-left"
-            data-target="#site-navbar-collapse"
-            data-toggle="collapse"
-          >
+          <button type="button" className="navbar-toggler hamburger hamburger-close collapsed navbar-toggler-left" data-target="#site-navbar-collapse" data-toggle="collapse">
             <span className="hamburger-bar" />
           </button>
 
@@ -182,12 +165,7 @@ class MenuBar extends Component {
               alt={sessionInfo.company.dbName}
             />
           </div>
-          <button
-            type="button"
-            className="navbar-toggler collapsed"
-            data-target="#site-navbar-search"
-            data-toggle="collapse"
-          >
+          <button type="button" className="navbar-toggler collapsed" data-target="#site-navbar-search" data-toggle="collapse">
             <span className="sr-only">Toggle Search</span>
             <i className="icon md-search" aria-hidden="true" />
           </button>
@@ -198,12 +176,7 @@ class MenuBar extends Component {
             {/*Navbar Toolbar */}
             <ul className="nav navbar-toolbar">
               <li className="nav-item hidden-float" id="toggleMenubar">
-                <a
-                  className="nav-link waves-effect waves-light waves-round"
-                  data-toggle="menubar"
-                  href="#"
-                  role="button"
-                >
+                <a className="nav-link waves-effect waves-light waves-round" data-toggle="menubar" href="#" role="button">
                   <i className="icon hamburger hamburger-arrow-left">
                     <span className="sr-only">Toggle menubar</span>
                     <span className="hamburger-bar" />
@@ -226,24 +199,23 @@ class MenuBar extends Component {
           {/*End Navbar Collapse */}
 
           {/*Site Navbar Seach */}
-          {/*<div className="collapse navbar-search-overlap" id="site-navbar-search">
-            <form role="search">
-              <div className="form-group">
-                <div className="input-search">
-                  <i className="input-search-icon md-search" aria-hidden="true" />
-                  <input type="text" className="form-control" name="site-search" placeholder="Search..." />
-                  <button
-                    type="button"
-                    className="input-search-close icon md-close"
-                    data-target="#site-navbar-search"
-                    data-toggle="collapse"
-                    aria-label="Close"
-                  />
+          {/* {!!that.state.showSearch &&
+            <div className="navbar-search-overlap" id="site-navbar-search">
+              <form
+                role="search"
+                onSubmit={e => {
+                  e.preventDefault();
+                }}
+              >
+                <div className="form-group">
+                  <div className="input-search">
+                    <i className="input-search-icon md-search" aria-hidden="true" />
+                    <input type="text" className="form-control" name="site-search" placeholder="Search..." />
+                    <button type="button" className="input-search-close icon md-close" data-target="#site-navbar-search" data-toggle="collapse" aria-label="Close" />
+                  </div>
                 </div>
-              </div>
-            </form>
-          </div>*/}
-          {/*End Site Navbar Seach */}
+              </form>
+            </div>} */}
         </div>
       </nav>
     );
