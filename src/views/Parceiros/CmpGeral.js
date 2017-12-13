@@ -21,12 +21,12 @@ const getInitialState = function(props) {
 
   let newState = {
     saving: false,
-    ItemCode: props.ItemCode || "",
-    loading: false, // props.ItemCode && true,
+    CardCode: props.CardCode || "",
+    loading: false, // props.CardCode && true,
     ReadOnly: props.ReadOnly,
     TinhaFamilia1: Item.U_SubFamilia1 ? false : true,
     validationMessages: {
-      // ItemName: "danger|Iválido sskljsdkfs"
+      // CardName: "danger|Iválido sskljsdkfs"
     },
     Item: Item,
     OldItemData: JSON.parse(JSON.stringify(Item)),
@@ -35,7 +35,7 @@ const getInitialState = function(props) {
     supplierCollection,
     showFabricante: Item.Mainsupplier === "F0585" /*UNAPOR*/,
     U_rsaMargem: Item.U_rsaMargem,
-    PrecoCash: Item.ItemPrices && Item.ItemPrices[0].Price
+    PrecoCash: Item.ItemPrices && Item.ItemPrices.length > 0 && Item.ItemPrices[0].Price
   };
   return newState;
 };
@@ -54,7 +54,7 @@ class CmpGeral extends Component {
 
   componentWillReceiveProps(nextProps) {
     let oldItem = this.props.Item || {};
-    if (nextProps.Item && oldItem.itemCode !== nextProps.Item.ItemCode) this.setState(getInitialState(nextProps));
+    if (nextProps.Item && oldItem.cardCode !== nextProps.Item.CardCode) this.setState(getInitialState(nextProps));
     if (this.props.ReadOnly !== nextProps.ReadOnly) this.setState({ ReadOnly: nextProps.ReadOnly });
   }
 
@@ -88,112 +88,6 @@ class CmpGeral extends Component {
         let propertyValue = values.indexOf(index.toString()) > -1 ? "tYES" : "tNO";
         Object.assign(Item, { [propertyName]: propertyValue });
       }
-    } else if (fieldName === "U_SubFamilia1") {
-      Object.assign(Item, { ItemsGroupCode: formatedValue.U_CodigoFamilia }); // grupo de artigo (herdado da familia1)
-
-      // Neste ecrã não define a série, já que não pode mudar o código de artigo
-      // Object.assign(Item, { Series: formatedValue.DefaultSeries }); // Default Series
-      Object.assign(Item, { [fieldName]: val });
-    } else if (fieldName.indexOf("CodigoBarras_") > -1) {
-      let parts = fieldName.split("_"); // CodigoBarras_1_BarCode  ou CodigoBarras_2_FreeText
-      let ix = parseInt(parts[1], 10);
-      let slField = parts[2];
-      let ItemBarCodeCollection = [...Item.ItemBarCodeCollection];
-
-      if (slField === "Barcode") {
-        //validate if in other items
-        this.serverRequest = axios({
-          method: "post",
-          data: {
-            ItemCode: this.state.ItemCode,
-            Barcode: val
-          },
-          url: `api/prod/new/isUniqueBarcode`
-        })
-          .then(result => {
-            if (result.data.length > 0) {
-              let validationMessages = that.state.validationMessages;
-              validationMessages[fieldName] = "warning|Código ja existe no artigo " + result.data[0].ItemCode;
-
-              that.setState({ validationMessages });
-            }
-          })
-          .catch(error => sappy.showError(error, "Erro ao validar dados"));
-      }
-
-      let bc = ItemBarCodeCollection.filter((item, pos) => {
-        return pos === ix;
-      });
-      if (bc.length > 0) {
-        Object.assign(bc[0], { [slField]: val });
-      } else {
-        ItemBarCodeCollection.push({
-          AbsEntry: ix + 1,
-          UoMEntry: -1,
-          [slField]: val
-        });
-      }
-      if (ix === 0 && slField === "Barcode") {
-        Object.assign(Item, { BarCode: val }); // !!! diferent case in BarCode
-      }
-      // newStateValues = { ...newStateValues };
-      Object.assign(Item, { ItemBarCodeCollection });
-    } else if (fieldName.indexOf("Supplier_") > -1) {
-      let parts = fieldName.split("_"); // Supplier_1_CardCode
-      let ix = parseInt(parts[1], 10);
-      let slField = parts[2];
-
-      let supplierCollection = [...this.state.supplierCollection];
-      let item = supplierCollection[ix];
-
-      let validateData = {
-        ItemCode: this.state.ItemCode,
-        CardCode: item.CardCode,
-        Substitute: item.Substitute
-      };
-
-      if (slField === "Substitute") validateData.Substitute = val;
-      else validateData.CardCode = val;
-
-      //validate if in other items
-      this.serverRequest = axios({
-        method: "post",
-        data: validateData,
-        url: `api/prod/new/isUniqueCatalogNr`
-      })
-        .then(result => {
-          let valFname = fieldName.replace("CardCode", "Substitute");
-          let validationMessages = that.state.validationMessages;
-
-          if (result.data.length > 0) {
-            validationMessages[valFname] = "warning|Código ja existe no artigo " + result.data[0].ItemCode;
-          } else {
-            validationMessages[valFname] = "";
-          }
-          that.setState({ validationMessages });
-        })
-        .catch(error => sappy.showError(error, "Erro ao validar dados"));
-
-      Object.assign(item, { [slField]: val });
-
-      if (ix === 0 && slField === "CardCode") {
-        Object.assign(newStateValues, { showFabricante: val === "F0585" /*UNAPOR*/ });
-
-        Object.assign(Item, { Mainsupplier: val }); // !!! diferent case in CardCode
-      }
-      if (ix === 0 && slField === "Substitute") {
-        Object.assign(Item, { SupplierCatalogNo: val }); // !!! diferent case in Substitute
-      }
-
-      newStateValues = { ...newStateValues, supplierCollection };
-    } else if (fieldName.indexOf("U_rsaMargem") > -1) {
-      Object.assign(newStateValues, { [fieldName]: formatedValue });
-      Object.assign(Item, { [fieldName]: val });
-    } else if (fieldName.indexOf("PrecoCash") > -1) {
-      Object.assign(newStateValues, { [fieldName]: formatedValue });
-      let ItemPrices = [...Item.ItemPrices];
-      ItemPrices[0].Price = val;
-      Object.assign(Item, { ItemPrices });
     } else if (fieldName.indexOf("Frozen") > -1) {
       Item.Valid = val ? "tNO" : "tYES";
       Item.Frozen = val ? "tYES" : "tNO";
@@ -213,10 +107,10 @@ class CmpGeral extends Component {
           method: "delete",
           headers: { "Content-Type": "application/json" },
           data: JSON.stringify({ ...this.state }),
-          url: `api/prod/item/${this.state.ItemCode}`
+          url: `api/pns/item/${this.state.CardCode}`
         })
           .then(result => {
-            hashHistory.push("/inv/oitm");
+            hashHistory.push("/pns/ocrd");
           })
           .catch(error => {
             this.setState({ saving: false }, sappy.showError(error, "Erro ao apagar"));
@@ -230,11 +124,11 @@ class CmpGeral extends Component {
       },
       () => {
         sappy.showDanger({
-          title: "Apagar artigo?",
-          moreInfo: `Se confirmar a remoção deste artigo, ele será removido do sistema.`,
+          title: "Apagar parceiro?",
+          moreInfo: `Se confirmar a remoção deste parceiro, ele será removido do sistema.`,
           cancelText: "Cancelar",
           showCancelButton: true,
-          confirmText: "Apagar artigo",
+          confirmText: "Apagar parceiro",
           // eslint-disable-next-line
           onConfirm: apagarArtigo
         });
@@ -250,9 +144,9 @@ class CmpGeral extends Component {
     let validationMessages = {};
     let haErros = false;
 
-    if (!Item.ItemName || Item.ItemName.length < 1 || Item.ItemName.length > 100) {
+    if (!Item.CardName || Item.CardName.length < 1 || Item.CardName.length > 100) {
       haErros = true;
-      Object.assign(validationMessages, { ItemName: "danger" });
+      Object.assign(validationMessages, { CardName: "danger" });
     }
     if (!Item.U_SubFamilia1) {
       haErros = true;
@@ -298,14 +192,14 @@ class CmpGeral extends Component {
               supplierCollection: that.state.supplierCollection,
               BarCodesToDelete
             }),
-            url: "api/prod/item"
+            url: "api/pns/item"
           })
             .then(result => {
               if (that.props.onItemSaved) that.props.onItemSaved(); //notify parent
 
               sappy.showSuccess({
                 title: "Alterações gravadas",
-                moreInfo: `O artigo ${result.data.ItemCode} foi alterado!`
+                moreInfo: `O parceiro ${result.data.CardCode} foi alterado!`
               });
             })
             .catch(error => {
@@ -321,7 +215,7 @@ class CmpGeral extends Component {
         () => {
           sappy.showQuestion({
             title: "Confirma?",
-            moreInfo: `Se confirmar, as alterações ao artigo serão gravadas no sistema.`,
+            moreInfo: `Se confirmar, as alterações ao parceiro serão gravadas no sistema.`,
             cancelText: "Cancelar",
             showCancelButton: true,
             confirmText: "Confirmar",
@@ -497,12 +391,12 @@ class CmpGeral extends Component {
             <h5 className="section-title">Info Geral</h5>
 
             <TextBox
-              name="ItemName"
+              name="CardName"
               label="Descrição:"
               disabled={this.state.ReadOnly}
               placeholder="Introduza a descrição..."
-              state={this.state.validationMessages.ItemName}
-              value={Item.ItemName}
+              state={this.state.validationMessages.CardName}
+              value={Item.CardName}
               onChange={this.onFieldChange}
             />
 
@@ -611,7 +505,7 @@ class CmpGeral extends Component {
           {!this.state.ReadOnly &&
             <Button color="danger" disabled={this.state.saving || this.state.loading} onClick={this.onDeleteArtigo}>
               <i className="icon wb-trash" />
-              <span className="hidden-sm-down"> Apagar artigo </span>
+              <span className="hidden-sm-down"> Apagar parceiro </span>
             </Button>}
           {!this.state.ReadOnly &&
             <Button color="success" disabled={this.state.saving || this.state.loading} onClick={this.onSaveArtigo}>

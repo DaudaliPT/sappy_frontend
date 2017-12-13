@@ -251,7 +251,7 @@ class DataGrid extends Component {
             ev.preventDefault();
 
             let target = ev.target;
-            let divID = args.column.name + args.rowIdx;
+            let divID = args.column.key + args.rowIdx;
             let popbox = args.column.popbox || {};
             if (sappy.hidePopbox() === divID) return; // já estava uma aberta para esta linha
 

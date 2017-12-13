@@ -1288,6 +1288,7 @@ input:checked + .slider.sm:before {
 }
 .flag > i.icon.success {
   color: rgb(92, 184, 92) !important;
+  text-shadow: 1px 1px 5px green;
 }
 .flag > i.icon.info {
   color: rgb(91, 192, 222) !important;

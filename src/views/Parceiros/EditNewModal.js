@@ -6,17 +6,17 @@ var sappy = window.sappy;
 
 import { TextBox, TextBoxNumeric, ComboBox } from "../../Inputs";
 
-const getInitialState = function (props) {
+const getInitialState = function(props) {
   return {
     saving: false,
-    changeItemCode: props.changeItemCode || '',
+    changeItemCode: props.changeItemCode || "",
     loading: props.changeItemCode && true,
     numberOfBarCodes: 1,
     showFabricante: false,
     supplierCollection: [{}],
     Propriedades: [],
-    U_rsaMargem: '',
-    PrecoCash: '',
+    U_rsaMargem: "",
+    PrecoCash: "",
     newItem: {
       PurchaseItem: "tYES",
       SalesItem: "tYES",
@@ -35,10 +35,10 @@ const getInitialState = function (props) {
       FrozenRemarks: ""
     },
     validationMessages: {
-      // ItemName: "danger|Iválido sskljsdkfs"
+      // CardName: "danger|Iválido sskljsdkfs"
     }
   };
-}
+};
 
 class ModalCreateArtigo extends Component {
   constructor(props) {
@@ -63,7 +63,7 @@ class ModalCreateArtigo extends Component {
         method: "get",
         headers: { "Content-Type": "application/json" },
         data: JSON.stringify({ ...this.state }),
-        url: "api/prod/item/" + this.state.changeItemCode
+        url: "api/pns/item/" + this.state.changeItemCode
       })
         .then(result => {
           let item = result.data.Item;
@@ -78,19 +78,20 @@ class ModalCreateArtigo extends Component {
           }
 
           //preparar supplierCollection
-          let supplierCollection = [{
-            "CardCode": item.Mainsupplier,
-            "Substitute": item.SupplierCatalogNo
-          }];
+          let supplierCollection = [
+            {
+              CardCode: item.Mainsupplier,
+              Substitute: item.SupplierCatalogNo
+            }
+          ];
           AlternateCatNum.forEach(obj => {
             if (obj.CardCode !== item.Mainsupplier) {
               supplierCollection.push({
-                "CardCode": obj.CardCode,
-                "Substitute": obj.Substitute
+                CardCode: obj.CardCode,
+                Substitute: obj.Substitute
               });
             }
-          })
-
+          });
 
           that.setState({
             loading: false,
@@ -98,14 +99,14 @@ class ModalCreateArtigo extends Component {
             numberOfBarCodes: item.ItemBarCodeCollection.length,
             Propriedades,
             supplierCollection,
-            showFabricante: item.Mainsupplier === "F0585"/*UNAPOR*/,
+            showFabricante: item.Mainsupplier === "F0585" /*UNAPOR*/,
             U_rsaMargem: item.U_rsaMargem,
-            PrecoCash: item.ItemPrices[0].Price
-          })
+            PrecoCash: item.ItemPrices && item.ItemPrices.length > 0 && item.ItemPrices[0].Price
+          });
         })
         .catch(error => {
           this.setState({ saving: false }, sappy.showError(error, "Erro ao obter dados"));
-        })
+        });
     }
   }
 
@@ -139,34 +140,31 @@ class ModalCreateArtigo extends Component {
         Object.assign(newItem, { [propertyName]: propertyValue });
       }
     } else if (fieldName === "U_SubFamilia1") {
-      Object.assign(newItem, { ItemsGroupCode: formatedValue.U_CodigoFamilia }); // grupo de artigo (herdado da familia1) 
-      Object.assign(newItem, { Series: formatedValue.DefaultSeries }); // Default Series  
+      Object.assign(newItem, { ItemsGroupCode: formatedValue.U_CodigoFamilia }); // grupo de parceiro (herdado da familia1)
+      Object.assign(newItem, { Series: formatedValue.DefaultSeries }); // Default Series
       Object.assign(newItem, { [fieldName]: val });
-
     } else if (fieldName.indexOf("CodigoBarras_") > -1) {
       let parts = fieldName.split("_"); // CodigoBarras_1_BarCode  ou CodigoBarras_2_FreeText
       let ix = parseInt(parts[1], 10);
       let slField = parts[2];
       let ItemBarCodeCollection = [...this.state.newItem.ItemBarCodeCollection];
 
-
       if (slField === "Barcode") {
         //validate if in other items
         this.serverRequest = axios({
           method: "post",
           data: {
-            ItemCode: this.state.changeItemCode,
+            CardCode: this.state.changeItemCode,
             Barcode: val
           },
-          url: `api/prod/new/isUniqueBarcode`
+          url: `api/pns/new/isUniqueBarcode`
         })
           .then(result => {
-
             if (result.data.length > 0) {
               let validationMessages = that.state.validationMessages;
-              validationMessages[fieldName] = "warning|Código ja existe no artigo " + result.data[0].ItemCode;
+              validationMessages[fieldName] = "warning|Código ja existe no parceiro " + result.data[0].CardCode;
 
-              that.setState({ validationMessages })
+              that.setState({ validationMessages });
             }
           })
           .catch(error => sappy.showError(error, "Erro ao validar dados"));
@@ -189,50 +187,46 @@ class ModalCreateArtigo extends Component {
       }
       // newStateValues = { ...newStateValues };
       Object.assign(newItem, { ItemBarCodeCollection });
-
     } else if (fieldName.indexOf("Supplier_") > -1) {
       let parts = fieldName.split("_"); // Supplier_1_CardCode
       let ix = parseInt(parts[1], 10);
       let slField = parts[2];
 
-
       let supplierCollection = [...this.state.supplierCollection];
       let item = supplierCollection[ix];
 
       let validateData = {
-        ItemCode: this.state.changeItemCode,
+        CardCode: this.state.changeItemCode,
         CardCode: item.CardCode,
         Substitute: item.Substitute
-      }
+      };
 
-      if (slField === "Substitute")
-        validateData.Substitute = val
-      else
-        validateData.CardCode = val
+      if (slField === "Substitute") validateData.Substitute = val;
+      else validateData.CardCode = val;
 
       //validate if in other items
       this.serverRequest = axios({
         method: "post",
         data: validateData,
-        url: `api/prod/new/isUniqueCatalogNr`
+        url: `api/pns/new/isUniqueCatalogNr`
       })
         .then(result => {
-          let valFname = fieldName.replace("CardCode", "Substitute")
+          let valFname = fieldName.replace("CardCode", "Substitute");
           let validationMessages = that.state.validationMessages;
 
           if (result.data.length > 0) {
-            validationMessages[valFname] = "warning|Código ja existe no artigo " + result.data[0].ItemCode;
+            validationMessages[valFname] = "warning|Código ja existe no parceiro " + result.data[0].CardCode;
           } else {
             validationMessages[valFname] = "";
           }
-          that.setState({ validationMessages })
+          that.setState({ validationMessages });
         })
         .catch(error => sappy.showError(error, "Erro ao validar dados"));
 
       Object.assign(item, { [slField]: val });
 
       if (ix === 0 && slField === "CardCode") {
-        Object.assign(newStateValues, { showFabricante: val === "F0585"/*UNAPOR*/ });
+        Object.assign(newStateValues, { showFabricante: val === "F0585" /*UNAPOR*/ });
 
         Object.assign(newItem, { Mainsupplier: val }); // !!! diferent case in CardCode
       }
@@ -266,7 +260,7 @@ class ModalCreateArtigo extends Component {
           method: "delete",
           headers: { "Content-Type": "application/json" },
           data: JSON.stringify({ ...this.state }),
-          url: `api/prod/item/${this.state.changeItemCode}`
+          url: `api/pns/item/${this.state.changeItemCode}`
         })
           .then(result => {
             that.props.toggleModal("refresh");
@@ -275,7 +269,7 @@ class ModalCreateArtigo extends Component {
             this.setState({ saving: false }, sappy.showError(error, "Erro ao apagar"));
           });
       });
-    }
+    };
 
     this.setState(
       {
@@ -295,11 +289,11 @@ class ModalCreateArtigo extends Component {
   }
 
   onSaveDraft() {
-    this.onSave({ saveDraft: true })
+    this.onSave({ saveDraft: true });
   }
 
   onSaveArtigo() {
-    this.onSave({ saveDraft: false })
+    this.onSave({ saveDraft: false });
   }
   onSave({ saveDraft }) {
     var that = this;
@@ -309,9 +303,9 @@ class ModalCreateArtigo extends Component {
     let validationMessages = {};
     let haErros = false;
 
-    if (!newItem.ItemName || newItem.ItemName.length < 1 || newItem.ItemName.length > 100) {
+    if (!newItem.CardName || newItem.CardName.length < 1 || newItem.CardName.length > 100) {
       haErros = true;
-      Object.assign(validationMessages, { ItemName: "danger|Preencha a Descrição" });
+      Object.assign(validationMessages, { CardName: "danger|Preencha a Descrição" });
     }
 
     if (!saveDraft) {
@@ -338,7 +332,6 @@ class ModalCreateArtigo extends Component {
     }
     this.setState({ validationMessages });
 
-
     if (!haErros) {
       let criarArtigo = () => {
         //save
@@ -351,29 +344,25 @@ class ModalCreateArtigo extends Component {
               supplierCollection: that.state.supplierCollection,
               saveDraft: that.state.saveDraft
             }),
-            url: "api/prod/item"
+            url: "api/pns/item"
           })
             .then(result => {
-
               if (this.props.onNewItemCreated) {
-                this.props.onNewItemCreated(result.data.ItemCode)
-              }
-              else {
-
+                this.props.onNewItemCreated(result.data.CardCode);
+              } else {
                 sappy.showSuccess({
                   title: "Successo!",
-                  moreInfo: `Criou o artigo ${result.data.ItemCode}!`,
+                  moreInfo: `Criou o parceiro ${result.data.CardCode}!`,
                   cancelText: "Adicionar outro",
                   onCancel: () => {
-
-                    //manter a janela aberta em novo artigo
+                    //manter a janela aberta em novo parceiro
                     that.setState(getInitialState({}));
                   },
                   confirmText: "Concluido",
                   onConfirm: () => {
                     that.props.toggleModal("refresh");
                   }
-                })
+                });
               }
             })
             .catch(error => {
@@ -392,7 +381,7 @@ class ModalCreateArtigo extends Component {
           } else {
             sappy.showQuestion({
               title: "Confirma?",
-              moreInfo: `Se confirmar, será criado este novo artigo em sistema.`,
+              moreInfo: `Se confirmar, será criado este novo parceiro em sistema.`,
               cancelText: "Cancelar",
               showCancelButton: true,
               confirmText: "Confirmar",
@@ -446,7 +435,7 @@ class ModalCreateArtigo extends Component {
 
         let bc = supplierCollection[index] || {};
 
-        let label2 = "Código de catálogo"
+        let label2 = "Código de catálogo";
         let label = "Fornecedor";
         if (this.state.showFabricante) label = "Fornecedor/Fabricante";
 
@@ -492,7 +481,6 @@ class ModalCreateArtigo extends Component {
                   value={(this.state.newItem.Manufacturer || "").toString()}
                   state={this.state.validationMessages.Manufacturer}
                   getOptionsApiRoute={"/api/cbo/omrc/<CARDCODE>".replace("<CARDCODE>", this.state.newItem.Mainsupplier)}
-
                   onChange={this.onFieldChange}
                 />
               </div>
@@ -535,7 +523,6 @@ class ModalCreateArtigo extends Component {
                 state={this.state.validationMessages[freetext_field]}
               />
             </div>
-
           </div>
         );
       }
@@ -544,11 +531,13 @@ class ModalCreateArtigo extends Component {
     };
 
     let renderLoading = () => {
-      if (!this.state.loading) return null
-      return (<div className="example-loading example-well h-150 vertical-align text-center">
-        <div className="loader vertical-align-middle loader-tadpole" />
-      </div>)
-    }
+      if (!this.state.loading) return null;
+      return (
+        <div className="example-loading example-well h-150 vertical-align text-center">
+          <div className="loader vertical-align-middle loader-tadpole" />
+        </div>
+      );
+    };
 
     let renderContent = () => {
       let hideClass = "";
@@ -569,11 +558,11 @@ class ModalCreateArtigo extends Component {
             />
 
             <TextBox
-              name="ItemName"
+              name="CardName"
               label="Descrição:"
               placeholder="Introduza a descrição..."
-              state={this.state.validationMessages.ItemName}
-              value={this.state.newItem.ItemName}
+              state={this.state.validationMessages.CardName}
+              value={this.state.newItem.CardName}
               onChange={this.onFieldChange}
             />
 
@@ -589,18 +578,9 @@ class ModalCreateArtigo extends Component {
               onChange={this.onFieldChange}
             />
 
-            <TextBox
-              type="textarea"
-              name="User_Text"
-              label="Observações:"
-              placeholder="Observações..."
-              value={this.state.newItem.User_Text}
-              onChange={this.onFieldChange}
-            />
-
+            <TextBox type="textarea" name="User_Text" label="Observações:" placeholder="Observações..." value={this.state.newItem.User_Text} onChange={this.onFieldChange} />
           </div>
           <div className="col-lg-6">
-
             <h5 className="section-title">Compra</h5>
             <ComboBox
               name="PurchaseVATGroup"
@@ -637,24 +617,17 @@ class ModalCreateArtigo extends Component {
                 />
               </div>
               <div className="col-6">
-                <TextBoxNumeric
-                  valueType="percent"
-                  label="Margem Indicativa:"
-                  placeholder="margem Indicativa..."
-                  name="U_rsaMargem"
-                  value={this.state.U_rsaMargem}
-                  onChange={this.onFieldChange}
-                />
+                <TextBoxNumeric valueType="percent" label="Margem Indicativa:" placeholder="margem Indicativa..." name="U_rsaMargem" value={this.state.U_rsaMargem} onChange={this.onFieldChange} />
               </div>
             </div>
-
           </div>
-        </div>)
-    }
+        </div>
+      );
+    };
 
     return (
       <Modal isOpen={true} className={"modal-lg modal-success"}>
-        <ModalHeader toggle={this.props.toggleModal}>Abertura de novo artigo</ModalHeader>
+        <ModalHeader toggle={this.props.toggleModal}>Abertura de novo parceiro</ModalHeader>
         <ModalBody className="scrollable">
           <div className="panel">
             {renderLoading()}
@@ -662,13 +635,12 @@ class ModalCreateArtigo extends Component {
           </div>
         </ModalBody>
         <ModalFooter>
-          {(this.state.changeItemCode && this.state.changeItemCode.indexOf('DRAFT') === 0)
-            &&
+          {this.state.changeItemCode &&
+            this.state.changeItemCode.indexOf("DRAFT") === 0 &&
             <Button color="warning" disabled={this.state.saving || this.state.loading} onClick={this.onDeleteDraft}>
               <i className="icon wb-trash active" />
               <span className="hidden-sm-down"> Apagar Rascunho</span>
-            </Button>
-          }
+            </Button>}
           <Button color="primary" disabled={this.state.saving || this.state.loading} onClick={this.onSaveDraft}>
             <i className="icon wb-add-file active" />
             <span className="hidden-sm-down"> Gravar Rascunho</span>

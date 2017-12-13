@@ -18,22 +18,22 @@ class EditModal extends Component {
     this.handleOnTabClick = this.handleOnTabClick.bind(this);
     this.onMoveTo = this.onMoveTo.bind(this);
     this.onOpenEditPage = this.onOpenEditPage.bind(this);
-    this.loadProduto = this.loadProduto.bind(this)
+    this.loadProduto = this.loadProduto.bind(this);
     this.onTogleAllowEdit = this.onTogleAllowEdit.bind(this);
 
     this.state = {
-      NewItem: { ItemCode: props.itemcode },
+      NewItem: { CardCode: props.cardCode },
       ReadOnly: true,
       loading: true,
       activeTab: "tabGeral"
-    }
+    };
   }
 
   componentDidMount() {
     window.addEventListener("resize", this.calcPageHeight);
 
     this.calcPageHeight();
-    setTimeout(this.loadProduto(this.props.itemcode), 1);
+    setTimeout(this.loadProduto(this.props.cardCode), 1);
   }
 
   calcPageHeight() {
@@ -52,82 +52,79 @@ class EditModal extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.itemcode !== nextProps.itemcode) this.loadProduto(nextProps.itemcode);
+    if (this.props.cardCode !== nextProps.cardCode) this.loadProduto(nextProps.cardCode);
   }
 
   onTogleAllowEdit(e) {
-    this.setState({ ReadOnly: !this.state.ReadOnly })
+    this.setState({ ReadOnly: !this.state.ReadOnly });
   }
 
-  loadProduto(itemcode) {
+  loadProduto(cardCode) {
     let that = this;
 
     this.setState({ loading: true });
-    this.serverRequest =
-      axios({
-        method: "get",
-        url: "api/prod/item/" + itemcode
-      })
-        .then(result => {
-          let { Item, AlternateCatNum } = result.data;
+    this.serverRequest = axios({
+      method: "get",
+      url: "api/pns/item/" + cardCode
+    })
+      .then(result => {
+        let { Item, AlternateCatNum } = result.data;
 
-          //Preparar as propriedades
-          let Propriedades = [];
-          for (var index = 1; index < 65; index++) {
-            var propertyName = "Properties" + index;
-            let propertyValue = Item[propertyName] === "tYES";
-            if (propertyValue) Propriedades.push(index.toString());
+        //Preparar as propriedades
+        let Propriedades = [];
+        for (var index = 1; index < 65; index++) {
+          var propertyName = "Properties" + index;
+          let propertyValue = Item[propertyName] === "tYES";
+          if (propertyValue) Propriedades.push(index.toString());
+        }
+
+        //preparar supplierCollection
+        let supplierCollection = [
+          {
+            CardCode: Item.Mainsupplier,
+            Substitute: Item.SupplierCatalogNo
           }
+        ];
+        AlternateCatNum.forEach(obj => {
+          if (obj.CardCode !== Item.Mainsupplier) {
+            supplierCollection.push({
+              CardCode: obj.CardCode,
+              Substitute: obj.Substitute
+            });
+          }
+        });
 
-          //preparar supplierCollection
-          let supplierCollection = [{
-            "CardCode": Item.Mainsupplier,
-            "Substitute": Item.SupplierCatalogNo
-          }];
-          AlternateCatNum.forEach(obj => {
-            if (obj.CardCode !== Item.Mainsupplier) {
-              supplierCollection.push({
-                "CardCode": obj.CardCode,
-                "Substitute": obj.Substitute
-              });
-            }
-          })
-
-          that.setState({
-            loading: false,
-            newItem: Item,
-            numberOfBarCodes: Item.ItemBarCodeCollection.length,
-            Propriedades,
-            supplierCollection,
-            showFabricante: Item.Mainsupplier === "F0585"/*UNAPOR*/,
-            U_rsaMargem: Item.U_rsaMargem,
-            PrecoCash: Item.ItemPrices[0].Price
-          })
-        })
-        .catch(error => {
-          this.setState({ saving: false }, sappy.showError(error, "Erro ao obter dados"));
-        })
-
+        that.setState({
+          loading: false,
+          newItem: Item,
+          numberOfBarCodes: Item.ItemBarCodeCollection.length,
+          Propriedades,
+          supplierCollection,
+          showFabricante: Item.Mainsupplier === "F0585" /*UNAPOR*/,
+          U_rsaMargem: Item.U_rsaMargem,
+          PrecoCash: Item.ItemPrices && Item.ItemPrices.length > 0 && Item.ItemPrices[0].Price
+        });
+      })
+      .catch(error => {
+        this.setState({ saving: false }, sappy.showError(error, "Erro ao obter dados"));
+      });
   }
-
 
   onMoveTo(nextORprevious) {
     let that = this;
     this.serverRequest = axios({
       method: "get",
-      url: `api/prod/info/${this.props.itemcode}/${nextORprevious}`
+      url: `api/pns/info/${this.props.cardCode}/${nextORprevious}`
     })
       .then(result => {
-        if (result.data)
-          that.setState({ ReadOnly: true }, hashHistory.push("/inv/oitm/" + result.data));
+        if (result.data) that.setState({ ReadOnly: true }, hashHistory.push("/pns/ocrd/" + result.data));
       })
       .catch(error => sappy.showError(error, "Erro ao obter dados"));
   }
 
-
   onOpenEditPage(nextORprevious) {
     this.props.toggleModal();
-    hashHistory.push("/inv/oitm/" + this.props.itemcode)
+    hashHistory.push("/pns/ocrd/" + this.props.cardCode);
   }
 
   handleOnTabClick(e) {
@@ -136,28 +133,27 @@ class EditModal extends Component {
     this.setState({ activeTab: tab });
   }
 
-
   render() {
-    let newItem = this.state.newItem || {}
+    let newItem = this.state.newItem || {};
 
     return (
       <Modal isOpen={true} className={"modal-lg modal-success"}>
-        <ModalHeader toggle={this.props.toggleModal}  >
-          {this.state.loading ? '...' : (newItem.ItemName + ' (' + newItem.ItemCode + ')')}
-
+        <ModalHeader toggle={this.props.toggleModal}>
+          {this.state.loading ? "..." : newItem.CardName + " (" + newItem.CardCode + ")"}
         </ModalHeader>
         <ModalBody>
           <div className="container">
             <div className="row">
               <div className="col">
-
                 <span className="float-right">
-                  {this.state.ReadOnly && this.state.activeTab === "tabGeral" &&
+                  {this.state.ReadOnly &&
+                    this.state.activeTab === "tabGeral" &&
                     <Button outline className="btn-sm btn-flat" onClick={this.onTogleAllowEdit}>
                       <i className="icon wb-edit" />
                       <span className="hidden-sm-down"> Alterar</span>
                     </Button>}
-                  {!this.state.ReadOnly && this.state.activeTab === "tabGeral" &&
+                  {!this.state.ReadOnly &&
+                    this.state.activeTab === "tabGeral" &&
                     <Button outline className="btn-sm btn-flat" onClick={this.onTogleAllowEdit}>
                       <i className="icon wb-close" />
                       <span className="hidden-sm-down"> Alterar</span>
@@ -175,16 +171,21 @@ class EditModal extends Component {
                 <div className="panel">
                   <div className="panel-body ">
                     <div className="list-group faq-list" role="tablist">
-                      <a className="list-group-item list-group-item-action active" data-toggle="tab" role="tab"
-                        id="tabGeral" onClick={this.handleOnTabClick}>Geral </a>
-                      <a className="list-group-item" data-toggle="tab" role="tab"
-                        id="tabVendas" onClick={this.handleOnTabClick}>Vendas</a>
-                      <a className="list-group-item" data-toggle="tab" role="tab"
-                        id="tabCompras" onClick={this.handleOnTabClick}>Compras</a>
-                      <a className="list-group-item" data-toggle="tab" role="tab"
-                        id="tabInventario" onClick={this.handleOnTabClick}>Inventário</a>
-                      <a className="list-group-item" data-toggle="tab" role="tab"
-                        id="tabTransInv" onClick={this.handleOnTabClick}>Transações de Inventário</a>
+                      <a className="list-group-item list-group-item-action active" data-toggle="tab" role="tab" id="tabGeral" onClick={this.handleOnTabClick}>
+                        Geral{" "}
+                      </a>
+                      <a className="list-group-item" data-toggle="tab" role="tab" id="tabVendas" onClick={this.handleOnTabClick}>
+                        Vendas
+                      </a>
+                      <a className="list-group-item" data-toggle="tab" role="tab" id="tabCompras" onClick={this.handleOnTabClick}>
+                        Compras
+                      </a>
+                      <a className="list-group-item" data-toggle="tab" role="tab" id="tabInventario" onClick={this.handleOnTabClick}>
+                        Inventário
+                      </a>
+                      <a className="list-group-item" data-toggle="tab" role="tab" id="tabTransInv" onClick={this.handleOnTabClick}>
+                        Transações de Inventário
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -196,33 +197,25 @@ class EditModal extends Component {
                   <div className="panel-body main-body">
                     {/* <div className="tab-content"> */}
                     {this.state.activeTab === "tabGeral" &&
-                      <div className=" tab-pane animDISABELDation-fade active" >
-                        <CmpGeral ItemCode={this.props.itemcode}
-                          Item={this.state.newItem}
-                          supplierCollection={this.state.supplierCollection}
-                          ReadOnly={this.state.ReadOnly}></CmpGeral>
-                      </div>
-                    }
+                      <div className=" tab-pane animDISABELDation-fade active">
+                        <CmpGeral CardCode={this.props.cardCode} Item={this.state.newItem} supplierCollection={this.state.supplierCollection} ReadOnly={this.state.ReadOnly} />
+                      </div>}
                     {this.state.activeTab === "tabVendas" &&
                       <div className=" animatDISABELDion-fade">
-                        <CmpVendas ItemCode={this.props.itemcode} ReadOnly={this.state.ReadOnly}></CmpVendas>
-                      </div>
-                    }
+                        <CmpVendas CardCode={this.props.cardCode} ReadOnly={this.state.ReadOnly} />
+                      </div>}
                     {this.state.activeTab === "tabCompras" &&
                       <div className=" animatiDISABELDon-fade">
-                        <CmpCompras ItemCode={this.props.itemcode} ReadOnly={this.state.ReadOnly}></CmpCompras>
-                      </div>
-                    }
+                        <CmpCompras CardCode={this.props.cardCode} ReadOnly={this.state.ReadOnly} />
+                      </div>}
                     {this.state.activeTab === "tabInventario" &&
-                      <div className=" animatiDISABELDon-fade" >
-                        <CmpStock ItemCode={this.props.itemcode} ReadOnly={this.state.ReadOnly}></CmpStock>
-                      </div>
-                    }
+                      <div className=" animatiDISABELDon-fade">
+                        <CmpStock CardCode={this.props.cardCode} ReadOnly={this.state.ReadOnly} />
+                      </div>}
                     {this.state.activeTab === "tabTransInv" &&
-                      <div className=" animaDISABELDtion-fade" >
-                        <CmpTransStock ItemCode={this.props.itemcode} ReadOnly={this.state.ReadOnly}></CmpTransStock>
-                      </div>
-                    }
+                      <div className=" animaDISABELDtion-fade">
+                        <CmpTransStock CardCode={this.props.cardCode} ReadOnly={this.state.ReadOnly} />
+                      </div>}
 
                     {/* </div> */}
                   </div>

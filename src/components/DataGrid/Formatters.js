@@ -199,7 +199,7 @@ class MoreFormatter extends Component {
   render() {
     let { column, dependentValues, rowIdx, value, valueON, valueOFF, color } = this.props;
     let { type, hover, onLinkClick } = column;
-    let divID = column.name + rowIdx;
+    let divID = column.key + rowIdx;
     let onMouseLeave;
     let onMouseEnter;
     let checked = value != null ? value : false;

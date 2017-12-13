@@ -171,7 +171,7 @@ sappy.app = {
     },
     // 4\. Parceiros (4.1 Gestão de parceiros, 4.2 Contatos)
     {
-      name: "pn",
+      name: "pns",
       text: "Parceiros",
       icon: "icon fa-group",
       menus: [

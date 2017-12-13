@@ -261,7 +261,7 @@ exports.prepareDocType = function({ tableName, module }) {
   // detailFields.push({ name: 'WHSCODE', label: 'Arm', type: "text", width: 50, editable: true })
   if ("18".indexOf(objType) > -1) {
     //Compras
-    detailFields.push({ name: "MORE", label: "more", type: "more|danger", width: 35, editable: true, popbox: moreBox });
+    detailFields.push({ name: "MORE", label: "", type: "more|danger", width: 35, editable: true, popbox: moreBox });
   }
   detailFields.push({ name: "HASINCONF", label: "", type: "flag|danger", width: 35, editable: true });
   if ("18".indexOf(objType) > -1) {
