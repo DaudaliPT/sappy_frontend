@@ -154,7 +154,7 @@ class MenuBar extends Component {
 
           <div className="navbar-brand navbar-brand-center site-gridmenu-toggle" data-toggle="gridmenu">
             <p id="nologotext" style={{ display: "none", wordBreak: "break-word" }}>
-              {company.dbName}{" "}
+              {company.dbName}
             </p>
             <img
               className="navbar-brand-logo"

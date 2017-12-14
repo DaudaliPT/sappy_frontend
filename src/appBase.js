@@ -107,12 +107,12 @@ class appBase extends Component {
     if (!url)
       return (
         <span>
-          <i className="icon fa-arrow-circle-right disabled" aria-hidden="true" /> {" "}
+          <i className="icon fa-arrow-circle-right disabled" aria-hidden="true" /> 
         </span>
       );
     return (
       <span>
-        <i className="icon fa-arrow-circle-right" aria-hidden="true" onClick={e => sappy.LinkTo(objType, objKey)} />{" "}
+        <i className="icon fa-arrow-circle-right" aria-hidden="true" onClick={e => sappy.LinkTo(objType, objKey)} />
       </span>
     );
   }

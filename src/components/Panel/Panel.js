@@ -51,7 +51,7 @@ class Panel extends Component {
               <Button outline color={action.color || "secondary"} className={"btn-sm btn-flat"} onClick={action.onClick} disabled={action.disabled ? true : false}>
                 <i className={"icon " + action.icon} />
                 <span className="hidden-sm-down">
-                  {" "}{action.text}
+                  {action.text}
                 </span>
               </Button>}
           </div>

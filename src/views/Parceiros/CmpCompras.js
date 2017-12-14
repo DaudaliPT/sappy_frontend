@@ -31,7 +31,7 @@ class CmpCompras extends Component {
               </div>
               <div className="col-2 text-nowrap">
                 <span className="float-right">
-                  {sappy.format.quantity(row.InvQty, 0) + " " + row.InvntryUom + " x " + row.FORMATED_PRICE}{" "}
+                  {sappy.format.quantity(row.InvQty, 0) + " " + row.InvntryUom + " x " + row.FORMATED_PRICE}
                 </span>
               </div>
               <div className="col-2 text-nowrap lastcol">

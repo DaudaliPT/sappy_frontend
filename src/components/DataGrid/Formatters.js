@@ -88,7 +88,7 @@ class BonusFormatter extends Component {
       <div className="switch large">
         <input type="checkbox" checked={checkedAPswitch} />
         <span className={"slider sm round " + color}>
-          {checkedAPswitch ? ON : OFF}{" "}
+          {checkedAPswitch ? ON : OFF}
         </span>
       </div>
     );
@@ -143,7 +143,7 @@ class DiscountFormatter extends Component {
       <div className="switch large">
         <input type="checkbox" checked={checkedAPswitch} />
         <span className={"slider sm round " + color}>
-          {checkedAPswitch ? ON : OFF}{" "}
+          {checkedAPswitch ? ON : OFF}
         </span>
       </div>
     );
@@ -166,7 +166,7 @@ class SwitchFormatter extends Component {
       <div className="switch">
         <input type="checkbox" checked={checked} />
         <span className={"slider sm round " + color}>
-          {checked ? ON : OFF}{" "}
+          {checked ? ON : OFF}
         </span>
       </div>
     );

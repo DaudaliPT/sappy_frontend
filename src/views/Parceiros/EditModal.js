@@ -172,7 +172,7 @@ class EditModal extends Component {
                   <div className="panel-body ">
                     <div className="list-group faq-list" role="tablist">
                       <a className="list-group-item list-group-item-action active" data-toggle="tab" role="tab" id="tabGeral" onClick={this.handleOnTabClick}>
-                        Geral{" "}
+                        Geral
                       </a>
                       <a className="list-group-item" data-toggle="tab" role="tab" id="tabVendas" onClick={this.handleOnTabClick}>
                         Vendas

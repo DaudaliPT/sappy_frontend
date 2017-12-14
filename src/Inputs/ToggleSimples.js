@@ -30,7 +30,7 @@ class ToggleSimples extends Component {
         <label className="switch2 large">
           <input type="checkbox" checked={this.props.value} onChange={this.handleToggle} />
           <span className={"slider sm round " + sliderColor}>
-            {this.props.value ? this.props.contentON || "ON" : this.props.contentOFF || "OFF"}{" "}
+            {this.props.value ? this.props.contentON || "ON" : this.props.contentOFF || "OFF"}
           </span>
         </label>
       </div>

@@ -158,18 +158,18 @@ class Parceiros extends Component {
         currentModal={this.state.currentModal}
         currentPopover={this.state.currentPopover}
         refresh={this.state.forceLandingPageRefresh}
-        actions={[
-          {
-            name: "add",
-            color: "success",
-            icon: "icon wb-plus",
-            onClick: e => {
-              this.setState({
-                currentModal: <EditNewModal toggleModal={this.toggleModal} />
-              });
-            }
-          }
-        ]}
+        // actions={[
+        //   {
+        //     name: "add",
+        //     color: "success",
+        //     icon: "icon wb-plus",
+        //     onClick: e => {
+        //       this.setState({
+        //         currentModal: <EditNewModal toggleModal={this.toggleModal} />
+        //       });
+        //     }
+        //   }
+        // ]}
       />
     );
   }

@@ -19,7 +19,7 @@ class DocBadges extends Component {
     };
     return (
       <span>
-        {" "}{renderBadges()}{" "}
+        {renderBadges()}
       </span>
     );
   }

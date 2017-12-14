@@ -516,7 +516,7 @@ class DataGrid extends Component {
                 </span>
                 <span className="pl-5">
                   <strong>
-                    {" "}{props.name}
+                    {props.name}
                   </strong>
                 </span>
               </div>

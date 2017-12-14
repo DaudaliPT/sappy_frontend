@@ -10,6 +10,9 @@ import CmpArtigos from "./CmpArtigos";
 import CmpParceiros from "./CmpParceiros";
 import CmpCompras from "./CmpCompras";
 import CmpVendas from "./CmpVendas";
+import CmpRecebimentos from "./CmpRecebimentos";
+import CmpInventario from "./CmpInventario";
+import CmpPagamentos from "./CmpPagamentos";
 import { hashHistory } from "react-router";
 import { setImmediate } from "timers";
 
@@ -26,10 +29,10 @@ class GlobalSearchModal extends Component {
       parceiros: { name: "Parceiros", searchApiUrl: "/api/pns/" },
       vendas: { name: "Vendas", searchApiUrl: "/api/search/vendas/" },
       compras: { name: "Compras", searchApiUrl: "/api/search/compras" },
-      recebimentos: { name: "Recebimentos", searchApiUrl: "/api/prod/" },
-      pagamentos: { name: "Pagamentos", searchApiUrl: "/api/prod/" },
+      recebimentos: { name: "Recebimentos", searchApiUrl: "/api/search/recebimentos/" },
+      pagamentos: { name: "Pagamentos", searchApiUrl: "/api/search/pagamentos/" },
       cheques: { name: "Cheques", searchApiUrl: "/api/prod/" },
-      inventario: { name: "Inventario", searchApiUrl: "/api/prod/" }
+      inventario: { name: "Inventario", searchApiUrl: "/api/search/inventario/" }
     };
 
     this.state = {
@@ -72,9 +75,10 @@ class GlobalSearchModal extends Component {
 
   handleOnMainTabSelect(e) {
     e.preventDefault();
-    let tab = e.target.id;
-    let that = this;
-    setImmediate(() => that.setState({ activeTab: tab }, that.calcPageHeight));
+    let t = e.target;
+    let tab = t.id;
+    if (tab === "") tab = t.parentElement.id;
+    this.setState({ activeTab: tab }, this.calcPageHeight);
   }
 
   handleOnChange_txtSearch(values) {
@@ -143,6 +147,9 @@ class GlobalSearchModal extends Component {
         else if (tab === "parceiros") tabContent = <CmpParceiros {...thisTab} />;
         else if (tab === "compras") tabContent = <CmpCompras {...thisTab} />;
         else if (tab === "vendas") tabContent = <CmpVendas {...thisTab} />;
+        else if (tab === "recebimentos") tabContent = <CmpRecebimentos {...thisTab} />;
+        else if (tab === "pagamentos") tabContent = <CmpPagamentos {...thisTab} />;
+        else if (tab === "inventario") tabContent = <CmpInventario {...thisTab} />;
         // else tabContent = <CmpArtigos {...thisTab} />;
 
         let isVisibleClass = activeTab === tab ? "" : "hidden-xxl-down";

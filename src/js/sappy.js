@@ -321,7 +321,7 @@ import { isNumber } from "util";
           <li>
             {setting.name}
             <small>
-              {" "}({setting.id})
+              ({setting.id})
             </small>
           </li>
         );

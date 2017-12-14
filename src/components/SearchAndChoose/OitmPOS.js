@@ -118,17 +118,17 @@ class OitmPOS extends Component {
                   </span>}
                 {this.props.showCatNum &&
                   <span style={{ display: "inline-block", width: "100px", paddingLeft: "5px" }}>
-                    {" "}{row.SuppCatNum || row.ItemCode}
+                    {row.SuppCatNum || row.ItemCode}
                   </span>}
                 <span>
-                  {row.CodeBars}{" "}
+                  {row.CodeBars}
                 </span>
               </div>
               <div className="col-6">
-                {" "}{row.ItemName} <span> {renderBadges()} </span>{" "}
+                {row.ItemName} <span> {renderBadges()} </span>
               </div>
               <div className="col-1">
-                {" "}<span className="float-right">{sappy.format.price(row.Price)}</span>{" "}
+                <span className="float-right">{sappy.format.price(row.Price)}</span>
               </div>
               <div className="col-1 lastcol text-nowrap">
                 <span className="float-right">
@@ -140,23 +140,23 @@ class OitmPOS extends Component {
             <div className="hidden-xl-up">
               <div className="row">
                 <div className="col text-nowrap">
-                  {" "}{row.ItemName}{" "}
+                  {row.ItemName}
                 </div>
               </div>
               <div className="row secondrow">
                 {!this.props.showCatNum &&
                   <div className="col-6 text-nowrap firstcol">
-                    {" "}{row.ItemCode} <span> {renderBadges()} </span>{" "}
+                    {row.ItemCode} <span> {renderBadges()} </span>
                   </div>}
                 {this.props.showCatNum &&
                   <div className="col-6 text-nowrap firstcol">
-                    {" "}{row.SuppCatNum || row.ItemCode} <span> {renderBadges()} </span>{" "}
+                    {row.SuppCatNum || row.ItemCode} <span> {renderBadges()} </span>
                   </div>}
                 <div className="col-3 text-nowrap">
-                  {" "}<span className="float-right">{sappy.format.price(row.Price)}</span>{" "}
+                  <span className="float-right">{sappy.format.price(row.Price)}</span>
                 </div>
                 <div className="col-3 text-nowrap lastcol">
-                  {" "}<span className="float-right">{sappy.format.quantity(row.OnHand, 0)} Un</span>{" "}
+                  <span className="float-right">{sappy.format.quantity(row.OnHand, 0)} Un</span>
                 </div>
               </div>
             </div>
