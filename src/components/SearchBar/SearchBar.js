@@ -34,7 +34,7 @@ class SearchBar extends PureComponent {
 
   render() {
     let that = this;
-    let { totalInfo } = this.props;
+    let { ShowTotalInfo, totalInfo } = this.props;
     return (
       <form
         className="mt-20"
@@ -51,9 +51,10 @@ class SearchBar extends PureComponent {
           </div>
 
           <button className="input-search-btn vertical-align-middle">
-            <small>
-              {totalInfo.Searching ? "(A pesquisar...)   " : totalInfo.Loaded + "/" + totalInfo.Total + "   "}
-            </small>
+            {ShowTotalInfo &&
+              <small>
+                {totalInfo.Searching ? "(A pesquisar...)   " : totalInfo.Loaded + "/" + totalInfo.Total + "   "}
+              </small>}
 
             {this.props.searchLimitCondition &&
               <i className={"icon " + (this.props.useSearchLimit ? "ion-ios-funnel active" : "ion-ios-funnel-outline inactive")} aria-hidden="true" onMouseDown={that.props.onToogleUseSearchLimit} />}
@@ -78,6 +79,7 @@ class SearchBar extends PureComponent {
   }
 }
 SearchBar.defaultProps = {
+  ShowTotalInfo: true,
   totalInfo: {
     Total: 0,
     Loaded: 0,

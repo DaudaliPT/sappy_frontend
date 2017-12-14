@@ -159,14 +159,11 @@ class GlobalSearchModal extends Component {
 
     return (
       <Modal isOpen={true} className={"modal-lg modal-search"}>
-        <ModalHeader>
-          <div id="global-search">
-            <SearchBar onChange={this.handleOnChange_txtSearch} onClickClear={sappy.hideModal} searchTags={this.state.mainSearchTags} />
-          </div>
-        </ModalHeader>
-        {mainSearchTags.length === 0 && "Introduza o que deseja pesquisar"}
+        <div className="block" style={{ margin: "15px", marginTop: "-5px" }}>
+          <SearchBar onChange={this.handleOnChange_txtSearch} onClickClear={sappy.hideModal} searchTags={this.state.mainSearchTags} ShowTotalInfo={false} />
+        </div>
         {mainSearchTags.length > 0 &&
-          <ModalBody>
+          <div className="block " style={{ margin: "15px", marginTop: "0px" }}>
             <div className="row">
               <div className="col-xxl-3 col-md-3   pr-15 pr-md-0">
                 <div className="panel" style={{ minHeight: "100%" }}>
@@ -185,8 +182,8 @@ class GlobalSearchModal extends Component {
                 </div>
               </div>
             </div>
-          </ModalBody>}
-        <ModalFooter />
+          </div>}
+        {/* <ModalFooter /> */}
       </Modal>
     );
   }

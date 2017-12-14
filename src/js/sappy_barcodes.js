@@ -109,7 +109,18 @@ const $ = window.$;
     sappy = sappyObj;
     // We want to capture the event before any thing else
     let useCapturingFase = true; // see https://www.quirksmode.org/js/events_order.html
+    window.addEventListener("keypress", e => {
+      if (!currentCallback) return;
 
+      if (e.charCode === 2) {
+        //char2 does the same as F9 - PREFIXO CONFIGURADO NO SCANNER
+        e.preventDefault();
+        e.stopPropagation();
+        isHuman = false;
+        charBuffer = [];
+        return;
+      }
+    });
     window.addEventListener(
       "keydown",
       e => {
@@ -138,17 +149,28 @@ const $ = window.$;
 
           // Se 0 a z    [0-9] e [A-Z] e [a-z]
           if (e.which >= 48 && e.which <= 122) {
-            charBuffer.push(String.fromCharCode(e.which));
+            if (e.code === "Numpad0") charBuffer.push("0");
+            else if (e.code === "Numpad1") charBuffer.push("1");
+            else if (e.code === "Numpad2") charBuffer.push("2");
+            else if (e.code === "Numpad3") charBuffer.push("3");
+            else if (e.code === "Numpad4") charBuffer.push("4");
+            else if (e.code === "Numpad5") charBuffer.push("5");
+            else if (e.code === "Numpad6") charBuffer.push("6");
+            else if (e.code === "Numpad7") charBuffer.push("7");
+            else if (e.code === "Numpad8") charBuffer.push("8");
+            else if (e.code === "Numpad9") charBuffer.push("8");
+            else charBuffer.push(String.fromCharCode(e.which));
+
             // console.log(e.which + ":" + charBuffer.join("|"));
 
-            if (timeOutHandler) {
-              clearTimeout(timeOutHandler);
-              timeOutHandler = null;
-            }
-            timeOutHandler = setTimeout(e => {
-              // took more than 50 milisecs, is a human or ended barcode
-              onTypeTimeout();
-            }, 50);
+            // if (timeOutHandler) {
+            //   clearTimeout(timeOutHandler);
+            //   timeOutHandler = null;
+            // }
+            // timeOutHandler = setTimeout(e => {
+            //   // took more than 50 milisecs, is a human or ended barcode
+            //   onTypeTimeout();
+            // }, 200);
           }
         } else {
           // console.log("human " + e.which + " '" + String.fromCharCode(e.which) + "'");
