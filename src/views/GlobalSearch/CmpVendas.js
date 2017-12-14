@@ -3,7 +3,7 @@ import GlobalSearchPage from "./GlobalSearchPage";
 
 const sappy = window.sappy;
 
-class CmpCompras extends Component {
+class CmpVendas extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -12,8 +12,8 @@ class CmpCompras extends Component {
   render() {
     const renderRow = ({ row, index }) => {
       let rowStyleClass = "";
-      if (row.ObjType === "19") rowStyleClass = "vlist-row-danger";
-      if (row.ObjType === "21") rowStyleClass = "vlist-row-danger";
+      if (row.ObjType === "14") rowStyleClass = "vlist-row-danger";
+      if (row.ObjType === "16") rowStyleClass = "vlist-row-danger";
       return (
         <div className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={this.handleRowSelection}>
           <div className="container vertical-align-middle">
@@ -48,13 +48,13 @@ class CmpCompras extends Component {
                 <div className="col-3 text-nowrap firstcol">
                   {sappy.format.date(row.DOC_DATETIME)}
                 </div>
-                <div className="col-6 text-nowrap">
+                <div className="col-4 text-nowrap">
                   {sappy.GetLinkTo(row.ObjType, row.DocEntry)}
                   {row.DESCDOC + " " + row.DocNum}
                 </div>
-                <div className="col-3 text-nowrap lastcol">
+                <div className="col-5 text-nowrap lastcol">
                   <span className="float-right">
-                    {row.FORMATED_DOCTOTAL}
+                    {sappy.format.quantity(row.InvQty, 0) + " x " + row.FORMATED_PRICE}
                   </span>
                 </div>
               </div>
@@ -66,18 +66,20 @@ class CmpCompras extends Component {
 
     return (
       <GlobalSearchPage
-        onTabStatusUpdate={newState => this.props.onTabStatusUpdate("compras", newState)}
+        onTabStatusUpdate={newState => this.props.onTabStatusUpdate("vendas", newState)}
         searchTags={this.props.searchTags}
         searchText={this.props.searchText}
         searchApiUrl={this.props.searchApiUrl}
-        noRecordsMessage="Nenhum documento de venda encontrado"
+        noRecordsMessage="Nenhum documento de compra encontrado"
         renderRow={renderRow}
         renderRowHeight={50}
       />
     );
   }
 }
-CmpCompras.defaultProps = {
+
+CmpVendas.defaultProps = {
   onTabStatusUpdate: newState => {}
 };
-export default CmpCompras;
+
+export default CmpVendas;

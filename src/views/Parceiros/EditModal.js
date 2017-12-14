@@ -5,8 +5,6 @@ var $ = window.$;
 var sappy = window.sappy;
 
 import CmpGeral from "./CmpGeral";
-import CmpStock from "./CmpStock";
-import CmpTransStock from "./CmpTransStock";
 import CmpVendas from "./CmpVendas";
 import CmpCompras from "./CmpCompras";
 import { hashHistory } from "react-router";
@@ -56,7 +54,8 @@ class EditModal extends Component {
   }
 
   onTogleAllowEdit(e) {
-    this.setState({ ReadOnly: !this.state.ReadOnly });
+    return sappy.showToastr({ color: "warning", msg: "Alteração ainda não disponivel" });
+    // this.setState({ ReadOnly: !this.state.ReadOnly });
   }
 
   loadProduto(cardCode) {
@@ -68,7 +67,7 @@ class EditModal extends Component {
       url: "api/pns/item/" + cardCode
     })
       .then(result => {
-        let { Item, AlternateCatNum } = result.data;
+        let { Item, AlternateCatNum, BPAddresses } = result.data;
 
         //Preparar as propriedades
         let Propriedades = [];
@@ -100,6 +99,7 @@ class EditModal extends Component {
           numberOfBarCodes: Item.ItemBarCodeCollection.length,
           Propriedades,
           supplierCollection,
+          BPAddresses,
           showFabricante: Item.Mainsupplier === "F0585" /*UNAPOR*/,
           U_rsaMargem: Item.U_rsaMargem,
           PrecoCash: Item.ItemPrices && Item.ItemPrices.length > 0 && Item.ItemPrices[0].Price
@@ -180,12 +180,6 @@ class EditModal extends Component {
                       <a className="list-group-item" data-toggle="tab" role="tab" id="tabCompras" onClick={this.handleOnTabClick}>
                         Compras
                       </a>
-                      <a className="list-group-item" data-toggle="tab" role="tab" id="tabInventario" onClick={this.handleOnTabClick}>
-                        Inventário
-                      </a>
-                      <a className="list-group-item" data-toggle="tab" role="tab" id="tabTransInv" onClick={this.handleOnTabClick}>
-                        Transações de Inventário
-                      </a>
                     </div>
                   </div>
                 </div>
@@ -198,7 +192,7 @@ class EditModal extends Component {
                     {/* <div className="tab-content"> */}
                     {this.state.activeTab === "tabGeral" &&
                       <div className=" tab-pane animDISABELDation-fade active">
-                        <CmpGeral CardCode={this.props.cardCode} Item={this.state.newItem} supplierCollection={this.state.supplierCollection} ReadOnly={this.state.ReadOnly} />
+                        <CmpGeral CardCode={this.props.cardCode} Item={this.state.newItem} BPAddresses={this.state.BPAddresses} ReadOnly={this.state.ReadOnly} />
                       </div>}
                     {this.state.activeTab === "tabVendas" &&
                       <div className=" animatDISABELDion-fade">
@@ -207,14 +201,6 @@ class EditModal extends Component {
                     {this.state.activeTab === "tabCompras" &&
                       <div className=" animatiDISABELDon-fade">
                         <CmpCompras CardCode={this.props.cardCode} ReadOnly={this.state.ReadOnly} />
-                      </div>}
-                    {this.state.activeTab === "tabInventario" &&
-                      <div className=" animatiDISABELDon-fade">
-                        <CmpStock CardCode={this.props.cardCode} ReadOnly={this.state.ReadOnly} />
-                      </div>}
-                    {this.state.activeTab === "tabTransInv" &&
-                      <div className=" animaDISABELDtion-fade">
-                        <CmpTransStock CardCode={this.props.cardCode} ReadOnly={this.state.ReadOnly} />
                       </div>}
 
                     {/* </div> */}

@@ -10,6 +10,7 @@ const getInitialState = function(props) {
   let Item = props.Item || {};
 
   let supplierCollection = props.supplierCollection || [];
+  let BPAddresses = props.BPAddresses || [];
 
   //Preparar as propriedades
   let Propriedades = [];
@@ -33,6 +34,7 @@ const getInitialState = function(props) {
     numberOfBarCodes: Item.ItemBarCodeCollection ? Item.ItemBarCodeCollection.length : 1,
     Propriedades,
     supplierCollection,
+    BPAddresses,
     showFabricante: Item.Mainsupplier === "F0585" /*UNAPOR*/,
     U_rsaMargem: Item.U_rsaMargem,
     PrecoCash: Item.ItemPrices && Item.ItemPrices.length > 0 && Item.ItemPrices[0].Price
@@ -45,7 +47,7 @@ class CmpGeral extends Component {
     super(props);
     this.onFieldChange = this.onFieldChange.bind(this);
     this.onClick_AddBarCode = this.onClick_AddBarCode.bind(this);
-    this.onClick_AddSupplier = this.onClick_AddSupplier.bind(this);
+    this.onClick_AddAddress = this.onClick_AddAddress.bind(this);
     this.onDeleteArtigo = this.onDeleteArtigo.bind(this);
     this.onSaveArtigo = this.onSaveArtigo.bind(this);
 
@@ -91,6 +93,17 @@ class CmpGeral extends Component {
     } else if (fieldName.indexOf("Frozen") > -1) {
       Item.Valid = val ? "tNO" : "tYES";
       Item.Frozen = val ? "tYES" : "tNO";
+    } else if (fieldName.indexOf("ADDRESS_") > -1) {
+      let parts = fieldName.split("_"); // ADDRESS_1_CODES
+      let ix = parseInt(parts[1], 10);
+      let slField = parts[2];
+
+      let BPAddresses = [...this.state.BPAddresses];
+      let item = BPAddresses[ix];
+
+      Object.assign(item, { [slField]: val });
+
+      newStateValues = { ...newStateValues };
     } else {
       Object.assign(Item, { [fieldName]: val });
     }
@@ -190,6 +203,8 @@ class CmpGeral extends Component {
             data: JSON.stringify({
               newItem: that.state.Item,
               supplierCollection: that.state.supplierCollection,
+              BPAddresses: that.state.BPAddresses,
+
               BarCodesToDelete
             }),
             url: "api/pns/item"
@@ -244,125 +259,94 @@ class CmpGeral extends Component {
     this.setState({ Item, numberOfBarCodes });
   }
 
-  onClick_AddSupplier(cmpThis) {
-    let supplierCollection = [...this.state.supplierCollection];
+  onClick_AddAddress(cmpThis) {
+    let BPAddresses = [...this.state.BPAddresses];
 
     if (cmpThis.props.rightButton === "-") {
       let ix = cmpThis.props.name.split("_")[1]; // expect: Supplier_1_Substitute
-      supplierCollection.splice(ix, 1);
+      BPAddresses.splice(ix, 1);
     } else {
-      supplierCollection.push({});
+      BPAddresses.push({});
     }
 
-    this.setState({ supplierCollection });
+    this.setState({ BPAddresses });
   }
 
   render() {
     let Item = this.state.Item || {};
     let ItemBarCodeCollection = Item.ItemBarCodeCollection || [];
 
-    var renderSuppliers = () => {
+    var renderAdresses = () => {
       let ret = [];
-      let { supplierCollection } = this.state;
+      let { BPAddresses } = this.state;
 
-      for (var index = 0; index < supplierCollection.length; index++) {
-        let supplier_field = "Supplier_" + index + "_CardCode";
-        let catalogNo_field = "Supplier_" + index + "_Substitute";
+      for (var index = 0; index < BPAddresses.length; index++) {
+        let ALLTYPES_field = "ADDRESS_" + index + "_ALLTYPES";
+        let CODES_field = "ADDRESS_" + index + "_CODES";
+        let Street_field = "ADDRESS_" + index + "_Street";
+        let Block_field = "ADDRESS_" + index + "_Block";
+        let Country_field = "ADDRESS_" + index + "_Country";
+        let ZipCode_field = "ADDRESS_" + index + "_ZipCode";
+        let City_field = "ADDRESS_" + index + "_City";
 
-        let bc = supplierCollection[index] || {};
-
-        let label2 = "Código de catálogo";
-        let label = "Fornecedor";
-        if (this.state.showFabricante) label = "Fornecedor/Fabricante";
+        let bc = BPAddresses[index] || {};
 
         ret.push(
-          <div key={"div1" + supplier_field} className="row">
-            <div className="col-7" style={{ paddingRight: "0" }}>
+          <div key={"div1" + CODES_field} className="row">
+            <div className="col-6 pr-0">
               <ComboBox
-                key={supplier_field}
-                name={supplier_field}
-                label={index === 0 ? label + ":" : ""}
+                label="Morada para"
                 disabled={this.state.ReadOnly}
-                placeholder={label + "..."}
-                value={bc.CardCode}
-                getOptionsApiRoute="/api/cbo/ocrd/s"
+                placeholder="Selecione o tipo..."
+                value={bc.ALLTYPES}
+                name={ALLTYPES_field}
+                state={this.state.validationMessages[ALLTYPES_field]}
+                options={[{ value: "S,B", label: "Entrega e Faturação" }, { value: "S", label: "Entrega" }, { value: "B", label: "Faturação" }]}
                 onChange={this.onFieldChange}
-                state={this.state.validationMessages[supplier_field]}
               />
             </div>
-
-            <div className="col" style={{ paddingLeft: "0" }}>
+            <div className="col-6 pl-0">
               <TextBox
-                label={index === 0 ? label2 + ":" : ""}
-                placeholder={"Código de catálogo..."}
-                name={catalogNo_field}
-                value={bc.Substitute}
+                label="Código"
+                placeholder={"Código..."}
+                value={bc.CODES}
+                name={CODES_field}
+                state={this.state.validationMessages[CODES_field]}
                 disabled={this.state.ReadOnly}
                 onChange={this.onFieldChange}
-                rightButton={this.state.ReadOnly ? "" : index === 0 ? "+" : "-"}
-                onRightButtonClick={this.onClick_AddSupplier}
-                state={this.state.validationMessages[catalogNo_field]}
+                rightButton={this.state.ReadOnly ? "" : index === 0 ? "" : "-"}
+                onRightButtonClick={this.onClick_AddAddress}
               />
             </div>
-          </div>
-        );
-
-        if (index === 0 && this.state.showFabricante) {
-          ret.push(
-            <div key={"div_fabricante"} className="row">
-              <div className="col-6 offset-1" style={{ paddingRight: "0" }}>
-                <ComboBox
-                  key="Manufacturer"
-                  name="Manufacturer"
-                  placeholder="Fabricante..."
-                  createable
-                  disabled={this.state.ReadOnly}
-                  value={Item.Manufacturer.toString()}
-                  state={this.state.validationMessages.Manufacturer}
-                  getOptionsApiRoute={"/api/cbo/omrc/<CARDCODE>".replace("<CARDCODE>", Item.Mainsupplier)}
-                  onChange={this.onFieldChange}
-                />
-              </div>
+            <div className="col-12">
+              <TextBox placeholder={"Rua..."} value={bc.Street} name={Street_field} state={this.state.validationMessages[Street_field]} disabled={this.state.ReadOnly} onChange={this.onFieldChange} />
             </div>
-          );
-        }
-      }
-
-      return ret;
-    };
-
-    var renderBarcodes = () => {
-      let ret = [];
-      for (var index = 0; index < (this.state.numberOfBarCodes || 1); index++) {
-        let barcode_field = "CodigoBarras_" + index + "_Barcode";
-        let freetext_field = "CodigoBarras_" + index + "_FreeText";
-        let bc = ItemBarCodeCollection[index] || {};
-        ret.push(
-          <div key={"div1" + barcode_field} className="row">
-            <div className="col-7" style={{ paddingRight: "0" }}>
+            <div className="col-8 pr-0">
+              <TextBox placeholder={"Zona..."} value={bc.Block} name={Block_field} state={this.state.validationMessages[Block_field]} disabled={this.state.ReadOnly} onChange={this.onFieldChange} />
+            </div>
+            <div className="col-4 pl-0">
+              <ComboBox name="PurchaseVATGroup" disabled={this.state.ReadOnly} placeholder="Pais..." value={bc.Country} getOptionsApiRoute="/api/cbo/ocry" onChange={this.onFieldChange} />
+            </div>
+            <div className="col-4 pr-0">
               <TextBox
-                key={barcode_field}
-                label={index === 0 ? "Código de barras:" : ""}
+                placeholder={"Localidade..."}
+                value={bc.ZipCode}
+                name={ZipCode_field}
+                state={this.state.validationMessages[ZipCode_field]}
                 disabled={this.state.ReadOnly}
-                placeholder={"Código de barras..."}
-                name={barcode_field}
-                value={bc.Barcode}
                 onChange={this.onFieldChange}
-                state={this.state.validationMessages[barcode_field]}
               />
             </div>
-            <div className="col" style={{ paddingLeft: "0" }}>
-              <TextBoxNumeric
-                valueType="integer"
-                label={index === 0 ? "Grupagem:" : ""}
-                placeholder="Grupagem..."
-                name={freetext_field}
-                value={bc.FreeText}
+            <div className="col-8 pl-0 ">
+              <TextBox
+                placeholder={"Localidade..."}
+                value={bc.City}
+                name={City_field}
+                state={this.state.validationMessages[City_field]}
                 disabled={this.state.ReadOnly}
                 onChange={this.onFieldChange}
-                rightButton={this.state.ReadOnly ? "" : index === 0 ? "+" : "-"}
-                onRightButtonClick={this.onClick_AddBarCode}
-                state={this.state.validationMessages[freetext_field]}
+                rightButton={this.state.ReadOnly ? "" : index + 1 === BPAddresses.length ? "+" : ""}
+                onRightButtonClick={this.onClick_AddAddress}
               />
             </div>
           </div>
@@ -389,28 +373,64 @@ class CmpGeral extends Component {
         <div className={"row " + hideClass}>
           <div className="col-lg-6">
             <h5 className="section-title">Info Geral</h5>
-
             <TextBox
               name="CardName"
-              label="Descrição:"
+              label="Nome:"
               disabled={this.state.ReadOnly}
-              placeholder="Introduza a descrição..."
+              placeholder="Introduza o nome..."
               state={this.state.validationMessages.CardName}
               value={Item.CardName}
               onChange={this.onFieldChange}
             />
-
-            <ComboBox
-              label="Sub-Família:"
-              placeholder="Selecione a família..."
-              name="U_SubFamilia1"
-              disabled={this.state.TinhaFamilia1 ? this.state.ReadOnly : true}
-              value={Item.U_SubFamilia1}
-              state={this.state.validationMessages.U_SubFamilia1}
-              getOptionsApiRoute="/api/cbo/subfamilia1"
+            <div className="row">
+              <div className="col-6 pr-0">
+                <TextBox
+                  name="LicTradNum"
+                  label="Nr.Contribuinte:"
+                  disabled={this.state.ReadOnly}
+                  placeholder="Contribuinte..."
+                  state={this.state.validationMessages.LicTradNum}
+                  value={Item.LicTradNum}
+                  onChange={this.onFieldChange}
+                />
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-4 pr-0">
+                <TextBox
+                  name="Phone1"
+                  label="Telefone:"
+                  disabled={this.state.ReadOnly}
+                  placeholder="Telefone..."
+                  state={this.state.validationMessages.Phone1}
+                  value={Item.Phone1}
+                  onChange={this.onFieldChange}
+                />
+              </div>
+              <div className="col-4 pl-0 pr-0">
+                <TextBox name="Fax" label="Fax:" disabled={this.state.ReadOnly} placeholder="Fax..." state={this.state.validationMessages.Fax} value={Item.Fax} onChange={this.onFieldChange} />
+              </div>
+              <div className="col-4 pl-0 ">
+                <TextBox
+                  name="Cellular"
+                  label="Telemóvel:"
+                  disabled={this.state.ReadOnly}
+                  placeholder="Telemóvel..."
+                  state={this.state.validationMessages.Cellular}
+                  value={Item.Cellular}
+                  onChange={this.onFieldChange}
+                />
+              </div>
+            </div>
+            <TextBox
+              name="E_Mail"
+              label="Email:"
+              disabled={this.state.ReadOnly}
+              placeholder="Email..."
+              state={this.state.validationMessages.E_Mail}
+              value={Item.E_Mail}
               onChange={this.onFieldChange}
             />
-            {renderBarcodes()}
 
             <ComboBox
               label="Propriedades:"
@@ -419,63 +439,18 @@ class CmpGeral extends Component {
               multi={true}
               disabled={this.state.ReadOnly}
               value={this.state.Propriedades}
-              getOptionsApiRoute="/api/cbo/oitg"
+              getOptionsApiRoute="/api/cbo/ocqg"
               onChange={this.onFieldChange}
             />
-
-            <TextBox type="textarea" name="User_Text" label="Observações:" disabled={this.state.ReadOnly} placeholder="Observações..." value={Item.User_Text || ""} onChange={this.onFieldChange} />
+            <TextBox type="textarea" name="Free_Text" label="Observações:" disabled={this.state.ReadOnly} placeholder="Observações..." value={Item.Free_Text || ""} onChange={this.onFieldChange} />
           </div>
           <div className="col-lg-6">
-            <h5 className="section-title">Compra</h5>
-            <ComboBox
-              name="PurchaseVATGroup"
-              disabled={this.state.ReadOnly}
-              label="IVA para compras:"
-              placeholder="Selecione o IVA para compras..."
-              state={this.state.validationMessages.PurchaseVATGroup}
-              value={Item.PurchaseVATGroup}
-              getOptionsApiRoute="/api/cbo/ovtg/i"
-              onChange={this.onFieldChange}
-            />
+            <h5 className="section-title" style={{ marginBottom: "0px" }}>
+              Moradas
+            </h5>
 
-            {renderSuppliers()}
+            {renderAdresses()}
 
-            <h5 className="section-title">Venda</h5>
-            <ComboBox
-              name="SalesVATGroup"
-              disabled={this.state.ReadOnly}
-              label="IVA para vendas:"
-              placeholder="Selecione o IVA para vendas..."
-              state={this.state.validationMessages.SalesVATGroup}
-              value={Item.SalesVATGroup}
-              getOptionsApiRoute="/api/cbo/ovtg/o"
-              onChange={this.onFieldChange}
-            />
-            <div className="row">
-              <div className="col-6">
-                <TextBoxNumeric
-                  valueType="price"
-                  disabled={this.state.ReadOnly}
-                  label="Preço Cash:"
-                  placeholder="Introduza o preço Cash..."
-                  state={this.state.validationMessages.PrecoCash}
-                  name="PrecoCash"
-                  value={this.state.PrecoCash}
-                  onChange={this.onFieldChange}
-                />
-              </div>
-              <div className="col-6">
-                <TextBoxNumeric
-                  valueType="percent"
-                  disabled={this.state.ReadOnly}
-                  label="Margem Indicativa:"
-                  placeholder="margem Indicativa..."
-                  name="U_rsaMargem"
-                  value={this.state.U_rsaMargem}
-                  onChange={this.onFieldChange}
-                />
-              </div>
-            </div>
             <div className="row">
               <div className="col-6">
                 <Toggle

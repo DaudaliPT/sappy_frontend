@@ -64,6 +64,9 @@ class EditPage extends Component {
   }
 
   onTogleAllowEdit(e) {
+    return sappy.showToastr({ color: "warning", msg: "Alteração ainda não disponivel" });
+    // this.setState({ ReadOnly: !this.state.ReadOnly });
+
     let newReadOnly = !this.state.ReadOnly;
     this.setState({ ReadOnly: newReadOnly });
 
@@ -93,7 +96,7 @@ class EditPage extends Component {
       url: "api/pns/item/" + cardcode
     })
       .then(result => {
-        let { Item, AlternateCatNum } = result.data;
+        let { Item, AlternateCatNum, BPAddresses } = result.data;
 
         //Preparar as propriedades
         let Propriedades = [];
@@ -125,6 +128,7 @@ class EditPage extends Component {
           numberOfBarCodes: Item.ItemBarCodeCollection.length,
           Propriedades,
           supplierCollection,
+          BPAddresses,
           showFabricante: Item.Mainsupplier === "F0585" /*UNAPOR*/,
           U_rsaMargem: Item.U_rsaMargem,
           PrecoCash: Item.ItemPrices && Item.ItemPrices.length > 0 && Item.ItemPrices[0].Price
@@ -229,6 +233,7 @@ class EditPage extends Component {
                         Item={this.state.newItem}
                         onItemSaved={this.handleItemSaved}
                         supplierCollection={this.state.supplierCollection}
+                        BPAddresses={this.state.BPAddresses}
                         ReadOnly={this.state.ReadOnly}
                       />
                     </div>}

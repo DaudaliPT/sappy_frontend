@@ -116,7 +116,7 @@ class DocPromocao extends Component {
     this.recalcComponentsHeight();
 
     this.serverRequest = axios
-      .get(`/api/cbo/ocqg`)
+      .get(`/api/cbo/ocqg/forpromo`)
       .then(result => {
         that.setState({ fieldsAllowedForCli: [...that.fieldsAllowedForCli, ...result.data] });
       })

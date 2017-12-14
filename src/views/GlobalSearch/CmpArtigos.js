@@ -8,27 +8,6 @@ const $ = window.$;
 const sappy = window.sappy;
 
 class CmpArtigos extends Component {
-  constructor(props) {
-    super(props);
-    this.handleRowClick = this.handleRowClick.bind(this);
-
-    this.state = {};
-  }
-
-  handleRowClick(e) {
-    var vrow = $(e.target).closest(".byusVirtualRow")[0];
-    let id = vrow.id;
-    let itemCode = id.split("_")[1];
-
-    if (itemCode.indexOf("DRAFT") > -1) {
-      this.setState({
-        currentModal: <EditNewModal toggleModal={this.toggleModal} changeItemCode={itemCode} />
-      });
-    } else {
-      sappy.showModal(<EditModal toggleModal={sappy.hideModal} itemcode={itemCode} />);
-    }
-  }
-
   render() {
     let that = this;
 
@@ -70,11 +49,12 @@ class CmpArtigos extends Component {
       if (row.OnHand < 0) rowStyleClass = "artigo-sem-stock";
       if (row.frozenFor === "Y") rowStyleClass = "artigo-inativo";
       return (
-        <div className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={this.handleRowClick} id={rowId}>
+        <div className={"byusVirtualRow vertical-align " + rowStyleClass} id={rowId}>
           <div className="container vertical-align-middle">
             {/*large displays*/}
             <div className="row hidden-lg-down">
               <div className="col-2">
+                {sappy.GetLinkTo("4", row.ItemCode)}
                 {row.ItemCode}
               </div>
               <div className="col-6">
@@ -122,7 +102,7 @@ class CmpArtigos extends Component {
 
     return (
       <GlobalSearchPage
-        noAutoFocus
+        onTabStatusUpdate={newState => this.props.onTabStatusUpdate("artigos", newState)}
         searchTags={this.props.searchTags}
         searchText={this.props.searchText}
         searchApiUrl={this.props.searchApiUrl}
@@ -133,5 +113,7 @@ class CmpArtigos extends Component {
     );
   }
 }
-
+CmpArtigos.defaultProps = {
+  onTabStatusUpdate: newState => {}
+};
 export default CmpArtigos;

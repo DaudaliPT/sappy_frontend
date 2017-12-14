@@ -123,15 +123,18 @@ class SearchPage extends PureComponent {
       let { searchTags } = this.props;
       let { activeTab } = this.state;
 
-      that.setState({
-        rvIsLoading: true,
-        rvHasNextPage: false,
-        totalInfo: {
-          Total: 0,
-          Loaded: 0,
-          Searching: true
-        }
-      });
+      that.setState(
+        {
+          rvIsLoading: true,
+          rvHasNextPage: false,
+          totalInfo: {
+            Total: 0,
+            Loaded: 0,
+            Searching: true
+          }
+        },
+        () => that.props.onTabStatusUpdate(that.state.totalInfo)
+      );
 
       if (this.cancelPreviousAxiosRequest) this.cancelPreviousAxiosRequest();
       var CancelToken = axios.CancelToken;
@@ -142,7 +145,7 @@ class SearchPage extends PureComponent {
         data: that.props.searchApiData,
         params: {
           searchTags,
-          toObjtype: this.props.toObjtype,
+          noQuerys: true,
           activeTab
         },
         cancelToken: new CancelToken(function executor(c) {
@@ -164,9 +167,10 @@ class SearchPage extends PureComponent {
           let ReactVirtualized__List = document.getElementsByClassName("ReactVirtualized__List")[0];
           if (ReactVirtualized__List) ReactVirtualized__List.scrollTop = 0;
 
-          that.setState({ listItems, tabItems, activeTab, rvHasNextPage, totalInfo, rvIsLoading: false }, e => {
+          that.setState({ listItems, tabItems, activeTab, rvHasNextPage, totalInfo, rvIsLoading: false }, () => {
             that.calcPageHeight();
             that.props.onRefresh && that.props.onRefresh();
+            that.props.onTabStatusUpdate(that.state.totalInfo);
           });
         })
         .catch(function(error) {
@@ -185,7 +189,7 @@ class SearchPage extends PureComponent {
 
       let params = {
         searchTags,
-        toObjtype: this.props.toObjtype,
+        noQuerys: true,
         activeTab,
         startIndex: listItems.length,
         maxRecords: 100
@@ -201,7 +205,7 @@ class SearchPage extends PureComponent {
             Total: nextRows.length > 0 ? nextRows[0].TOTAL_ROWS : listItems.length,
             Loaded: listItems.length
           };
-          that.setState({ listItems, rvHasNextPage, totalInfo, rvIsLoading: false });
+          that.setState({ listItems, rvHasNextPage, totalInfo, rvIsLoading: false }, () => that.props.onTabStatusUpdate(that.state.totalInfo));
         })
         .catch(function(error) {
           if (!error.__CANCEL__) sappy.showError(error, "Api error");
@@ -255,7 +259,7 @@ class SearchPage extends PureComponent {
 SearchPage.defaultProps = {
   searchPlaceholder: "Procurar...",
   searchApiUrl: "",
-  renderHeaders: () => {},
+  onTabStatusUpdate: newState => {},
   renderRow: ({ row, index }) => {},
   renderRowHeight: 20
 };

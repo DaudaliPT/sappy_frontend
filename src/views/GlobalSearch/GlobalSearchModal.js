@@ -9,6 +9,7 @@ import SearchBar from "../../components/SearchBar";
 import CmpArtigos from "./CmpArtigos";
 import CmpParceiros from "./CmpParceiros";
 import CmpCompras from "./CmpCompras";
+import CmpVendas from "./CmpVendas";
 import { hashHistory } from "react-router";
 import { setImmediate } from "timers";
 
@@ -18,12 +19,13 @@ class GlobalSearchModal extends Component {
 
     this.handleOnMainTabSelect = this.handleOnMainTabSelect.bind(this);
     this.handleOnChange_txtSearch = this.handleOnChange_txtSearch.bind(this);
+    this.handleTabStatusUpdate = this.handleTabStatusUpdate.bind(this);
 
     this.tabs = {
       artigos: { name: "Artigos", searchApiUrl: "/api/prod/" },
       parceiros: { name: "Parceiros", searchApiUrl: "/api/pns/" },
-      vendas: { name: "Vendas", searchApiUrl: "/api/prod/" },
-      compras: { name: "Compras", searchApiUrl: "/api/prod/" },
+      vendas: { name: "Vendas", searchApiUrl: "/api/search/vendas/" },
+      compras: { name: "Compras", searchApiUrl: "/api/search/compras" },
       recebimentos: { name: "Recebimentos", searchApiUrl: "/api/prod/" },
       pagamentos: { name: "Pagamentos", searchApiUrl: "/api/prod/" },
       cheques: { name: "Cheques", searchApiUrl: "/api/prod/" },
@@ -33,7 +35,15 @@ class GlobalSearchModal extends Component {
     this.state = {
       loading: true,
       activeTab: "artigos",
-      mainSearchTags: [] /** holds the text typed by the user */
+      mainSearchTags: [] /** holds the text typed by the user */,
+      artigos: { Total: 0, Loaded: 0, Searching: true },
+      parceiros: { Total: 0, Loaded: 0, Searching: true },
+      vendas: { Total: 0, Loaded: 0, Searching: true },
+      compras: { Total: 0, Loaded: 0, Searching: true },
+      recebimentos: { Total: 0, Loaded: 0, Searching: true },
+      pagamentos: { Total: 0, Loaded: 0, Searching: true },
+      cheques: { Total: 0, Loaded: 0, Searching: true },
+      inventario: { Total: 0, Loaded: 0, Searching: true }
     };
   }
 
@@ -63,7 +73,8 @@ class GlobalSearchModal extends Component {
   handleOnMainTabSelect(e) {
     e.preventDefault();
     let tab = e.target.id;
-    this.setState({ activeTab: tab }, this.calcPageHeight());
+    let that = this;
+    setImmediate(() => that.setState({ activeTab: tab }, that.calcPageHeight));
   }
 
   handleOnChange_txtSearch(values) {
@@ -76,6 +87,10 @@ class GlobalSearchModal extends Component {
     );
   }
 
+  handleTabStatusUpdate(tab, totalInfo) {
+    this.setState({ [tab]: totalInfo });
+  }
+
   render() {
     let mainSearchTags = this.state.mainSearchTags;
 
@@ -85,14 +100,27 @@ class GlobalSearchModal extends Component {
 
       Object.keys(this.tabs).forEach(tab => {
         let thisTab = this.tabs[tab] || {};
+        let thisTabStatus = this.state[tab] || {};
         let clss = "list-group-item list-group-item-action";
         if (tab === activeTab) clss += " active";
+
+        let info = "";
+        if (thisTabStatus.Searching) info = "...";
+        else if (thisTabStatus.Loaded !== thisTabStatus.Total) info = thisTabStatus.Loaded + "/" + thisTabStatus.Total;
+        else info = thisTabStatus.Total;
+
+        let clssBadge = "badge badge-pill float-right";
+        if (thisTabStatus.Searching) clssBadge += " badge-default";
+        else clssBadge += " badge-success";
+
         let tabContent = (
           <a className={clss} data-toggle="tab" role="tab" key={"tab" + tab} id={tab} onClick={this.handleOnMainTabSelect}>
             {thisTab.name}
+            <span className={clssBadge}>
+              {info}
+            </span>
           </a>
         );
-        /* <span className="badge badge-pill badge-default float-right">{this.state.artigos}</span> */
         tabs.push(tabContent);
       });
 
@@ -109,11 +137,13 @@ class GlobalSearchModal extends Component {
         let thisTab = this.tabs[tab] || {};
         let tabContent = null;
         thisTab.searchTags = mainSearchTags;
+        thisTab.onTabStatusUpdate = this.handleTabStatusUpdate;
 
         if (tab === "artigos") tabContent = <CmpArtigos {...thisTab} />;
         else if (tab === "parceiros") tabContent = <CmpParceiros {...thisTab} />;
         else if (tab === "compras") tabContent = <CmpCompras {...thisTab} />;
-        else tabContent = <CmpArtigos {...thisTab} />;
+        else if (tab === "vendas") tabContent = <CmpVendas {...thisTab} />;
+        // else tabContent = <CmpArtigos {...thisTab} />;
 
         let isVisibleClass = activeTab === tab ? "" : "hidden-xxl-down";
 
@@ -138,7 +168,7 @@ class GlobalSearchModal extends Component {
         {mainSearchTags.length > 0 &&
           <ModalBody>
             <div className="row">
-              <div className="col-xxl-3 col-md-4   pr-15 pr-md-0">
+              <div className="col-xxl-3 col-md-3   pr-15 pr-md-0">
                 <div className="panel" style={{ minHeight: "100%" }}>
                   <div className="panel-body">
                     <div className="list-group faq-list" role="tablist">
@@ -147,7 +177,7 @@ class GlobalSearchModal extends Component {
                   </div>
                 </div>
               </div>
-              <div className="col-xxl-9 col-md-8   ">
+              <div className="col-xxl-9 col-md-9   ">
                 <div className="panel form-panel">
                   <div className="panel-body main-body">
                     {renderTabContent()}

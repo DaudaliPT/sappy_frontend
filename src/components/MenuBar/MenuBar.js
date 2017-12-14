@@ -165,7 +165,14 @@ class MenuBar extends Component {
               alt={sessionInfo.company.dbName}
             />
           </div>
-          <button type="button" className="navbar-toggler collapsed" data-target="#site-navbar-search" data-toggle="collapse">
+          <button
+            type="button"
+            className="navbar-toggler "
+            onClick={e => {
+              e.preventDefault();
+              sappy.showModal(<Views.GlobalSearch toggleModal={sappy.hideModal} />);
+            }}
+          >
             <span className="sr-only">Toggle Search</span>
             <i className="icon md-search" aria-hidden="true" />
           </button>

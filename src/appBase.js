@@ -9,6 +9,8 @@ import "sweetalert2/dist/sweetalert2.css";
 
 import ReactAudioPlayer from "react-audio-player";
 import { setTimeout } from "timers";
+import EditModalProdutos from "./views/Produtos/EditModal";
+import EditModalParceiros from "./views/Parceiros/EditModal";
 
 swal.setDefaults({
   reverseButtons: true,
@@ -78,10 +80,13 @@ class appBase extends Component {
     };
   }
 
-  GetLinkUrl(objType, docEntry) {
+  GetLinkUrl(objType, objKey) {
     if (!objType) return "";
-    if (!docEntry) return "";
+    if (!objKey) return "";
     let url = "";
+    if (objType.toString() === "2") url = "popup_pns";
+    if (objType.toString() === "4") url = "popup_artigos";
+
     if (objType.toString() === "13") url = "vnd/oinv/doc";
     if (objType.toString() === "14") url = "vnd/orin/doc";
     if (objType.toString() === "15") url = "vnd/odln/doc";
@@ -96,8 +101,9 @@ class appBase extends Component {
 
     return url;
   }
-  GetLinkTo(objType, docEntry) {
-    let url = this.GetLinkUrl(objType, docEntry);
+
+  GetLinkTo(objType, objKey) {
+    let url = this.GetLinkUrl(objType, objKey);
     if (!url)
       return (
         <span>
@@ -106,13 +112,13 @@ class appBase extends Component {
       );
     return (
       <span>
-        <i className="icon fa-arrow-circle-right" aria-hidden="true" onClick={e => sappy.LinkTo(objType, docEntry)} />{" "}
+        <i className="icon fa-arrow-circle-right" aria-hidden="true" onClick={e => sappy.LinkTo(objType, objKey)} />{" "}
       </span>
     );
   }
 
-  LinkTo(objType, docEntry) {
-    let url = this.GetLinkUrl(objType, docEntry);
+  LinkTo(objType, objKey) {
+    let url = this.GetLinkUrl(objType, objKey);
     if (!url) {
       return sappy.showToastr({
         color: "info",
@@ -120,8 +126,12 @@ class appBase extends Component {
         title: "Ainda não disponivel"
       });
     }
+
+    if (sappy.getNum(objType) === 2) return sappy.showModal(<EditModalParceiros toggleModal={sappy.hideModal} cardCode={objKey} />);
+    if (sappy.getNum(objType) === 4) return sappy.showModal(<EditModalProdutos toggleModal={sappy.hideModal} itemcode={objKey} />);
+
     sappy.hideModals();
-    hashHistory.push({ pathname: url, state: { DocEntry: docEntry } });
+    hashHistory.push({ pathname: url, state: { DocEntry: objKey } });
   }
 
   showModal(modal) {

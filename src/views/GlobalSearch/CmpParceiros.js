@@ -8,27 +8,6 @@ const $ = window.$;
 const sappy = window.sappy;
 
 class CmpParceiros extends Component {
-  constructor(props) {
-    super(props);
-    this.handleRowClick = this.handleRowClick.bind(this);
-
-    this.state = {};
-  }
-
-  handleRowClick(e) {
-    var vrow = $(e.target).closest(".byusVirtualRow")[0];
-    let id = vrow.id;
-    let cardcode = id.split("_")[1];
-
-    if (cardcode.indexOf("DRAFT") > -1) {
-      this.setState({
-        currentModal: <EditNewModal toggleModal={this.toggleModal} changeCardCode={cardcode} />
-      });
-    } else {
-      sappy.showModal(<EditModal toggleModal={sappy.hideModal} cardcode={cardcode} />);
-    }
-  }
-
   render() {
     let that = this;
 
@@ -70,11 +49,12 @@ class CmpParceiros extends Component {
       if (row.OnHand < 0) rowStyleClass = "artigo-sem-stock";
       if (row.frozenFor === "Y") rowStyleClass = "artigo-inativo";
       return (
-        <div className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={this.handleRowClick} id={rowId}>
+        <div className={"byusVirtualRow vertical-align " + rowStyleClass} id={rowId}>
           <div className="container vertical-align-middle">
             {/*large displays*/}
             <div className="row hidden-lg-down">
               <div className="col-2">
+                {sappy.GetLinkTo("2", row.CardCode)}
                 {row.CardCode}
               </div>
               <div className="col-6">
@@ -82,13 +62,13 @@ class CmpParceiros extends Component {
               </div>
               <div className="col-2" id={rowId + "prc"}>
                 <span className="float-right">
-                  {row.FORMATED_PRICE}
+                  {/* {row.FORMATED_PRICE} */}
                 </span>
               </div>
 
               <div className="col-2 lastcol" id={rowId + "stk"}>
                 <span className="float-right">
-                  {sappy.format.quantity(row.OnHand, 0) + " " + row.InvntryUom}
+                  {/* {sappy.format.quantity(row.OnHand, 0) + " " + row.InvntryUom} */}
                 </span>
               </div>
             </div>
@@ -105,12 +85,12 @@ class CmpParceiros extends Component {
                 </div>
                 <div className="col-3 text-nowrap">
                   <span className="float-right">
-                    {row.FORMATED_PRICE}
+                    {/* {row.FORMATED_PRICE} */}
                   </span>
                 </div>
                 <div className="col-3 text-nowrap lastcol">
                   <span className="float-right">
-                    {sappy.format.quantity(row.OnHand, 0)} Un
+                    {/* {sappy.format.quantity(row.OnHand, 0)} Un */}
                   </span>
                 </div>
               </div>
@@ -122,7 +102,7 @@ class CmpParceiros extends Component {
 
     return (
       <GlobalSearchPage
-        noAutoFocus
+        onTabStatusUpdate={newState => this.props.onTabStatusUpdate("parceiros", newState)}
         searchTags={this.props.searchTags}
         searchText={this.props.searchText}
         searchApiUrl={this.props.searchApiUrl}
@@ -133,5 +113,7 @@ class CmpParceiros extends Component {
     );
   }
 }
-
+CmpParceiros.defaultProps = {
+  onTabStatusUpdate: newState => {}
+};
 export default CmpParceiros;

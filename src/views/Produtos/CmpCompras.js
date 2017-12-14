@@ -30,6 +30,7 @@ class CmpCompras extends Component {
                 {row.DESCDOC + " " + row.DocNum}
               </div>
               <div className="col-5 text-truncate" title={row.CardCode + " - " + row.CardName}>
+                {sappy.GetLinkTo("2", row.CardCode)}
                 {row.CardCode + " - " + row.CardName}
               </div>
               <div className="col-2 text-nowrap">

@@ -574,11 +574,11 @@ class ModalCreateArtigo extends Component {
               name="Propriedades"
               multi={true}
               value={this.state.Propriedades}
-              getOptionsApiRoute="/api/cbo/oitg"
+              getOptionsApiRoute="/api/cbo/ocqg"
               onChange={this.onFieldChange}
             />
 
-            <TextBox type="textarea" name="User_Text" label="Observações:" placeholder="Observações..." value={this.state.newItem.User_Text} onChange={this.onFieldChange} />
+            <TextBox type="textarea" name="Free_Text" label="Observações:" placeholder="Observações..." value={this.state.newItem.Free_Text} onChange={this.onFieldChange} />
           </div>
           <div className="col-lg-6">
             <h5 className="section-title">Compra</h5>
