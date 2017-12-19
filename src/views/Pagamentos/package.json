@@ -1,0 +1,6 @@
+{
+  "name": "Pagamentos",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./Pagamentos.js"
+}

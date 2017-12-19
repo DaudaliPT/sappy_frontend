@@ -7,6 +7,7 @@ let Views = {
   LandingPages: require("./LandingPages").default,
   Precos: require("./Precos").default,
   Parceiros: require("./Parceiros").default,
+  Pagamentos: require("./Pagamentos").default,
   Produtos: require("./Produtos").default,
   Promocoes: require("./Promocoes"),
   Reports: require("./Reports").default,
