@@ -19,7 +19,6 @@ class CmpPorPagar extends Component {
     this.handleDocRefresh = this.handleDocRefresh.bind(this);
     this.createReceiptOrPayment = this.createReceiptOrPayment.bind(this);
     this.handlePrintDoc = this.handlePrintDoc.bind(this);
-    this.setClass = this.setClass.bind(this);
 
     this.state = {
       selectedPN: "",
@@ -36,26 +35,6 @@ class CmpPorPagar extends Component {
       settings: sappy.getSettings(["FIN.CC.CAIXA_PRINCIPAL", "FIN.CC.MULTIBANCO"])
     });
   }
-
-  // componentDidMount() {
-  //     let that = this;
-  //     $(window.document).on("keydown", function (e) {
-  //         console.log(e)
-  //         that.setState({
-  //             shiftKey: e.shiftKey, ctrlKey: e.ctrlKey
-  //         });
-  //     });
-  //     $(window.document).on("keyup", function (e) {
-  //         that.setState({
-  //             shiftKey: e.shiftKey, ctrlKey: e.ctrlKey
-  //         });
-  //     });
-  // }
-
-  // componentWillUnmount() {
-  //     $(window.document).off("keydown");
-  //     $(window.document).off("keyup");
-  // }
 
   handlePNselection(e, row) {
     var rowDiv = $(e.target).closest(".byusVirtualRow")[0];
@@ -226,30 +205,6 @@ class CmpPorPagar extends Component {
     invokeAddDocAPI();
   }
 
-  setClass(docClass) {
-    let that = this;
-
-    let docs = [];
-
-    this.state.selectedDocKeys.forEach(docId => {
-      docs.push({
-        transId: docId.split("#")[0],
-        lineId: docId.split("#")[1]
-      });
-    });
-
-    sappy.showWaitProgress("A classificar documentos...");
-    axios
-      .post(`/api/caixa/pagar/update?class=${docClass}`, docs)
-      .then(result => {
-        sappy.hideWaitProgress();
-        //forçar refresh
-        let selectedPN = that.state.selectedPN;
-        that.setState({ selectedPN: "", selectedDocKeys: [] }, () => setTimeout(that.setState({ selectedPN }), 1));
-      })
-      .catch(error => sappy.showError(error, "Não foi possivel atualizar classificação"));
-  }
-
   render() {
     let { selectedPN, selectedPNname, selectedDocKeys } = this.state;
     let docsList = [];
@@ -258,15 +213,11 @@ class CmpPorPagar extends Component {
     }
 
     let totalOfSelectedDocs = 0;
-    let countC = 0;
-    let countD = 0;
 
     // É importante preservar a ordem de seleção para o caso de pagamento parciais
     let selectedDocs = selectedDocKeys.map(docKey => docsList.find(doc => doc.TRANSID_AND_LINEID === docKey));
     selectedDocs.forEach(doc => {
       totalOfSelectedDocs += sappy.getNum(doc.BALANCE);
-      countC += doc.U_apyCLASS === "C" ? 1 : 0;
-      countD += doc.U_apyCLASS === "D" ? 1 : 0;
     });
 
     let renderRowPN = ({ row, index }) => {
@@ -343,29 +294,6 @@ class CmpPorPagar extends Component {
       fixedActions: getfixedActions(),
 
       actions: [
-        // { name: "Multibanco", color: "primary", icon: "icon fa-flash", visible: true, onClick: e => alert("teste"), showAtLeft: true },
-        // { name: "Numerário", color: "primary", icon: "icon fa-flash", visible: true, onClick: e => alert("teste"), showAtLeft: true },
-        {
-          name: "Nenhuma",
-          color: "default",
-          icon: "icon fa-close",
-          visible: countC || countD,
-          onClick: e => this.setClass("N")
-        },
-        {
-          name: "Conta Corrente",
-          color: "warning",
-          icon: "icon fa-warning",
-          visible: countC !== selectedDocKeys.length,
-          onClick: e => this.setClass("C")
-        },
-        {
-          name: "Distribuição",
-          color: "primary",
-          icon: "icon fa-truck",
-          visible: countD !== selectedDocKeys.length,
-          onClick: e => this.setClass("D")
-        },
         {
           name: "PagarOuPagar",
           content: (
@@ -405,21 +333,21 @@ class CmpPorPagar extends Component {
     return (
       <div>
         <div className="row">
-          <div className="col-6">
+          <div className="col-4">
             <SearchPage
               ref={node => (this.pnComponent = node)}
               searchApiUrl={`/api/caixa/pagar/pn`}
               autoRefreshTime={5000}
               renderRow={renderRowPN}
-              placeholder={"Pesquisar o cliente"}
+              placeholder={"Pesquisar o fornecedor"}
               renderRowHeight={50}
             />
           </div>
-          <div className="col-6">
+          <div className="col-8">
             <SearchPage2
               ref={node => (this.docsComponent = node)}
               searchApiUrl={`/api/caixa/pagar/docs?cardcode=${selectedPN}`}
-              noRecordsMessage="Selecione primeiro um cliente"
+              noRecordsMessage="Selecione primeiro um fornecedor"
               onRefresh={this.handleDocRefresh}
               renderRowHeight={35}
               rowKey="TRANSID_AND_LINEID"
@@ -428,6 +356,7 @@ class CmpPorPagar extends Component {
               height={this.props.height}
               fields={[
                 { name: "REFDATE", label: "Data", type: "date", width: 80, editable: false },
+                { name: "DUEDATE", label: "Venc", type: "date", width: 80, editable: false },
                 {
                   name: "DOCUMENTO",
                   label: "Documento",

@@ -176,7 +176,7 @@ class CmpUltPagamentos extends Component {
       <div>
         <div className="row">
           <div className="col-12">
-            <SearchPage ref={node => (this.pnComponent = node)} searchApiUrl={`/api/caixa/recebimentos`} renderRow={renderRowPN} renderRowHeight={50} />
+            <SearchPage ref={node => (this.pnComponent = node)} searchApiUrl={`/api/caixa/pagamentos`} renderRow={renderRowPN} renderRowHeight={50} />
           </div>
         </div>
         <CmpFooter {...footerProps} />

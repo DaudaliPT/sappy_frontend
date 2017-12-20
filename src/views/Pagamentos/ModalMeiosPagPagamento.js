@@ -327,7 +327,7 @@ class ModalMeiosPagPagamento extends Component {
 
     let invokeAddDocAPI = () => {
       let data = {
-        DocType: "rCustomer",
+        DocType: "rSupplier",
         CardCode: this.props.selectedPN,
         CashAccount: this.state.settings["FIN.CC.CAIXA_PRINCIPAL"],
         CashSum: sappy.getNum(this.state.ValorNumerario) - sappy.getNum(this.state.troco),
