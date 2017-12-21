@@ -8,7 +8,7 @@ import SearchPage2 from "../../components/SearchPage2";
 const sappy = window.sappy;
 const $ = window.$;
 import CmpFooter from "./CmpFooter";
-import ModalMeiosPagPagamento from "./ModalMeiosPagPagamento";
+import ModalMeiosPagPagamento from "../CaixaCentral/ModalMeiosPagPagamento";
 
 class CmpPorPagar extends Component {
   constructor(props) {
@@ -298,13 +298,13 @@ class CmpPorPagar extends Component {
           name: "PagarOuPagar",
           content: (
             <span>
-              {totalOfSelectedDocs > 0 ? "Pagar " : "Pagar "}
+              {totalOfSelectedDocs > 0 ? "Receber " : "Pagar "}
               <strong>
                 {sappy.format.amount(Math.abs(totalOfSelectedDocs))}
               </strong>
             </span>
           ),
-          color: totalOfSelectedDocs > 0 ? "success" : "danger",
+          color: totalOfSelectedDocs > 0 ? "danger" : "success",
           icon: "icon fa-check",
           visible: totalOfSelectedDocs !== 0,
           onClick: e => {
@@ -320,6 +320,7 @@ class CmpPorPagar extends Component {
                   sappy.hideModal();
                 }}
                 selectedPN={selectedPN}
+                selectedPNType="S"
                 selectedPNname={selectedPNname}
                 selectedDocs={selectedDocs}
                 totalPagar={totalOfSelectedDocs}

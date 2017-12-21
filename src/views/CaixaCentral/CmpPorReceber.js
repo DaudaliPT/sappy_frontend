@@ -293,7 +293,9 @@ class CmpPorReceber extends Component {
                 {descDocs}
               </div>
               <div className="col-6 text-nowrap lastcol">
-                <span className="float-right">{sappy.format.amount(row.TOTAL_BALANCE)}</span>
+                <span className="float-right">
+                  {sappy.format.amount(row.TOTAL_BALANCE)}
+                </span>
               </div>
             </div>
           </div>
@@ -390,6 +392,7 @@ class CmpPorReceber extends Component {
                   sappy.hideModal();
                 }}
                 selectedPN={selectedPN}
+                selectedPNType="C"
                 selectedPNname={selectedPNname}
                 selectedDocs={selectedDocs}
                 totalPagar={totalOfSelectedDocs}

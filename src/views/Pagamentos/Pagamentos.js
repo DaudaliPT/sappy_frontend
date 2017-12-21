@@ -53,7 +53,7 @@ class Pagamentos extends Component {
           <div className="row">
             <div className="col-md-9    px-md-15 px-0">
               <p className="page-title">
-                Caixa Central - {this.state.activeTab}
+                Pagamentos - {this.state.activeTab}
               </p>
             </div>
             <div className="col-md-3    px-md-15 px-0">

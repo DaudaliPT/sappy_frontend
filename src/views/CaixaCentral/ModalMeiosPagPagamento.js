@@ -288,7 +288,8 @@ class ModalMeiosPagPagamento extends Component {
       state.cheques.forEach((cheque, ix) => {
         if (sappy.getNum(cheque.valor)) {
           if (!cheque.data) alerts["cheques#" + ix + "data"] = "danger|Data em falta";
-          if (!cheque.banco) alerts["cheques#" + ix + "banco"] = "danger|Deve preencher o banco";
+          if (!this.state.isPayment && !cheque.banco) alerts["cheques#" + ix + "banco"] = "danger|Deve preencher o banco";
+          if (this.state.isPayment && !cheque.contabnc) alerts["cheques#" + ix + "contabnc"] = "danger|Deve preencher a conta";
           if (!cheque.numero) alerts["cheques#" + ix + "numero"] = "danger|Numero em falta";
         }
       });
@@ -326,8 +327,10 @@ class ModalMeiosPagPagamento extends Component {
     let strDocDesc = this.state.isPayment ? "pagamento" : "recebimento";
 
     let invokeAddDocAPI = () => {
+      let DocType = this.props.selectedPNType === "C" ? "rCustomer" : "rSupplier";
+
       let data = {
-        DocType: "rCustomer",
+        DocType,
         CardCode: this.props.selectedPN,
         CashAccount: this.state.settings["FIN.CC.CAIXA_PRINCIPAL"],
         CashSum: sappy.getNum(this.state.ValorNumerario) - sappy.getNum(this.state.troco),
@@ -365,12 +368,31 @@ class ModalMeiosPagPagamento extends Component {
 
       this.state.cheques.forEach(cheque => {
         if (sappy.getNum(cheque.valor) > 0) {
-          data.PaymentChecks.push({
-            DueDate: sappy.format.YYYY_MM_DD(cheque.data),
-            CheckNumber: cheque.numero,
-            BankCode: cheque.banco,
-            CheckSum: sappy.getNum(cheque.valor)
-          });
+          if (!this.state.isPayment) {
+            data.PaymentChecks.push({
+              DueDate: sappy.format.YYYY_MM_DD(cheque.data),
+              CheckNumber: cheque.numero,
+              BankCode: cheque.banco,
+              CheckSum: sappy.getNum(cheque.valor)
+            });
+          } else {
+            let contabnc = cheque.contabnc || "";
+            let BankCode = contabnc.split("|")[0];
+            let CountryCode = contabnc.split("|")[1];
+            let AccounttNum = contabnc.split("|")[2];
+            let CheckAccount = contabnc.split("|")[3];
+
+            data.PaymentChecks.push({
+              DueDate: sappy.format.YYYY_MM_DD(cheque.data),
+              CheckNumber: cheque.numero,
+              CheckSum: sappy.getNum(cheque.valor),
+              CountryCode,
+              BankCode,
+              AccounttNum,
+              CheckAccount,
+              ManualCheck: "tYES"
+            });
+          }
         }
       });
 
@@ -618,14 +640,24 @@ class ModalMeiosPagPagamento extends Component {
               <Date label={ix === 0 ? "Data" : ""} name={"cheques#" + ix + "#data"} value={cheque.data} state={alerts["cheques#" + ix + "data"]} onChange={this.onFieldChange} />
             </div>
             <div className="col-4 pl-1 pr-1">
-              <ComboBox
-                label={ix === 0 ? "Banco" : ""}
-                name={"cheques#" + ix + "#banco"}
-                value={cheque.banco}
-                state={alerts["cheques#" + ix + "banco"]}
-                getOptionsApiRoute="/api/cbo/odsc"
-                onChange={this.onFieldChange}
-              />
+              {!this.state.isPayment &&
+                <ComboBox
+                  label={ix === 0 ? "Banco" : ""}
+                  name={"cheques#" + ix + "#banco"}
+                  value={cheque.banco}
+                  state={alerts["cheques#" + ix + "banco"]}
+                  getOptionsApiRoute="/api/cbo/odsc"
+                  onChange={this.onFieldChange}
+                />}
+              {this.state.isPayment &&
+                <ComboBox
+                  label={ix === 0 ? "Conta" : ""}
+                  name={"cheques#" + ix + "#contabnc"}
+                  value={cheque.contabnc}
+                  state={alerts["cheques#" + ix + "contabnc"]}
+                  getOptionsApiRoute="/api/cbo/dsc1"
+                  onChange={this.onFieldChange}
+                />}
             </div>
             <div className="col-2 pl-1 pr-1">
               <TextBoxNumeric
