@@ -17,7 +17,6 @@ class CmpPorPagar extends Component {
     this.handlePNselection = this.handlePNselection.bind(this);
     this.handleDetailRowSelect = this.handleDetailRowSelect.bind(this);
     this.handleDocRefresh = this.handleDocRefresh.bind(this);
-    this.createReceiptOrPayment = this.createReceiptOrPayment.bind(this);
     this.handlePrintDoc = this.handlePrintDoc.bind(this);
 
     this.state = {
@@ -102,109 +101,6 @@ class CmpPorPagar extends Component {
     });
   }
 
-  createReceiptOrPayment(meioPag) {
-    let that = this;
-
-    let invokeAddDocAPI = () => {
-      let selectedPN = this.state.selectedPN;
-      let docsList = [];
-      if (this.docsComponent) docsList = this.docsComponent.state.listItems;
-      let totalOfSelectedDocs = 0;
-      let selectedDocs = docsList.filter(doc => this.state.selectedDocKeys.indexOf(doc.TRANSID_AND_LINEID) > -1);
-
-      let data = {
-        DocType: "rCustomer",
-        CardCode: selectedPN,
-        PaymentInvoices: []
-      };
-      selectedDocs.forEach(doc => {
-        let InvoiceType = "";
-        let transType = sappy.getNum(doc.TransType);
-        if (transType === -3) InvoiceType = "it_ClosingBalance";
-        else if (transType === -1) InvoiceType = "it_AllTransactions";
-        else if (transType === -2) InvoiceType = "it_OpeningBalance";
-        else if (transType === 13) InvoiceType = "it_Invoice";
-        else if (transType === 14) InvoiceType = "it_CredItnote";
-        else if (transType === 15) InvoiceType = "it_TaxInvoice";
-        else if (transType === 16) InvoiceType = "it_Return";
-        else if (transType === 18) InvoiceType = "it_PurchaseInvoice";
-        else if (transType === 19) InvoiceType = "it_PurchaseCreditNote";
-        else if (transType === 20) InvoiceType = "it_PurchaseDeliveryNote";
-        else if (transType === 21) InvoiceType = "it_PurchaseReturn";
-        else if (transType === 24) InvoiceType = "it_Receipt";
-        else if (transType === 25) InvoiceType = "it_Deposit";
-        else if (transType === 30) InvoiceType = "it_JournalEntry";
-        else if (transType === 46) InvoiceType = "it_PaymentAdvice";
-        else if (transType === 57) InvoiceType = "it_ChequesForPayment";
-        else if (transType === 58) InvoiceType = "it_StockReconciliations";
-        else if (transType === 59) InvoiceType = "it_GeneralReceiptToStock";
-        else if (transType === 60) InvoiceType = "it_GeneralReleaseFromStock";
-        else if (transType === 67) InvoiceType = "it_TransferBetweenWarehouses";
-        else if (transType === 68) InvoiceType = "it_WorkInstructions";
-        else if (transType === 76) InvoiceType = "it_DeferredDeposit";
-        else if (transType === 132) InvoiceType = "it_CorrectionInvoice ";
-        else if (transType === 163) InvoiceType = "it_APCorrectionInvoice ";
-        else if (transType === 165) InvoiceType = "it_ARCorrectionInvoice ";
-        else if (transType === 203) InvoiceType = "it_DownPayment ";
-        else if (transType === 204) InvoiceType = "it_PurchaseDownPayment ";
-
-        totalOfSelectedDocs += sappy.getNum(doc.BALANCE);
-
-        if (sappy.getNum(doc.TransType) !== 24 && sappy.getNum(doc.TransType) !== 46) {
-          data.PaymentInvoices.push({
-            DocEntry: doc.CreatedBy,
-            InvoiceType,
-            PaidSum: doc.BALANCE
-          });
-        } else {
-          data.PaymentInvoices.push({
-            DocEntry: doc.TransId,
-            DocLine: doc.Line_ID,
-            InvoiceType,
-            PaidSum: doc.BALANCE
-          });
-        }
-      });
-
-      let strDocDesc = "recebimento";
-      let url = `/api/caixa/pagar/receipt`;
-      if (totalOfSelectedDocs < 0) {
-        strDocDesc = "pagamento";
-        totalOfSelectedDocs *= -1;
-        url = `/api/caixa/pagar/payment`;
-      }
-
-      if (meioPag === "Numerario") {
-        data.CashSum = totalOfSelectedDocs;
-        data.CashAccount = that.state.settings["FIN.CC.CAIXA_PRINCIPAL"];
-      } else if (meioPag === "Multibanco") {
-        data.TransferSum = totalOfSelectedDocs;
-        data.TransferAccount = that.state.settings["FIN.CC.MULTIBANCO"];
-        data.TransferReference = "MB";
-      } else {
-        return sappy.showError({ message: meioPag + " não reconhecido!" });
-      }
-
-      sappy.showWaitProgress("A criar documento...");
-      axios
-        .post(url, data)
-        .then(result => {
-          sappy.hideWaitProgress();
-          sappy.showToastr({
-            color: "success",
-            msg: `Criou com sucesso o ${strDocDesc} ${result.data.DocNum} no valor de ${sappy.format.amount(totalOfSelectedDocs)}, de ${this.state.selectedPNname}!`
-          });
-
-          //forçar refresh
-          let selectedPN = that.state.selectedPN;
-          that.setState({ selectedPN: "", selectedDocKeys: [] }, () => setTimeout(that.setState({ selectedPN }), 1));
-        })
-        .catch(error => sappy.showError(error, "Não foi possivel adicionar o documento"));
-    };
-
-    invokeAddDocAPI();
-  }
-
   render() {
     let { selectedPN, selectedPNname, selectedDocKeys } = this.state;
     let docsList = [];
@@ -270,20 +166,6 @@ class CmpPorPagar extends Component {
           color: "primary",
           icon: "icon fa-print",
           onClick: e => this.handlePrintDoc()
-        },
-        {
-          name: "Númerario",
-          visible: currentShowActions,
-          color: "success",
-          icon: "icon fa-money",
-          onClick: e => this.createReceiptOrPayment("Numerario")
-        },
-        {
-          name: "Multibanco",
-          visible: currentShowActions,
-          color: "success",
-          icon: "icon fa-credit-card",
-          onClick: e => this.createReceiptOrPayment("Multibanco")
         }
       ];
 
