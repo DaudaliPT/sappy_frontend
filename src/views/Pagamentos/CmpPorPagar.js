@@ -102,6 +102,7 @@ class CmpPorPagar extends Component {
   }
 
   render() {
+    let that = this;
     let { selectedPN, selectedPNname, selectedDocKeys } = this.state;
     let docsList = [];
     if (this.docsComponent) {
@@ -113,7 +114,7 @@ class CmpPorPagar extends Component {
     // É importante preservar a ordem de seleção para o caso de pagamento parciais
     let selectedDocs = selectedDocKeys.map(docKey => docsList.find(doc => doc.TRANSID_AND_LINEID === docKey));
     selectedDocs.forEach(doc => {
-      totalOfSelectedDocs += sappy.getNum(doc.BALANCE);
+      totalOfSelectedDocs += sappy.getNum(doc.LIQBALANCE);
     });
 
     let renderRowPN = ({ row, index }) => {
@@ -123,9 +124,9 @@ class CmpPorPagar extends Component {
       if (selected) rowStyleClass += " sappy-selected-row";
 
       let descDocs;
-      if (sappy.getNum(row.BALANCE) === sappy.getNum(row.TOTAL_BALANCE)) {
+      if (sappy.getNum(row.LIQBALANCE) === sappy.getNum(row.TOTAL_LIQBALANCE)) {
         descDocs = row.NUMDOCS + " " + (row.NUMDOCS === 1 ? " documento " : " documentos ");
-      } else descDocs = sappy.format.amount(row.BALANCE) + ", " + row.NUMDOCS + " " + (row.NUMDOCS === 1 ? " documento " : " documentos ");
+      } else descDocs = sappy.format.amount(row.LIQBALANCE) + ", " + row.NUMDOCS + " " + (row.NUMDOCS === 1 ? " documento " : " documentos ");
 
       return (
         <div id={"PN_" + row.CARDCODE} className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={e => this.handlePNselection(e, r)}>
@@ -141,7 +142,7 @@ class CmpPorPagar extends Component {
               </div>
               <div className="col-6 text-nowrap lastcol">
                 <span className="float-right">
-                  {sappy.format.amount(row.TOTAL_BALANCE)}
+                  {sappy.format.amount(row.TOTAL_LIQBALANCE)}
                 </span>
               </div>
             </div>
@@ -236,6 +237,28 @@ class CmpPorPagar extends Component {
               rowKey="TRANSID_AND_LINEID"
               onRowSelectionChange={this.handleDetailRowSelect}
               selectedKeys={selectedDocKeys}
+              onValidateUpdate={(currentRow, updated) => {
+                if (updated.hasOwnProperty("UDISC")) {
+                  let p = sappy.parseUserDisc(updated.UDISC);
+                  let totalDisc = sappy.round(sappy.getNum(currentRow.BaseSum) * p.DiscountPercent / 100, 2) + p.DiscountVal * Math.sign(sappy.getNum(currentRow.BaseSum));
+                  // if (p.DiscountPercent) p.RESULT = totalDisc;
+                  updated.UDISC = sappy.formatUserDisc(p);
+                  updated.LIQBALANCE = sappy.getNum(currentRow.BALANCE) - totalDisc;
+                }
+
+                if (updated.hasOwnProperty("UDEBITO")) updated.UDEBITO = sappy.formatUserDisc(sappy.parseUserDisc(updated.UDEBITO));
+
+                setImmediate(() => {
+                  //give time to update row
+                  let sel = that.state.selectedDocKeys;
+                  let docKey = currentRow.TRANSID_AND_LINEID;
+                  if (sel.indexOf(docKey) < 0) {
+                    that.setState({ selectedDocKeys: [...sel, docKey] });
+                  } else {
+                    that.setState({ selectedDocKeys: [...sel] });
+                  }
+                });
+              }}
               height={this.props.height}
               fields={[
                 { name: "REFDATE", label: "Data", type: "date", width: 80, editable: false },
@@ -248,8 +271,20 @@ class CmpPorPagar extends Component {
                   editable: false,
                   onLinkClick: props => sappy.LinkTo(props.dependentValues.TransType, props.dependentValues.CreatedBy)
                 },
-                { name: "DOCTOTAL", label: "Total", type: "amount", width: 60, editable: false },
-                { name: "BALANCE", label: "Em aberto", type: "amount", width: 80, editable: false }
+                // { name: "DOCTOTAL", label: "Total", type: "amount", width: 60, editable: false },
+                // { name: "BaseSum", label: "BaseSum", type: "amount", width: 60, editable: false },
+                { name: "BALANCE", label: "Em aberto", type: "amount", width: 80, editable: false },
+                { name: "UDISC", label: "Desconto", type: "discount", width: 60, editable: true },
+                { name: "LIQBALANCE", label: "Pagar", type: "amount", width: 80, editable: false },
+                {
+                  name: "CONTRATO",
+                  label: "Contrato",
+                  type: "dropdown",
+                  width: 100,
+                  editable: true,
+                  options: ["", { id: 1, value: "Urbino" }, { id: 4, value: "Nuno" }]
+                },
+                { name: "UDEBITO", label: "Débito", type: "discount", width: 60, editable: true }
               ]}
               groupBy={[{ key: "GRUPO", name: "" }]}
             />

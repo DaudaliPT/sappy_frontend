@@ -6,7 +6,12 @@ import HeaderAlignRight from "./HeaderAlignRight";
 import Formatters from "./Formatters";
 import Editors from "./Editors";
 
-const { ToolsPanel: { AdvancedToolbar, GroupedColumnsPanel }, Data: { Selectors }, Draggable } = require("react-data-grid/packages/react-data-grid-addons/dist/react-data-grid-addons");
+const {
+  ToolsPanel: { AdvancedToolbar, GroupedColumnsPanel },
+  Data: { Selectors },
+  Draggable,
+  Editors: { AutoComplete: AutoCompleteEditor, DropDownEditor }
+} = require("react-data-grid/packages/react-data-grid-addons/dist/react-data-grid-addons");
 
 class DataGrid extends Component {
   constructor(props) {
@@ -189,6 +194,10 @@ class DataGrid extends Component {
         col.formatter = Formatters.VatPercent;
       } else if (field.type === "tags") {
         col.formatter = Formatters.Tags;
+      } else if (field.type === "autocomplete") {
+        col.editor = <AutoCompleteEditor options={field.options} />;
+      } else if (field.type === "dropdown") {
+        col.editor = <DropDownEditor options={field.options} />;
       } else if (field.type.startsWith("check") || field.type.startsWith("switch") || field.type.startsWith("flag")) {
         let parts = field.type.split("|");
         let type = parts[0];

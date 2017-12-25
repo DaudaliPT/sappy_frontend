@@ -17,6 +17,7 @@ class SearchPage2 extends PureComponent {
     this.loadNextPage = this.loadNextPage.bind(this);
     this.handleOnTabSelect = this.handleOnTabSelect.bind(this);
     this.handleOnChange_txtSearch = this.handleOnChange_txtSearch.bind(this);
+    this.handleRowUpdate = this.handleRowUpdate.bind(this);
     // this.calcPageHeight = this.calcPageHeight.bind(this);
     this.handleToogleLimitSearch = this.handleToogleLimitSearch.bind(this);
     this.getGrid = this.getGrid.bind(this);
@@ -85,6 +86,21 @@ class SearchPage2 extends PureComponent {
         that.findAndGetFirstRows();
       }
     );
+  }
+
+  handleRowUpdate(currentRow, updated) {
+    if (this.props.onValidateUpdate) this.props.onValidateUpdate(currentRow, updated);
+
+    let listItems = [...this.state.listItems];
+    let rowKey = currentRow[this.props.rowKey];
+
+    listItems.forEach((row, ix) => {
+      if (row[this.props.rowKey] === rowKey) {
+        listItems[ix] = { ...row, ...updated };
+      }
+    });
+
+    this.setState({ listItems });
   }
 
   findAndGetFirstRows() {
@@ -208,6 +224,7 @@ class SearchPage2 extends PureComponent {
             rowKey={this.props.rowKey}
             groupBy={this.props.groupBy}
             onRowSelectionChange={this.props.onRowSelectionChange}
+            onRowUpdate={this.handleRowUpdate}
             selectedKeys={this.props.selectedKeys}
             rows={this.state.listItems}
           />}

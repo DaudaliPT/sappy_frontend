@@ -357,6 +357,8 @@ import { isNumber } from "util";
     let UN = [];
     let VAL = [];
 
+    if (value.indexOf("=") > -1) value = value.split("=")[0]; //ignorar o resultado
+
     value.split("+").forEach(part => {
       if (part.indexOf(".") > -1 && part.indexOf(",") > -1) {
         //tem pontos e virgulas, remover o que for o separador de milhares
@@ -416,6 +418,9 @@ import { isNumber } from "util";
       SUC.filter(item => !!item).forEach(DSUC => (formatted += (formatted ? " + " : "") + DSUC.toString().replace(".", sappy.sessionInfo.company.oadm.DecSep) + "%"));
       UN.filter(item => !!item).forEach(DUN => (formatted += (formatted ? " + " : "") + sappy.format.price(DUN) + "/un"));
       VAL.filter(item => !!item).forEach(DVAL => (formatted += (formatted ? " + " : "") + sappy.format.amount(DVAL)));
+    }
+    if (parsed.RESULT) {
+      formatted += "=" + sappy.format.amount(parsed.RESULT);
     }
     return formatted;
   };
