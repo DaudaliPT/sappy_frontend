@@ -23,6 +23,7 @@ class CmpPorPagar extends Component {
     this.state = {
       selectedPN: "",
       selectedPNname: "",
+      selectedPNcodeCli: "",
       selectedDocKeys: [],
       shiftKey: false,
       ctrlKey: false,
@@ -40,16 +41,18 @@ class CmpPorPagar extends Component {
     var rowDiv = $(e.target).closest(".byusVirtualRow")[0];
 
     let cardCode = rowDiv.id.split("_")[1];
-    let { selectedPN, selectedPNname } = this.state;
+    let { selectedPN, selectedPNname, selectedPNcodeCli } = this.state;
     if (selectedPN === cardCode) {
       selectedPN = "";
       selectedPNname = "";
+      selectedPNcodeCli = "";
     } else {
       selectedPN = cardCode;
       selectedPNname = row.CARDNAME;
+      selectedPNcodeCli = row.U_apyCLIENTE;
     }
 
-    this.setState({ selectedPN, selectedPNname, selectedDocKeys: [] });
+    this.setState({ selectedPN, selectedPNname, selectedPNcodeCli, selectedDocKeys: [] });
   }
 
   handleDetailRowSelect(selectedDocKeys) {
@@ -104,7 +107,7 @@ class CmpPorPagar extends Component {
 
   render() {
     let that = this;
-    let { selectedPN, selectedPNname, selectedDocKeys } = this.state;
+    let { selectedPN, selectedPNname, selectedPNcodeCli, selectedDocKeys } = this.state;
     let docsList = [];
     if (this.docsComponent) {
       docsList = this.docsComponent.state.listItems;
@@ -206,6 +209,7 @@ class CmpPorPagar extends Component {
                 selectedPN={selectedPN}
                 selectedPNType="S"
                 selectedPNname={selectedPNname}
+                selectedPNcodeCli={selectedPNcodeCli}
                 selectedDocs={selectedDocs}
                 totalPagar={totalOfSelectedDocs}
               />
@@ -214,6 +218,38 @@ class CmpPorPagar extends Component {
         }
       ]
     };
+
+    let gridFields = [
+      { name: "REFDATE", label: "Data", type: "date", width: 80, editable: false },
+      { name: "DUEDATE", label: "Venc", type: "date", width: 80, editable: false },
+      {
+        name: "DOCUMENTO",
+        label: "Documento",
+        type: "text",
+        width: 120,
+        editable: false,
+        onLinkClick: props => sappy.LinkTo(props.dependentValues.TransType, props.dependentValues.CreatedBy)
+      },
+      { name: "BALANCE", label: "Em aberto", type: "amount", width: 80, editable: false },
+      {
+        name: "CONTRATO_DESC",
+        label: "Contrato",
+        type: "more|danger",
+        width: 45,
+        editable: true,
+        popbox: {
+          placement: "bottom",
+          render: ({ context }) => <DocDetailMore {...context} />
+        }
+      },
+      { name: "UDISC", label: "D%", type: "discount", width: 35, editable: true },
+      { name: "LIQBALANCE", label: "Pagar", type: "amount", width: 80, editable: false },
+      // { name: "DOCTOTAL", label: "Total", type: "amount", width: 60, editable: false },
+      { name: "BaseSum", label: "BaseSum", type: "amount", width: 60, editable: false }
+      // { name: "CONTRATO", label: "Contrato", type: "text", width: 100, editable: true },
+      // { name: "DEBITO", label: "Débito", type: "amount", width: 60, editable: true },
+    ];
+    if (selectedPNcodeCli) gridFields.push({ name: "UDEBITO", label: "Débito", type: "discount", width: 60, editable: true });
 
     return (
       <div>
@@ -268,37 +304,7 @@ class CmpPorPagar extends Component {
                 });
               }}
               height={this.props.height}
-              fields={[
-                { name: "REFDATE", label: "Data", type: "date", width: 80, editable: false },
-                { name: "DUEDATE", label: "Venc", type: "date", width: 80, editable: false },
-                {
-                  name: "DOCUMENTO",
-                  label: "Documento",
-                  type: "text",
-                  width: 120,
-                  editable: false,
-                  onLinkClick: props => sappy.LinkTo(props.dependentValues.TransType, props.dependentValues.CreatedBy)
-                },
-                // { name: "DOCTOTAL", label: "Total", type: "amount", width: 60, editable: false },
-                // { name: "BaseSum", label: "BaseSum", type: "amount", width: 60, editable: false },
-                { name: "BALANCE", label: "Em aberto", type: "amount", width: 80, editable: false },
-                {
-                  name: "CONTRATO_DESC",
-                  label: "Contrato",
-                  type: "more|danger",
-                  width: 45,
-                  editable: true,
-                  popbox: {
-                    placement: "bottom",
-                    render: ({ context }) => <DocDetailMore {...context} />
-                  }
-                },
-                // { name: "CONTRATO", label: "Contrato", type: "text", width: 100, editable: true },
-                { name: "UDISC", label: "D%", type: "discount", width: 35, editable: true },
-                { name: "UDEBITO", label: "Débito", type: "discount", width: 60, editable: true },
-                // { name: "DEBITO", label: "Débito", type: "amount", width: 60, editable: true },
-                { name: "LIQBALANCE", label: "Pagar", type: "amount", width: 80, editable: false }
-              ]}
+              fields={gridFields}
               groupBy={[{ key: "GRUPO", name: "" }]}
             />
           </div>
