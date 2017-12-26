@@ -9,7 +9,7 @@ import DocDetailMore from "./DocDetailMore";
 const sappy = window.sappy;
 const $ = window.$;
 import CmpFooter from "./CmpFooter";
-import ModalMeiosPagPagamento from "../CaixaCentral/ModalMeiosPagPagamento";
+import ModalMeiosPagPagamento from "./ModalMeiosPagPagamento";
 
 class CmpPorPagar extends Component {
   constructor(props) {

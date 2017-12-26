@@ -15,7 +15,7 @@ class CmpUltPagamentos extends Component {
   constructor(props) {
     super(props);
 
-    this.cancelarRecebimento = this.cancelarRecebimento.bind(this);
+    this.cancelarPagamento = this.cancelarPagamento.bind(this);
 
     this.state = { selectedRowId: "", selectedRow: {} };
   }
@@ -33,14 +33,14 @@ class CmpUltPagamentos extends Component {
     this.setState({ selectedRowId, selectedRow: row, showActions: false });
   }
 
-  cancelarRecebimento() {
+  cancelarPagamento() {
     let that = this;
     let { selectedRowId } = this.state;
     let docEntry = selectedRowId.split("_")[1];
 
     sappy.showSwal({
       input: "select",
-      msg: `Porque deseja cancelar este recebimento?`,
+      msg: `Porque deseja cancelar este pagamento?`,
       type: "question",
       inputPlaceholder: "Selecione o motivo...",
       inputOptions: {
@@ -57,12 +57,12 @@ class CmpUltPagamentos extends Component {
       showCancelButton: true,
       onConfirm: value => {
         sappy.showSwal({
-          title: "Cancelar recebimento?",
+          title: "Cancelar pagamento?",
           type: "warning",
           confirmStyle: "warning",
-          confirmText: "Cancelar Recebimento",
+          confirmText: "Cancelar Pagamento",
           input: value === "other" ? "text" : null,
-          moreInfo: `Se continuar irá cancelar este recebimento.`,
+          moreInfo: `Se continuar irá cancelar este pagamento.`,
           inputPlaceholder: "Escreva o outro motivo...",
           inputValidator: function(value) {
             return new Promise(function(resolve, reject) {
@@ -77,7 +77,7 @@ class CmpUltPagamentos extends Component {
             sappy.showWaitProgress("A cancelar documento...");
 
             axios
-              .post(`/api/caixa/recebimentos/${docEntry}/cancel`, { reason })
+              .post(`/api/caixa/pagamentos/${docEntry}/cancel`, { reason })
               .then(result => {
                 sappy.hideWaitProgress();
                 sappy.showToastr({
@@ -87,7 +87,7 @@ class CmpUltPagamentos extends Component {
 
                 that.setState({ selectedRowId: "", showActions: false }, e => that.pnComponent.findAndGetFirstRows());
               })
-              .catch(error => sappy.showError(error, "Não foi possivel cancelar o recebimento"));
+              .catch(error => sappy.showError(error, "Não foi possivel cancelar o pagamento"));
           }
         });
       }
@@ -158,7 +158,7 @@ class CmpUltPagamentos extends Component {
           visible: showActions,
           color: "warning",
           icon: "icon fa-window-close",
-          onClick: this.cancelarRecebimento
+          onClick: this.cancelarPagamento
         }
       ];
       return fixedActions;
