@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import SearchPage from "../../components/SearchPage";
 import SearchPage2 from "../../components/SearchPage2";
+import DocDetailMore from "./DocDetailMore";
 
 // import { Badge } from "reactstrap";
 // import uuid from "uuid/v4";
@@ -237,16 +238,23 @@ class CmpPorPagar extends Component {
               rowKey="TRANSID_AND_LINEID"
               onRowSelectionChange={this.handleDetailRowSelect}
               selectedKeys={selectedDocKeys}
-              onValidateUpdate={(currentRow, updated) => {
+              onValidateUpdate={(currentRow, updated, callback) => {
                 if (updated.hasOwnProperty("UDISC")) {
                   let p = sappy.parseUserDisc(updated.UDISC);
                   let totalDisc = sappy.round(sappy.getNum(currentRow.BaseSum) * p.DiscountPercent / 100, 2) + p.DiscountVal * Math.sign(sappy.getNum(currentRow.BaseSum));
-                  // if (p.DiscountPercent) p.RESULT = totalDisc;
                   updated.UDISC = sappy.formatUserDisc(p);
                   updated.LIQBALANCE = sappy.getNum(currentRow.BALANCE) - totalDisc;
                 }
+                if (updated.hasOwnProperty("UDEBITO")) {
+                  let p = sappy.parseUserDisc(updated.UDEBITO);
+                  let debito = sappy.round(sappy.getNum(currentRow.BaseSum) * p.DiscountPercent / 100, 2) + p.DiscountVal * Math.sign(sappy.getNum(currentRow.BaseSum));
+                  updated.UDEBITO = sappy.formatUserDisc(p);
+                  updated.DEBITO = debito;
+                }
 
                 if (updated.hasOwnProperty("UDEBITO")) updated.UDEBITO = sappy.formatUserDisc(sappy.parseUserDisc(updated.UDEBITO));
+
+                callback && callback({ ...currentRow, ...updated });
 
                 setImmediate(() => {
                   //give time to update row
@@ -274,17 +282,22 @@ class CmpPorPagar extends Component {
                 // { name: "DOCTOTAL", label: "Total", type: "amount", width: 60, editable: false },
                 // { name: "BaseSum", label: "BaseSum", type: "amount", width: 60, editable: false },
                 { name: "BALANCE", label: "Em aberto", type: "amount", width: 80, editable: false },
-                { name: "UDISC", label: "Desconto", type: "discount", width: 60, editable: true },
-                { name: "LIQBALANCE", label: "Pagar", type: "amount", width: 80, editable: false },
                 {
-                  name: "CONTRATO",
+                  name: "CONTRATO_DESC",
                   label: "Contrato",
-                  type: "dropdown",
-                  width: 100,
+                  type: "more|danger",
+                  width: 45,
                   editable: true,
-                  options: ["", { id: 1, value: "Urbino" }, { id: 4, value: "Nuno" }]
+                  popbox: {
+                    placement: "bottom",
+                    render: ({ context }) => <DocDetailMore {...context} />
+                  }
                 },
-                { name: "UDEBITO", label: "Débito", type: "discount", width: 60, editable: true }
+                // { name: "CONTRATO", label: "Contrato", type: "text", width: 100, editable: true },
+                { name: "UDISC", label: "D%", type: "discount", width: 35, editable: true },
+                { name: "UDEBITO", label: "Débito", type: "discount", width: 60, editable: true },
+                // { name: "DEBITO", label: "Débito", type: "amount", width: 60, editable: true },
+                { name: "LIQBALANCE", label: "Pagar", type: "amount", width: 80, editable: false }
               ]}
               groupBy={[{ key: "GRUPO", name: "" }]}
             />

@@ -274,10 +274,14 @@ class DataGrid extends Component {
                   rowIdx: args.rowIdx,
                   column: args.column,
                   onChange: changeInfo => {
+                    let updated = { [changeInfo.fieldName]: changeInfo.rawValue };
+                    if (changeInfo.hasOwnProperty("fieldName2")) updated[changeInfo.fieldName2] = changeInfo.rawValue2;
+                    if (changeInfo.hasOwnProperty("fieldName3")) updated[changeInfo.fieldName3] = changeInfo.rawValue3;
+                    if (changeInfo.hasOwnProperty("fieldName4")) updated[changeInfo.fieldName4] = changeInfo.rawValue4;
                     that.handleGridRowsUpdated({
                       fromRow: args.rowIdx,
                       toRow: args.rowIdx,
-                      updated: { [changeInfo.fieldName]: changeInfo.rawValue },
+                      updated,
                       callback: changeInfo.callback
                     });
                   }

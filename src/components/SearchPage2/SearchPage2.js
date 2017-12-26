@@ -88,8 +88,8 @@ class SearchPage2 extends PureComponent {
     );
   }
 
-  handleRowUpdate(currentRow, updated) {
-    if (this.props.onValidateUpdate) this.props.onValidateUpdate(currentRow, updated);
+  handleRowUpdate(currentRow, updated, callback) {
+    if (this.props.onValidateUpdate) this.props.onValidateUpdate(currentRow, updated, callback);
 
     let listItems = [...this.state.listItems];
     let rowKey = currentRow[this.props.rowKey];
@@ -97,9 +97,12 @@ class SearchPage2 extends PureComponent {
     listItems.forEach((row, ix) => {
       if (row[this.props.rowKey] === rowKey) {
         listItems[ix] = { ...row, ...updated };
+        // console.log(listItems[ix]);
+        return;
       }
     });
 
+    // console.log(updated);
     this.setState({ listItems });
   }
 
