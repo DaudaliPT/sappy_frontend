@@ -114,13 +114,13 @@ class CmpPorPagar extends Component {
     }
 
     let totalOfSelectedDocs = 0;
-    let totalOfEncontroContas = 0;
+    // let totalOfEncontroContas = 0;
 
     // É importante preservar a ordem de seleção para o caso de pagamento parciais
     let selectedDocs = selectedDocKeys.map(docKey => docsList.find(doc => doc.TRANSID_AND_LINEID === docKey));
     selectedDocs.forEach(doc => {
       totalOfSelectedDocs += sappy.getNum(doc.LIQBALANCE);
-      if (doc.CardType === "C") totalOfEncontroContas += sappy.getNum(doc.LIQBALANCE);
+      // if (doc.CardType === "C") totalOfEncontroContas += sappy.getNum(doc.LIQBALANCE);
     });
 
     let renderRowPN = ({ row, index }) => {

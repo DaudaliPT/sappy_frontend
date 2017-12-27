@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { TextBox, TextBoxNumeric, ComboBox, Date, Toggle, Flag, Check } from "../../../Inputs";
+import { TextBox, TextBoxNumeric, ComboBox } from "../../../Inputs";
 
-const sappy = window.sappy;
+// const sappy = window.sappy;
 
 class DocDetailMore extends Component {
   constructor(props) {

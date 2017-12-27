@@ -74,7 +74,7 @@ class MenuBar extends Component {
   }
 
   render() {
-    let that = this;
+    // let that = this;
     let sessionInfo = sappy.sessionInfo || {};
     var user = sessionInfo.user || {};
     var company = sessionInfo.company || {};

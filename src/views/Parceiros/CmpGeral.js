@@ -3,7 +3,7 @@ import { Button } from "reactstrap";
 import axios from "axios";
 // var $ = window.$;
 var sappy = window.sappy;
-import { TextBox, TextBoxNumeric, ComboBox, Toggle } from "../../Inputs";
+import { TextBox, ComboBox, Toggle } from "../../Inputs";
 import { hashHistory } from "react-router";
 
 const getInitialState = function(props) {
@@ -69,8 +69,8 @@ class CmpGeral extends Component {
 
   // Recebe os valores dos campos MY*
   onFieldChange(changeInfo) {
-    let that = this;
-    let formatedValue = changeInfo.formatedValue;
+    // let that = this;
+    // let formatedValue = changeInfo.formatedValue;
     let val = changeInfo.rawValue;
     let fieldName = changeInfo.fieldName;
 
@@ -274,7 +274,7 @@ class CmpGeral extends Component {
 
   render() {
     let Item = this.state.Item || {};
-    let ItemBarCodeCollection = Item.ItemBarCodeCollection || [];
+    // let ItemBarCodeCollection = Item.ItemBarCodeCollection || [];
 
     var renderAdresses = () => {
       let ret = [];
@@ -285,7 +285,7 @@ class CmpGeral extends Component {
         let CODES_field = "ADDRESS_" + index + "_CODES";
         let Street_field = "ADDRESS_" + index + "_Street";
         let Block_field = "ADDRESS_" + index + "_Block";
-        let Country_field = "ADDRESS_" + index + "_Country";
+        // let Country_field = "ADDRESS_" + index + "_Country";
         let ZipCode_field = "ADDRESS_" + index + "_ZipCode";
         let City_field = "ADDRESS_" + index + "_City";
 

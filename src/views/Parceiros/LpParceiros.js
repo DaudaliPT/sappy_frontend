@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import axios from "axios";
-import { Popover, PopoverContent } from "reactstrap";
-const sappy = window.sappy;
+// import axios from "axios";
+// import { Popover, PopoverContent } from "reactstrap";
+// const sappy = window.sappy;
 const $ = window.$;
 
 import { Badge } from "reactstrap";
@@ -56,7 +56,7 @@ class Parceiros extends Component {
   }
 
   render() {
-    let that = this;
+    // let that = this;
 
     const renderRow = ({ row, index }) => {
       const badges = row.ITEM_TAGS.split("|");

@@ -217,7 +217,7 @@ class SearchPage extends PureComponent {
 
   render() {
     let { searchTags } = this.props;
-    var { activeTab, tabItems, totalInfo, listItems, rvIsLoading } = this.state;
+    var { activeTab, tabItems, listItems, rvIsLoading } = this.state;
 
     let hasNoContent = rvIsLoading === false && listItems.length === 0 && searchTags.length === 0 && activeTab === Object.keys(tabItems)[0];
 

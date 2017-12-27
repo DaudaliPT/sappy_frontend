@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { Badge } from "reactstrap";
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import axios from "axios";
+// import { Badge } from "reactstrap";
+import { Modal } from "reactstrap";
+// import axios from "axios";
 var $ = window.$;
 var sappy = window.sappy;
 
@@ -13,7 +13,7 @@ import CmpVendas from "./CmpVendas";
 import CmpRecebimentos from "./CmpRecebimentos";
 import CmpInventario from "./CmpInventario";
 import CmpPagamentos from "./CmpPagamentos";
-import { hashHistory } from "react-router";
+// import { hashHistory } from "react-router";
 import { setImmediate } from "timers";
 
 class GlobalSearchModal extends Component {
@@ -82,7 +82,7 @@ class GlobalSearchModal extends Component {
   }
 
   handleOnChange_txtSearch(values) {
-    var that = this;
+    // var that = this;
     this.setState(
       {
         mainSearchTags: values

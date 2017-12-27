@@ -2,14 +2,14 @@ import React, { Component } from "react";
 import GlobalSearchPage from "./GlobalSearchPage";
 import { Badge } from "reactstrap";
 import uuid from "uuid/v4";
-import EditNewModal from "../Produtos/EditNewModal";
-import EditModal from "../Produtos/EditModal";
-const $ = window.$;
+// import EditNewModal from "../Produtos/EditNewModal";
+// import EditModal from "../Produtos/EditModal";
+// const $ = window.$;
 const sappy = window.sappy;
 
 class CmpParceiros extends Component {
   render() {
-    let that = this;
+    // let that = this;
 
     const renderRow = ({ row, index }) => {
       const badges = row.ITEM_TAGS.split("|");

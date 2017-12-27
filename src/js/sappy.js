@@ -3,7 +3,7 @@ import accounting from "./accountingjs";
 import moment from "moment";
 import barcodes from "./sappy_barcodes";
 import { setTimeout } from "timers";
-import { isNumber } from "util";
+// import { isNumber } from "util";
 
 // sappy namespace
 (function(sappy) {
@@ -414,7 +414,7 @@ import { isNumber } from "util";
       DiscountUn: 0,
       DiscountVal: 0
     };
-    expr.toString().split("&").map(section => {
+    expr.toString().split("&").forEach(section => {
       let ret = parseSection(section);
 
       results.sections.push(ret);

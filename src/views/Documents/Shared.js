@@ -1,7 +1,7 @@
 import React from "react";
 import EditModal from "../Produtos/EditModal";
 import DocDetailMore from "./DocBase/DocDetailMore";
-import { TextBox, TextBoxNumeric, ComboBox, Date, Toggle, Flag, Check } from "../../Inputs";
+// import { TextBox, TextBoxNumeric, ComboBox, Date, Toggle, Flag, Check } from "../../Inputs";
 const sappy = window.sappy;
 
 exports.prepareDocType = function({ tableName, module }) {

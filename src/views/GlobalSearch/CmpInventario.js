@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import GlobalSearchPage from "./GlobalSearchPage";
-import { Badge } from "reactstrap";
-import uuid from "uuid/v4";
+// import { Badge } from "reactstrap";
+// import uuid from "uuid/v4";
 
 const sappy = window.sappy;
 

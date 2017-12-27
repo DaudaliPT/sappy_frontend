@@ -335,7 +335,7 @@ class ModalMeiosPagPagamento extends Component {
     let strDocDesc = this.state.isPayment ? "pagamento" : "recebimento";
 
     let invokeAddDocAPI = () => {
-      let DocType = this.props.selectedPNType === "C" ? "C" : "D";
+      // let DocType = this.props.selectedPNType === "C" ? "C" : "D";
 
       let data = {
         DocType: this.props.selectedPNType,

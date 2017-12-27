@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { Button } from "reactstrap";
-import { TextBox, TextBoxNumeric, ComboBox, Date, Toggle, Flag, Check } from "../../../Inputs";
+import { TextBox, ComboBox } from "../../../Inputs";
 
 const sappy = window.sappy;
 

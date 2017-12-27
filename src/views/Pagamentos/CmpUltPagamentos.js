@@ -96,7 +96,7 @@ class CmpUltPagamentos extends Component {
   }
 
   imprimirPagamento() {
-    let that = this;
+    // let that = this;
     let { selectedRowId } = this.state;
     let docEntry = selectedRowId.split("_")[1];
 
@@ -116,7 +116,7 @@ class CmpUltPagamentos extends Component {
       });
   }
   verPagamento() {
-    let that = this;
+    // let that = this;
     let { selectedRowId } = this.state;
     let docEntry = selectedRowId.split("_")[1];
 

@@ -197,7 +197,7 @@ class ModalCreateArtigo extends Component {
 
       let validateData = {
         CardCode: this.state.changeItemCode,
-        CardCode: item.CardCode,
+        // CardCode: item.CardCode,
         Substitute: item.Substitute
       };
 

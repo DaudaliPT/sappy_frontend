@@ -198,7 +198,7 @@ class FlagFormatter extends Component {
 class MoreFormatter extends Component {
   render() {
     let { column, dependentValues, rowIdx, value, valueON, valueOFF, color } = this.props;
-    let { type, hover, onLinkClick } = column;
+    let { hover } = column;
     let divID = column.key + rowIdx;
     let onMouseLeave;
     let onMouseEnter;
@@ -234,7 +234,7 @@ class MoreFormatter extends Component {
     if (checked) {
       iClasses += " " + color + " " + valueON;
     } else {
-      iClasses += " " + "inactive " + valueOFF;
+      iClasses += " inactive " + valueOFF;
     }
     let style = {};
 
