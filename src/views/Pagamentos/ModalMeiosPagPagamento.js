@@ -530,10 +530,43 @@ class ModalMeiosPagPagamento extends Component {
           sappy.hideWaitProgress();
           sappy.showToastr({
             color: "success",
-            msg: `Criou com sucesso o ${strDocDesc} ${result.data.DocNum} no valor de ${sappy.format.amount(sappy.getNum(that.state.totalPagar))}, de ${result.data.CardName}!`
+            msg: `Criou com sucesso o ${strDocDesc} ${result.data.PagDocEntry} no valor de ${sappy.format.amount(sappy.getNum(that.state.totalPagar))}!`
           });
+          that.props.toggleModal({ success: result.data.PagDocEntry });
 
-          that.props.toggleModal({ success: result.data.DocNum });
+          //Imprimir o pagamento
+          {
+            let url = `/api/reports/print/46/${sappy.getNum(result.data.PagDocEntry)}?options=pagfor`;
+
+            axios
+              .get(url)
+              .then(result2 => {
+                sappy.showToastr({
+                  color: "success",
+                  msg: `Pagamento ${sappy.getNum(result.data.PagDocEntry)} impresso!`
+                });
+              })
+              .catch(error => {
+                sappy.showError(error, "Não foi possivel imprimir pagamento");
+              });
+          }
+
+          if (sappy.getNum(sappy.getNum(result.data.FtDebitoDocEntry)) !== 0) {
+            //imprimir eventual Ft de débito
+            let url = `/api/reports/print/13/${sappy.getNum(result.data.FtDebitoDocEntry)}`;
+
+            axios
+              .get(url)
+              .then(result2 => {
+                sappy.showToastr({
+                  color: "success",
+                  msg: `Fatura de débito ${sappy.getNum(result.data.FtDebitoDocNum)} impressa!`
+                });
+              })
+              .catch(error => {
+                sappy.showError(error, "Não foi possivel imprimir fatura de débito");
+              });
+          }
         })
         .catch(error => sappy.showError(error, "Não foi possivel adicionar o " + strDocDesc));
     };

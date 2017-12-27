@@ -15,6 +15,8 @@ class CmpUltPagamentos extends Component {
     super(props);
 
     this.cancelarPagamento = this.cancelarPagamento.bind(this);
+    this.imprimirPagamento = this.imprimirPagamento.bind(this);
+    this.verPagamento = this.verPagamento.bind(this);
 
     this.state = { selectedRowId: "", selectedRow: {} };
   }
@@ -93,6 +95,39 @@ class CmpUltPagamentos extends Component {
     });
   }
 
+  imprimirPagamento() {
+    let that = this;
+    let { selectedRowId } = this.state;
+    let docEntry = selectedRowId.split("_")[1];
+
+    //Imprimir o pagamento
+    let url = `/api/reports/print/46/${docEntry}?options=pagfor`;
+
+    axios
+      .get(url)
+      .then(result2 => {
+        sappy.showToastr({
+          color: "success",
+          msg: `Pagamento ${docEntry} impresso!`
+        });
+      })
+      .catch(error => {
+        sappy.showError(error, "Não foi possivel imprimir pagamento");
+      });
+  }
+  verPagamento() {
+    let that = this;
+    let { selectedRowId } = this.state;
+    let docEntry = selectedRowId.split("_")[1];
+
+    //Imprimir o pagamento
+    let url = `/api/reports/pdf/46/${docEntry}?options=pagfor`;
+
+    var baseUrl = ""; // Nota: Em desenv, é preciso redirecionar o pedido. Já em produtivo a api é servida na mesma porta do pedido
+    if (window.location.port === "3000") baseUrl = "http://byusserver:3005";
+    window.open(baseUrl + url, "_blank");
+  }
+
   render() {
     let that = this;
     let { selectedRowId, selectedRow, showActions } = this.state;
@@ -158,6 +193,20 @@ class CmpUltPagamentos extends Component {
           color: "warning",
           icon: "icon fa-window-close",
           onClick: this.cancelarPagamento
+        },
+        {
+          name: "Imprimir documento",
+          visible: showActions,
+          color: "primary",
+          icon: "icon fa-print",
+          onClick: this.imprimirPagamento
+        },
+        {
+          name: "Ver documento",
+          visible: showActions,
+          color: "primary",
+          icon: "icon fa-file-pdf-o ",
+          onClick: this.verPagamento
         }
       ];
       return fixedActions;
