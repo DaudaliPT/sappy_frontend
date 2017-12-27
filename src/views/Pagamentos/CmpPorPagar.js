@@ -228,7 +228,7 @@ class CmpPorPagar extends Component {
         name: "DOCUMENTO",
         label: "Documento",
         type: "text",
-        width: 120,
+        width: 100,
         editable: false,
         onLinkClick: props => sappy.LinkTo(props.dependentValues.TransType, props.dependentValues.CreatedBy)
       },
@@ -237,17 +237,17 @@ class CmpPorPagar extends Component {
         name: "CONTRATO_DESC",
         label: "Contrato",
         type: "more|danger",
-        width: 45,
+        width: 50,
         editable: true,
         popbox: {
           placement: "bottom",
           render: ({ context }) => <DocDetailMore {...context} />
         }
       },
-      { name: "UDISC", label: "D%", type: "discount", width: 35, editable: true },
-      { name: "LIQBALANCE", label: "Pagar", type: "amount", width: 80, editable: false },
+      { name: "UDISC", label: "Desc.", type: "discount", width: 45, editable: true },
+      { name: "LIQBALANCE", label: "Pagar", type: "amount", width: 80, editable: false }
       // { name: "DOCTOTAL", label: "Total", type: "amount", width: 60, editable: false },
-      { name: "BaseSum", label: "BaseSum", type: "amount", width: 60, editable: false }
+      // { name: "BaseSum", label: "BaseSum", type: "amount", width: 60, editable: false }
       // { name: "CONTRATO", label: "Contrato", type: "text", width: 100, editable: true },
       // { name: "DEBITO", label: "Débito", type: "amount", width: 60, editable: true },
     ];
@@ -310,6 +310,13 @@ class CmpPorPagar extends Component {
               height={this.props.height}
               fields={gridFields}
               groupBy={[{ key: "GRUPO", name: "" }]}
+              getRowStyle={props => {
+                let row = props.row;
+                let classes = "";
+                if (row.CardType === "C") classes += "has-promo";
+
+                return classes;
+              }}
             />
           </div>
         </div>

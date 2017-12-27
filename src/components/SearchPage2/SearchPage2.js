@@ -230,6 +230,7 @@ class SearchPage2 extends PureComponent {
             onRowUpdate={this.handleRowUpdate}
             selectedKeys={this.props.selectedKeys}
             rows={this.state.listItems}
+            getRowStyle={this.props.getRowStyle}
           />}
         {currentModal}
       </div>
@@ -245,6 +246,13 @@ SearchPage2.defaultProps = {
   renderRow: ({ row, index }) => {},
   autoRefreshTime: 0,
   renderRowHeight: 20,
+  getRowStyle: props => {
+    // let row = props.row;
+    let classes = "";
+    // if (row.IDPROMO) classes += "has-promo";
+
+    return classes;
+  },
   useSearchLimit: false,
   searchLimitCondition: ""
 };
