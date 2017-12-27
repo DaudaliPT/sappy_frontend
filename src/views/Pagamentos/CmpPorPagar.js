@@ -197,6 +197,12 @@ class CmpPorPagar extends Component {
           icon: "icon fa-check",
           visible: totalOfSelectedDocs !== 0,
           onClick: e => {
+            if (totalOfSelectedDocs > 0)
+              return sappy.showToastr({
+                color: "danger",
+                msg: `Não é permitido emitir recebimentos!`
+              });
+
             return sappy.showModal(
               <ModalMeiosPagPagamento
                 toggleModal={({ success } = {}) => {
