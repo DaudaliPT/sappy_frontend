@@ -43,7 +43,7 @@ class DocDetailMore extends Component {
           {...{
             name: "CONTRATO",
             label: "Contrato",
-            getOptionsApiRoute: `/api/cbo/contratos/${dependentValues.CARDCODE}/${dependentValues.CONTACT}`,
+            getOptionsApiRoute: `/api/cbo/contratos/${dependentValues.CardCode}/${dependentValues.CONTACT}`,
             disabled: false,
             value: dependentValues.CONTRATO,
             onChange: this.onFieldChange

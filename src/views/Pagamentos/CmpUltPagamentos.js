@@ -9,7 +9,6 @@ import uuid from "uuid/v4";
 const sappy = window.sappy;
 const $ = window.$;
 import CmpFooter from "./CmpFooter";
-// import ModalMeiosPagPagamento from "./ModalMeiosPagPagamento";
 
 class CmpUltPagamentos extends Component {
   constructor(props) {

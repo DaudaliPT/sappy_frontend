@@ -114,15 +114,17 @@ class CmpPorPagar extends Component {
     }
 
     let totalOfSelectedDocs = 0;
+    let totalOfEncontroContas = 0;
 
     // É importante preservar a ordem de seleção para o caso de pagamento parciais
     let selectedDocs = selectedDocKeys.map(docKey => docsList.find(doc => doc.TRANSID_AND_LINEID === docKey));
     selectedDocs.forEach(doc => {
       totalOfSelectedDocs += sappy.getNum(doc.LIQBALANCE);
+      if (doc.CardType === "C") totalOfEncontroContas += sappy.getNum(doc.LIQBALANCE);
     });
 
     let renderRowPN = ({ row, index }) => {
-      const selected = row.CARDCODE === selectedPN;
+      const selected = row.CardCode === selectedPN;
       let rowStyleClass = "";
       let r = { ...row };
       if (selected) rowStyleClass += " sappy-selected-row";
@@ -133,11 +135,11 @@ class CmpPorPagar extends Component {
       } else descDocs = sappy.format.amount(row.LIQBALANCE) + ", " + row.NUMDOCS + " " + (row.NUMDOCS === 1 ? " documento " : " documentos ");
 
       return (
-        <div id={"PN_" + row.CARDCODE} className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={e => this.handlePNselection(e, r)}>
+        <div id={"PN_" + row.CardCode} className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={e => this.handlePNselection(e, r)}>
           <div className="container vertical-align-middle">
             <div className="row">
               <div className="col-10 text-nowrap firstcol">
-                {row.CARDNAME + " (" + row.CARDCODE + ")"}
+                {row.CARDNAME + " (" + row.CardCode + ")"}
               </div>
             </div>
             <div className="row secondrow">
@@ -278,7 +280,9 @@ class CmpPorPagar extends Component {
                 if (updated.hasOwnProperty("UDISC")) {
                   let p = sappy.parseUserDisc(updated.UDISC);
                   let totalDisc = sappy.round(sappy.getNum(currentRow.BaseSum) * p.DiscountPercent / 100, 2) + p.DiscountVal * Math.sign(sappy.getNum(currentRow.BaseSum));
-                  updated.UDISC = sappy.formatUserDisc(p);
+                  if (totalDisc) updated.UDISC = sappy.formatUserDisc(p);
+                  else updated.UDISC = "";
+
                   updated.LIQBALANCE = sappy.getNum(currentRow.BALANCE) - totalDisc;
                 }
                 if (updated.hasOwnProperty("UDEBITO")) {

@@ -30,15 +30,7 @@ class ModalMeiosPagPagamento extends Component {
     window.addEventListener("resize", this.calcPageHeight);
 
     this.setState({
-      settings: sappy.getSettings([
-        "FIN.PAG.CONTA_ENCCONTAS",
-        "FIN.CCD.CAIXA_PASSAGEM",
-        "FIN.CC.CAIXA_PRINCIPAL",
-        "FIN.CC.MULTIBANCO",
-        "FIN.CC.CHEQUES",
-        "FIN.PAG.ART_DEBITOS",
-        "FIN.PAG.SERIE_DEBITOS"
-      ])
+      settings: sappy.getSettings(["FIN.CC.CAIXA_PRINCIPAL", "FIN.CC.MULTIBANCO", "FIN.CC.CHEQUES", "FIN.PAG.ART_DEBITOS", "FIN.PAG.SERIE_DEBITOS"])
     });
 
     this.onFieldChange({
@@ -340,10 +332,8 @@ class ModalMeiosPagPagamento extends Component {
       let data = {
         DocType: this.props.selectedPNType,
         CardCode: this.props.selectedPN,
-        TransferAccountEC: this.state.settings["FIN.PAG.CONTA_ENCCONTAS"],
         ArtigoDebitos: this.state.settings["FIN.PAG.ART_DEBITOS"],
         SerieDebitos: this.state.settings["FIN.PAG.SERIE_DEBITOS"],
-        CardCodeEC: this.props.selectedPNcodeCli,
         CodigoClienteDebito: this.props.selectedPNcodeCli,
         CashAccount: this.state.settings["FIN.CC.CAIXA_PRINCIPAL"],
         CashSum: sappy.getNum(this.state.ValorNumerario) - sappy.getNum(this.state.troco),
@@ -412,22 +402,15 @@ class ModalMeiosPagPagamento extends Component {
       let docs = [...this.props.selectedDocs];
       // Marcar os documentos de cliente para ECC (encontro contas cliente)
       let valorEC = 0;
-      let temEC = false;
       docs = docs.map(doc => {
         doc.valorECC = 0;
         if (doc.CardType !== "C") return doc;
-        temEC = true;
+
         doc.valorECC = sappy.getNum(doc.LIQBALANCE);
+        console.log("ECC " + doc.valorECC, doc);
         valorEC += doc.valorECC;
         return doc;
       });
-
-      if (valorEC < 0) {
-        return sappy.showError(null, "O encontro de contas com o cliente não pode ser negativo.");
-      }
-      if (temEC && valorEC === 0) {
-        return sappy.showError(null, "O encontro de contas com o cliente não pode ser zero.");
-      }
       // Marcar os documentos de cliente para ECF (encontro contas fornecedor)
       docs = docs.map(doc => {
         let LIQBALANCE = sappy.getNum(doc.LIQBALANCE);
@@ -437,8 +420,9 @@ class ModalMeiosPagPagamento extends Component {
         // Controlar o que falta para o encontro de contas
         if (valorEC + LIQBALANCE < 0) LIQBALANCE = -valorEC;
 
-        doc.valorECF = -1 * LIQBALANCE;
-        valorEC += LIQBALANCE;
+        doc.valorECF = LIQBALANCE;
+        console.log("ECF " + doc.valorECF, doc);
+        valorEC += doc.valorECF;
         return doc;
       });
 
@@ -448,49 +432,28 @@ class ModalMeiosPagPagamento extends Component {
         let LIQBALANCE = sappy.getNum(doc.LIQBALANCE);
         doc.valorDeduzir = 0;
         if (!(doc.CardType === "S" && LIQBALANCE > 0)) return doc;
-        doc.valorDeduzir = LIQBALANCE;
+        doc.valorDeduzir = Math.abs(LIQBALANCE);
         TOTALPAGAR += doc.valorDeduzir;
         return doc;
       });
 
       // Marcar os documentos para pagamento
       docs = docs.map(doc => {
-        let LIQBALANCE = sappy.getNum(doc.LIQBALANCE) + sappy.getNum(doc.valorECF);
+        let LIQBALANCE = sappy.getNum(doc.LIQBALANCE) - sappy.getNum(doc.valorECF);
         doc.valorPagar = 0;
         if (!(doc.CardType === "S" && LIQBALANCE < 0 && TOTALPAGAR > 0)) return doc;
 
         // Controlar o que falta para o valor a pagar
         if (TOTALPAGAR + LIQBALANCE < 0) LIQBALANCE = -TOTALPAGAR;
 
-        doc.valorPagar = -1 * LIQBALANCE;
-        TOTALPAGAR += LIQBALANCE;
+        doc.valorPagar = Math.abs(LIQBALANCE);
+        console.log("PAGAR " + doc.valorPagar, doc);
+        TOTALPAGAR -= doc.valorPagar;
         return doc;
       });
 
       // adicionar os documentos
       data.PaymentInvoices = docs.map(doc => {
-        // proporção que está a ser paga
-        let LIQBALANCE = sappy.getNum(doc.LIQBALANCE);
-        let bs = Math.abs(sappy.getNum(doc.BaseSum));
-        let p = sappy.parseUserDisc(doc.UDISC);
-
-        let TotalDiscount = sappy.round(bs * p.DiscountPercent / 100, 2) + p.DiscountVal;
-
-        let proporcaoECF = sappy.getNum(doc.valorECF) / Math.abs(LIQBALANCE);
-        let valorDescontoECF = sappy.round(proporcaoECF * TotalDiscount, 2);
-
-        let proporcaoPagar = sappy.getNum(doc.valorPagar) / Math.abs(LIQBALANCE);
-        let valorDescontoPagar = sappy.round(proporcaoPagar * TotalDiscount, 2);
-        if (doc.valorECF + doc.valorPagar === -1 * LIQBALANCE) {
-          // Garantir que não há diferencas de arredondamentos, quando paga todo o doc
-          valorDescontoPagar = sappy.round(TotalDiscount - valorDescontoECF, 2);
-        }
-
-        let deb = sappy.parseUserDisc(doc.UDEBITO);
-        let valueToUse = sappy.getNum(doc.valorECF) + sappy.getNum(doc.valorPagar);
-        let proporcaoDebito = Math.abs(valueToUse / LIQBALANCE);
-        let valorDebito = sappy.round(proporcaoDebito * (sappy.round(bs * deb.DiscountPercent / 100, 2) + deb.DiscountVal), 2);
-
         let inv = {
           BaseRef: doc.BaseRef,
           CardType: doc.CardType,
@@ -500,26 +463,19 @@ class ModalMeiosPagPagamento extends Component {
           U_apyCONTRATO: doc.CONTRATO,
           U_apyUDISC: doc.UDISC,
           U_apyUDEBITO: doc.UDEBITO,
-          ValorECC: doc.valorECC,
-          ValorECF: doc.valorECF,
-          ValorDescontoECF: valorDescontoECF,
-          ValorDeduzir: doc.valorDeduzir,
-          ValorPagar: doc.valorPagar,
-          ValorDescontoPagar: valorDescontoPagar,
-          ValorDebito: valorDebito,
-          LIQBALANCE: doc.LIQBALANCE
+          valorECC: doc.valorECC,
+          valorECF: doc.valorECF,
+          valorDeduzir: doc.valorDeduzir,
+          valorPagar: doc.valorPagar
         };
 
-        inv.DocEntry = doc.CreatedBy;
-        inv.DocLine = doc.Line_ID;
-        // if (sappy.getNum(doc.TransType) !== 24 && sappy.getNum(doc.TransType) !== 46) {
-        //   inv.DocEntry = doc.CreatedBy;
-        // } else {
-        //   inv.DocEntry = doc.TransId;
-        //   inv.DocLine = doc.Line_ID;
-        // }
+        if (sappy.getNum(doc.TransType) !== 24 && sappy.getNum(doc.TransType) !== 46) {
+          inv.DocEntry = doc.CreatedBy;
+        } else {
+          inv.DocEntry = doc.TransId;
+          inv.DocLine = doc.Line_ID;
+        }
 
-        console.dir(inv);
         return inv;
       });
 
