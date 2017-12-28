@@ -235,8 +235,8 @@ sappy.app = {
         { name: "caixa", text: "Caixa central", component: Views.CaixaCentral },
         // { name: "rec", text: "Recebimentos", component: LandingPages.Recebimentos },
         // { name: "rec/doc", text: "Recebimentos", component: LandingPages.Recebimentos, dontCreateMenu: true },
-        { name: "pagamentos", text: "Pagamentos", component: Views.Pagamentos }
-        // { name: "cartcheques", text: "Carteira de cheques", component: UnderConstruction }
+        { name: "pagamentos", text: "Pagamentos", component: Views.Pagamentos },
+        { name: "cheques", text: "Carteira de cheques", component: Views.Cheques }
       ]
     },
     //7\. Relatorios

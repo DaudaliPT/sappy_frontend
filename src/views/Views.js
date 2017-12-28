@@ -1,5 +1,6 @@
 let Views = {
   CaixaCentral: require("./CaixaCentral").default,
+  Cheques: require("./Cheques").default,
   ContratosCompra: require("./ContratosCompra"),
   Documents: require("./Documents"),
   Etiquetas: require("./Etiquetas").default,
