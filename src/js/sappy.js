@@ -523,6 +523,11 @@ import { setTimeout } from "timers";
       if (typeof value === "string") value = parseFloat(value);
       return accounting.formatMoney(value, null, decimals);
     },
+    amountSQL: value => {
+      let decimals = sappy.sessionInfo.company.oadm.SumDec;
+      if (typeof value === "string") value = parseFloat(value);
+      return accounting.formatMoney(value, "", decimals, "", ".");
+    },
     saprate: value => {
       let decimals = sappy.sessionInfo.company.oadm.RateDec;
       if (typeof value === "string") value = parseFloat(value);

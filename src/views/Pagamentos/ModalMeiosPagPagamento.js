@@ -500,14 +500,14 @@ class ModalMeiosPagPagamento extends Component {
           U_apyCONTRATO: doc.CONTRATO,
           U_apyUDISC: doc.UDISC,
           U_apyUDEBITO: doc.UDEBITO,
-          ValorECC: doc.valorECC,
-          ValorECF: doc.valorECF,
-          ValorDescontoECF: valorDescontoECF,
-          ValorDeduzir: doc.valorDeduzir,
-          ValorPagar: doc.valorPagar,
-          ValorDescontoPagar: valorDescontoPagar,
-          ValorDebito: valorDebito,
-          LIQBALANCE: doc.LIQBALANCE
+          ValorECC: sappy.format.amountSQL(doc.valorECC),
+          ValorECF: sappy.format.amountSQL(doc.valorECF),
+          ValorDescontoECF: sappy.format.amountSQL(valorDescontoECF),
+          ValorDeduzir: sappy.format.amountSQL(doc.valorDeduzir),
+          ValorPagar: sappy.format.amountSQL(doc.valorPagar),
+          ValorDescontoPagar: sappy.format.amountSQL(valorDescontoPagar),
+          ValorDebito: sappy.format.amountSQL(valorDebito),
+          LIQBALANCE: sappy.format.amountSQL(doc.LIQBALANCE)
         };
 
         inv.DocEntry = doc.CreatedBy;

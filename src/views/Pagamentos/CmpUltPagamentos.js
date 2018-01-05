@@ -157,17 +157,19 @@ class CmpUltPagamentos extends Component {
           <div className="container vertical-align-middle">
             <div className="row">
               <div className="col-2 text-nowrap firstcol">
-                {" "}{sappy.format.datetime2(row.DOC_DATETIME)}{" "}
+                {sappy.format.datetime2(row.DOC_DATETIME)}
               </div>
               <div className="col-2 text-nowrap ">
-                {" "}{row.DocNum}{" "}
+                {row.DocNum}
               </div>
               <div className="col-6 text-nowrap ">
-                {" "}{row.CardName + " (" + row.CardCode + ")"}
+                {row.CardName + " (" + row.CardCode + ")"}
                 {renderBadges()}
               </div>
               <div className="col-2 text-nowrap lastcol">
-                {" "}<span className="float-right">{sappy.format.amount(row.DocTotal)}</span>{" "}
+                <span className="float-right">
+                  {sappy.format.amount(row.DocTotal)}
+                </span>
               </div>
             </div>
           </div>
@@ -180,7 +182,7 @@ class CmpUltPagamentos extends Component {
       let fixedActions = [
         {
           name: "main",
-          visible: selectedRowId && naoEstaCancelado,
+          visible: selectedRowId,
           color: "primary",
           icon: showActions ? "icon wb-close animation-fade" : "icon wb-more-vertical",
           onClick: e => {
@@ -189,7 +191,7 @@ class CmpUltPagamentos extends Component {
         },
         {
           name: "Cancelar documento",
-          visible: showActions,
+          visible: showActions && naoEstaCancelado,
           color: "warning",
           icon: "icon fa-window-close",
           onClick: this.cancelarPagamento

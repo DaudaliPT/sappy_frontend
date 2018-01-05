@@ -29,6 +29,88 @@ class CmpPorPagar extends Component {
       ctrlKey: false,
       settings: {}
     };
+
+    this.discountHover = {
+      render: ({ result, context }) => {
+        let content = [];
+
+        let BALANCE = sappy.getNum(context.dependentValues.BALANCE);
+        let LIQBALANCE = sappy.getNum(context.dependentValues.LIQBALANCE);
+        let VDESC = BALANCE - LIQBALANCE;
+
+        content.push(
+          <tr>
+            <td>{context.dependentValues.LineMemo}</td> <td />
+          </tr>
+        );
+        if (context.dependentValues.CardType === "C")
+          content.push(
+            <tr>
+              <td>No cliente associado</td>
+              <td>
+                {context.dependentValues.CardCode}
+              </td>
+            </tr>
+          );
+        if (context.dependentValues.CONTACT_NAME)
+          content.push(
+            <tr>
+              <td>Contacto</td>
+              <td>
+                {context.dependentValues.CONTACT_NAME}
+              </td>
+            </tr>
+          );
+        content.push(
+          <tr>
+            <td>Valor Original</td> <td>{sappy.format.amount(context.dependentValues.DocTotal)}</td>
+          </tr>
+        );
+        content.push(
+          <tr>
+            <td>Valor em aberto</td> <td>{sappy.format.amount(context.dependentValues.BALANCE)}</td>
+          </tr>
+        );
+        if (context.dependentValues.BaseSum)
+          content.push(
+            <tr>
+              <td>Base p/cálculo (s/IVA)</td> <td>{sappy.format.amount(context.dependentValues.BaseSum)}</td>
+            </tr>
+          );
+        if (context.dependentValues.UDISC)
+          content.push(
+            <tr>
+              <td>Desconto</td> <td>{context.dependentValues.UDISC}</td>
+            </tr>
+          );
+
+        if (VDESC)
+          content.push(
+            <tr>
+              <td>Desconto calculado =></td> <td>{sappy.format.amount(VDESC)}</td>
+            </tr>
+          );
+
+        if (context.dependentValues.UDEBITO)
+          content.push(
+            <tr>
+              <td>Débito a emitir</td> <td>{context.dependentValues.UDEBITO}</td>
+            </tr>
+          );
+        if (context.dependentValues.DEBITO)
+          content.push(
+            <tr>
+              <td>Débito a emitir calculado =></td> <td>{sappy.format.amount(Math.abs(context.dependentValues.DEBITO))}</td>
+            </tr>
+          );
+
+        return (
+          <table>
+            {content}
+          </table>
+        );
+      }
+    };
   }
 
   componentDidMount() {
@@ -251,7 +333,7 @@ class CmpPorPagar extends Component {
         }
       },
       { name: "UDISC", label: "Desc.", type: "discount", width: 45, editable: true },
-      { name: "LIQBALANCE", label: "Pagar", type: "amount", width: 80, editable: false }
+      { name: "LIQBALANCE", label: "Pagar", type: "amount", width: 80, editable: false, hover: this.discountHover }
       // { name: "DOCTOTAL", label: "Total", type: "amount", width: 60, editable: false },
       // { name: "BaseSum", label: "BaseSum", type: "amount", width: 60, editable: false }
       // { name: "CONTRATO", label: "Contrato", type: "text", width: 100, editable: true },
