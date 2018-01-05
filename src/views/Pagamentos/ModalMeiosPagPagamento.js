@@ -398,7 +398,7 @@ class ModalMeiosPagPagamento extends Component {
             data.PaymentChecks.push({
               DueDate: sappy.format.YYYY_MM_DD(cheque.data),
               CheckNumber: cheque.numero,
-              CheckSum: sappy.getNum(cheque.valor),
+              CheckSum: sappy.format.amountSQL(cheque.valor),
               CountryCode,
               BankCode,
               AccounttNum,
