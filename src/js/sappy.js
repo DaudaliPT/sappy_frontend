@@ -525,7 +525,7 @@ import { setTimeout } from "timers";
     },
     amountSQL: value => {
       let decimals = sappy.sessionInfo.company.oadm.SumDec;
-      if (typeof value === "string") value = parseFloat(value);
+      if (typeof value === "string") value = sappy.getNum(value);
       return accounting.formatMoney(value, "", decimals, "", ".");
     },
     saprate: value => {
