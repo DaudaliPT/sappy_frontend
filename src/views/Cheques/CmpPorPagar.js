@@ -18,9 +18,6 @@ class CmpPorPagar extends Component {
     this.handleDocRefresh = this.handleDocRefresh.bind(this);
 
     this.state = {
-      selectedPN: "",
-      selectedPNname: "",
-      selectedPNcodeCli: "",
       selectedDocKeys: [],
       shiftKey: false,
       ctrlKey: false,
@@ -106,6 +103,20 @@ class CmpPorPagar extends Component {
           }
         },
         {
+          name: "Colocar em carteira",
+          color: "warning",
+          icon: "icon fa-list-alt",
+          visible: selStatus !== "Em carteira" && selStatus !== "Pago",
+          onClick: e => {
+            selectedDocs.forEach(doc => {
+              doc.U_apyDTSTATUS = sappy.moment();
+              axios.post(`/api/cheques/updatestatus/${doc.CheckKey}`, { status: "" }).catch(error => sappy.showError(error, "Não foi possivel gravar status"));
+            });
+
+            that.docsComponent.findAndGetFirstRows();
+          }
+        },
+        {
           name: "Depositar",
           color: "success",
           icon: "icon fa-check",
@@ -144,8 +155,7 @@ class CmpPorPagar extends Component {
       { name: "BankName", label: "Banco", type: "text", width: 100, editable: false },
       { name: "STATUS", label: "Status", type: "text", width: 100, editable: false },
       { name: "U_apyDTSTATUS", label: "Dt.Status", type: "date", width: 100, editable: false },
-      { name: "U_apyOBS", label: "Observações", type: "text", width: 300, editable: true },
-      { name: "DeposDate", label: "Dt.Pago", type: "date", width: 100, editable: false }
+      { name: "U_apyOBS", label: "Observações", type: "text", width: 300, editable: true }
     ];
     return (
       <div>
