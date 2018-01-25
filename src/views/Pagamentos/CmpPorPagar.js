@@ -320,6 +320,7 @@ class CmpPorPagar extends Component {
         editable: false,
         onLinkClick: props => sappy.LinkTo(props.dependentValues.TransType, props.dependentValues.CreatedBy)
       },
+      { name: "Ref2", label: "v/Ref", type: "text", width: 80, editable: false },
       { name: "BALANCE", label: "Em aberto", type: "amount", width: 80, editable: false },
       {
         name: "CONTRATO_DESC",
