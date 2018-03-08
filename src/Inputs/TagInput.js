@@ -56,7 +56,7 @@ class TagInput extends PureComponent {
           let values = $("#" + that.name).tokenfield("getTokens");
           that.props.onChange && that.props.onChange(values);
         })
-        .tokenfield()
+        .tokenfield({delimiter:';'})
         .tokenfield("setTokens", that.state.tags);
     }, 0);
   }

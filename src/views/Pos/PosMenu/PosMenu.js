@@ -28,7 +28,7 @@ class Inicio extends Component {
   }
 
   componentDidMount() {
-    $(".tokenfield").tokenfield();
+    $(".tokenfield").tokenfield({delimiter:';'});
   }
 
   handleRowClick(e) {

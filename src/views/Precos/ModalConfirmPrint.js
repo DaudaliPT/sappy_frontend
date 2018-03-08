@@ -48,7 +48,7 @@ class ModalConfirmPrint extends Component {
         });
     } else if (result === "PDF") {
       // Executar o mapa
-      let apiRoute = "/api/reports/getPdf(" + this.props.defaultLayoutCode + ")";
+      let apiRoute = "/api/reports/pdf/" + this.props.defaultLayoutCode  ;
       let apiQuery = "?parValues=" + encodeURIComponent(JSON.stringify(parValues));
 
       let baseUrl = ""; // Nota: Em desenv, é preciso redirecionar o pedido. Já em produtivo a api é servida na mesma porta do pedido

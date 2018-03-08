@@ -25,7 +25,7 @@ class SearchBar extends PureComponent {
           let values = $("#" + that.txtName).tokenfield("getTokens");
           that.props.onChange(values);
         })
-        .tokenfield()
+        .tokenfield({delimiter:';'})
         .tokenfield("setTokens", that.state.searchTags);
     }, 0);
 

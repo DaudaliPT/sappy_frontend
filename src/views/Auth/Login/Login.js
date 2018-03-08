@@ -90,7 +90,7 @@ class Login extends Component {
                   <label className="floating-label">Utilizador</label>
                 </div>
                 <div className="form-group form-material floating" data-plugin="formMaterial">
-                  <input type="password" className="form-control" name="password" ref="password" autocomplete="off" />
+                  <input type="password" className="form-control" name="password" ref="password" autoComplete="off" />
                   <label className="floating-label">Senha de acesso</label>
                 </div>
                 <div className="form-group form-material floating" data-plugin="formMaterial">

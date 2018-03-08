@@ -23,7 +23,7 @@ class Inicio extends Component {
   }
 
   componentDidMount() {
-    $('.tokenfield').tokenfield()
+    $('.tokenfield').tokenfield({delimiter:';'})
   }
   componentWillUnmount() {
     $("body").removeClass("page-maintenance").removeClass("layout-full");
