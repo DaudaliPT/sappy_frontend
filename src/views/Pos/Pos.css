@@ -91,6 +91,13 @@
   /* box-shadow: 2px 2px 1px rgba(232, 246, 255, 0.8); */
   box-shadow: 4px 8px 8px rgba(32, 46, 55, 0.3);
 }
+
+.posMenu-action > .btn.sucess { 
+  background: rgba(241, 244, 245, 0.8) !important; 
+}
+.posMenu-action > .btn.sucess:hover {
+  background: rgba(241, 244, 245, 1) !important; 
+}
 .posMenu-action i {
   padding-bottom: 5%;
   font-size: 2.4rem;

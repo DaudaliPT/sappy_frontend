@@ -50,7 +50,9 @@ class Inicio extends Component {
     // var { user, company } = sappy.sessionInfo;
     var { companyLogo } = this.state;
     let that = this;
-
+    
+    let isComercial = ",comercial,".indexOf("," + sappy.sessionInfo.user.NAME + ",") > -1;
+ 
     const renderRow = ({ row, index }) => {
       const renderBadges = () => {
         const badges = row.ITEM_TAGS.split("|");
@@ -88,6 +90,26 @@ class Inicio extends Component {
         </div>
       );
     };
+    const showFatura = () => {
+      if (isComercial) return null;
+      return  <div className="posMenu-action">
+          <button className="btn btn-block btn-success" onClick={e => hashHistory.push("/pos/Oinv")}>
+            <i className="icon pe-cart" />
+            <br />
+            <span>Fatura a Cliente</span>
+          </button>
+        </div>;
+      }    
+      const showNC = () => {
+        if (isComercial) return null;
+        return <div className="posMenu-action">
+        <button className="btn btn-block btn-warning" onClick={e => hashHistory.push("/pos/Orin")}>
+          <i className="icon pe-scissors" />
+          <br />
+          <span>Nota Crédito a Cliente</span>
+        </button>
+      </div> ;
+        }
     return (
       <div className="posMenu">
         <a className="company-logo">
@@ -107,20 +129,8 @@ class Inicio extends Component {
                 <br /> <span>Encomenda de Cliente</span>
               </button>
             </div>
-            <div className="posMenu-action">
-              <button className="btn btn-block" onClick={e => hashHistory.push("/pos/Oinv")}>
-                <i className="icon pe-cart" />
-                <br />
-                <span>Fatura a Cliente</span>
-              </button>
-            </div>
-            <div className="posMenu-action">
-              <button className="btn btn-block" onClick={e => hashHistory.push("/pos/Orin")}>
-                <i className="icon pe-scissors" />
-                <br />
-                <span>Nota Crédito a Cliente</span>
-              </button>
-            </div>
+              {showFatura()}
+              {showNC()}
             {/* <div className="posMenu-action">
               <button className="btn btn-block" onClick={e => hashHistory.push("/pos/Odln")}>
                 <i className="icon pe-download" />
@@ -128,7 +138,8 @@ class Inicio extends Component {
                 <span>Saída de Mercadoria </span>
               </button>
             </div> */}
-          </div>}
+          </div>
+        }
         <div className={"posMenu-actions2 " + (this.state.showRetomar ? "open" : "")}>
           {!this.state.showRetomar &&
             <div className="posMenu-action">

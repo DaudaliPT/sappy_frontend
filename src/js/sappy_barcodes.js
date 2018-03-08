@@ -112,8 +112,8 @@ const $ = window.$;
     window.addEventListener("keypress", e => {
       if (!currentCallback) return;
 
-      if (e.charCode === 2 || e.charCode === '|'.charCodeAt(0)) {
-        //char2 and '|' does the same as F9 - PREFIXO CONFIGURADO NO SCANNER
+      if (e.charCode === 2) {
+        //char2 does the same as F9 - PREFIXO CONFIGURADO NO SCANNER
         e.preventDefault();
         e.stopPropagation();
         isHuman = false;
@@ -125,9 +125,9 @@ const $ = window.$;
     window.addEventListener(
       "keydown",
       e => {
-        if (!currentCallback) return;
-
-        if (e.code === "F9") {
+        if (!currentCallback) return; 
+        
+        if (e.code === "F9" || e.key === "|") {
           // F9 - PREFIXO CONFIGURADO NO SCANNER
           // Configurar scanner https://retailops.zendesk.com/hc/en-us/articles/213380163-Programming-Guide-Symbol-Motorola-Zebra-LI4278-Scanners
           e.preventDefault();
