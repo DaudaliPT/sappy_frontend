@@ -112,14 +112,15 @@ const $ = window.$;
     window.addEventListener("keypress", e => {
       if (!currentCallback) return;
 
-      if (e.charCode === 2) {
-        //char2 does the same as F9 - PREFIXO CONFIGURADO NO SCANNER
+      if (e.charCode === 2 || e.charCode === '|'.charCodeAt(0)) {
+        //char2 and '|' does the same as F9 - PREFIXO CONFIGURADO NO SCANNER
         e.preventDefault();
         e.stopPropagation();
         isHuman = false;
         charBuffer = [];
         return;
       }
+
     });
     window.addEventListener(
       "keydown",
