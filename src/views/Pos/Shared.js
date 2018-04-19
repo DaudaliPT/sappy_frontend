@@ -34,6 +34,7 @@ exports.prepareDocType = function({ tableName }) {
   headerFields.icons.push({ name: "HAPPYDAY", label: "Happy Day", type: "iconToggle", ON: "fa-tag success", OFF: "fa-tag secondary" });
   headerFields.icons.push({ name: "MATRICULA", label: "Matricula", gridSize: 6, type: "iconEdit", ON: "fa-road success", OFF: "fa-road secondary" });
   headerFields.icons.push({ name: "COMMENTS", label: "Observações", gridSize: 12, type: "iconEdit", ON: "fa-info-circle success", OFF: "fa-info-circle secondary" });
+  headerFields.icons.push({ name: "PRICEUNLOCKED", label: "Bloqueio a alterar preços", type: "iconToggle", ON: "fa-unlock success", OFF: "fa-lock secondary" , disabled:true});
 
   let itemHover = {
     api: "api/prod/item/<ITEMCODE>",

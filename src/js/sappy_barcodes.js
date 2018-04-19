@@ -35,6 +35,12 @@ const $ = window.$;
   }
 
   function validate(barcode) {
+    
+    if (barcode.startsWith('#FN#')) {
+        // retornar o próprio código lido
+        return currentCallback({ barcodes: [barcode], hasMany: false });  
+    }
+
     axios
       .get(currentBarcodeApiUrl + encodeURIComponent(barcode), {
         params: {
@@ -148,20 +154,25 @@ const $ = window.$;
             return;
           }
 
+
           // Se 0 a z    [0-9] e [A-Z] e [a-z]
           if (e.which >= 48 && e.which <= 122) {
-            if (e.code === "Numpad0") charBuffer.push("0");
-            else if (e.code === "Numpad1") charBuffer.push("1");
-            else if (e.code === "Numpad2") charBuffer.push("2");
-            else if (e.code === "Numpad3") charBuffer.push("3");
-            else if (e.code === "Numpad4") charBuffer.push("4");
-            else if (e.code === "Numpad5") charBuffer.push("5");
-            else if (e.code === "Numpad6") charBuffer.push("6");
-            else if (e.code === "Numpad7") charBuffer.push("7");
-            else if (e.code === "Numpad8") charBuffer.push("8");
-            else if (e.code === "Numpad9") charBuffer.push("8");
-            else charBuffer.push(String.fromCharCode(e.which));
 
+            if(e.shiftKey) {
+              charBuffer.push(e.key);
+            }else { 
+              if (e.code === "Numpad0") charBuffer.push("0");
+              else if (e.code === "Numpad1") charBuffer.push("1");
+              else if (e.code === "Numpad2") charBuffer.push("2");
+              else if (e.code === "Numpad3") charBuffer.push("3");
+              else if (e.code === "Numpad4") charBuffer.push("4");
+              else if (e.code === "Numpad5") charBuffer.push("5");
+              else if (e.code === "Numpad6") charBuffer.push("6");
+              else if (e.code === "Numpad7") charBuffer.push("7");
+              else if (e.code === "Numpad8") charBuffer.push("8");
+              else if (e.code === "Numpad9") charBuffer.push("8");
+              else charBuffer.push(String.fromCharCode(e.which));
+            }
             // console.log(e.which + ":" + charBuffer.join("|"));
 
             // if (timeOutHandler) {

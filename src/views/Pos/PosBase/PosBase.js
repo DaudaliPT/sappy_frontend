@@ -198,6 +198,16 @@ class PosBase extends Component {
 
     let updated = { [fieldName]: val };
 
+    if (fieldName==="UNLOCKEDBY" ) {
+      if (this.state.docData.PRICEUNLOCKED) {
+        updated.UNLOCKEDBY = '';
+        updated.PRICEUNLOCKED = false;
+      }
+      else {
+        updated.PRICEUNLOCKED = true;
+      }
+    }
+
     if (that.props.onHeaderChange) updated = that.props.onHeaderChange(this.state.docData, updated);
 
     this.ensureposHeaderExists(() => {
@@ -218,8 +228,17 @@ class PosBase extends Component {
     let that = this;
     if (this.props.onRowChange) updated = this.props.onRowChange(currentRow, updated);
 
-    if (updated.hasOwnProperty("PRICE")) updated.PRICE_CHANGEDBY = sappy.sessionInfo.user.NAME;
-    if (updated.hasOwnProperty("USER_DISC")) updated.DISC_CHANGEDBY = sappy.sessionInfo.user.NAME;
+    if (updated.hasOwnProperty("PRICE") ||updated.hasOwnProperty("USER_DISC")) {
+      if(!this.state.docData.PRICEUNLOCKED) { 
+        return setImmediate(()=>  sappy.showWarning({
+          title:"Alteração de preços bloqueada",
+          moreInfo:"È necessária permissão para alterar preços. Por favor, chame um responsável."
+        }));
+      }else {
+        if (updated.hasOwnProperty("PRICE") ) updated.PRICE_CHANGEDBY = sappy.sessionInfo.user.NAME + "("+this.state.docData.UNLOCKEDBY+")";
+        if (updated.hasOwnProperty("USER_DISC")) updated.DISC_CHANGEDBY = sappy.sessionInfo.user.NAME + "("+this.state.docData.UNLOCKEDBY+")";
+      }
+    }
 
     this.serverRequest = axios
       .patch(`${this.props.apiDocsNew}/${this.state.docData.ID}/line/${currentRow.LINENUM}`, { ...updated })
@@ -283,6 +302,21 @@ class PosBase extends Component {
     let pinHeader = this.state.header.pinHeader;
     let expanded = this.state.header.expanded;
     if (!pinHeader && expanded) that.toggleHeader();
+
+
+    if (barcodes && barcodes.length ===1 && barcodes[0].startsWith('#FN#')){
+      // Special function barcode
+      if (barcodes[0].startsWith('#FN#PC#')){
+        let byName = barcodes[0].split("#")[3];
+
+        return that.handleHeaderFieldChange({
+          fieldName: "UNLOCKEDBY",
+          formatedValue: byName,
+          rawValue: byName
+        });
+      }
+    }
+
 
     let createDocLines = () => {
       this.serverRequest = axios
