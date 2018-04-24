@@ -40,6 +40,10 @@ const $ = window.$;
         // retornar o próprio código lido
         return currentCallback({ barcodes: [barcode], hasMany: false });  
     }
+    if (barcode.startsWith('#fn#')) {
+      // retornar o próprio código lido (Se o capslock estive ativo o case vem invertido)
+      return currentCallback({ barcodes: [sappy.reverseCase(barcode)], hasMany: false });  
+    }
 
     axios
       .get(currentBarcodeApiUrl + encodeURIComponent(barcode), {

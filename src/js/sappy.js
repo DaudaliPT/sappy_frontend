@@ -141,6 +141,19 @@ import { setTimeout } from "timers";
     return str;
   };
 
+  
+  sappy.reverseCase = function(text) {
+    var str = text.split('').map((c) =>
+        c === c.toUpperCase() 
+        ? c.toLowerCase()
+        : c.toUpperCase()
+    ).join('')
+    
+    return str;
+  };
+
+
+
   let getDateFormat = () => {
     let sapFormat;
 
