@@ -229,15 +229,15 @@ class PosBase extends Component {
     if (this.props.onRowChange) updated = this.props.onRowChange(currentRow, updated);
 
     if (updated.hasOwnProperty("PRICE") ||updated.hasOwnProperty("USER_DISC")) {
-      if(!this.state.docData.PRICEUNLOCKED) { 
-        return setImmediate(()=>  sappy.showWarning({
-          title:"Alteração de preços bloqueada",
-          moreInfo:"È necessária permissão para alterar preços. Por favor, chame um responsável."
-        }));
-      }else {
+      // if(!this.state.docData.PRICEUNLOCKED) { 
+      //   return setImmediate(()=>  sappy.showWarning({
+      //     title:"Alteração de preços bloqueada",
+      //     moreInfo:"È necessária permissão para alterar preços. Por favor, chame um responsável."
+      //   }));
+      // }else {
         if (updated.hasOwnProperty("PRICE") ) updated.PRICE_CHANGEDBY = sappy.sessionInfo.user.NAME + "("+this.state.docData.UNLOCKEDBY+")";
         if (updated.hasOwnProperty("USER_DISC")) updated.DISC_CHANGEDBY = sappy.sessionInfo.user.NAME + "("+this.state.docData.UNLOCKEDBY+")";
-      }
+      // }
     }
 
     this.serverRequest = axios
