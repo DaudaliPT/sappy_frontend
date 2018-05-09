@@ -57,7 +57,7 @@ class App extends Component {
 
     if (user.NAME) {
       if (nextState.location.pathname === "/") {
-        let showSappy = ",manager,ibrahim,dora,mansur,marlene,zara,adelaide,antunes,".indexOf("," + sappy.sessionInfo.user.NAME + ",") > -1;
+        let showSappy = ",manager,ibrahim,dor3a,mansur,marlene,zara,hadil,".indexOf("," + sappy.sessionInfo.user.NAME + ",") > -1;
         if (!showSappy) hashHistory.push("/pos");
       }
 
