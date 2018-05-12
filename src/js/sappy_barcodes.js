@@ -162,7 +162,7 @@ const $ = window.$;
 
 
           // Se 0 a z    [0-9] e [A-Z] e [a-z]
-          if (e.which >= 48 && e.which <= 122) {
+          if ((e.which >= 48 && e.which <= 122) || e.which === 16) {
 
             if(e.shiftKey) {
               charBuffer.push(e.key);
@@ -171,7 +171,7 @@ const $ = window.$;
               else if (e.code === "Numpad1") charBuffer.push("1");
               else if (e.code === "Numpad2") charBuffer.push("2");
               else if (e.code === "Numpad3") charBuffer.push("3");
-              else if (e.code === "Numpad4") charBuffer.push("4");
+              else if (e.code === "Numpad4") charBuffer.push("4"); 
               else if (e.code === "Numpad5") charBuffer.push("5");
               else if (e.code === "Numpad6") charBuffer.push("6");
               else if (e.code === "Numpad7") charBuffer.push("7");
