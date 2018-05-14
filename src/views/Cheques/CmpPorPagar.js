@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import axios from "axios";
-import SearchPage from "../../components/SearchPage";
+// import SearchPage from "../../components/SearchPage";
 import SearchPage2 from "../../components/SearchPage2";
 // import DocDetailMore from "./DocDetailMore";
 
 // import { Badge } from "reactstrap";
 // import uuid from "uuid/v4";
 const sappy = window.sappy;
-const $ = window.$;
+// const $ = window.$;
 import CmpFooter from "./CmpFooter";
 
 class CmpPorPagar extends Component {

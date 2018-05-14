@@ -36,12 +36,9 @@ const $ = window.$;
 
   function validate(barcode) {
     
-    if (barcode.startsWith('#FN#') || barcode.startsWith('#fn#')
-     || barcode.startsWith('£FN£') || barcode.startsWith('£fn£')) {
-
-      let bc  = sappy.replaceAll(barcode,"£",'#')
-
-      if (bc.startsWith('#fn#')) bc = sappy.reverseCase(bc)
+    if (barcode.startsWith('FN') || barcode.startsWith('fn') ) {
+      let bc  = barcode;
+      if (bc.startsWith('fn')) bc = sappy.reverseCase(bc)
       
       // retornar o próprio código lido
       return currentCallback({ barcodes: [bc], hasMany: false });  

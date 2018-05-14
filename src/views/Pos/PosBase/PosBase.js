@@ -304,10 +304,10 @@ class PosBase extends Component {
     if (!pinHeader && expanded) that.toggleHeader();
 
 
-    if (barcodes && barcodes.length ===1 && barcodes[0].startsWith('#FN#')){
+    if (barcodes && barcodes.length ===1 && barcodes[0].startsWith('FN')){
       // Special function barcode
-      if (barcodes[0].startsWith('#FN#PC#')){
-        let byName = barcodes[0].split("#")[3];
+      if (barcodes[0].startsWith('FNPC')){
+        let byName = barcodes[0].split("FNPC")[1];
 
         return that.handleHeaderFieldChange({
           fieldName: "UNLOCKEDBY",
