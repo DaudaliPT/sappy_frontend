@@ -159,11 +159,9 @@ const $ = window.$;
 
 
           // Se 0 a z    [0-9] e [A-Z] e [a-z]
-          if ((e.which >= 48 && e.which <= 122) || e.which === 16) {
+          if ((e.which >= 48 && e.which <= 122)  ) {
 
-            if(e.shiftKey) {
-              charBuffer.push(e.key);
-            }else { 
+         
               if (e.code === "Numpad0") charBuffer.push("0");
               else if (e.code === "Numpad1") charBuffer.push("1");
               else if (e.code === "Numpad2") charBuffer.push("2");
@@ -175,9 +173,9 @@ const $ = window.$;
               else if (e.code === "Numpad8") charBuffer.push("8");
               else if (e.code === "Numpad9") charBuffer.push("8");
               else charBuffer.push(String.fromCharCode(e.which));
-            }
-            
-             console.log(e.key + ' ' +e.which + ":" + charBuffer.join("|"));
+      
+
+            //  console.log(e.key + ' ' +e.which + ":" + charBuffer.join("|"));
 
             // if (timeOutHandler) {
             //   clearTimeout(timeOutHandler);
