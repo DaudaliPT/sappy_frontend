@@ -218,7 +218,7 @@ class Produtos extends Component {
           }
         ]}
       />
-    );
+    ); 
   }
 }
 

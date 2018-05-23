@@ -43,6 +43,7 @@ class Inicio extends Component {
     if (objCode === "17") url += "Ordr";
     if (objCode === "13") url += "Oinv";
     if (objCode === "14") url += "Orin";
+    if (objCode === "23") url += "Oqut";
     hashHistory.push({ pathname: url, state: { ID } });
   }
 

@@ -171,7 +171,7 @@ class Parceiros extends Component {
         //   }
         // ]}
       />
-    );
+    ); 
   }
 }
 

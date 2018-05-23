@@ -151,7 +151,7 @@ class BaseLandingPage extends Component {
           var tabItems = result.data.tabItems;
           var listItems = result.data.firstRows;
           var hierarquyItems = result.data.hierarquyItems;
-          var rvHasNextPage = listItems.length < result.data.totalRowCount;
+          var rvHasNextPage = listItems.length < listItems[0].TOTAL_ROWS ;
           let totalInfo = {
             Total: listItems.length > 0 ? listItems[0].TOTAL_ROWS : 0,
             Loaded: listItems.length
