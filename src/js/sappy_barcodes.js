@@ -176,6 +176,7 @@ const $ = window.$;
               else if (e.code === "Numpad9") charBuffer.push("8");
               else charBuffer.push(String.fromCharCode(e.which));
             }
+            
              console.log(e.key + ' ' +e.which + ":" + charBuffer.join("|"));
 
             // if (timeOutHandler) {
