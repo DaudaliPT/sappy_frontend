@@ -58,6 +58,58 @@ class ModalCreateArtigo extends Component {
     let that = this;
     $("body").css("position", "fixed");
 
+    //Crate new item based on Unapor received document
+    if (this.props.unaporDraftId) {
+      this.serverRequest = axios({
+        method: "get",
+        headers: { "Content-Type": "application/json" },
+        data: JSON.stringify({ ...this.state }),
+        url: "api/prod/item/unapordoc/" + this.props.unaporDraftId + '/' + this.props.unaporDraftLinenum
+      })
+        .then(result => {
+          let item = result.data.Item;
+          let AlternateCatNum = result.data.AlternateCatNum;
+
+          // //Preparar as propriedades
+          // let Propriedades = [];
+          // for (var index = 1; index < 65; index++) {
+          //   var propertyName = "Properties" + index;
+          //   let propertyValue = item[propertyName] === "tYES";
+          //   if (propertyValue) Propriedades.push(index.toString());
+          // }
+
+          //preparar supplierCollection
+          let supplierCollection = [{
+            "CardCode": item.Mainsupplier,
+            "Substitute": item.SupplierCatalogNo
+          }];
+          // AlternateCatNum.forEach(obj => {
+          //   if (obj.CardCode !== item.Mainsupplier) {
+          //     supplierCollection.push({
+          //       "CardCode": obj.CardCode,
+          //       "Substitute": obj.Substitute
+          //     });
+          //   }
+          // })
+
+
+          that.setState({
+            loading: false,
+            newItem: item,
+            numberOfBarCodes: item.ItemBarCodeCollection.length,
+            // Propriedades,
+            supplierCollection,
+            showFabricante: item.Mainsupplier === "F0585"/*UNAPOR*/,
+            // U_rsaMargem: item.U_rsaMargem,
+            // PrecoCash: item.ItemPrices[0].Price
+          })
+        })
+        .catch(error => {
+          this.setState({ saving: false }, sappy.showError(error, "Erro ao obter dados"));
+        })
+    }
+
+
     if (this.state.changeItemCode && this.state.changeItemCode.length > 0) {
       this.serverRequest = axios({
         method: "get",
@@ -115,6 +167,7 @@ class ModalCreateArtigo extends Component {
       this.serverRequest.abort();
     }
   }
+
   // Recebe os valores dos campos MY*
   onFieldChange(changeInfo) {
     let that = this;
@@ -354,8 +407,23 @@ class ModalCreateArtigo extends Component {
             url: "api/prod/item"
           })
             .then(result => {
-
-              if (this.props.onNewItemCreated) {
+              //Crate new item based on Unapor received document
+              if (this.props.unaporDraftId) {
+                this.serverRequest = axios({
+                  method: "post",
+                  headers: { "Content-Type": "application/json" },
+                  url: "api/prod/item/unapordoc/" + this.props.unaporDraftId + '/' + this.props.unaporDraftLinenum + '/' + result.data.ItemCode
+                })
+                  .then(result => {
+                    //Force reload
+                    window.location.reload();
+                    return
+                  })
+                  .catch(error => {
+                    this.setState({ saving: false }, sappy.showError(error, "Erro ao atualizar rascunho com o novo artigo"));
+                  });
+              }
+              else if (this.props.onNewItemCreated) {
                 this.props.onNewItemCreated(result.data.ItemCode)
               }
               else {
@@ -436,6 +504,9 @@ class ModalCreateArtigo extends Component {
   }
 
   render() {
+
+    let that = this;
+
     var renderSuppliers = () => {
       let ret = [];
       let { supplierCollection } = this.state;
@@ -505,10 +576,10 @@ class ModalCreateArtigo extends Component {
     };
     var renderBarcodes = () => {
       let ret = [];
-      for (var index = 0; index < (this.state.numberOfBarCodes || 1); index++) {
+      for (var index = 0; index < (that.state.numberOfBarCodes || 1); index++) {
         let barcode_field = "CodigoBarras_" + index + "_Barcode";
         let freetext_field = "CodigoBarras_" + index + "_FreeText";
-        let bc = this.state.newItem.ItemBarCodeCollection[index] || {};
+        let bc = that.state.newItem.ItemBarCodeCollection[index] || {};
         ret.push(
           <div key={"div1" + barcode_field} className="row">
             <div className="col-7" style={{ paddingRight: "0" }}>
@@ -518,8 +589,8 @@ class ModalCreateArtigo extends Component {
                 placeholder="Código de barras..."
                 name={barcode_field}
                 value={bc.Barcode}
-                onChange={this.onFieldChange}
-                state={this.state.validationMessages[barcode_field]}
+                onChange={that.onFieldChange}
+                state={that.state.validationMessages[barcode_field]}
               />
             </div>
             <div className="col" style={{ paddingLeft: "0" }}>

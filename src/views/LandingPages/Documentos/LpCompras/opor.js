@@ -16,7 +16,8 @@ class opor extends Component {
         let rowId = "row_" + row.DocEntry + "#" + (row.DocNum || 0);
         let rowStyleClass = "";
         // if (selected) rowStyleClass += " sappy-selected-row";
-        if (row.DRAFT === "Y" || row.DRAFT === "X") rowStyleClass += " vlist-row-warning";
+        if (row.DRAFT === "X" || row.UNAPOR_DOCENTRY) rowStyleClass += " sappy-selected-row";
+        else if (row.DRAFT === "Y" || row.DRAFT === "X") rowStyleClass += " vlist-row-warning";
 
         return (
           <div key={rowId} className={"byusVirtualRow vertical-align " + rowStyleClass} onClick={e => onRowClick({ row, index })}>
@@ -68,7 +69,7 @@ class opor extends Component {
                         {sappy.format.datetime2(row.DOC_DATETIME)}
                       </div>
                       <div className="col-8 text-nowrap">
-                        {row.DocNum} <DocBadges tags={row.ITEM_TAGS} />
+                        {row.DocNum | row.NumAtCard} <DocBadges tags={row.ITEM_TAGS} />
                       </div>
                       <div className="col-2 text-nowrap lastcol">
                         <span className="float-right"> {row.FORMATED_DOCTOTAL} </span>

@@ -1,10 +1,11 @@
 import React from "react";
 import EditModal from "../Produtos/EditModal";
+import EditNewModal from "../Produtos/EditNewModal";
 import DocDetailMore from "./DocBase/DocDetailMore";
 // import { TextBox, TextBoxNumeric, ComboBox, Date, Toggle, Flag, Check } from "../../Inputs";
 const sappy = window.sappy;
 
-exports.prepareDocType = function({ tableName, module }) {
+exports.prepareDocType = function ({ tableName, module }) {
   let objInfo = sappy.b1.sapObjectInfo({ tableName });
   tableName = objInfo.tableName.toLowerCase();
   let objType = objInfo.objectCode.toString();
@@ -222,7 +223,15 @@ exports.prepareDocType = function({ tableName, module }) {
     width: 100,
     editable: false,
     dragable: false,
-    onLinkClick: props => sappy.showModal(<EditModal toggleModal={sappy.hideModal} itemcode={props.dependentValues.ITEMCODE} />)
+    onLinkClick: props => {
+      if (props.dependentValues.ITEMCODE === '#NEW#')
+        return sappy.showModal(<EditNewModal
+          toggleModal={sappy.hideModal}
+          unaporDraftId={props.dependentValues.ID}
+          unaporDraftLinenum={props.dependentValues.LINENUM} />);
+      else
+        return sappy.showModal(<EditModal toggleModal={sappy.hideModal} itemcode={props.dependentValues.ITEMCODE} />);
+    }
   });
   detailFields.push({ name: "ITEMNAME", label: "Descrição", type: "tags", width: 400, editable: true });
   detailFields.push({ name: "QTCX", label: "Cx", type: "quantity", width: 60, editable: true });

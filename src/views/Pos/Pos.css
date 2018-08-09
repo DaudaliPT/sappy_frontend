@@ -114,6 +114,12 @@
   /* color: rgba(32, 46, 55, 1) !important; */
 }
 
+
+.line-new-item {
+  background-color: rgba(237, 103, 99,0.1) !important; 
+  color: rgb(237, 103, 99) !important;
+}
+
 .bellow-cost {
   color: rgb(237, 103, 99) !important;
 }

@@ -177,6 +177,7 @@ class DocDetail extends PureComponent {
                 let classes = "";
                 if (row.IDPROMO) classes += " has-promo";
                 if (row.LineStatus === "C") classes += " line-closed";
+                if (row.ITEMCODE === "#NEW#") classes += " line-new-item";
                 // if (sappy.getNum(row.AvgPrice) * sappy.getNum(row.QTSTK) > sappy.getNum(row.LINETOTAL)) classes += " bellow-cost";
 
                 return classes;
@@ -203,10 +204,10 @@ DocDetail.defaultProps = {
   fields: [],
   sidebarFields: [],
   rows: [],
-  onRowUpdate: (currentRow, updated) => {},
-  onRowSelectionChange: selectedIndexes => {},
-  onRowReorder: (draggedRows, rowTarget, orderedRows) => {},
-  onSideBarFieldChange: changeInfo => {}
+  onRowUpdate: (currentRow, updated) => { },
+  onRowSelectionChange: selectedIndexes => { },
+  onRowReorder: (draggedRows, rowTarget, orderedRows) => { },
+  onSideBarFieldChange: changeInfo => { }
 };
 
 export default DocDetail;

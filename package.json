@@ -2,7 +2,7 @@
   "name": "sappy",
   "version": "0.1.0",
   "description": "Rachidas project frontend",
-  "proxy": "http://192.168.0.243:3005",
+  "proxy": "http://byusserver.ddns.net:3005",
   "private": true,
   "dependencies": {
     "autonumeric": "^4.0.3",
@@ -26,7 +26,7 @@
     "react-bootstrap-sweetalert": "^4.0.0",
     "react-bootstrap-switch": "^15.5.0-a",
     "react-bootstrap-toggle": "^2.0.8",
-    "react-breadcrumbs": "^1.5.2", 
+    "react-breadcrumbs": "^1.5.2",
     "react-data-grid": "github:urbinopescada/react-data-grid",
     "react-date-picker": "^5.3.28",
     "react-datepicker": "^0.46.0",
