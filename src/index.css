@@ -373,6 +373,15 @@ body.site-navbar-small {
   background-color: rgba(255, 200, 0, 0.1);
 }
 
+.vlist-row-warning-unapor {
+  color: rgb(249, 104, 104) ;
+  background-color: rgba(51, 204, 109, 0.1);
+}
+
+.vlist-row-success-unapor {
+  /* color: rgb(30, 122, 65); */
+  background-color: rgba(51, 204, 109, 0.1);
+}
 .vlist-row-success {
   color: rgb(30, 122, 65);
   background-color: rgba(51, 204, 109, 0.1);

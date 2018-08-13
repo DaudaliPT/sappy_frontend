@@ -16,7 +16,8 @@ class opor extends Component {
         let rowId = "row_" + row.DocEntry + "#" + (row.DocNum || 0);
         let rowStyleClass = "";
         // if (selected) rowStyleClass += " sappy-selected-row";
-        if (row.DRAFT === "X" || row.UNAPOR_DOCENTRY) rowStyleClass += " sappy-selected-row";
+        if (row.UNAPOR_BASEENTRY && row.DRAFT === "X") rowStyleClass += " vlist-row-warning-unapor";
+        else if (row.UNAPOR_BASEENTRY) rowStyleClass += " vlist-row-success-unapor";
         else if (row.DRAFT === "Y" || row.DRAFT === "X") rowStyleClass += " vlist-row-warning";
 
         return (

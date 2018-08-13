@@ -24,7 +24,7 @@ class SideBar extends Component {
     const renderSubitems = (groupKey, items) => {
       return Object.keys(items).map(key => {
         let item = items[key];
-        if (item || groupKey === "Filtros" || key.indexOf("?") > -1) {
+        if (item || groupKey === "Filtros" || groupKey === "Unapor" || key.indexOf("?") > -1) {
           let id = groupKey + "|" + key;
           return (
             <a key={key} className={"list-group-item" + (this.props.activeSidebarItems.indexOf(id) !== -1 ? " active" : "")} id={id} onClick={this.handleOnClick}>

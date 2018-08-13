@@ -33,7 +33,7 @@ export default {
           })
           .catch(error => sappy.showError(error, "Não foi possível apagar linhas"));
       },
-      onCancel: () => {}
+      onCancel: () => { }
     });
   },
 
@@ -47,15 +47,23 @@ export default {
         onConfirm: () => {
           hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", ""));
         },
-        cancelText: "Descartar",
+        cancelText: that.state.docData.UNAPOR_BASEENTRY?"Rejeitar documento":"Descartar",
         cancelStyle: "danger btn-outline",
         confirmText: "Manter rascunho",
         confirmStyle: "success",
         onCancel: () => {
-          that.serverRequest = axios
-            .delete(`${that.props.apiDocsNew}/${that.state.docData.ID}`)
-            .then(result => hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", "")))
-            .catch(error => sappy.showError(error, "Erro ao apagar dados"));
+          if (that.state.docData.UNAPOR_BASEENTRY){
+            that.serverRequest = axios
+              .post(`${that.props.apiDocsNew}/reject/${that.state.docData.ID}`)
+              .then(result => hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", "")))
+              .catch(error => sappy.showError(error, "Erro ao rejeitar documento"));
+          }
+          else {
+            that.serverRequest = axios
+              .delete(`${that.props.apiDocsNew}/${that.state.docData.ID}`)
+              .then(result => hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", "")))
+              .catch(error => sappy.showError(error, "Erro ao apagar dados"));
+          }
         }
       });
     }
@@ -79,7 +87,7 @@ export default {
     let docEntry = that.state.docData.DOCENTRY;
     axios
       .get(`${that.props.apiDocsEdit}/${docEntry}/links`)
-      .then(function(result) {
+      .then(function (result) {
         sappy.showModal(<ModalLinks data={result.data} />);
       })
       .catch(error => sappy.showError(error, "Erro ao obter dados"));
@@ -89,7 +97,7 @@ export default {
     let docEntry = that.state.docData.DOCENTRY;
     axios
       .post(`${that.props.apiDocsNew}/${docEntry}/migrate/${toObjtype}`)
-      .then(function(result) {
+      .then(function (result) {
         let docInfo = sappy.b1.sapObjectInfo({ objectCode: toObjtype });
 
         hashHistory.push({
@@ -112,7 +120,7 @@ export default {
         let docEntry = that.state.docData.DOCENTRY;
         axios
           .post(`${that.props.apiDocsEdit}/${docEntry}/canceldoc`)
-          .then(function(result) {
+          .then(function (result) {
             hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", ""));
 
             sappy.showToastr({ color: "success", msg: "Documento cancelado." });
@@ -132,7 +140,7 @@ export default {
         let docEntry = that.state.docData.DOCENTRY;
         axios
           .post(`${that.props.apiDocsEdit}/${docEntry}/closedoc`)
-          .then(function(result) {
+          .then(function (result) {
             hashHistory.push(hashHistory.getCurrentLocation().pathname.replace("/doc", ""));
 
             sappy.showToastr({ color: "success", msg: "Documento fechado." });
@@ -145,7 +153,7 @@ export default {
     let docEntry = that.state.docData.DOCENTRY;
     axios
       .post(`${that.props.apiDocsNew}/${docEntry}/clone`)
-      .then(function(result) {
+      .then(function (result) {
         hashHistory.push({
           pathname: hashHistory.getCurrentLocation().pathname,
           state: { id: result.data.ID }
@@ -159,7 +167,7 @@ export default {
     let docEntry = that.state.docData.DOCENTRY;
     axios
       .get(`${that.props.apiDocsEdit}/${docEntry}/previous`)
-      .then(function(result) {
+      .then(function (result) {
         hashHistory.push({
           pathname: hashHistory.getCurrentLocation().pathname,
           state: { DocEntry: result.data }
@@ -172,7 +180,7 @@ export default {
     let docEntry = that.state.docData.DOCENTRY;
     axios
       .get(`${that.props.apiDocsEdit}/${docEntry}/next`)
-      .then(function(result) {
+      .then(function (result) {
         hashHistory.push({
           pathname: hashHistory.getCurrentLocation().pathname,
           state: { DocEntry: result.data }
@@ -257,7 +265,7 @@ export default {
           moreInfo: "Deseja mesmo assim gravar as alterações a este documento?",
           onConfirm: invokePatchDocAPI,
           confirmText: "Ignorar e gravar alterações",
-          onCancel: () => {}
+          onCancel: () => { }
         });
 
       if (newDocData.DOCENTRY > 0)
@@ -266,7 +274,7 @@ export default {
           msg: "Se continuar irá gravar as alterações a este documento.",
           onConfirm: invokePatchDocAPI,
           confirmText: "Gravar alterações",
-          onCancel: () => {}
+          onCancel: () => { }
         });
 
       // Novos documentos
@@ -314,7 +322,7 @@ export default {
           moreInfo: "Deseja mesmo assim criar este documento?",
           onConfirm: e => invokeAddDocAPI(),
           confirmText: "Ignorar e criar documento",
-          onCancel: () => {}
+          onCancel: () => { }
         });
 
       return sappy.showQuestion({
@@ -322,7 +330,7 @@ export default {
         msg: "Se continuar irá criar este documento.",
         onConfirm: e => invokeAddDocAPI(),
         confirmText: "Criar documento",
-        onCancel: () => {}
+        onCancel: () => { }
       });
     };
 
