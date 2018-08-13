@@ -51,8 +51,8 @@ class DefaultFormater extends Component {
 
     return (
       <div id={divID} className={classes} style={style} title={hover ? "" : value} onMouseLeave={onMouseLeave} onMouseEnter={onMouseEnter}>
-        {onLinkClick && <i className="icon fa-arrow-circle-right" aria-hidden="true" onClick={e => onLinkClick(this.props)} />}
-        {onLinkClick && " "}
+        {onLinkClick && value && <i className="icon fa-arrow-circle-right" aria-hidden="true" onClick={e => onLinkClick(this.props)} />}
+        {onLinkClick && value && " "}
         {formatedValue}
       </div>
     );

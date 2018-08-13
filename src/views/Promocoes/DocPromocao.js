@@ -17,6 +17,9 @@ import ModalCoveredItems from "./ModalCoveredItems";
 import ModalCoveredPNs from "./ModalCoveredPNs";
 import DocFooter from "./DocFooter";
 
+
+import SearchAndChooseModalOitm from "../../components/SearchAndChoose/ModalOitm";
+
 const getinitialState = props => {
   let locationState = props.location.state || {};
   return {
@@ -48,6 +51,8 @@ const getinitialState = props => {
 class DocPromocao extends Component {
   constructor(props) {
     super(props);
+
+    let that = this;
 
     this.getvalidationResults = this.getvalidationResults.bind(this);
     this.onClick_AddRemove2 = this.onClick_AddRemove2.bind(this);
@@ -102,8 +107,35 @@ class DocPromocao extends Component {
       { name: "PRICEBASE", label: "Preço Folheto", type: "price", width: 80, editable: true },
       { name: "USER_DISC", label: "Descontos", type: "text", width: 100, editable: true },
       // { name: 'DISCOUNT', label: 'Desconto', type: "discount", width: 60, editable: false },
-      { name: "PRICE", label: "Preço Liq.", type: "price", width: 60, editable: false },
-      { name: "QTMIN", label: "Qt.Min", type: "quantity", width: 50, editable: true }
+      { name: "PRICE", label: "Preço Liq.", type: "price", width: 80, editable: false },
+      { name: "QTMIN", label: "Qt.Min", type: "quantity", width: 50, editable: true },
+      { name: "OFACADA", label: "A cada", type: "quantity", width: 80, editable: true },
+      {
+        name: "OFITEMCODE",
+        label: "Artigo Oferta",
+        type: "text",
+        width: 100,
+        editable: true,
+        dragable: false,
+        onLinkClick: props => {
+
+          if (props.dependentValues.OFITEMCODE) return sappy.showModal(<EditModal toggleModal={sappy.hideModal} itemcode={props.dependentValues.OFITEMCODE} />)
+          return sappy.showModal(<SearchAndChooseModalOitm toggleModal={selectedItems => {
+
+            // console.log(selectedItems);
+            sappy.hideModal();
+
+            if (selectedItems.length)
+              that.handleDetailRowChange(props.dependentValues, { OFITEMCODE: selectedItems[0] })
+            else
+              that.handleDetailRowChange(props.dependentValues, { OFITEMCODE: '' })
+
+          }} useSearchLimit={false} singleSelect={true} showCatNum={false} searchLimitCondition='' searchText='' />)
+        }
+      },
+      { name: "OFITEMNAME", label: "Descrição Oferta", type: "tags", width: 400, editable: false },
+      { name: "OFQTD", label: "Qtd. Oferta", type: "quantity", width: 80, editable: true },
+      { name: "OFUDISC", label: "Desc Oferta", type: "text", width: 100, editable: true },
     ];
 
     this.state = getinitialState(props);
@@ -401,7 +433,7 @@ class DocPromocao extends Component {
       onConfirm: postConfirm,
       confirmText: "Apagar rascunho",
       confirmStyle: "danger",
-      onCancel: () => {}
+      onCancel: () => { }
     });
   }
 
@@ -436,7 +468,7 @@ class DocPromocao extends Component {
         msg: "Deseja criar esta promoção?",
         onConfirm: postConfirm,
         confirmText: "Criar promoção",
-        onCancel: () => {}
+        onCancel: () => { }
       });
     else
       return sappy.showWarning({
@@ -445,7 +477,7 @@ class DocPromocao extends Component {
         moreInfo: "Deseja mesmo assim criar esta promoção?",
         onConfirm: postConfirm,
         confirmText: "Ignorar e gravar promoção",
-        onCancel: () => {}
+        onCancel: () => { }
       });
   }
 
@@ -480,7 +512,7 @@ class DocPromocao extends Component {
         msg: "Deseja gravar alterações?",
         onConfirm: () => that.saveToDatabase(newState),
         confirmText: "Gravar promoção",
-        onCancel: () => {}
+        onCancel: () => { }
       });
     else
       return sappy.showWarning({
@@ -489,7 +521,7 @@ class DocPromocao extends Component {
         moreInfo: "Deseja mesmo assim criar este promoção?",
         onConfirm: () => that.saveToDatabase(newState),
         confirmText: "Ignorar e gravar promoção",
-        onCancel: () => {}
+        onCancel: () => { }
       });
   }
 
@@ -546,34 +578,77 @@ class DocPromocao extends Component {
           })
           .catch(error => sappy.showError(error, "Não foi possível apagar linhas"));
       },
-      onCancel: () => {}
+      onCancel: () => { }
     });
   }
 
   handleDetailRowChange(currentRow, updated) {
     let that = this;
-    // debugger
-    this.serverRequest = axios
-      .patch(`/api/promocoes/doc/${this.state.ID}/line/${currentRow.LINENUM}`, { ...updated })
-      .then(function(result) {
-        let new_row = result.data.UPDATED_LINE;
-        // create a new object and replace the line on it, keeping the other intact
-        let rows = that.state.LINES.map(r => {
-          if (r.LINENUM === new_row.LINENUM) {
-            return new_row;
-          } else {
-            return r;
+
+    let callBackend = () => {
+      this.serverRequest = axios
+        .patch(`/api/promocoes/doc/${this.state.ID}/line/${currentRow.LINENUM}`, { ...updated })
+        .then(function (result) {
+          let new_row = result.data.UPDATED_LINE;
+          // create a new object and replace the line on it, keeping the other intact
+          let rows = that.state.LINES.map(r => {
+            if (r.LINENUM === new_row.LINENUM) {
+              return new_row;
+            } else {
+              return r;
+            }
+          });
+
+          if (result.data.ReturnToastr) {
+            sappy.showToastr(result.data.ReturnToastr);
           }
-        });
 
-        if (result.data.ReturnToastr) {
-          sappy.showToastr(result.data.ReturnToastr);
+          let newDocData = { LINES: rows };
+          that.setState(newDocData);
+        })
+        .catch(error => sappy.showError(error, "Erro ao gravar linha"));
+    }
+
+    let searchOfItem = () => {
+      let searchApiUrl = SearchAndChooseModalOitm.searchApiUrl;
+      let searchText = updated.OFITEMCODE;
+      axios.get(searchApiUrl, {
+        params: {
+          searchTags: [{ value: searchText }]
         }
-
-        let newDocData = { LINES: rows };
-        that.setState(newDocData);
       })
-      .catch(error => sappy.showError(error, "Erro ao gravar linha"));
+        .then(result => {
+          var listItems = result.data.firstRows;
+          let found = listItems.length > 0 ? listItems[0].TOTAL_ROWS : 0;
+
+          if (found === 1) {
+            let selectedItems;
+            updated.OFITEMCODE = listItems[0].ItemCode;
+          } else if (found > 1) {
+            sappy.showModal(<SearchAndChooseModalOitm toggleModal={selectedItems => {
+               sappy.hideModal();
+              if (selectedItems.length) updated.OFITEMCODE = selectedItems[0]; else updated.OFITEMCODE = '';
+
+              return callBackend()
+
+            }} useSearchLimit={false} singleSelect={true} showCatNum={false} searchLimitCondition='' searchText={searchText} />)
+          } else {
+            updated.OFITEMCODE = "";
+            sappy.showWarning({
+              title: "Nada encontrado",
+              moreInfo: "Não foi possivel encontrar ao procurar por '" + searchText + "'"
+            });
+          }
+
+          return callBackend()
+        })
+        .catch(function (error) {
+          if (!error.__CANCEL__) sappy.showError(error, "Api error");
+          that.setState({ searchText: "" });
+        });
+    }
+    if (updated.OFITEMCODE) return searchOfItem();
+    callBackend();
   }
 
   handleDetailRowSelect(selectedLineNums) {
@@ -602,7 +677,7 @@ class DocPromocao extends Component {
     let createDocLines = () => {
       this.serverRequest = axios
         .post(`/api/promocoes/doc/${this.state.ID}/lines`, { itemCodes, barcodes })
-        .then(function(result) {
+        .then(function (result) {
           let newDocData = { ...result.data };
 
           that.setState(newDocData, () => {

@@ -34,10 +34,10 @@ class ModalOitm extends Component {
 
   handleRowSelection(e) {
     var checkbox = $(e.target).closest(".byusVirtualRow").find(".contacts-checkbox")[0];
-
     let id = checkbox.id;
     let itemCode = id.split("_")[1];
     let { selectedItems } = this.state;
+    if (this.props.singleSelect) selectedItems=[];
     let ix = selectedItems.indexOf(itemCode);
 
     if (ix === -1) {
@@ -237,7 +237,7 @@ ModalOitm.defaultProps = {
   useBaseDoclines: false,
   baseDocLinesCondition: "",
   onToogleUseBaseDoclines: () => {},
-
+  singleSelect: false,
   useSearchLimit: false,
   searchLimitCondition: "",
   onToogleUseSearchLimit: () => {}
