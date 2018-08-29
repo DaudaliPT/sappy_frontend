@@ -37,7 +37,7 @@ class ModalOitm extends Component {
     let id = checkbox.id;
     let itemCode = id.split("_")[1];
     let { selectedItems } = this.state;
-    if (this.props.singleSelect) selectedItems=[];
+    if (this.props.singleSelect) selectedItems = [];
     let ix = selectedItems.indexOf(itemCode);
 
     if (ix === -1) {
@@ -56,7 +56,9 @@ class ModalOitm extends Component {
   }
 
   handleOnClickContinuar(e) {
+
     this.props.toggleModal(this.state.selectedItems);
+
   }
 
   toggleModal(refresh) {
@@ -69,7 +71,12 @@ class ModalOitm extends Component {
 
   handleAddNew(e) {
     this.setState({
-      currentModal: <EditNewModal toggleModal={this.toggleModal} onNewItemCreated={this.handleNewItemCreated} />
+      currentModal: <EditNewModal
+        toggleModal={this.toggleModal}
+        onNewItemCreated={this.handleNewItemCreated}
+        unaporDraftId={this.props.unaporDraftId}
+        unaporDraftLinenum={this.props.unaporDraftLinenum}
+      />
     });
     // this.props.toggleModal(this.state.selectedItems);
   }
@@ -236,10 +243,12 @@ ModalOitm.defaultProps = {
   showCatNum: false,
   useBaseDoclines: false,
   baseDocLinesCondition: "",
-  onToogleUseBaseDoclines: () => {},
+  onToogleUseBaseDoclines: () => { },
   singleSelect: false,
   useSearchLimit: false,
   searchLimitCondition: "",
-  onToogleUseSearchLimit: () => {}
+  onToogleUseSearchLimit: () => { },
+  unaporDraftId: 0,
+  unaporDraftLinenum: 0
 };
 export default ModalOitm;

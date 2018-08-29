@@ -106,7 +106,7 @@ class DocBase extends Component {
 
     this.serverRequest = axios
       .post(`${this.props.apiDocsEdit}/${docEntry}/canceldoc`)
-      .then(function(result) {
+      .then(function (result) {
         hashHistory.replace(hashHistory.getCurrentLocation().pathname + "?new=" + new Date().getTime());
       })
       .catch(error => sappy.showError(error, "Erro ao canelar documento"));
@@ -123,7 +123,7 @@ class DocBase extends Component {
     let docentry = locationState.DocEntry;
     this.serverRequest = axios
       .get(`${this.props.apiDocsEdit}/${docentry}/haschanges`)
-      .then(function(result) {
+      .then(function (result) {
         let changes = result.data || [];
         if (changes.length === 0) return that.setState({ editable: !editable }, that.loadDoc);
 
@@ -139,7 +139,7 @@ class DocBase extends Component {
           onCancel: () => {
             that.serverRequest = axios
               .post(`${that.props.apiDocsEdit}/${docentry}/deletechanges`)
-              .then(function(result) {
+              .then(function (result) {
                 that.setState({ editable: !editable }, that.loadDoc);
               })
               .catch(error => sappy.showError(error, "Erro ao obter dados"));
@@ -164,7 +164,7 @@ class DocBase extends Component {
       let docentry = locationState.DocEntry;
       this.serverRequest = axios
         .get(`${this.props.apiDocsEdit}/${docentry}?editable=${this.state.editable ? "yes" : ""}`)
-        .then(function(result) {
+        .then(function (result) {
           let newDocData = result.data;
           that.setNewDataAndDisplayAlerts(newDocData);
         })
@@ -178,7 +178,7 @@ class DocBase extends Component {
     if (id) {
       this.serverRequest = axios
         .get(`${this.props.apiDocsNew}/${id}`)
-        .then(function(result) {
+        .then(function (result) {
           let newDocData = result.data;
           that.setNewDataAndDisplayAlerts(newDocData);
         })
@@ -221,7 +221,7 @@ class DocBase extends Component {
 
       this.serverRequest = axios
         .post(this.props.apiDocsNew, data)
-        .then(function(result) {
+        .then(function (result) {
           let docData = that.state.docData;
           docData = { ...docData, ...result.data };
           that.setState({ docData, rows: [] });
@@ -273,7 +273,7 @@ class DocBase extends Component {
     if (this.state.docData.DOCENTRY > 0) {
       that.serverRequest = axios
         .patch(this.props.apiDocsEdit + "/" + this.state.docData.DOCENTRY + `?editable=${this.state.editable ? "yes" : ""}`, updated)
-        .then(function(result) {
+        .then(function (result) {
           let docData = { ...that.state.docData, ...result.data };
           delete docData.changing;
           delete docData[changeInfo.fieldName + "_LOGICMSG"];
@@ -285,7 +285,7 @@ class DocBase extends Component {
       this.ensureDocHeaderExists(() => {
         that.serverRequest = axios
           .patch(this.props.apiDocsNew + "/" + this.state.docData.ID, updated)
-          .then(function(result) {
+          .then(function (result) {
             let docData = { ...that.state.docData, ...result.data };
             docData.LINES = [...docData.LINES];
             delete docData.changing;
@@ -310,7 +310,7 @@ class DocBase extends Component {
 
     this.serverRequest = axios
       .patch(`${this.props.apiDocsNew}/${this.state.docData.ID}/line/${currentRow.LINENUM}`, { ...updated })
-      .then(function(result) {
+      .then(function (result) {
         let new_row = result.data.UPDATED_LINE;
         // create a new object and replace the line on it, keeping the other intact
         let rows = that.state.docData.LINES.map(r => {
@@ -374,7 +374,7 @@ class DocBase extends Component {
           itemCodes,
           barcodes
         })
-        .then(function(result) {
+        .then(function (result) {
           let newDocData = { ...that.state.docData, ...result.data };
           that.setState({ docData: newDocData }, () => {
             //scroll to end
@@ -427,7 +427,13 @@ class DocBase extends Component {
     let footerBaseDocLinesCondition = this.props.footerBaseDocLinesCondition || "";
     Object.keys(docData).forEach(field => (footerBaseDocLinesCondition = sappy.replaceAll(footerBaseDocLinesCondition, "<" + field + ">", docData[field])));
 
+
     let canConfirmar = this.state.docData.ID > 0 || (this.state.docData.DOCNUM > 0 && editable);
+
+    // Check if ther are new items to open
+    let hasNewItemsToOpen = docData.LINES.filter(line => line.ITEMCODE === "#NEW#").lenght > 0;
+    canConfirmar = canConfirmar && hasNewItemsToOpen;
+
 
     let footerProps = {
       mainThis: that,

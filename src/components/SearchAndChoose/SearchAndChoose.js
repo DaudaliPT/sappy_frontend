@@ -177,7 +177,7 @@ class SearchAndChoose extends Component {
             });
           }
         })
-        .catch(function(error) {
+        .catch(function (error) {
           if (!error.__CANCEL__) sappy.showError(error, "Api error");
           that.setState({ searchText: "" });
         });
@@ -220,16 +220,16 @@ class SearchAndChoose extends Component {
 
 SearchAndChoose.defaultProps = {
   searchType: "",
-  onReturnSelectItems: selectedItems => {},
+  onReturnSelectItems: selectedItems => { },
   showCatNum: false,
 
   useBaseDoclines: false,
   toObjtype: "",
   baseDocLinesCondition: "",
-  onToogleUseBaseDoclines: () => {},
+  onToogleUseBaseDoclines: () => { },
 
   useSearchLimit: false,
   searchLimitCondition: "",
-  onToogleUseSearchLimit: () => {}
+  onToogleUseSearchLimit: () => { }
 };
 export default SearchAndChoose;

@@ -71,12 +71,14 @@ class ModalCreateArtigo extends Component {
           let AlternateCatNum = result.data.AlternateCatNum;
 
           // //Preparar as propriedades
-          // let Propriedades = [];
+          let Propriedades = [];
           // for (var index = 1; index < 65; index++) {
           //   var propertyName = "Properties" + index;
           //   let propertyValue = item[propertyName] === "tYES";
           //   if (propertyValue) Propriedades.push(index.toString());
           // }
+
+          item.Properties1 = "tYES"; Propriedades.push("1"); //Definir como Marca Propria
 
           //preparar supplierCollection
           let supplierCollection = [{
@@ -97,7 +99,7 @@ class ModalCreateArtigo extends Component {
             loading: false,
             newItem: item,
             numberOfBarCodes: item.ItemBarCodeCollection.length,
-            // Propriedades,
+            Propriedades,
             supplierCollection,
             showFabricante: item.Mainsupplier === "F0585"/*UNAPOR*/,
             // U_rsaMargem: item.U_rsaMargem,
@@ -407,23 +409,24 @@ class ModalCreateArtigo extends Component {
             url: "api/prod/item"
           })
             .then(result => {
-              //Crate new item based on Unapor received document
-              if (this.props.unaporDraftId) {
-                this.serverRequest = axios({
-                  method: "post",
-                  headers: { "Content-Type": "application/json" },
-                  url: "api/prod/item/unapordoc/" + this.props.unaporDraftId + '/' + this.props.unaporDraftLinenum + '/' + result.data.ItemCode
-                })
-                  .then(result => {
-                    //Force reload
-                    window.location.reload();
-                    return
-                  })
-                  .catch(error => {
-                    this.setState({ saving: false }, sappy.showError(error, "Erro ao atualizar rascunho com o novo artigo"));
-                  });
-              }
-              else if (this.props.onNewItemCreated) {
+              // //Crate new item based on Unapor received document
+              // if (this.props.unaporDraftId) {
+              //   this.serverRequest = axios({
+              //     method: "post",
+              //     headers: { "Content-Type": "application/json" },
+              //     url: "api/prod/item/unapordoc/" + this.props.unaporDraftId + '/' + this.props.unaporDraftLinenum + '/' + result.data.ItemCode
+              //   })
+              //     .then(result => {
+              //       //Force reload
+              //       window.location.reload();
+              //       return
+              //     })
+              //     .catch(error => {
+              //       this.setState({ saving: false }, sappy.showError(error, "Erro ao atualizar rascunho com o novo artigo"));
+              //     });
+              // }
+              // else 
+              if (this.props.onNewItemCreated) {
                 this.props.onNewItemCreated(result.data.ItemCode)
               }
               else {

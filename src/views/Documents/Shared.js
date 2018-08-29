@@ -1,6 +1,8 @@
 import React from "react";
 import EditModal from "../Produtos/EditModal";
-import EditNewModal from "../Produtos/EditNewModal";
+// import EditNewModal from "../Produtos/EditNewModal";
+import axios from "axios";
+import ModalOitm from "../../components/SearchAndChoose/ModalOitm";
 import DocDetailMore from "./DocBase/DocDetailMore";
 // import { TextBox, TextBoxNumeric, ComboBox, Date, Toggle, Flag, Check } from "../../Inputs";
 const sappy = window.sappy;
@@ -225,8 +227,28 @@ exports.prepareDocType = function ({ tableName, module }) {
     dragable: false,
     onLinkClick: props => {
       if (props.dependentValues.ITEMCODE === '#NEW#')
-        return sappy.showModal(<EditNewModal
-          toggleModal={sappy.hideModal}
+        return sappy.showModal(<ModalOitm
+          toggleModal={selected => {
+            sappy.hideModal()
+            if (selected && selected.length > 0) {
+              //Update line item with selected item 
+              this.serverRequest = axios({
+                method: "post",
+                headers: { "Content-Type": "application/json" },
+                url: "api/prod/item/unapordoc/" + props.dependentValues.ID + '/' + props.dependentValues.LINENUM + '/' + selected[0]
+              })
+                .then(result => {
+                  //Force reload
+                  window.location.reload();
+                  return
+                })
+                .catch(error => {
+                  this.setState({ saving: false }, sappy.showError(error, "Erro ao atualizar rascunho com o novo artigo"));
+                });
+            }
+
+          }}
+          singleSelect={true}
           unaporDraftId={props.dependentValues.ID}
           unaporDraftLinenum={props.dependentValues.LINENUM} />);
       else
