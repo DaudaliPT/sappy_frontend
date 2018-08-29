@@ -23,7 +23,7 @@ class Inicio extends Component {
   }
 
   componentDidMount() {
-    $('.tokenfield').tokenfield({delimiter:';'})
+    $('.tokenfield').tokenfield({ delimiter: ';' })
   }
   componentWillUnmount() {
     $("body").removeClass("page-maintenance").removeClass("layout-full");
@@ -41,7 +41,7 @@ class Inicio extends Component {
           <div className="col col-md-8 col-lg-6  ">
             <div id="centeredWidget" className="card card-shadow pb-20">
               <div className="card-header card-header-transparent cover overlay">
-                <img className="cover-image" src="../../global/photos/placeholder.png" alt="..." />
+                {/* <img className="cover-image" src="../../global/photos/placeholder.png" alt="..." /> */}
                 <div className="overlay-panel overlay-background vertical-align">
                   <div className="vertical-align-middle">
                     <a className="avatar">

@@ -14,11 +14,11 @@ class NotFound extends Component {
           <div className="col col-md-8 col-lg-6  ">
             <div id="centeredWidget" className="card card-shadow pb-20">
               <div className="card-header card-header-transparent cover overlay">
-                <img
+                {/* <img
                   className="cover-image"
                   src="../../global/photos/placeholder.png"
                   alt="..."
-                />
+                /> */}
                 <div className="overlay-panel overlay-background vertical-align">
                   <div className="vertical-align-middle">
                     <h3>

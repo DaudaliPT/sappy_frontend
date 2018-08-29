@@ -104,6 +104,10 @@
   text-shadow: 2px 2px 4px rgba(32, 46, 55, 0.3);
 }
 
+.is-offer {
+  background-color: rgba(99, 0, 138, 0.1) !important;
+  color: rgb(36, 0, 56) !important;
+}
 .has-promo {
   background-color: rgba(70, 190, 138, 0.1) !important;
   color: rgba(0, 120, 68, 1) !important;

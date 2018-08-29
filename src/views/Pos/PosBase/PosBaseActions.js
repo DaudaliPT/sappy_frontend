@@ -33,7 +33,7 @@ export default {
           })
           .catch(error => sappy.showError(error, "Não foi possível apagar linhas"));
       },
-      onCancel: () => {}
+      onCancel: () => { }
     });
   },
 
@@ -104,7 +104,7 @@ export default {
               onConfirm: () => invokeAddDocAPI(data.DocTotal)
             });
           } else {
-            that.serverRequest = axios.get(`/api/reports/autoprint/${that.state.docData.OBJTYPE}/${result.data.DocEntry}`).then(result => {}).catch(error => {
+            that.serverRequest = axios.get(`/api/reports/autoprint/${that.state.docData.OBJTYPE}/${result.data.DocEntry}`).then(result => { }).catch(error => {
               console.error(error);
               sappy.showToastr({ color: "danger", msg: "Erro ao imprimir documento, avise a caixa sff." });
             });
@@ -128,13 +128,43 @@ export default {
         that.serverRequest = axios.post(url, { data }).then(result => handleAddDocApiResponse(result)).catch(error => sappy.showError(error, "Erro ao criar documento"));
       };
 
-      return sappy.showQuestion({
-        title: "Deseja Continuar?",
-        msg: "Se continuar irá criar este documento.",
-        onConfirm: e => invokeAddDocAPI(),
-        confirmText: "Criar documento",
-        onCancel: () => {}
-      });
+      let applyPromotionOffers = () => {
+        sappy.showWaitProgress("A verificar promoções, aguarde por favor...")
+
+        let handleResponse = result => {
+          if (result.status === 200 /*OK*/) {
+            let data = result.data || {};
+
+            let docData = { ...that.state.docData, ...result.data };
+            that.setState({ selectedLineNums: [], docData });
+
+            return sappy.showWarning({
+              title: "Foram aplicadas promoções",
+              msg: "Por favor verifique as promoções que foram aplicadas.",
+            });
+          } else if (result.status === 204 /*NO_CONTENT*/) {
+
+            return sappy.showQuestion({
+              title: "Deseja Continuar?",
+              msg: "Se continuar irá criar este documento.",
+              onConfirm: e => invokeAddDocAPI(),
+              confirmText: "Criar documento",
+              onCancel: () => { }
+            });
+          }
+        };
+
+        let url = `${that.props.apiDocsNew}/${that.state.docData.ID}/applyoffers`;
+        that.serverRequest =
+          axios.post(url)
+            .then(result => handleResponse(result))
+            .catch(error => sappy.showError(error, "Erro ao verificar promoções"));
+
+      }
+
+
+      applyPromotionOffers();
+
     };
 
     //wait for eventual updates on lost focus

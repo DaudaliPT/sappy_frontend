@@ -35,7 +35,9 @@ class PosDetail extends PureComponent {
             getRowStyle={props => {
               let row = props.row;
               let classes = "";
-              if (row.IDPROMO) classes += "has-promo";
+              if (row.ISOFFER) classes += "is-offer";
+              else if (row.IDPROMO) classes += "has-promo";
+
               // if (sappy.getNum(row.AvgPrice) * sappy.getNum(row.QTSTK) > sappy.getNum(row.LINETOTAL)) classes += " bellow-cost";
 
               return classes;
@@ -52,13 +54,13 @@ class PosDetail extends PureComponent {
   }
 }
 PosDetail.defaultProps = {
-  height: 300,
+  height: 400,
   fields: [],
   rows: [],
-  onRowUpdate: (currentRow, updated) => {},
-  onRowSelectionChange: selectedIndexes => {},
-  onRowReorder: (draggedRows, rowTarget, orderedRows) => {},
-  onSideBarFieldChange: changeInfo => {}
+  onRowUpdate: (currentRow, updated) => { },
+  onRowSelectionChange: selectedIndexes => { },
+  onRowReorder: (draggedRows, rowTarget, orderedRows) => { },
+  onSideBarFieldChange: changeInfo => { }
 };
 
 export default PosDetail;

@@ -288,11 +288,42 @@ class TagsFormatter extends Component {
     let countValue = dependentValues[key + "_COUNT"];
     let alertValue = dependentValues[key + "_ALERT"];
     let tagsValue = dependentValues[key + "_TAGS"] || "";
+    let secondLine = dependentValues[key + "_2NDLINE"] || "";
 
     let { hover } = column;
     let divID = column.name + rowIdx;
     let onMouseLeave;
     let onMouseEnter;
+
+    const renderFirstLine = () => {
+
+
+      if (secondLine) {
+        return (
+          <span key={uuid()}
+            style={{
+              position: "relative",
+              top: "-5px"
+            }}
+          >
+            {value}
+            <span
+              style={{
+                top: "18px",
+                left: "0px",
+                color: "rgba(140, 140, 140, 0.6)",
+                position: "absolute",
+                fontSize: ".5rem",
+                fontWeight: "500"
+              }}
+            >
+              {secondLine}
+            </span>
+          </span>
+        );
+      }
+      return value
+    };
 
     const renderCount = () => {
       if (countValue > 1) {
@@ -401,12 +432,12 @@ class TagsFormatter extends Component {
 
     return (
       <div>
-        {value}
+        {renderFirstLine()}
         {renderCount()}
         {renderAlert()}
         {renderMoreInfo()}
         {renderBadges()}
-      </div>
+      </div >
     );
   }
 }
