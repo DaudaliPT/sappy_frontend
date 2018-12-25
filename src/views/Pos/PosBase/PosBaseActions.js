@@ -64,7 +64,10 @@ export default {
   },
 
   handleOnConfirmar: that => {
+
+    
     let performChecks = () => {
+      let settings  = sappy.getSettings(["POS.GERAL.APPLY_PROMO_OFFERS"])
       //Validar campos de preenchimento obrigatório
       let newDocData = { ...that.state.docData };
       let fieldsRequired = [];
@@ -162,9 +165,17 @@ export default {
 
       }
 
-
-      applyPromotionOffers();
-
+      if (settings["POS.GERAL.APPLY_PROMO_OFFERS"]==='N'){
+        return sappy.showQuestion({
+          title: "Deseja Continuar?",
+          msg: "Se continuar irá criar este documento.",
+          onConfirm: e => invokeAddDocAPI(),
+          confirmText: "Criar documento",
+          onCancel: () => { }
+        });
+      } else {
+        applyPromotionOffers();
+      }
     };
 
     //wait for eventual updates on lost focus

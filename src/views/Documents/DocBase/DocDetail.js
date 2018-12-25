@@ -200,7 +200,7 @@ class DocDetail extends PureComponent {
   }
 }
 DocDetail.defaultProps = {
-  height: 300,
+  height: 400,
   fields: [],
   sidebarFields: [],
   rows: [],

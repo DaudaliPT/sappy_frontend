@@ -309,7 +309,7 @@ class TagsFormatter extends Component {
             {value}
             <span
               style={{
-                top: "18px",
+                top: "16px",
                 left: "0px",
                 color: "rgba(140, 140, 140, 0.6)",
                 position: "absolute",

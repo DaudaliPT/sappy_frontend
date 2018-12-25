@@ -432,7 +432,7 @@ class DocBase extends Component {
 
     // Check if ther are new items to open
     let hasNewItemsToOpen = docData.LINES.filter(line => line.ITEMCODE === "#NEW#").lenght > 0;
-    canConfirmar = canConfirmar && hasNewItemsToOpen;
+    canConfirmar = canConfirmar && !hasNewItemsToOpen;
 
 
     let footerProps = {
