@@ -104,7 +104,7 @@ class DocPromocao extends Component {
       { name: "ITEMNAME", label: "Descrição", type: "tags", width: 400, editable: false },
       { name: "QTSTOCK", label: "Stk", type: "quantity", width: 60, editable: false },
       { name: "PRICEINFO", label: "Preço Cash", type: "price", width: 80, editable: false },
-      { name: "PRICEBASE", label: "Preço Folheto", type: "price", width: 80, editable: true },
+      { name: "PRICEBASE", label: "Preço Folh.", type: "price", width: 80, editable: true },
       { name: "USER_DISC", label: "Descontos", type: "text", width: 100, editable: true },
       // { name: 'DISCOUNT', label: 'Desconto', type: "discount", width: 60, editable: false },
       { name: "PRICE", label: "Preço Liq.", type: "price", width: 80, editable: false },
