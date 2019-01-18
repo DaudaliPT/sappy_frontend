@@ -24,7 +24,7 @@ class ModalOitm extends Component {
       currentModal: null
     };
   }
-
+  
   handleOnKeyDown_popup(e) {
     if (e.keyCode === 13) {
       //Tentar adicionar

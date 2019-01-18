@@ -51,7 +51,11 @@ exports.prepareDocType = function ({ tableName, module }) {
     cardCodeLabel = "Fornecedor";
     cardCodeApi = "/api/cbo/ocrd/s";
     contactLabel = "Contato/Sub.For";
-    footerSearchLimitCondition = `OITM."CardCode"='<CARDCODE>' AND 1= CASE WHEN OCRD."U_apyITMCNT"='Y' THEN CASE WHEN CASE WHEN OITM."FirmCode"=-1 THEN 'null' ELSE  OMRC."FirmName" END = '<CONTACT>' THEN 1 ELSE 0 END  ELSE 1 END`; //<CONTACT> vazio retorna null
+    footerSearchLimitCondition = `((OITM."CardCode"='<CARDCODE>' AND 1= CASE WHEN OCRD."U_apyITMCNT"='Y' THEN CASE WHEN CASE WHEN OITM."FirmCode"=-1 THEN 'null' ELSE  OMRC."FirmName" END = '<CONTACT>' THEN 1 ELSE 0 END  ELSE 1 END)
+                                   OR EXISTS (SELECT "Substitute" 
+                                            FROM OSCN 
+                                            WHERE OSCN."ItemCode" = OITM."ItemCode" AND "CardCode"='<CARDCODE>')
+                                  )`; //<CONTACT> vazio retorna null
 
     priceHover = {
       api: "api/prod/info/<ITEMCODE>/upc",
@@ -226,31 +230,51 @@ exports.prepareDocType = function ({ tableName, module }) {
     editable: false,
     dragable: false,
     onLinkClick: props => {
-      if (props.dependentValues.ITEMCODE === '#NEW#')
-        return sappy.showModal(<ModalOitm
-          toggleModal={selected => {
-            sappy.hideModal()
-            if (selected && selected.length > 0) {
-              //Update line item with selected item 
-              this.serverRequest = axios({
-                method: "post",
-                headers: { "Content-Type": "application/json" },
-                url: "api/prod/item/unapordoc/" + props.dependentValues.ID + '/' + props.dependentValues.LINENUM + '/' + selected[0]
-              })
-                .then(result => {
-                  //Force reload
-                  window.location.reload();
-                  return
-                })
-                .catch(error => {
-                  this.setState({ saving: false }, sappy.showError(error, "Erro ao atualizar rascunho com o novo artigo"));
-                });
-            }
+      if (props.dependentValues.ITEMCODE === '#NEW#') {
 
-          }}
-          singleSelect={true}
-          unaporDraftId={props.dependentValues.ID}
-          unaporDraftLinenum={props.dependentValues.LINENUM} />);
+        //Get UNAPOR item barcode 
+ 
+      this.serverRequest = axios({
+        method: "get",
+        headers: { "Content-Type": "application/json" },
+        data: JSON.stringify({ ...this.state }),
+        url: "api/prod/item/unapordoc/" + props.dependentValues.ID + '/' + props.dependentValues.LINENUM
+      })
+        .then(result => {
+          let UnaporItem = result.data.Item;
+
+
+          return sappy.showModal(<ModalOitm
+            toggleModal={selected => {
+              sappy.hideModal()
+              if (selected && selected.length > 0) {
+                //Update line item with selected item 
+                this.serverRequest = axios({
+                  method: "post",
+                  headers: { "Content-Type": "application/json" },
+                  url: "api/prod/item/unapordoc/" + props.dependentValues.ID + '/' + props.dependentValues.LINENUM + '/' + selected[0]
+                })
+                  .then(result => {
+                    //Force reload
+                    window.location.reload();
+                    return
+                  })
+                  .catch(error => {
+                    this.setState({ saving: false }, sappy.showError(error, "Erro ao atualizar rascunho com o novo artigo"));
+                  });
+              }
+  
+            }}
+            searchText={UnaporItem.BarCode}
+            singleSelect={true}
+            unaporDraftId={props.dependentValues.ID}
+            unaporDraftLinenum={props.dependentValues.LINENUM} />);
+
+        })
+        .catch(error => {
+          this.setState({ saving: false }, sappy.showError(error, "Erro ao obter dados"));
+        }) 
+      }
       else
         return sappy.showModal(<EditModal toggleModal={sappy.hideModal} itemcode={props.dependentValues.ITEMCODE} />);
     }
