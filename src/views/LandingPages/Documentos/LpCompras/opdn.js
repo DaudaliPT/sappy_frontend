@@ -70,7 +70,7 @@ class opdn extends Component {
                         {sappy.format.datetime2(row.DOC_DATETIME)}
                       </div>
                       <div className="col-8 text-nowrap">
-                        {row.DocNum} <DocBadges tags={row.ITEM_TAGS} />
+                        {row.DocNum | row.NumAtCard} <DocBadges tags={row.ITEM_TAGS} />
                       </div>
                       <div className="col-2 text-nowrap lastcol">
                         <span className="float-right"> {row.FORMATED_DOCTOTAL} </span>
@@ -95,7 +95,7 @@ class opdn extends Component {
                     {sappy.format.date(row.DOC_DATETIME)}
                   </div>
                   <div className="col-8 text-nowrap">
-                    {row.DocNum} <DocBadges tags={row.ITEM_TAGS} />
+                    {row.DocNum | row.NumAtCard} <DocBadges tags={row.ITEM_TAGS} />
                   </div>
                   <div className="col-2 text-nowrap lastcol">
                     <span className="float-right"> {row.FORMATED_DOCTOTAL} </span>

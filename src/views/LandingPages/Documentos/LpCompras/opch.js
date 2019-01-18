@@ -16,7 +16,7 @@ class oinv extends Component {
         let rowId = "row_" + row.DocEntry + "#" + (row.DocNum || 0);
         let rowStyleClass = "";
         // if (selected) rowStyleClass += " sappy-selected-row";
-        if (row.UNAPOR_BASEENTRY && row.DRAFT === "X") rowStyleClass += " vlist-row-warning-unapor";
+        if (row.UNAPOR_BASEENTRY && row.DRAFT === "X")          rowStyleClass += " vlist-row-warning-unapor";
         else if (row.UNAPOR_BASEENTRY) rowStyleClass += " vlist-row-success-unapor";
         else if (row.DRAFT === "Y" || row.DRAFT === "X") rowStyleClass += " vlist-row-warning";
 
@@ -70,7 +70,7 @@ class oinv extends Component {
                         {sappy.format.datetime2(row.DOC_DATETIME)}
                       </div>
                       <div className="col-8 text-nowrap">
-                        {row.DocNum} <DocBadges tags={row.ITEM_TAGS} />
+                        {row.DocNum | row.NumAtCard} <DocBadges tags={row.ITEM_TAGS} />
                       </div>
                       <div className="col-2 text-nowrap lastcol">
                         <span className="float-right"> {row.FORMATED_DOCTOTAL} </span>
@@ -95,7 +95,7 @@ class oinv extends Component {
                     {sappy.format.date(row.DOC_DATETIME)}
                   </div>
                   <div className="col-8 text-nowrap">
-                    {row.DocNum} <DocBadges tags={row.ITEM_TAGS} />
+                    {row.DocNum | row.NumAtCard} <DocBadges tags={row.ITEM_TAGS} />
                   </div>
                   <div className="col-2 text-nowrap lastcol">
                     <span className="float-right"> {row.FORMATED_DOCTOTAL} </span>
