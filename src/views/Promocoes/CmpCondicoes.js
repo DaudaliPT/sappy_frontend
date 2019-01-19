@@ -116,20 +116,44 @@ class CmpCondicoes extends Component {
         {renderCondicoes()}
 
         <div className={"checkbox-custom checkbox-" + includColor} style={{ display: "block" }}>
-          <input
-            type="checkbox"
-            checked={this.state.chkSpecific}
-            onChange={e => that.setState({ chkSpecific: !that.state.chkSpecific }, e => that.props.onFieldChange({ fieldName: `${this.props.name}_SPECIFIC`, rawValue: "", formatedValue: "" }))}
-            disabled={!this.props.editable}
-            id={nameChkInclude}
-          />
-          <label htmlFor={nameChkInclude}>
-            {labelChkInclude}
-          </label>
+          <div className="row">
+            <div className="col-6">
+                <input
+                type="checkbox"
+                checked={this.state.chkSpecific}
+                onChange={e => that.setState({ chkSpecific: !that.state.chkSpecific }, e => that.props.onFieldChange({ fieldName: `${this.props.name}_SPECIFIC`, rawValue: "", formatedValue: "" }))}
+                disabled={!this.props.editable}
+                id={nameChkInclude}
+              />
+              <label htmlFor={nameChkInclude}>
+                {labelChkInclude}
+              </label>
+            </div>
+            <div className="col-6 d-flex justify-content-end" >
+            <ButtonGroup
+                {...bip(`${name}SORT`, {
+                  label:  "" ,
+                  buttons: [
+                    { value: "A-Z", label: "Ordenar A-Z", disabled: !this.props.editable, className: "btn btn-secondary btn-outline"
+                      , onClick: function(){
+                        that.props.onSortComboSelectedItems(`${that.props.name}_SPECIFIC`,'A-Z')} 
+                      },
+                    { value: "1-9", label: "Ordenar 1-9", disabled: !that.props.editable, className: "btn btn-secondary btn-outline"
+                      , onClick: function(){
+                        that.props.onSortComboSelectedItems(`${that.props.name}_SPECIFIC`,'1-9')
+                    } }
+                  ]
+                })}
+              />
+            </div>
+          </div>
+          
+          
+          
         </div>
         {this.state.chkSpecific &&
           <div className="row">
-            <div className="col-12 col-md-6 col-lg-5 pr-md-1 one-value-per-line">
+            <div className="col-12 one-value-per-line">
               <ComboBox {...bip(`${this.props.name}_SPECIFIC`, { label: "", multi: true, getOptionsApiRoute: includeOptionsRoute })} />
             </div>
           </div>}

@@ -25,7 +25,7 @@ class ComboBox extends Component {
     if (nextProps.getOptionsApiRoute !== this.props.getOptionsApiRoute
       || ((nextProps.options || []).length !== (this.props.options || []).length)) {
       this.loadProps(nextProps)
-    }
+    }  
   }
 
   componentDidMount() {
@@ -82,7 +82,7 @@ class ComboBox extends Component {
         ...changeInfo,
         rawValue: newValue,
         formatedValue: newValue
-      };
+      };  
     } else {
       if (!newValue) newValue = { value: null, label: "" };
 

@@ -81,7 +81,7 @@ sappy.app = {
           dontCreateMenu: true,
           text: "Doc"
         },
-        { name: "promocoes", component: Views.Promocoes.Lp, text: "Promoções" },
+        { name: "promocoes", component: Views.Promocoes.Lp, text: "Preços Especiais" },
         {
           name: "promocoes/doc",
           component: Views.Promocoes.DocPromocao,

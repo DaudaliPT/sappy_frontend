@@ -56,10 +56,14 @@ class LpPromocoes extends Component {
                 {row.NUMERO}
               </div>
               <div className="col-8">
-                {row.TIPO === "P" &&
-                  <i style={{ color: "rgba(0, 120, 68, 1)", paddingRight: "5px" }} className="icon fa-tags" />}
                 {row.TIPO === "F" &&
-                  <i style={{ color: "#aaa", paddingRight: "5px" }} className="icon fa-newspaper-o" />}
+                  <i style={{ color: "#62a8ea", paddingRight: "5px" }} className="icon fa-newspaper-o" title='Folheto'/>}
+                {row.TIPO === "P" &&
+                  <i style={{ color: "rgba(0, 180, 68, 1)", paddingRight: "5px" }} className="icon fa-tags" title='Promoção'/>}
+                {row.TIPO === "D" &&
+                  <i style={{ color: "#f96868", paddingRight: "5px" }} className="icon fa-truck" title='Preços Distribuição'/>}
+                {row.TIPO === "U" &&
+                  <i style={{ color: "#f2a654", paddingRight: "5px" }} className="icon fa-cubes" title='Preços Unidades'/>}
                 {row.DESCRICAO} {renderBadges()}
               </div>
               <div className="col-3 lastcol">
@@ -106,6 +110,15 @@ class LpPromocoes extends Component {
           onClick: e => that.setState({ showActions: !showActions })
         },
         {
+          name: "Folheto",
+          color: "primary",
+          icon: "icon fa-newspaper-o",
+          visible: showActions,
+          onClick: e => {
+            hashHistory.push({ pathname: "/vnd/promocoes/doc", state: { id: null, tipo: "F" }})
+        }
+        },
+        {
           name: "Promoção",
           color: "success",
           icon: "icon fa-tags",
@@ -113,11 +126,18 @@ class LpPromocoes extends Component {
           onClick: e => hashHistory.push({ pathname: "/vnd/promocoes/doc", state: { id: null, tipo: "P" } })
         },
         {
-          name: "Folheto",
-          color: "success",
-          icon: "icon fa-newspaper-o",
+          name: "Preços Distribuição",
+          color: "danger",
+          icon: "icon fa-truck",
           visible: showActions,
-          onClick: e => hashHistory.push({ pathname: "/vnd/promocoes/doc", state: { id: null }, tipo: "F" })
+          onClick: e => hashHistory.push({ pathname: "/vnd/promocoes/doc", state: { id: null, tipo: "D" } })
+        },
+        {
+          name: "Preços Unidades",
+          color: "warning",
+          icon: "icon fa-cubes",
+          visible: showActions,
+          onClick: e => hashHistory.push({ pathname: "/vnd/promocoes/doc", state: { id: null, tipo: "U" } })
         }
       ];
 
@@ -126,7 +146,7 @@ class LpPromocoes extends Component {
 
     return (
       <BaseLandingPage
-        pageTitle="Promoções"
+        pageTitle="Preços Especiais"
         searchPlaceholder="Procurar..."
         searchApiUrl="api/promocoes/"
         renderRow={renderRow}

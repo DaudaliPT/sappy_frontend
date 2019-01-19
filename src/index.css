@@ -1378,7 +1378,8 @@ div.flag > i.icon:hover {
 }
 
 div.one-value-per-line .Select--multi .Select-value {
-  display: block !important;
+  width: 600px !important;
+  /* display: flex !important; */
 }
 
 .react-context-menu {

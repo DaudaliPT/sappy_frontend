@@ -26,13 +26,13 @@ const getinitialState = props => {
     loading: locationState.id ? true : false,
     editable: locationState.id ? false : true,
     showValidations: false,
-    TIPO: locationState.tipo === "P" ? "P" : "F",
+    TIPO: locationState.tipo  ,
     selectedLineNums: [],
     fieldsAllowedForCli: [],
     detailHeight: 500,
     fieldsAllowedForArt: [],
     headerExpanded: true,
-    pnScopeExpanded: locationState.tipo === "P" ? true : false,
+    pnScopeExpanded: locationState.tipo === "F" ? false:true,
     DIASEM0: 1,
     DIASEM1: 1,
     DIASEM2: 1,
@@ -55,8 +55,9 @@ class DocPromocao extends Component {
     let that = this;
 
     this.getvalidationResults = this.getvalidationResults.bind(this);
-    this.onClick_AddRemove2 = this.onClick_AddRemove2.bind(this);
     this.loadDoc = this.loadDoc.bind(this);
+    this.onClick_AddRemove2 = this.onClick_AddRemove2.bind(this);
+    this.handleSortComboSelectedItems = this.handleSortComboSelectedItems.bind(this);
     this.loadDocToState = this.loadDocToState.bind(this);
     this.onFieldChange = this.onFieldChange.bind(this);
     this.saveToDatabase = this.saveToDatabase.bind(this);
@@ -208,7 +209,7 @@ class DocPromocao extends Component {
       delete newState.ReturnToastr;
     }
 
-    if (this.state.ID !== newState.ID) newState.pnScopeExpanded = newState.TIPO === "P" ? true : false;
+    if (this.state.ID !== newState.ID) newState.pnScopeExpanded = newState.TIPO === "F" ? false:true ;
 
     newState.IC = newState.SCOPE.filter(line => line.TIPO === "IC");
     newState.EC = newState.SCOPE.filter(line => line.TIPO === "EC");
@@ -268,6 +269,7 @@ class DocPromocao extends Component {
       DATAI,
       DATAF,
       UDISC,
+      UAGRAVAMENTO,
       IC_SPECIFIC,
       EC_SPECIFIC,
       IA_SPECIFIC,
@@ -296,6 +298,7 @@ class DocPromocao extends Component {
       ID,
       NUMERO,
       UDISC,
+      UAGRAVAMENTO,
       DATAI,
       DATAF,
       IC_SPECIFIC,
@@ -435,6 +438,20 @@ class DocPromocao extends Component {
       confirmStyle: "danger",
       onCancel: () => { }
     });
+  }
+
+  handleSortComboSelectedItems(fieldName, sortType) {
+      let that = this;
+      let codes = this.state[fieldName];
+      let type = fieldName.substring(1,2)==='C'?'C':'A';
+      let AZ = sortType==="A-Z";
+      axios
+        .post(`/api/promocoes/doc/reorder/ComboSelectedItems?AZ=${AZ}&type=${type}`,{codes})
+        .then(result => { 
+            let a = codes;           
+            that.onFieldChange({ fieldName, rawValue: result.data, value: result.data });
+        })
+        .catch(error => sappy.showError(error, "Não foi possivel reordenar"));
   }
 
   handleCreateDocument() {
@@ -864,11 +881,17 @@ class DocPromocao extends Component {
       ]
     };
 
+    let titulo = ''
+    if (this.state.TIPO === "P") titulo= "Promoção";
+    if (this.state.TIPO === "F") titulo= "Folheto";
+    if (this.state.TIPO === "D") titulo= "Preços Distribuição";
+    if (this.state.TIPO === "U") titulo= "Preços Unidade";
+
     return (
       <div id="doc">
         <div id="docHeader">
           <Panel
-            title={(this.state.TIPO === "P" ? "Promoção" : "Folheto") + " (" + strNumero + ")"}
+            title={titulo + " (" + strNumero + ")"}
             expanded={this.state.headerExpanded}
             onToogleExpand={() => that.setState({ headerExpanded: !this.state.headerExpanded }, this.recalcComponentsHeight)}
             actions={headerActions}
@@ -880,10 +903,17 @@ class DocPromocao extends Component {
                     <TextBox {...bip("DESCRICAO", { label: "Descrição" })} />
                   </div>
                   {this.state.TIPO === "P" &&
-                    // O desconto só existe em folhetos promocionais
+                    // O desconto só  existe promocoes
                     <div className="col-md-4 col-lg-2 pl-md-1 pr-md-1">
                       <TextBox {...bip("UDISC", { label: "Desconto", valueType: "discount" })} />
                     </div>}
+
+                    {(this.state.TIPO === "D"|| this.state.TIPO === "U") &&
+                    // O agravamento 
+                    <div className="col-md-4 col-lg-2 pl-md-1 pr-md-1">
+                      <TextBox {...bip("UAGRAVAMENTO", { label: "Agravamento", valueType: "discount" })} />
+                    </div>}
+
                   <div className="col-6 col-md-4 col-lg-2 pl-lg-1 pr-1">
                     <Date {...bip("DATAI", { label: "Válido De" })} />
                   </div>
@@ -1088,6 +1118,7 @@ class DocPromocao extends Component {
                 fieldsAllowed={this.state.fieldsAllowedForCli}
                 alerts={this.alerts}
                 editable={this.state.editable}
+                onSortComboSelectedItems={this.handleSortComboSelectedItems}
               />}
 
             <div className="checkbox-custom checkbox-danger" style={{ display: "block" }}>
@@ -1113,11 +1144,12 @@ class DocPromocao extends Component {
                 fieldsAllowed={this.state.fieldsAllowedForCli}
                 alerts={this.alerts}
                 editable={this.state.editable}
+                onSortComboSelectedItems={this.handleSortComboSelectedItems}
               />}
           </Panel>
 
-          {this.state.TIPO === "P" &&
-            // Âmbito de artigos só existe em promoções
+          {this.state.TIPO !== "F" &&
+            // Âmbito de artigos só não existe em folhetos
             <Panel subtitle="Âmbito de artigos" allowCollapse={true} actions={scopeArtActions} colapsedInfo={artColapsedInfo}>
               <div className="row">
                 <div className="col-12">
@@ -1140,6 +1172,7 @@ class DocPromocao extends Component {
                       fieldsAllowed={this.state.fieldsAllowedForArt}
                       alerts={this.alerts}
                       editable={this.state.editable}
+                      onSortComboSelectedItems={this.handleSortComboSelectedItems}
                     />}
                 </div>
                 <div className="col-12">
@@ -1170,6 +1203,7 @@ class DocPromocao extends Component {
                       fieldsAllowed={this.state.fieldsAllowedForArt}
                       alerts={this.alerts}
                       editable={this.state.editable}
+                      onSortComboSelectedItems={this.handleSortComboSelectedItems}
                     />}
                 </div>
               </div>
@@ -1194,7 +1228,7 @@ class DocPromocao extends Component {
             </Panel>
           </div>}
 
-        {this.state.TIPO === "P" &&
+        {this.state.TIPO !== "F" &&
           // Âmbito de artigos - colocar este espaço adicional para as combos abrirem bem
           <div style={{ height: "100px" }} />}
         <DocFooter {...footerProps} />
