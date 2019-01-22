@@ -270,6 +270,7 @@ class DocPromocao extends Component {
       DATAF,
       UDISC,
       UAGRAVAMENTO,
+      SHOWONLINE,
       IC_SPECIFIC,
       EC_SPECIFIC,
       IA_SPECIFIC,
@@ -299,6 +300,7 @@ class DocPromocao extends Component {
       NUMERO,
       UDISC,
       UAGRAVAMENTO,
+      SHOWONLINE,
       DATAI,
       DATAF,
       IC_SPECIFIC,
@@ -749,6 +751,17 @@ class DocPromocao extends Component {
     };
 
     let headerActions = [
+      {
+        name: "toggleShowOnline",
+        text: "Mostrar online com preços",
+        color: this.state.SHOWONLINE ? "success":"",
+        visible: this.state.NUMERO && this.state.TIPO==='F',
+        disabled: !this.state.ATIVO,
+        icon:   "fa-globe" ,
+        onClick: e => {
+          that.saveToDatabase({ ...that.state, SHOWONLINE: !that.state.SHOWONLINE });
+        }
+      },
       {
         name: "toggleArquivado",
         text: this.state.ARQUIVADO ? "Arquivado" : "Arquivar",
