@@ -132,7 +132,7 @@ export default {
       };
 
       let applyPromotionOffers = () => {
-        sappy.showWaitProgress("A verificar promoções, aguarde por favor...")
+        sappy.showWaitProgress("A verificar promoções e preços especiais, aguarde por favor...")
 
         let handleResponse = result => {
           if (result.status === 200 /*OK*/) {
@@ -142,8 +142,8 @@ export default {
             that.setState({ selectedLineNums: [], docData });
 
             return sappy.showWarning({
-              title: "Foram aplicadas promoções",
-              msg: "Por favor verifique as promoções que foram aplicadas.",
+              title: "Foram aplicadas promoções e/ou preços especiais",
+              msg: "Por favor verifique as o documento antes de 'confirmar' novamente.",
             });
           } else if (result.status === 204 /*NO_CONTENT*/) {
 
