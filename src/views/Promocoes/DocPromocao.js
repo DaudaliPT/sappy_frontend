@@ -26,13 +26,13 @@ const getinitialState = props => {
     loading: locationState.id ? true : false,
     editable: locationState.id ? false : true,
     showValidations: false,
-    TIPO: locationState.tipo  ,
+    TIPO: locationState.tipo,
     selectedLineNums: [],
     fieldsAllowedForCli: [],
     detailHeight: 500,
     fieldsAllowedForArt: [],
     headerExpanded: true,
-    pnScopeExpanded: locationState.tipo === "F" ? false:true,
+    pnScopeExpanded: locationState.tipo === "F" ? false : true,
     DIASEM0: 1,
     DIASEM1: 1,
     DIASEM2: 1,
@@ -209,7 +209,7 @@ class DocPromocao extends Component {
       delete newState.ReturnToastr;
     }
 
-    if (this.state.ID !== newState.ID) newState.pnScopeExpanded = newState.TIPO === "F" ? false:true ;
+    if (this.state.ID !== newState.ID) newState.pnScopeExpanded = newState.TIPO === "F" ? false : true;
 
     newState.IC = newState.SCOPE.filter(line => line.TIPO === "IC");
     newState.EC = newState.SCOPE.filter(line => line.TIPO === "EC");
@@ -443,17 +443,17 @@ class DocPromocao extends Component {
   }
 
   handleSortComboSelectedItems(fieldName, sortType) {
-      let that = this;
-      let codes = this.state[fieldName];
-      let type = fieldName.substring(1,2)==='C'?'C':'A';
-      let AZ = sortType==="A-Z";
-      axios
-        .post(`/api/promocoes/doc/reorder/ComboSelectedItems?AZ=${AZ}&type=${type}`,{codes})
-        .then(result => { 
-            let a = codes;           
-            that.onFieldChange({ fieldName, rawValue: result.data, value: result.data });
-        })
-        .catch(error => sappy.showError(error, "Não foi possivel reordenar"));
+    let that = this;
+    let codes = this.state[fieldName];
+    let type = fieldName.substring(1, 2) === 'C' ? 'C' : 'A';
+    let AZ = sortType === "A-Z";
+    axios
+      .post(`/api/promocoes/doc/reorder/ComboSelectedItems?AZ=${AZ}&type=${type}`, { codes })
+      .then(result => {
+        let a = codes;
+        that.onFieldChange({ fieldName, rawValue: result.data, value: result.data });
+      })
+      .catch(error => sappy.showError(error, "Não foi possivel reordenar"));
   }
 
   handleCreateDocument() {
@@ -486,7 +486,7 @@ class DocPromocao extends Component {
       return sappy.showQuestion({
         msg: "Deseja criar esta promoção?",
         onConfirm: postConfirm,
-        confirmText: "Criar promoção",
+        confirmText: "Criar Preço Especial",
         onCancel: () => { }
       });
     else
@@ -645,7 +645,7 @@ class DocPromocao extends Component {
             updated.OFITEMCODE = listItems[0].ItemCode;
           } else if (found > 1) {
             sappy.showModal(<SearchAndChooseModalOitm toggleModal={selectedItems => {
-               sappy.hideModal();
+              sappy.hideModal();
               if (selectedItems.length) updated.OFITEMCODE = selectedItems[0]; else updated.OFITEMCODE = '';
 
               return callBackend()
@@ -754,10 +754,10 @@ class DocPromocao extends Component {
       {
         name: "toggleShowOnline",
         text: "Mostrar online com preços",
-        color: this.state.SHOWONLINE ? "success":"",
-        visible: this.state.NUMERO && this.state.TIPO==='F',
+        color: this.state.SHOWONLINE ? "success" : "",
+        visible: this.state.NUMERO && this.state.TIPO === 'F',
         disabled: !this.state.ATIVO,
-        icon:   "fa-globe" ,
+        icon: "fa-globe",
         onClick: e => {
           that.saveToDatabase({ ...that.state, SHOWONLINE: !that.state.SHOWONLINE });
         }
@@ -878,7 +878,7 @@ class DocPromocao extends Component {
           onClick: this.handleOnVoltar
         },
         {
-          name: "Criar promoção",
+          name: "Criar Preço Especial",
           color: "success",
           icon: "icon fa-check",
           visible: !this.state.NUMERO && this.state.ID,
@@ -895,10 +895,10 @@ class DocPromocao extends Component {
     };
 
     let titulo = ''
-    if (this.state.TIPO === "P") titulo= "Promoção";
-    if (this.state.TIPO === "F") titulo= "Folheto";
-    if (this.state.TIPO === "D") titulo= "Preços Distribuição";
-    if (this.state.TIPO === "U") titulo= "Preços Unidade";
+    if (this.state.TIPO === "P") titulo = "Promoção";
+    if (this.state.TIPO === "F") titulo = "Folheto";
+    if (this.state.TIPO === "D") titulo = "Preços Distribuição";
+    if (this.state.TIPO === "U") titulo = "Preços Unidade";
 
     return (
       <div id="doc">
@@ -921,7 +921,7 @@ class DocPromocao extends Component {
                       <TextBox {...bip("UDISC", { label: "Desconto", valueType: "discount" })} />
                     </div>}
 
-                    {(this.state.TIPO === "D"|| this.state.TIPO === "U") &&
+                  {(this.state.TIPO === "D" || this.state.TIPO === "U") &&
                     // O agravamento 
                     <div className="col-md-4 col-lg-2 pl-md-1 pr-md-1">
                       <TextBox {...bip("UAGRAVAMENTO", { label: "Agravamento", valueType: "discount" })} />

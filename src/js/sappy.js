@@ -701,7 +701,7 @@ import { setTimeout } from "timers";
       { tableName: "ORIN", tableSufix: "RIN", objectCode: 14, description: "Nota de Crédito a cliente", landingPage: "/vnd/orin/" },
 
       { tableName: "OPOR", tableSufix: "POR", objectCode: 22, description: "Encomenda a fornecedor", landingPage: "/cmp/opor/" },
-      { tableName: "OPDN", tableSufix: "PDN", objectCode: 20, description: "Recepção de mercadoria", landingPage: "/cmp/opdn/" },
+      { tableName: "OPDN", tableSufix: "PDN", objectCode: 20, description: "Receção de mercadoria", landingPage: "/cmp/opdn/" },
       { tableName: "ORPD", tableSufix: "RPD", objectCode: 21, description: "Devolução de mercadoria", landingPage: "/cmp/orpd/" },
       { tableName: "OPCH", tableSufix: "PCH", objectCode: 18, description: "Fatura de compra", landingPage: "/cmp/opch/" },
       { tableName: "ORPC", tableSufix: "RPC", objectCode: 19, description: "Nota de crédito de fornecedor", landingPage: "/cmp/orpc/" },

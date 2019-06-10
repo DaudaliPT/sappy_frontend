@@ -10,7 +10,7 @@ class opdn extends Component {
 
     let docProps = {
       docTableName: "opdn",
-      pageTitle: "Recepções de Mercadoria",
+      pageTitle: "Receções de Mercadoria",
       renderRowHeight: 50,
       renderRow: ({ row, index, onRowClick }) => {
         let rowId = "row_" + row.DocEntry + "#" + (row.DocNum || 0);

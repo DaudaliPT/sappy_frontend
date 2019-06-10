@@ -71,7 +71,7 @@ class Pagamentos extends Component {
                     <a className="list-group-item list-group-item-action active" data-toggle="tab" role="tab" id="Por Pagar" onClick={this.handleOnTabClick}>
                       Por Pagar
                     </a>
-                    <a className="list-group-item list-group-item-action" data-toggle="tab" role="tab" id="Ultimos Pagamentos" onClick={this.handleOnTabClick}>
+                    <a className="list-group-item list-group-item-action" data-toggle="tab" role="tab" id="Últimos Pagamentos" onClick={this.handleOnTabClick}>
                       Últ. Pagamentos
                     </a>
                   </div>
@@ -84,7 +84,7 @@ class Pagamentos extends Component {
               <div className="panel form-panel">
                 <div className="panel-body main-body">
                   {this.state.activeTab === "Por Pagar" && <CmpPorPagar height={this.state.height} />}
-                  {this.state.activeTab === "Ultimos Pagamentos" && <CmpUltPagamentos height={this.state.height} />}
+                  {this.state.activeTab === "Últimos Pagamentos" && <CmpUltPagamentos height={this.state.height} />}
                 </div>
               </div>
               {/* <!-- End Panel --> */}

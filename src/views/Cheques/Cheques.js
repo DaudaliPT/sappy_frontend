@@ -68,7 +68,7 @@ class Cheques extends Component {
                     <a className="list-group-item list-group-item-action active" data-toggle="tab" role="tab" id="Por Pagar" onClick={this.handleOnTabClick}>
                       Por Pagar
                     </a>
-                    <a className="list-group-item list-group-item-action" data-toggle="tab" role="tab" id="Ultimos Cheques" onClick={this.handleOnTabClick}>
+                    <a className="list-group-item list-group-item-action" data-toggle="tab" role="tab" id="Últimos Cheques" onClick={this.handleOnTabClick}>
                       Últ. Cheques
                     </a>
                   </div>
@@ -80,7 +80,7 @@ class Cheques extends Component {
               <div className="panel form-panel">
                 <div className="panel-body main-body">
                   {this.state.activeTab === "Por Pagar" && <CmpPorPagar height={this.state.height} />}
-                  {this.state.activeTab === "Ultimos Cheques" && <CmpUltCheques height={this.state.height} />}
+                  {this.state.activeTab === "Últimos Cheques" && <CmpUltCheques height={this.state.height} />}
                 </div>
               </div>
             </div>
